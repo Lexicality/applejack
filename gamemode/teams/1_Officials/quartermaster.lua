@@ -1,0 +1,11 @@
+TEAM.Name = "Secretary";
+TEAM.Description = "Takes care of the basic running of government";
+TEAM.Color = Color(50,200,255);
+TEAM.CantUse = { CATEGORY_WEAPONS, CATEGORY_POLICEWEAPONS };
+TEAM.CanMake = {CATEGORY_WEAPONS, CATEGORY_POLICEWEAPONS, CATEGORY_AMMO};
+TEAM.Models.Male = {"models/player/Hostage/Hostage_02.mdl","models/player/Hostage/Hostage_03.mdl"};
+TEAM.Models.Female = TEAM.Models.Male;
+TEAM.GroupLevel = GROUP_MERCHANT;
+TEAM.PossessiveString = "The %s";
+TEAM.SizeLimit = 1;
+TEAM.Salary = 225;

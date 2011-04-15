@@ -1,0 +1,9 @@
+TEAM.Name = "Rouge Leader";
+TEAM.Description = "Leader of the Rogues.";
+TEAM.Color = Color(220,50,50);
+TEAM.Models.Male = {"models/player/leet.mdl"};
+TEAM.Models.Female = TEAM.Models.Male;
+TEAM.GroupLevel = GROUP_GANGBOSS;
+TEAM.PossessiveString = "The %s";
+TEAM.SizeLimit = 1;
+TEAM.Salary = 250;

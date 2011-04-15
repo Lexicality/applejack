@@ -1,0 +1,9 @@
+TEAM.Name = "Supplier";
+TEAM.Description = "Sells things that people might want at some point";
+TEAM.Salary = 150
+TEAM.Color = Color(255,200,50);
+TEAM.CanMake = {CATEGORY_MISC,CATEGORY_PACKAGING};
+TEAM.SizeLimit = 6
+TEAM.Models.Male = {"models/player/Group02/Male_04.mdl"};
+TEAM.Models.Female = {"models/player/Group02/Female_04.mdl"};
+TEAM.GroupLevel = GROUP_MERCHANT;
