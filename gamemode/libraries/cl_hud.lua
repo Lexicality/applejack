@@ -285,7 +285,7 @@ GM:AddStaticHUDBox("You are wearing Kevlar", "gui/silkicons/shield", function(bo
 end);
 
 -- Website
-GM:AddStatusHUDBox(self.Config["Website URL"], nil); -- TODO: Website silkicon
+GM:AddStaticHUDBox(GM.Config["Website URL"], nil); -- TODO: Website silkicon
 
 -- Arrested
 GM:AddStaticHUDBox("You have been arrested.", "gui/silkicons/lock", function(box)
@@ -573,9 +573,9 @@ surface.SetFont(font);
 local _,textheight = surface.GetTextSize("0");
 local barheight = textheight*1.5;
 local pad = 4;
-local barwidth = scrw / 4
+local barwidth = math.floor(scrw / 4);
 local backgroundheight = barheight + (pad+4)*2
-local backgroundy = scrh/2-backgroundheight/2;
+local backgroundy = math.floor(scrh/2-backgroundheight/2);
 local barx = (scrw-barwidth) / 2;
 local bary = (backgroundy + (pad+4)); 
 local barpercent = 1;
@@ -622,6 +622,7 @@ function drawcenterbar()
 end
 local textcenter = barx + (barwidth / 2);
 function GM:SetCenterBar(text,color,callback)
+	print(text, color, callback);
     bartext = text;
     barcolor = color;
     surface.SetFont(font);
@@ -629,7 +630,8 @@ function GM:SetCenterBar(text,color,callback)
     textx = textcenter - tw / 2;
     percentcallback = callback;
 end
-do
+-- TODO: THIS IS REALLY SHIT!!! CHANGE TO USERMESSAGES!!!!!
+hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 	local function dead()
 		return false;
 	end
@@ -655,7 +657,7 @@ do
 	local sleepcolor = Color(34,66,205);
 	CSVars.Hook("_SleepTime","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("Going To Sleep . . .", sleepcolor, sleepfunc);
+		GM:SetCenterBar("Going To Sleep . . .", sleepcolor, sleepfunc);
 	end);
 	end
 	
@@ -674,7 +676,7 @@ do
 	local barcolor = Color(221,133,38);
 	CSVars.Hook("_TyingEnd","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("Tying knots . . .", barcolor, callback);
+		GM:SetCenterBar("Tying knots . . .", barcolor, callback);
 	end);
 	end
 	
@@ -693,7 +695,7 @@ do
 	local barcolor = Color(221,133,38);
 	CSVars.Hook("_BeingTiedEnd","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("You are being tied up!", barcolor, callback);
+		GM:SetCenterBar("You are being tied up!", barcolor, callback);
 	end);
 	end
 	
@@ -712,7 +714,7 @@ do
 	local barcolor = Color(150,210,20);
 	CSVars.Hook("_UnTyingEnd","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("Attempting to untie knots . . .", barcolor, callback);
+		GM:SetCenterBar("Attempting to untie knots . . .", barcolor, callback);
 	end);
 	end
 
@@ -726,7 +728,7 @@ do
 		active = var;
 		if (active) then
 			-- TODO: Is this too long for the box?
-			GM:SetCenterBox("You are stuck! Press 'Jump' to holster your weapons and respawn.", barcolor, callback);
+			GM:SetCenterBar("You are stuck! Press 'Jump' to holster your weapons and respawn.", barcolor, callback);
 		end
 	end);
 	end
@@ -737,16 +739,16 @@ do
 		endtime = lpl._NextSpawnTime;
 		if (not (length and endtime)) then return false; end
 		left = endtime - ctime;
-		if (left < 0) then
+		if (left < 0 or lpl:Alive()) then
 			doclearbar();
 			return false;
 		end
-		return (left/length) * 100;
+		return 100 - ((left/length) * 100);
 	end
 	local barcolor = Color(150,210,20);
 	CSVars.Hook("_NextSpawnTime","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("Respawning . . .", barcolor, callback);
+		GM:SetCenterBar("Respawning . . .", barcolor, callback);
 	end);
 	end
 	
@@ -763,9 +765,13 @@ do
 		return (left/length) * 100;
 	end
 	local barcolor = Color(150,210,20);
+	--[[
+	local function umsg(msg)
+		length = msg:ReadShort();
+		--]]
 	CSVars.Hook("_WakeUpTime","CentreBar",function(ends)
 		length = ends - CurTime();
-		GM:SetCenterBox("Reganing Consiousness . . .", barcolor, callback);
+		GM:SetCenterBar("Reganing Consiousness . . .", barcolor, callback);
 	end);
 	end
 	
@@ -781,14 +787,14 @@ do
 	local blaa = Color(0,0,0);
 	local function wakethefuckup()
 		if (lpl._Sleeping) then
-			GM:SetCenterBox("Press 'Jump' to wake up", blaa, blaaa);
+			GM:SetCenterBar("Press 'Jump' to wake up", blaa, blaaa);
 		else
-			GM:SetCenterBox("Press 'Jump' to get up", blaa, blaaa);
+			GM:SetCenterBar("Press 'Jump' to get up", blaa, blaaa);
 		end
 	end
-	usermessage.Hook("MS_CanWakeUp",wakethefuckup);
+	usermessage.Hook("MS Wakeup Call",wakethefuckup);
 	end
-end
+end);
 end
 
 

@@ -32,7 +32,7 @@ hook.Add("LibrariesLoaded","CSVars Initialiaztion",function()
 end);
 if (CLIENT) then
 	hook.Add("LocalPlayerCreated", "CSVars Startup", function(ply)
-		CSVars.PlayerInitialized()
+		CSVars.PlayerInitialized(ply)
 	end);
 end
 -- Module
@@ -92,7 +92,7 @@ if (SERVER) then
 else
 	vars = {}
 	local hooks = {};
-	
+	local lpl = NULL;
 	---
 	-- Adds a hook to be called every time a CSVar is updated
 	-- @param key The name of the CSVar to hook on
@@ -147,7 +147,8 @@ else
 	
 	---
 	-- Called when the player's object is created and assigned to the global lpl
-	function PlayerInitialized()
+	function PlayerInitialized(ply)
+		lpl = ply;
 		for k, v in pairs(vars) do
 			lpl[k] = v;
 		end
