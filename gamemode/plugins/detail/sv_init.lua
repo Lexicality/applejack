@@ -92,7 +92,7 @@ PLUGIN.ToSpawn = {
 		{"models/props_trainstation/handrail_64decoration001a.mdl",Angle(0.0179683, 90.0024, -0.0299988), Vector(-6631.27, -8613.39, 91.4417)},
 		{"models/props_trainstation/trainstation_post001.mdl",Angle(4.09758E-012, -180, 0.000413759), Vector(-5760.73, -8622.81, 64.2915)},
 		{"models/props_trainstation/trainstation_post001.mdl",Angle(0.0201778, -89.8376, -0.118011), Vector(-6247.75, -5115.15, 64.4126)},
-		{"models/props_foliage/hedge_256_128high.mdl",Angle(-1.32581E-008, 90, 0), Vector(-6369.53, -4278.69, 73.3705)},
+		{"models/props_foliage/hedge_256_128high.mdl",Angle(-1.32581E-008, 90, 0), Vector(-6369.53, -4278.69, 73.3705)}
 	},
 	rp_evocity_v2d = {
 		{"models/props_wasteland/controlroom_chair001a.mdl",Angle(0, -19, 0), Vector(-7484.0786, -8753.0557, 1756.3939)},
