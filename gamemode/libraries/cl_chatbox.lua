@@ -887,6 +887,12 @@ function cider.chatBox.chatText(index, name, text, filter)
 			cider.chatBox.messageAdd( {"(Achievement)", Color(255, 75, 75, 255) },{ name, teamColor}, { "just earned the achievement '"..text.."'!", Color( 230, 230, 230 ) }, filtered);
 		elseif (class == "ooc") then
 			cider.chatBox.messageAdd( {"(OOC)", Color(255, 75, 75, 255) }, { name, teamColor}, {text}, filtered, icon);
+		elseif (class == "phone") then
+			local uniqueID = player:UniqueID();
+			local length = string.len(uniqueID);
+			local phoneNumber = string.sub(uniqueID, 1, math.floor(length / 2)) .. "-" .. string.sub(uniqueID, math.floor(length / 2 + 1));
+			
+			cider.chatBox.messageAdd( {"(Phone)"}, nil, { phoneNumber..": "..text, Color(137, 183, 159, 255) }, filtered);
 		end
 	else
 		if (name == "Console" and class == "chat") then
