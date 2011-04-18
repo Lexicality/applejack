@@ -38,6 +38,8 @@ function GM:LoadPlugins()
 		if (not id:find(".",1,true)) then
 			cpath = path..id;
 			PLUGIN = {};
+			PLUGIN.Folder = id;
+			PLUGIN.FullPath = cpath;
 			if (file.Exists("../gamemodes/"..cpath.."/sh_init.lua")
 			or  file.Exists("../lua_temp/" ..cpath.."/sh_init.lua")) then
 				includecs(cpath.."/sh_init.lua");
