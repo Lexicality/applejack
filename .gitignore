@@ -1,3 +1,4 @@
 
 *.DS_Store
 /content
+/gamemode/sv_config.lua
