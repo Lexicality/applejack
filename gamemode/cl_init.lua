@@ -46,6 +46,8 @@ function GM:OnEntityCreated(entity)
 	-- Call the base class function.
 	return self.BaseClass:OnEntityCreated(entity);
 end
+function GM:LocalPlayerCreated(ply) end
+
 function GM:Initialize()
 	ErrorNoHalt(os.date().." - Finished connecting\n")
 	GM = self;
