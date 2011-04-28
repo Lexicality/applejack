@@ -1176,18 +1176,21 @@ do -- Reduce the upvalues poluting the area.
 		ply:KnockOut();
 		GM:Log(EVENT_EVENT, "%s went to sleep.", ply:Name());
 		ply._Sleeping = true;
+		ply:SetCSVar(CLASS_BOOL,"_Sleeping", true); -- Make sure it happens NOW not in 0.01s time.
 		ply:Emote("slumps to the floor, asleep.");
-		ply:SetCSVar(CLASS_LONG, "_GoToSleepTime");
+		ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", 0);
+		SendUserMessage("MS Wakeup Call", ply, true);
 	end
 
 	local function failure(ply)
-		ply:SetCSVar(CLASS_LONG, "_GoToSleepTime");
+		ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", 0);
 	end
 	-- A command to sleep or wake up.
 	cider.command.add("sleep", "b", 0, function(ply)
 		if (ply._Sleeping and ply:KnockedOut()) then
 			return ply:WakeUp();
 		end
+		ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", CurTime() + GM.Config["Sleep Waiting Time"]);
 		timer.Conditional(ply:UniqueID().." sleeping timer", GM.Config["Sleep Waiting Time"], conditional, success, failure, ply, ply:GetPos());
 	end, "Commands", nil, "Go to sleep or wake up from sleeping.");
 end

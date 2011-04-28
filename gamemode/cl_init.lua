@@ -154,8 +154,17 @@ function GM:RenderScreenspaceEffects()
 	modify["$pp_colour_mulr"] = 0;
 	modify["$pp_colour_mulg"] = 0;
 	modify["$pp_colour_mulb"] = 0;
+	local slp = lpl._GoToSleepTime;
+	if (slp and slp > 0) then
+		local t = slp - CurTime();
+		if (t > 0) then
+			modify["$pp_colour_contrast"] = t / GM.Config["Sleep Waiting Time"];
+		else
+			modify["$pp_colour_contrast"] = 0;			
+		end
+	end
 	if lpl._Sleeping then
-		modify["$pp_colour_contrast"]= 0
+		modify["$pp_colour_contrast"] = 0
 	end
 	
 	-- Draw the modified color.

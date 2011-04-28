@@ -644,8 +644,8 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 	do -- Sleepering
 		local endtime, length, left;
 		local function sleepfunc()
-			endtime = lpl._SleepTime;
-			if (not (length and endtime)) then return false; end
+			endtime = lpl._GoToSleepTime;
+			if (not (length and endtime and endtime > 0)) then return false; end
 			left = endtime - ctime;
 			if (left < 0) then
 				doclearbar();
@@ -654,7 +654,10 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			return (left/length) * 100, false;
 		end
 		local sleepcolor = Color(34,66,205);
-		CSVars.Hook("_SleepTime","CentreBar",function(ends)
+		CSVars.Hook("_GoToSleepTime","CentreBar",function(ends)
+			if (ends == 0) then
+				return;
+			end
 			length = ends - CurTime();
 			GM:SetCenterBar("Going To Sleep . . .", sleepcolor, sleepfunc);
 		end);
@@ -792,8 +795,33 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		local barcolor = Color(150,210,20);
 		CSVars.Hook("_WakeUpTime","CentreBar",function(ends)
 			length = ends - CurTime();
+			GM:SetCenterBar("Waking Up . . .", barcolor, callback);
 		end);
 	end
+	
+	do -- /fallover recovery
+		local ends, length, left;
+		local function callback()
+			if (not (length and ends)) then return false; end
+			left = ends - ctime;
+			if (left < 0 or not lpl:KnockedOut()) then
+				doclearbar();
+				return false;
+			end
+			return 100 - ((left/length) * 100);
+		end
+		local barcolor = Color(150,210,20);
+		local function timr()
+			GM:SetCenterBar("Recovering . . .", barcolor, callback);
+		end			
+		local function umsg(msg)
+			length = msg:ReadShort();
+			ends = CurTime() + length;
+			timer.Simple(0.01, timr);
+		end
+		usermessage.Hook("MS Recovery Time", umsg);
+	end
+		
 	
 	-- 
 	-- TODO: go to sleep -> says 'wake up' -> hit jump -> says 'reganing consiousness' -> says 'get up'

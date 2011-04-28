@@ -294,6 +294,11 @@ local function doforce(ragdoll, velocity)
 		ragdoll:GetPhysicsObject():SetVelocity(velocity);
 	end
 end
+local function recoveryTimer(ply)
+	if (IsValid(ply) and ply:Alive() and ply:KnockedOut()) then
+		SendUserMessage("MS Wakeup Call", ply, false);
+	end
+end
 ---
 -- Knocks out (ragdolls) a player requiring their input to get back up again
 -- @param time How long to force them down for. Nil or 0 allows them up instantly.
@@ -364,8 +369,12 @@ function meta:KnockOut(time, velocity)
 		self:TakeWeapons();
 		-- If we're being forced down for a while, tell the client.
 		if (time and time > 0) then
+			time = math.min(time, 32767);
 			self._KnockoutPeriod = CurTime() + time;
-			self:SetCSVar(CLASS_LONG, "_KnockoutPeriod", self._KnockoutPeriod);
+			umsg.Start("MS Recovery Time", self)
+			umsg.Short(time);
+			umsg.End();
+			timer.Simple(time, recoveryTimer, self);
 		end
 	end
 	-- Get us ready for spectation
