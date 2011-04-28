@@ -6,6 +6,7 @@
 PLUGIN.Name = "Details";
 
 PLUGIN.ToSpawn = {
+--[[
 	rp_evocity_v17x = {
 		{"models/hunter/plates/plate075x2.mdl",Angle(90, -90, 180), Vector(-6540.75, -5802.74, 85.652),Color(255,255,255,0)},
 		{"models/props_trainstation/handrail_64decoration001a.mdl",Angle(0.0179683, 90.0024, -0.0299988), Vector(-6566.24, -8613.39, 91.476)},
@@ -94,6 +95,7 @@ PLUGIN.ToSpawn = {
 		{"models/props_trainstation/trainstation_post001.mdl",Angle(0.0201778, -89.8376, -0.118011), Vector(-6247.75, -5115.15, 64.4126)},
 		{"models/props_foliage/hedge_256_128high.mdl",Angle(-1.32581E-008, 90, 0), Vector(-6369.53, -4278.69, 73.3705)}
 	},
+	--]]
 	rp_evocity_v2d = {
 		{"models/props_wasteland/controlroom_chair001a.mdl",Angle(0, -19, 0), Vector(-7484.0786, -8753.0557, 1756.3939)},
 		{"models/props/cs_office/phone.mdl",Angle(0, -146, 0), Vector(-7455.0645, -8735.4609, 1770.2837)},
@@ -527,6 +529,7 @@ PLUGIN.Doors = {
 	}
 }
 PLUGIN.Effects = {
+--[[
 	rp_evocity_v2d = {
 		{"models/msc/e_bush2.mdl", Angle(7.4912104606628, -101.74291992188, -5.2531127929688), Vector(-1638.2117919922, 578.94842529297, 81.074226379395)};
 		{"models/msc/e_bush2.mdl", Angle(7.4912099838257, -97.324668884277, -5.2531127929688), Vector(-1656.9002685547, 531.14093017578, 76.374435424805)};
@@ -652,6 +655,7 @@ PLUGIN.Effects = {
 		{"models/\props/cs_militia/fern01lg.mdl", Angle(2.2039813169425e-016, 0.36576589941978, 7.9168075899361e-006), Vector(-3423.8720703125, 508.35552978516, 152.80030822754)};
 		{"models/\props/cs_militia/vine_wall2.mdl", Angle(-6.2929967725722e-007, 89.824417114258, 3.4372890240775e-006), Vector(-3287.4868164063, -141.22122192383, 60.301258087158)};
 	}
+--]]
 }
 function PLUGIN:InitPostEntity()
 	timer.Simple(FrameTime() * 4,self.FrameOne,self);
