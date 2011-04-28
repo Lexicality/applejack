@@ -1028,31 +1028,31 @@ local function enthandle(ply, ent, action, ...)
 		end
 		word = "%s removed %s's access from " .. ply._GenderWord .. " %s.";
 	end
-	GM:Log(EVENT_ENTITY, word, ply:Name(), name, entity._isDoor and "door" or entity:GetNWString("Name","entity"));
+	GM:Log(EVENT_ENTITY, word, ply:Name(), name, ent._isDoor and "door" or ent:GetNWString("Name","entity"));
 end
 -- A command to perform an action on an ent
 cider.command.add("entity", "b", 2, function(ply, action, ...)
 	local tr = ply:GetEyeTraceNoCursor();
 	local ent = tr.Entity
-	action = action:lower();
-	if (not (IsValid(ent) and ent:IsOwnable() and ply:GetPos():Distance(tr.HitPos) > 128)) then
+	action = string.lower(action);
+	if (not (IsValid(ent) and ent:IsOwnable() and ply:GetPos():Distance(tr.HitPos) < 128)) then
 		return false, "You must be looking at an entity!";
 	elseif (ent:GetOwner() ~= ply) then
 		return false, "You do not own this!";
 	end
 	local res, err = enthandle(ply, ent, action, ...);
 	local tab = {
-		owner = ent:GetPossessiveName() .. " ";
-		access = table.Copy(ent._Owner.access);
+		title = ent:GetPossessiveName() .. " " .. (ent._isDoor and "door" or ent:GetNWString("Name","entity"));
+		access = ent._Owner.access;
+		owner = ent._Owner.owner;
 		owned = {
 			sellable = (ent._isDoor and not ent._UnSellable) or nil;
 			name = gamemode.Call("PlayerCanSetEntName", ply, ent) and ent:GetDisplayName() or nil;
 		};
 	};
-	tab.owner = tab.owner .. (ent._isDoor and "door" or entity:GetNWString("Name","entity"));
-	datastream.StreamToClients(ply, "AccessUpdate", tab);
+	datastream.StreamToClients(ply, "Access Menu Update", tab);
 	return res, err;
-end, "Menu Handlers", "<give|take> <ID> <type> or <name> <mynamehere>", "Perform an action on the entity you're looking at");
+end, "Menu Handlers", "<give|take> <ID> <type> or <name> <mynamehere>", "Perform an action on the entity you're looking at", 1);
 
 -- A command to manufacture an item.
 cider.command.add("manufacture", "b", 1, function(ply, arguments)

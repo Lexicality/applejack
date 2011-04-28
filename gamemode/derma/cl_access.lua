@@ -18,7 +18,7 @@ local function CheckPos()
 	end
 	return true
 end
---[
+--[[
 local cmo = RunConsoleCommand
 local RunConsoleCommand = function(...)
 	print(...)
@@ -53,90 +53,163 @@ function PANEL:PerformLayout()
 	self.itemsList:StretchToParent(0, 0, 0, 0);
 end
 
--- Called every frame.
-function PANEL:Think()
-	if (self.updatePanel) then
-		self.updatePanel = false;
-
-		-- Clear the current list of items.
-		self.itemsList:Clear();
-		local info = vgui.Create("cider_Access_Information", self)
-		info.word = self.name
-		self.itemsList:AddItem( info);
-			-- Create a table to store the categories.
-		local categories = { none = {} };
-
-		local gnd = string.lower(LocalPlayer()._Gender or "Male")
-		local kind
-		-- Loop through the items.
-		for k, v in pairs(self.inventory) do
-			--name,model,description,uniqueID
-			if type(v) == "Player" then
-				kind,self.type = "Teams","player"
-				categories[v:Team()] = categories[v:Team()] or {};
-				local cln = v:GetNWString"Clan"
-				local nam = "Name: "..v:Name()
-				if cln ~= "" then
-					nam = nam.."  ("..cln..")"
-				end
-				table.insert(categories[v:Team()],{nam,v:GetModel(),v:GetNWString"Details" ~= "" and "Details: "..v:GetNWString"Details" or "- No Description -",v:UserID()})
-			elseif v.isTeam then
-				kind,self.type = "Groups","team"
-				categories[v.group.group] = categories[v.group.group] or {}
-				table.insert(categories[v.group.group],{v.name,table.Random(v.models[gnd]),v.description,v.index})
-			else
-				kind,self.type = "Groups","gang"
-				local cmd = v
-				table.insert(cmd,k)
-				local g = string.Explode(";",k)[1]
-				categories[g] = categories[g] or {}
-				table.insert(categories[g],cmd)
-				
+local function handlePlys(self)
+	local res, header, sublist, subsublist, item, str;
+	for gid, ts in pairs(self.inventory) do
+		for tid, ps in pairs(ts) do
+			if (#ps == 0) then
+				ts[tid] = nil;
 			end
 		end
-		for k, v in pairs(categories) do
-			if (k == "none") then
-				-- Loop through the items.
-				for k2, v2 in pairs(v) do
-					self.currentItem = v2;
-					self.itemsList:AddItem( vgui.Create("cider_Access_Item", self) ) ;
+		if (table.Count(ts) == 0) then
+			self.inventory[gid] = nil;
+		end
+	end
+	if (table.Count(self.inventory) == 0) then
+		return;
+	end
+	for GroupID, teams in SortedPairs(self.inventory) do
+		res = GM:GetGroup(GroupID);
+		header = vgui.Create("DCollapsibleCategory", self)
+		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetLabel(res.Name);
+		header:SetToolTip(res.Description);
+		self.itemsList:AddItem(header);
+		sublist = vgui.Create("DPanelList", self);
+		sublist:SetAutoSize(true)
+		sublist:SetPadding(2);
+		sublist:SetSpacing(3);
+		header:SetContents(sublist);
+		for TeamID, plys in SortedPairs(teams) do
+			res = team.Get(TeamID);
+			header = vgui.Create("DCollapsibleCategory", self);
+			header:SetSize(width/2, 50); -- Keep the second number at 50
+			header:SetLabel(res.Name);
+			header:SetToolTip(res.Description);
+			sublist:AddItem(header);
+			subsublist = vgui.Create("DPanelList", self);
+			subsublist:SetAutoSize(true)
+			subsublist:SetPadding(2);
+			subsublist:SetSpacing(3);
+			header:SetContents(subsublist);
+			for _, ply in ipairs(plys) do
+				item = vgui.Create("Accessmenu Item", self);
+				str = ply:GetNWString("Clan");
+				if (str ~= "") then
+					str = ply:Name() .. " (" .. str .. ")";
+				else
+					str = ply:Name();
 				end
-			else
-				local c
-				if kind == "Teams" then
-					c = cider.team.get(k)
-				elseif kind == "Groups" then
-					c = GM:GetGroup(k)
+				item:SetName(str);
+				str = ply:GetNWString("Details");
+				if (str == "") then
+					str = "- No Details Set -";
 				end
-				local header = vgui.Create("DCollapsibleCategory", self)
-				header:SetSize(width/2, 50); -- Keep the second number at 50
-				header:SetLabel( c.name )
-				header:SetToolTip( c.description )
-				self.itemsList:AddItem(header);
-				local subitemsList = vgui.Create("DPanelList", self);
-				subitemsList:SetAutoSize( true )
-				subitemsList:SetPadding(2);
-				subitemsList:SetSpacing(3);
-				header:SetContents( subitemsList )
-				-- Loop through the items.
-				for k2, v2 in pairs(v) do
-					self.currentItem = v2;
-					self.nobut = false
-					if v2[4] == LocalPlayer():UserID() and self.type == "player" or not accessmenu.owned then
-						self.nobut = true
-					end
-					-- Add the item to the item list.
-					subitemsList:AddItem( vgui.Create("cider_Access_Item", self) ) ;
-				end
+				item:SetDescription(str);
+				item:SetModel(ply:GetModel());
+				item:SetIdentifier("player", ply:UserID());
+				item:SetButton(ply ~= lpl and accessmenu.owned);
+				subsublist:AddItem(item);
 			end
 		end
-		-- Rebuild the items list.
-		self.itemsList:Rebuild();
+	end	
+end
+
+local function handleTeams(self)
+	local res, header, sublist, item;
+	for gid, ts in pairs(self.inventory) do
+		if (table.Count(ts) == 0) then
+			self.inventory[gid] = nil;
+		end
+	end
+	if (table.Count(self.inventory) == 0) then
+		return;
+	end
+	for GroupID, teams in SortedPairs(self.inventory) do
+		res = GM:GetGroup(GroupID);
+		header = vgui.Create("DCollapsibleCategory", self)
+		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetLabel(res.Name);
+		header:SetToolTip(res.Description);
+		self.itemsList:AddItem(header);
+		sublist = vgui.Create("DPanelList", self);
+		sublist:SetAutoSize(true)
+		sublist:SetPadding(2);
+		sublist:SetSpacing(3);
+		header:SetContents(sublist);
+		for _, team in SortedPairs(teams) do
+			item = vgui.Create("Accessmenu Item", self);
+			item:SetName(team.Name);
+			item:SetDescription(team.Description);
+			item:SetModel(table.Random(table.Random(team.Models)));
+			item:SetIdentifier("team", team.TeamID);
+			item:SetButton(accessmenu.owned);
+			sublist:AddItem(item);
+		end
 	end
 end
 
+local function handleGangs(self)
+	local res, header, sublist, item;
+	for gid, gs in pairs(self.inventory) do
+		if (table.Count(gs) == 0) then
+			self.inventory[gid] = nil;
+		end
+	end
+	if (table.Count(self.inventory) == 0) then
+		return;
+	end
+	for GroupID, gangs in SortedPairs(self.inventory) do
+		res = GM:GetGroup(GroupID);
+		header = vgui.Create("DCollapsibleCategory", self)
+		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetLabel(res.Name);
+		header:SetToolTip(res.Description);
+		self.itemsList:AddItem(header);
+		sublist = vgui.Create("DPanelList", self);
+		sublist:SetAutoSize(true)
+		sublist:SetPadding(2);
+		sublist:SetSpacing(3);
+		header:SetContents(sublist);
+		for _, gang in SortedPairs(gangs) do
+			item = vgui.Create("Accessmenu Item", self);
+			item:SetName(gang.Name);
+			item:SetDescription(gang.Description);
+			item:SetModel(gang.Model);
+			if (_ == 0) then
+				item:SetIdentifier("group", GroupID);
+			else			
+				item:SetIdentifier("gang", gang.GangID);
+			end			
+			item:SetButton(accessmenu.owned);
+			sublist:AddItem(item);
+		end
+	end
+end
+
+-- Called every frame.
+function PANEL:Think()
+	if (not self.updatePanel) then return; end
+	self.updatePanel = false;
+
+	-- Clear the current list of items.
+	self.itemsList:Clear();
+	local info = vgui.Create("Accessmenu Header", self)
+	info.word = self.name
+	self.itemsList:AddItem(info);
+	if (self.isply) then
+		handlePlys(self);
+	elseif (self.isteam) then
+		handleTeams(self);
+	else
+		handleGangs(self);
+	end
+	-- Rebuild the items list.
+	self.itemsList:Rebuild();
+end
+
 -- Register the panel.
-vgui.Register("cider_Access_Inventory", PANEL, "Panel");
+vgui.Register("Accessmenu List", PANEL, "Panel");
 
 -- Define a new panel.
 local PANEL = {};
@@ -146,52 +219,51 @@ function PANEL:Init()
 	-- Set the size and position of the panel.
 	self:SetSize(width/2, 75);
 	self:SetPos(1, 5);
-	local typ = self:GetParent().type
-	-- Set the item that we are.
-	local name,model,description,uniqueID = unpack(self:GetParent().currentItem)
-	self.action = self:GetParent().action
-	-- Create a label for the name.
 	self.name = vgui.Create("DLabel", self);
-	self.name:SetText(name or "ERROR");
-	self.name:SizeToContents();
-	self.name:SetTextColor( Color(255, 255, 255, 255) );
-
-	-- Create a label for the description.
+	self.name:SetTextColor(Color(255, 255, 255));
 	self.description = vgui.Create("DLabel", self);
-	self.description:SetText(description or "ERROR");
-	self.description:SizeToContents();
-	self.description:SetTextColor( Color(255, 255, 255, 255) );
-
-	-- Create the spawn icon.
+	self.description:SetTextColor(Color(255, 255, 255));
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
-
-	-- Set the model of the spawn icon to the one of the item.
-	self.spawnIcon:SetModel(model)
-
-
 	self.spawnIcon:SetToolTip();
-	self.spawnIcon.DoClick = function() return; end
-	self.spawnIcon.OnMousePressed = function() return; end
-	self.itemFunctions = {};
-	table.insert(self.itemFunctions, self.action )
+	self.spawnIcon.DoClick = function() end;
+	self.spawnIcon.OnMousePressed = function() end;
+end
 
-	-- Create the table to store the item buttons.
-	self.itemButton = {};
-	if self:GetParent().nobut then return end
-	-- Loop through the item functions.
-	for i = 1, #self.itemFunctions do
-		if (self.itemFunctions[i]) then
-			self.itemButton[i] = vgui.Create("DButton", self);
-			self.itemButton[i]:SetText(self.itemFunctions[i]);
-			self.itemButton[i].DoClick = function()
-				if not CheckPos() then return end
-				if accessmenu.Buttoned then return end -- If a button has been pressed, we can't do anything until sent an update.
-				RunConsoleCommand("cider", "entity", self.action:lower(), typ, uniqueID or "ERROR");
-				CurTab = accessmenu.sheets:GetActiveTab()
-				accessmenu.Buttoned = true
-			end
-		end
+function PANEL:SetName(name)
+	self.name:SetText(name);
+	self.name:SizeToContents();
+end
+
+function PANEL:SetDescription(desc)
+	self.description:SetText(desc);
+	self.description:SizeToContents();
+end
+
+function PANEL:SetModel(model)
+	self.spawnIcon:SetModel(model)
+end
+
+function PANEL:SetIdentifier(idkind, id)
+	self.idkind = idkind;
+	self.id = id;
+end
+	
+local function btn(self)
+	if (accessmenu.Buttoned or not CheckPos()) then
+		return false;
 	end
+	CurTab = accessmenu.sheets:GetActiveTab()
+	accessmenu.Buttoned = true
+	RunConsoleCommand("cider", "entity", self.action, self.me.idkind, self.me.id);
+end
+function PANEL:SetButton(bool)
+	if (not bool) then return; end
+	self.button = vgui.Create("DButton", self);
+	local action = self:GetParent().action
+	self.button:SetText(action);
+	self.button.action = string.lower(action);
+	self.button.me = self;
+	self.button.DoClick = btn;
 end
 
 -- Called when the layout should be performed.
@@ -207,20 +279,13 @@ function PANEL:PerformLayout()
 	-- Set the position of the name and description.
 	self.name:SetPos(x, 4);
 	self.description:SetPos(x, 24);
-
-	-- Loop through the item functions and set the position of their button.
-	for i = 1, #self.itemFunctions do
-		if (self.itemButton[i]) then
-			self.itemButton[i]:SetPos(x, 47);
-
-			-- Increase the x position for the next item function.
-			x = x + self.itemButton[i]:GetWide() + 4;
-		end
+	if (self.button) then
+		self.button:SetPos(x, 47);
 	end
 end
 
 -- Register the panel.
-vgui.Register("cider_Access_Item", PANEL, "DPanel");
+vgui.Register("Accessmenu Item", PANEL, "DPanel");
 
 -- Register the panel.
 --vgui.Register("cider_Container_Item", PANEL, "DPanel");
@@ -248,14 +313,14 @@ function PANEL:PerformLayout()
 end
 
 -- Register the panel.
-vgui.Register("cider_Access_Information", PANEL, "DPanel");
+vgui.Register("Accessmenu Header", PANEL, "DPanel");
 -- Define a new panel.
 local PANEL = {};
 
 -- Called when the panel is initialized.
 function PANEL:Init()
-	self.noaccess			= vgui.Create("cider_Access_Inventory",self)
-	self.access				= vgui.Create("cider_Access_Inventory",self)
+	self.noaccess			= vgui.Create("Accessmenu List",self)
+	self.access				= vgui.Create("Accessmenu List",self)
 	self.noaccess.action	= "Give"
 	self.noaccess.name		= "Choices"
 	self.access.action		= "Take"
@@ -274,7 +339,7 @@ function PANEL:PerformLayout()
 	self.access:SetPos(0 + self.noaccess:GetWide() + 4, 0);
 end
 -- Register the panel.
-vgui.Register("cider_Access_Columns", PANEL)--, "DPanel");
+vgui.Register("Accessmenu Pane", PANEL)--, "DPanel");
 -- Define a new panel.
 local PANEL = {};
 
@@ -295,9 +360,9 @@ function PANEL:Init()
 		gui.EnableScreenClicker(false);
 	end
 	self.sheets = vgui.Create("DPropertySheet",self)
-	self.players = vgui.Create("cider_Access_Columns",self.sheets)
-	self.jobs = vgui.Create("cider_Access_Columns",self.sheets)
-	self.gangs = vgui.Create("cider_Access_Columns",self.sheets)
+	self.players = vgui.Create("Accessmenu Pane",self.sheets)
+	self.jobs = vgui.Create("Accessmenu Pane",self.sheets)
+	self.gangs = vgui.Create("Accessmenu Pane",self.sheets)
 	self.sheets:AddSheet("Players",	self.players,nil,false,true,nil)
 	self.sheets:AddSheet("Jobs",	self.jobs	,nil,false,true,nil)
 	self.sheets:AddSheet("Gangs",	self.gangs	,nil,false,true,nil)
@@ -395,7 +460,17 @@ function PANEL:PerformLayout()
 end
 
 -- Register the panel.
-vgui.Register("cider_Access", PANEL, "DFrame");--]]
+vgui.Register("Accessmenu", PANEL, "DFrame");--]]
+
+local function psort(a, b)
+	return a:Name() < b:Name();
+end
+local function tsort(a, b)
+	return a.TeamID < b.TeamID;
+end
+local function gsort(a, b)
+	return a.GangID < b.GangID;
+end
 local function UpdateContainer(decoded)
 	if not accessmenu then return end
 	--[[
@@ -403,54 +478,125 @@ local function UpdateContainer(decoded)
 	tab.tab = accessmenu.sheets:GetActiveTab()
 	print(tab.tab)
 	--]]
-	accessmenu:SetTitle(decoded.owner)
+	accessmenu:SetTitle(decoded.title)
 	local paccess = {}
 	local taccess = {}
 	local gaccess = {}
-	for _,v in ipairs(decoded.access) do
-		if type(v) == "Player" then
-			paccess[v:EntIndex()] = v
-		elseif type(v) == "number" then
-			taccess[v] = cider.team.get(v)
-		elseif type(v) == "string" then
-			local a,b = unpack(string.Explode(";",v))
-			a,b =  tonumber(a),tonumber(b)
-			gaccess[v] = table.Copy(cider.team.gangs[a][b])
-		end
-	end
 	local pnoaccess = {}
 	local tnoaccess = {}
 	local gnoaccess = {}
-	for _,v in ipairs(player.GetAll()) do
-		if not paccess[v:EntIndex()] then-- and v ~= LocalPlayer()
-			pnoaccess[v:EntIndex()] = v
+	for id, group in pairs(GM.Groups) do
+		taccess[id] = {};
+		gaccess[id] = {};
+		paccess[id] = {};
+		tnoaccess[id] = {};
+		gnoaccess[id] = {};
+		pnoaccess[id] = {};
+		for _, team in pairs(group.Teams) do
+			paccess[id][team.TeamID] = {};
+			pnoaccess[id][team.TeamID] = {};
 		end
 	end
-	for _,v in pairs(cider.team.stored) do
-		if not taccess[v.index] then
-			tnoaccess[v.index] = v
-		end
-	end
-	for group,gangtable in pairs(cider.team.gangs) do
-		for gang,data in pairs(gangtable) do
-			if not gaccess[group..";"..gang] then
-				gnoaccess[group..";"..gang] = table.Copy(data)
+	local gyes, gno = {}, {};
+	local done = {};
+	local res;
+	-- Get privilaged
+	decoded.access[decoded.owner] = true;
+	for key in pairs(decoded.access) do
+		if type(key) == "Player" then
+			res = key:GetTeam();
+			table.insert(paccess[res.Group.GroupID][res.TeamID], key);
+			done[key] = true;
+		else
+			local kind, id = string.match(key, "(.+): (.+)");
+			--print(key, kind, id);
+			id = tonumber(id);
+			if (kind == "Team") then
+				res = team.Get(id);
+				table.insert(taccess[res.Group.GroupID], res);
+			elseif (kind == "Group") then
+				res = GM:GetGroup(id);
+				--gaccess[res.GroupID][0] = res;
+				gyes[res.GroupID] = res;
+			elseif (kind == "Gang") then
+				res = GM:GetGang(id);
+				table.insert(gaccess[res.Group.GroupID], res);
 			end
+			done[res] = true;
 		end
 	end
-
+	-- Get unprivilaged
+	for _, ply in pairs(player.GetAll()) do
+		if (not done[ply]) then
+			res = ply:GetTeam();
+			table.insert(paccess[res.Group.GroupID][res.TeamID], ply);
+		end
+	end
+	for _, res in pairs(GM.Teams) do
+		if (not done[res]) then
+			table.insert(tnoaccess[res.Group.GroupID], res);
+		end
+	end
+	for _, res in pairs(GM.Groups) do
+		if (not done[res]) then
+			--gnoaccess[res.GroupID][0] = res;
+			gno[res.GroupID] = res;
+		end		
+	end
+	for _, res in pairs(GM.Gangs) do
+		if (not done[res]) then
+			table.insert(gnoaccess[res.Group.GroupID], res);
+		end
+	end
+	-- Sort tables
+	for _, g in pairs(paccess) do
+		for _, t in pairs(g) do
+			table.sort(t, psort);
+		end
+	end
+	-- Sort tables
+	for _, g in pairs(pnoaccess) do
+		for _, t in pairs(g) do
+			table.sort(t, psort);
+		end
+	end
+	for _, res in pairs(taccess) do
+		table.sort(res, tsort);
+	end
+	for _, res in pairs(tnoaccess) do
+		table.sort(res, tsort);
+	end
+	for _, res in pairs(gaccess) do
+		table.sort(res, gsort);
+	end
+	for _, res in pairs(gnoaccess) do
+		table.sort(res, gsort);
+	end
+	for id, res in pairs(gyes) do
+		gaccess[id][0] = res;
+	end
+	for id, res in pairs(gno) do
+		gnoaccess[id][0] = res;
+	end
+	-- Gief content
 	accessmenu.players.noaccess.inventory	= pnoaccess
 	accessmenu.players.access.inventory		= paccess
 	accessmenu.jobs.noaccess.inventory		= tnoaccess
 	accessmenu.jobs.access.inventory		= taccess
 	accessmenu.gangs.noaccess.inventory		= gnoaccess
 	accessmenu.gangs.access.inventory		= gaccess
+	-- wedraww
 	accessmenu.players.noaccess.updatePanel	= true
 	accessmenu.players.access.updatePanel	= true
 	accessmenu.jobs.noaccess.updatePanel	= true
 	accessmenu.jobs.access.updatePanel		= true
 	accessmenu.gangs.noaccess.updatePanel	= true
 	accessmenu.gangs.access.updatePanel		= true
+	-- who's whom.
+	accessmenu.players.noaccess.isply		= true
+	accessmenu.players.access.isply			= true
+	accessmenu.jobs.noaccess.isteam			= true
+	accessmenu.jobs.access.isteam			= true
 	accessmenu.owned = tobool(decoded.owned)
 	if accessmenu.owned then
 		accessmenu.sellable = decoded.owned.sellable
@@ -473,12 +619,12 @@ end
 function NewContainer( handle, id, encoded, decoded )
 	--PrintTable(decoded)
 	if accessmenu then accessmenu:Remove() end
-	accessmenu = vgui.Create"cider_Access"
+	accessmenu = vgui.Create"Accessmenu"
 	gui.EnableScreenClicker(true);
 	accessmenu:MakePopup()
 	UpdateContainer(decoded)
 end
-datastream.Hook( "cider_Access", NewContainer );
-datastream.Hook( "cider_Access_Update", function(handle, id, encoded, decoded)
+datastream.Hook( "Access Menu", NewContainer );
+datastream.Hook( "Access Menu Update", function(handle, id, encoded, decoded)
 	UpdateContainer(decoded)
 end)

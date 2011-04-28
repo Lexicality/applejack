@@ -820,7 +820,9 @@ function GM:PlayerDeath(ply, inflictor, attacker, ragdoll,fall)
 	ply.NextSpawnTime = CurTime() + ply._SpawnTime
 	
 	-- Set it so that we can the next spawn time client side.
-	ply:SetCSVar(CLASS_LONG, "_NextSpawnTime", ply.NextSpawnTime)
+	umsg.Start("MS Respawn Time", ply);
+	umsg.Short(ply._SpawnTime);
+	umsg.End();
 	
 	-- Check if the attacker is a ply.
 	local formattext,text1,text2,text3,pvp = "",ply:GetName(),"",""
@@ -1209,41 +1211,37 @@ end
 function GM:ShowHelp(ply) umsg.Start("cider_Menu", ply) umsg.End() end
 
 -- Called when a player presses F2.
+-- TODO: Rewrite
 function GM:ShowTeam(ply)
-	local door = ply:GetEyeTraceNoCursor().Entity	
-	-- Check if the player is aiming at a door.
-	if not(ValidEntity(door)
-	   and door:IsOwnable()
+	local ent = ply:GetEyeTraceNoCursor().Entity	
+	-- Check if the player is aiming at a ent.
+	if not(ValidEntity(ent)
+	   and ent:IsOwnable()
 	   and ply:GetPos():Distance( ply:GetEyeTraceNoCursor().HitPos ) <= 128
 	 ) then
 			return
 	end
-	if hook.Call("PlayerCanOwnDoor",GAMEMODE,ply,door) then
+	if hook.Call("PlayerCanOwnDoor",GAMEMODE,ply,ent) then
 		umsg.Start("cider_BuyDoor",ply)
 		umsg.End()
 		return
 	end
-	if not hook.Call("PlayerCanViewEnt",GAMEMODE,ply,door) then
+	if not hook.Call("PlayerCanViewEnt",GAMEMODE,ply,ent) then
 		ply:Notify("You do not have access to that!",1)
 		return
 	end
-	local detailstable = {}
-	local owner = door:GetOwner()
-	detailstable.access = table.Copy(door._Owner.access)
-	table.insert(detailstable.access,owner)
-	if owner == ply then
-		detailstable.owned = {
-			sellable = tobool(door._isDoor and not door._Unsellable) or nil,
-			name = hook.Call("PlayerCanSetEntName",GAMEMODE,ply,door) and door:GetDisplayName() or nil,
-		}
+	local tab = {
+		title = ent:GetPossessiveName() .. " " .. (ent._isDoor and "door" or ent:GetNWString("Name","entity"));
+		access = ent._Owner.access;
+		owner = ent._Owner.owner;
+	};
+	if (tab.owner == ply) then
+		tab.owned = {
+			sellable = (ent._isDoor and not ent._UnSellable) or nil;
+			name = gamemode.Call("PlayerCanSetEntName", ply, ent) and ent:GetDisplayName() or nil;
+		};
 	end
-	detailstable.owner = door:GetPossessiveName()
-	if door._isDoor then
-		detailstable.owner = detailstable.owner.." door"
-	else
-		detailstable.owner = detailstable.owner.." "..door:GetNWString("cider_Name","entity")
-	end
-	datastream.StreamToClients(ply,"cider_Access",detailstable)
+	datastream.StreamToClients(ply, "Access Menu", tab);
 end
 
 function GM:ShowSpare1(ply)
