@@ -1,4 +1,4 @@
-TEAM.Name = "Rouge Leader";
+TEAM.Name = "Rogue Leader";
 TEAM.Description = "Leader of the Rogues.";
 TEAM.Color = Color(220,50,50);
 TEAM.Models.Male = {"models/player/leet.mdl"};

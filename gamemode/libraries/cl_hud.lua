@@ -701,7 +701,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		
 		do -- Untying
-			local length, left = self.Config['UnTying Timeout'];
+			local length, left = GM.Config['UnTying Timeout'];
 			local function callback()
 				if (not (length and uends)) then return false; end
 				left = uends - ctime;
@@ -720,7 +720,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		
 		do -- Being Untied
-			local length, left = self.Config['UnTying Timeout'];
+			local length, left = GM.Config['UnTying Timeout'];
 			local function callback()
 				if (not (length and dends)) then return false; end
 				left = dends - ctime;

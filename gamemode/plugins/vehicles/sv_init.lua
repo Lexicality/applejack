@@ -115,7 +115,7 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 	local tab = car.VehicleTable;
 	if (tab.Ownable) then
 		car:MakeOwnable();
-		car:SetOwnerPlayer(ply);
+		car:GiveToPlayer(ply);
 	end if (tab.Skin) then
 		car:SetSkin(tab.Skin);
 	end

@@ -246,7 +246,7 @@ function GM:PlayerSpawnedProp(ply,mdl,ent)
 	GM:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), mdl)
 	if hook.Call("PropSpawned",GAMEMODE,mdl,ent) then
 		ent:MakeOwnable();
-		ent:SetOwnerPlayer(ply);
+		ent:GiveToPlayer(ply);
 	end
 	self.BaseClass:PlayerSpawnedProp(ply, mdl, ent);
 end

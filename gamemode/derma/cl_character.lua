@@ -6,10 +6,13 @@ Name: "cl_character.lua".
 local PANEL = {};
 local nextChanges = {};
 local reDraw = false;
-local function teamChanged(msg)
-	local teamid = msg:ReadShort();
-	nextChanges[teamid] = team.Query(teamid, "Cooldown", 300);
+local function redraw()
 	reDraw = true;
+end
+local function teamChanged(msg)
+	local teamid = msg:ReadChar();
+	nextChanges[teamid] = team.Query(teamid, "Cooldown", 300) + CurTime();
+	timer.Simple(0.1, redraw);
 end
 usermessage.Hook("TeamChange", teamChanged);
 
@@ -45,7 +48,8 @@ local thinktest = CurTime()
 function PANEL:Think()
 	if not reDraw then return; end
 	reDraw = false
-	local lgroup = team.Query(lpl:Team(), "Group");
+	local pteam = lpl:Team();
+	local lgroup = team.Query(pteam, "Group");
 	--Wipe the itemlist so we can renew it
 	self.itemsList:Clear()
 	-- Create the job control.
@@ -107,9 +111,9 @@ function PANEL:Think()
 		local teams = {};
 		
 		-- Loop through the teams in this group in order
-		for index, team in ipairs(group.Teams) do
+		for _, team in ipairs(group.Teams) do
 			--Check they can join the team
-			if (gamemode.Call("PlayerCanJoinTeamShared", lpl, index)) then
+			if (pteam == team.TeamID or gamemode.Call("PlayerCanJoinTeamShared", lpl, team.TeamID)) then
 				-- Create the team panel.
 				local panel = vgui.Create("cider_Character_Team", self);
 				panel:SetTeam(team);				
@@ -223,7 +227,7 @@ function PANEL:Init()
 	-- Create the button and the spawn icon.
 	self.button = vgui.Create("DButton", self);
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
-	self.spawnIcon:SetToolTip("");
+	self.spawnIcon:SetToolTip();
 	self.spawnIcon.DoClick = function() end;
 	self.spawnIcon.OnMousePressed = function() end;
 	
@@ -240,11 +244,12 @@ function PANEL:SetTeam(team)
 		RunConsoleCommand("cider", "team", self.tid);
 	end
 	if (lpl:Team() == self.TeamID) then
-		self.Button:SetText("Joined");
-		self.Button:SetDisabled(true);
+		self.button:SetText("Joined");
+		self.button:SetDisabled(true);
 		self.NoButton = true;
 	else
 		local c = nextChanges[self.TeamID];
+		print(team.Name, nextChanges[self.TeamID], (nextChanges[self.TeamID] or 0) - CurTime());
 		if (c and c > CurTime()) then
 			self.cd = true;
 		end
@@ -263,7 +268,8 @@ function PANEL:Think()
 	end
 	if (gender ~= self.gender) then
 		self.gender = gender;
-		self.spawnIcon:SetModel(self.Models[lpl._ModelChoices[gender][self.TeamID]]);
+		local model = self.Models[gender][lpl._ModelChoices[gender][self.TeamID]]			
+		self.spawnIcon:SetModel(model);
 	end
 	local nump = team.NumPlayers(self.TeamID);
 	if (self.LastNump ~= nump) then
@@ -279,7 +285,7 @@ function PANEL:Think()
 	local ct = CurTime();
 	if (c and c > ct) then
 		self.button:SetDisabled(true);
-		self.button:SetText("Wait for "..string.ToMinutesSeconds(c - ct));
+		self.button:SetText("Wait "..string.ToMinutesSeconds(c - ct));
 	else
 		self.cd = false;
 		self.button:SetDisabled(false);

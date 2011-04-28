@@ -1430,7 +1430,7 @@ cider.command.add("setowner","s",1,function(ply,kind,id,gangid)
 	if kind == "player" then
 		target = player.Get(id)
 		if not target then return false, "Invalid player specified!" end
-		entity:SetOwnerPlayer(target)
+		entity:GiveToPlayer(target)
 		name = target:Name()
 	elseif kind == "team" then
 		target = cider.team.get(id)
