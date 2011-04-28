@@ -7,6 +7,12 @@ local PANEL = {};
 
 -- Store the changelog in a string.
 PANEL.changelog = [[
+[22/04/2011]
+[Fixed] "Take All" button in containers taking only 1
+[Changed] Putting a higher amount than possible simply clamps the number instead of failing.
+[21/04/2011]
+[Fixed] New HUD
+[Changed] Tying mechanics a bit
 [24/04/2010]
 [Added] New HUD
 [Changed] Rewrote ESP

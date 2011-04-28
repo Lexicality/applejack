@@ -175,30 +175,32 @@ function GM:CanPlayerSuicide(ply)
 	return false;
 end
 
-local function utwin(ply, ent)
+local function utwin(ply, target)
 	if (IsValid(ply)) then
 		ply:Emote("somehow manages to cut through the rope and puts " .. ply._GenderWord .. " knife away, job done.");
-		ply._Untying = false;
-	end if (IsValid(ent)) then
-		ent:Emote("shakes the remains of the rope from " .. ent._GenderWord .. " wrists and rubs them");
-		ent:UnTie();
-		ent._beUnTied = false;
+		ply.tying.target = NULL;
+	end if (IsValid(target)) then
+		target:Emote("shakes the remains of the rope from " .. target._GenderWord .. " wrists and rubs them");
+		target:UnTie();
+		target.tying.savior = NULL;
 	end
-	gamemode.Call("PlayerUnTied", ply, ent);
+	gamemode.Call("PlayerUnTied", ply, target);
 end
 
-local function utfail(ply, ent)
-	if (IsValid(ent) and ent:Alive()) then
-		ent:Emote("manages to dislodge " .. ply:Name() .. "'s attempts.");
-		ent._beUnTied = false;
+local function utfail(ply, target)
+	if (IsValid(target) and target:Alive()) then
+		target:Emote("manages to dislodge " .. ply:Name() .. "'s attempts.");
+		target.tying.savior = NULL;
+		SendUserMessage("MS CancelTie", target);
 	end if (IsValid(ply) and ply:Alive()) then
 		ply:Emote("swears and gives up.");
-		ply._UnTying = false;
+		ply.tying.target = NULL;
+		SendUserMessage("MS CancelTie", ply);
 	end
 end
 
-local function uttest(ply, ent, ppos, epos)
-	return IsValid(ply) and ply:Alive() and ply:GetPos() == ppos and IsValid(ent) and ent:Alive() and ent:GetPos() == epos;
+local function uttest(ply, target, ppos, epos)
+	return IsValid(ply) and ply:Alive() and ply:GetPos() == ppos and IsValid(target) and target:Alive() and target:GetPos() == epos;
 end
 
 -- Called when a player presses a key.
@@ -228,8 +230,10 @@ function GM:KeyPress(ply, key)
 		and ent:GetPos():Distance(ply:GetPos()) < 200) then
 			ply:Emote("starts ineffectually sawing at " .. ent:Name() .. "'s bonds with a butter knife");
 			timer.Conditional(ply:UniqueID() .. " untying timer", self.Config['UnTying Timeout'], uttest, utwin, utfail, ply, ent, ply:GetPos(), ent:GetPos());
-			ply._UnTying = true;
-			ent._beUnTied = true;
+			ply.tying.target = ent;
+			ent.tying.savior = ply;
+		SendUserMessage("MS DoUnTie", ply);
+		SendUserMessage("MS BeUnTie", ent);			
 		--[[~ Open mah doors ~]]--
 		elseif ent:IsDoor() and ent:GetClass() ~= "prop_door_rotating" and gamemode.Call("PlayerCanUseDoor", ply, ent) then
 			self:OpenDoor(ent, 0);

@@ -241,7 +241,6 @@ hook.Add("LibrariesLoaded", "Player Library's LibrariesLoaded", function()
 	player.AddAutoCSVar(CLASS_BOOL, "_HideHealthEffects");
 	player.AddAutoCSVar(CLASS_BOOL, "_Sleeping");
 	player.AddAutoCSVar(CLASS_BOOL, "_GPS");
-	player.AddAutoCSVar(CLASS_BOOL, "_beTied");
 	player.AddAutoCSVar(CLASS_BOOL, "_Stunned");
 	player.AddAutoCSVar(CLASS_BOOL, "_StuckInWorld");
 	player.AddAutoCSVar(CLASS_LONG, "_JobTimeLimit");

@@ -137,9 +137,6 @@ function GM:PlayerUnTied(ply, victim) end
 -- @param target The player the attempted tie is apon
 -- @return true if they can, false if they can't.
 function GM:PlayerCanTie(ply, target)
-	if (not target:Alive() or target:Tied() or target._beTied or target:Arrested()) then
-		return false;
-	end
 	return gamemode.Call("PlayerCanDoSomething", ply);
 end
 
@@ -149,7 +146,7 @@ end
 -- @param target The player the attempted untie is apon
 -- @return true if they can, false if they can't.
 function GM:PlayerCanUntie(ply, target)
-	if (target:Tied() and not target._beUnTied) then
+	if (target:Tied() and not target.tying.savior) then
 		return gamemode.Call("PlayerCanDoSomething", ply);
 	end
 	return false

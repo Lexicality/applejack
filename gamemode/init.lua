@@ -523,14 +523,14 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._NextSpawnGender		= "";
 	ply._NextSpawnGenderWord	= "";
 	ply._Ammo					= {};
-	ply.ragdoll					= {};
+	ply. ragdoll				= {};
 	ply._NextUse				= {};
 	ply._NextChangeTeam			= {};
 	ply._GunCounts				= {};
 	ply._StoredWeapons			= {};
 	ply._FreshWeapons			= {};
 	ply. CSVars					= {}; -- I am aware that this is without a _, but I don't think it looks right with one.
-	ply._Tying					= nil;
+	ply. tying                  = {}; -- Fuck _s. ~Lex 21/04/11
 	ply._Initialized			= true;
 	ply._UpdateData				= false;
 	ply._Sleeping				= false;
@@ -539,7 +539,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._Warranted				= false;
 	ply._LightSpawn				= false;
 	ply._ChangeTeam				= false;
-	ply._beTied					= false;
 	ply._HideHealthEffects		= false;
 	ply._GenderWord				= "his";
 	ply._Gender					= "Male";
@@ -559,8 +558,8 @@ function GM:PlayerDataLoaded(ply, success)
 	ply:SetNWString("Job", ply._Job);
 	ply:SetNWString("Clan", ply.cider._Clan);
 	ply:SetNWString("Details",ply._Details);
-	ply:SetNetworkedBool("Donator",ply.cider._Donator > 0);
-	ply:SetNetworkedBool("Moderator", ply:IsUserGroup("operator") or ply:IsUserGroup("moderator") or (evolve and ply:EV_GetRank() == "moderator") or (citrus and citrus.Player.GetGroup(ply).Name == "Moderators"));
+	ply:SetNWBool("Donator",ply.cider._Donator > 0);
+	ply:SetNWBool("Moderator", ply:IsUserGroup("operator") or ply:IsUserGroup("moderator") or (evolve and ply:EV_GetRank() == "moderator") or (citrus and citrus.Player.GetGroup(ply).Name == "Moderators"));
 
 	
 	-- Respawn them now that they have initialized and then freeze them.

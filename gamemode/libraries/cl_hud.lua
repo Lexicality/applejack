@@ -566,6 +566,7 @@ end);
 end 
 
 --[[ Center Bar ]]--
+-- TODO: The centerbar needs to be in a stack
 local drawcenterbar;
 do
 local font = "HudHintTextLarge";
@@ -622,7 +623,6 @@ function drawcenterbar()
 end
 local textcenter = barx + (barwidth / 2);
 function GM:SetCenterBar(text,color,callback)
-	print(text, color, callback);
     bartext = text;
     barcolor = color;
     surface.SetFont(font);
@@ -630,7 +630,6 @@ function GM:SetCenterBar(text,color,callback)
     textx = textcenter - tw / 2;
     percentcallback = callback;
 end
--- TODO: THIS IS REALLY SHIT!!! CHANGE TO USERMESSAGES!!!!!
 hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 	local function dead()
 		return false;
@@ -640,159 +639,179 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		GM:SetCenterBar("N/a",deadc,dead);
 	end
 	
-	usermessage.Hook("MS_ClearCenterBar",doclearbar);
+	usermessage.Hook("MS Clear Center Bar",doclearbar);
 	
 	do -- Sleepering
-	local endtime, length, left;
-	local function sleepfunc()
-		endtime = lpl._SleepTime;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0) then
-			doclearbar();
-			return false;
+		local endtime, length, left;
+		local function sleepfunc()
+			endtime = lpl._SleepTime;
+			if (not (length and endtime)) then return false; end
+			left = endtime - ctime;
+			if (left < 0) then
+				doclearbar();
+				return false;
+			end
+			return (left/length) * 100, false;
 		end
-		return (left/length) * 100, false;
-	end
-	local sleepcolor = Color(34,66,205);
-	CSVars.Hook("_SleepTime","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("Going To Sleep . . .", sleepcolor, sleepfunc);
-	end);
+		local sleepcolor = Color(34,66,205);
+		CSVars.Hook("_SleepTime","CentreBar",function(ends)
+			length = ends - CurTime();
+			GM:SetCenterBar("Going To Sleep . . .", sleepcolor, sleepfunc);
+		end);
 	end
 	
 	do -- Bondage
-	local endtime, length, left;
-	local function callback()
-		endtime = lpl._TyingEnd;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0) then
-			doclearbar();
-			return false;
+		local tends, bends, uends, dends;
+		do -- Tying
+			local length, left = GM.Config["Tying Timeout"];
+			local function callback()
+				if (not tends) then return false; end
+				left = tends - ctime;
+				if (left < 0) then
+					doclearbar();
+					return false;
+				end
+				return (left/length) * 100, false;
+			end
+			local barcolor = Color(221,133,38);
+			local function umsg(msg)
+				tends = CurTime() + length;
+				GM:SetCenterBar("Tying knots . . .", barcolor, callback);
+			end
+			usermessage.Hook("MS DoTie", umsg);
 		end
-		return (left/length) * 100, false;
-	end
-	local barcolor = Color(221,133,38);
-	CSVars.Hook("_TyingEnd","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("Tying knots . . .", barcolor, callback);
-	end);
-	end
-	
-	do -- Bondage (Victim perspective)
-	local endtime, length, left;
-	local function callback()
-		endtime = lpl._BeingTiedEnd;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0) then
-			doclearbar();
-			return false;
+		
+		do -- Being Tied
+			local length, left = GM.Config["Tying Timeout"];
+			local function callback()
+				if (not bends) then return false; end
+				left = bends - ctime;
+				if (left < 0) then
+					doclearbar();
+					return false;
+				end
+				return (left/length) * 100, false;
+			end
+			local barcolor = Color(221,133,38);
+			local function umsg(msg)
+				bends = CurTime() + length;
+				GM:SetCenterBar("You are being tied up!", barcolor, callback);
+			end
+			usermessage.Hook("MS BeTie", umsg);
 		end
-		return (left/length) * 100, false;
-	end
-	local barcolor = Color(221,133,38);
-	CSVars.Hook("_BeingTiedEnd","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("You are being tied up!", barcolor, callback);
-	end);
-	end
-	
-	do -- Anti-Bondage
-	local endtime, length, left;
-	local function callback()
-		endtime = lpl._UnTyingEnd;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0) then
-			doclearbar();
-			return false;
+		
+		do -- Untying
+			local length, left = self.Config['UnTying Timeout'];
+			local function callback()
+				if (not (length and uends)) then return false; end
+				left = uends - ctime;
+				if (left < 0) then
+					doclearbar();
+					return false;
+				end
+				return 100 - (left/length) * 100, true; -- Display backwards!
+			end
+			local barcolor = Color(150,210,20);
+			local function umsg(msg)
+				uends = CurTime() + length;
+				GM:SetCenterBar("Attempting to untie knots . . .", barcolor, callback);
+			end
+			usermessage.Hook("MS DoUnTie", umsg);
 		end
-		return 100 - (left/length) * 100, true; -- Display backwards!
-	end
-	local barcolor = Color(150,210,20);
-	CSVars.Hook("_UnTyingEnd","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("Attempting to untie knots . . .", barcolor, callback);
-	end);
+		
+		do -- Being Untied
+			local length, left = self.Config['UnTying Timeout'];
+			local function callback()
+				if (not (length and dends)) then return false; end
+				left = dends - ctime;
+				if (left < 0) then
+					doclearbar();
+					return false;
+				end
+				return 100 - (left/length) * 100, true; -- Display backwards!
+			end
+			local barcolor = Color(150,210,20);
+			local function umsg(msg)
+				dends = CurTime() + length;
+				GM:SetCenterBar("You are being untied!", barcolor, callback);
+			end
+			usermessage.Hook("MS BeUnTie", umsg);
+		end
+		usermessage.Hook("MS CancelTie", function()
+			tends, bends, uends, dends = nil, nil, nil, nil;
+		end);
 	end
 
 	do -- Stuck! (Bit of a cheat but hey)
-	local active;
-	local function callback()
-		return active and 100 or false;
-	end
-	local barcolor = Color(255,0,0);
-	CSVars.Hook("_StuckInWorld","CentreBar",function(var)
-		active = var;
-		if (active) then
-			-- TODO: Is this too long for the box?
-			GM:SetCenterBar("You are stuck! Press 'Jump' to holster your weapons and respawn.", barcolor, callback);
+		local active
+		local function callback()
+			return active and 100;
 		end
-	end);
+		local barcolor = Color(255,0,0);
+		CSVars.Hook("_StuckInWorld", "Centrebar", function(stuck)
+			active = stuck;
+			if (active) then
+				GM:SetCenterBar("Jump to respawn.", barcolor, callback);
+			end
+		end);
 	end
 	
 	do -- Respawning 
-	local endtime, length, left;
-	local function callback()
-		endtime = lpl._NextSpawnTime;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0 or lpl:Alive()) then
-			doclearbar();
-			return false;
+		local endtime, length, left;
+		local function callback()
+			if (not (length and ends)) then return false; end
+			left = ends - ctime;
+			if (left < 0 or lpl:Alive()) then
+				doclearbar();
+				return false;
+			end
+			return 100 - ((left/length) * 100);
 		end
-		return 100 - ((left/length) * 100);
-	end
-	local barcolor = Color(150,210,20);
-	CSVars.Hook("_NextSpawnTime","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("Respawning . . .", barcolor, callback);
-	end);
+		local barcolor = Color(150,210,20);
+		local function umsg(msg)
+			length = msg:ReadShort();
+			ends = CurTime() + length;
+			GM:SetCenterBar("Respawning . . .", barcolor, callback);
+		end
+		usermessage.Hook("MS Respawn Time", umsg);
 	end
 	
 	do -- Reganing Consiousness
-	local endtime, length, left;
-	local function callback()
-		endtime = lpl._WakeUpTime;
-		if (not (length and endtime)) then return false; end
-		left = endtime - ctime;
-		if (left < 0) then
-			doclearbar();
-			return false;
+		-- TODO: Make the screen de-fade with this like it fades with sleep.
+		local endtime, length, left;
+		local function callback()
+			endtime = lpl._WakeUpTime;
+			if (not (length and endtime)) then return false; end
+			left = endtime - ctime;
+			if (left < 0) then
+				doclearbar();
+				return false;
+			end
+			return (left/length) * 100;
 		end
-		return (left/length) * 100;
-	end
-	local barcolor = Color(150,210,20);
-	--[[
-	local function umsg(msg)
-		length = msg:ReadShort();
-		--]]
-	CSVars.Hook("_WakeUpTime","CentreBar",function(ends)
-		length = ends - CurTime();
-		GM:SetCenterBar("Reganing Consiousness . . .", barcolor, callback);
-	end);
+		local barcolor = Color(150,210,20);
+		CSVars.Hook("_WakeUpTime","CentreBar",function(ends)
+			length = ends - CurTime();
+		end);
 	end
 	
 	-- 
-	-- go to sleep -> says 'wake up' -> hit jump -> says 'reganing consiousness' -> says 'get up'
+	-- TODO: go to sleep -> says 'wake up' -> hit jump -> says 'reganing consiousness' -> says 'get up'
 	--
 	
 	do -- Wakup Announcement
-	
-	local function blaaa()
-		return lpl:KnockedOut() and 0 or false;
-	end
-	local blaa = Color(0,0,0);
-	local function wakethefuckup()
-		if (lpl._Sleeping) then
-			GM:SetCenterBar("Press 'Jump' to wake up", blaa, blaaa);
-		else
-			GM:SetCenterBar("Press 'Jump' to get up", blaa, blaaa);
+		local function blaaa()
+			return lpl:KnockedOut() and 0 or false;
 		end
-	end
-	usermessage.Hook("MS Wakeup Call",wakethefuckup);
+		local blaa = Color(0,0,0);
+		local function wakethefuckup(msg)
+			if (msg:ReadBool()) then
+				GM:SetCenterBar("Press 'Jump' to wake up", blaa, blaaa);
+			else
+				GM:SetCenterBar("Press 'Jump' to get up", blaa, blaaa);
+			end
+		end
+		usermessage.Hook("MS Wakeup Call",wakethefuckup);
 	end
 end);
 end

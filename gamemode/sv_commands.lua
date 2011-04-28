@@ -560,8 +560,8 @@ cider.command.add("dropmoney", "b", 1, function(ply, amt)
 	amt = math.floor(amt);
 	if (not ply:CanAfford(amt)) then
 		return false, "You do not have enough money!";
-	elseif (amt < 500) then -- Fucking spammers again.
-		return false, "You cannot drop less than $500.";
+	elseif (amt < 25) then -- Fucking spammers again.
+		return false, "You cannot drop less than $25.";
 	end
 	ply._NextMoneyDrop = CurTime() + 30;
 	ply:GiveMoney(-amt);
@@ -745,12 +745,11 @@ cider.command.add("inventory", "b", 2, function(ply, id, action, amount)
 		if (amount == "all") then
 			amount = holding;
 		else
-			amount = tonumber(amount) or 1;
+			amount = math.floor(tonumber(amount) or 1);
 		end
-		if (amount > holding) then
-			return false, "You don't have that many " .. item.Plural .. "!";
-		elseif (amount < 1) then
-			return false, "Invalid amount";
+		amount = math.min(amount, holding);
+		if (amount < 1) then
+			return false, "Invalid amount!";
 		end
 		local pos = ply:GetEyeTraceNoCursor().HitPos;
 		if (ply:GetPos():Distance(pos) > 255) then
@@ -792,6 +791,9 @@ local function containerHandler(ply, item, action, number)
 	if (action ~= "put" and action ~= "take") then
 		return false, "Invalid option: "..action.."!";
 	end
+	if (number == "all") then
+		number = 9999;
+	end
 	number = math.floor(tonumber(number) or 1);
 	if (number < 1) then
 		return false, "Invalid amount!";
@@ -801,19 +803,19 @@ local function containerHandler(ply, item, action, number)
 	local cInventory,io,filter = cider.container.getContents(container,ply,true)
 	local pInventory = ply.cider._Inventory
 	if action == "put" then
-		local amount = item == "money" and ply.cider._Money or pInventory[item]
-		number = math.abs(tonumber(number) or amount or 0)
-		if not (amount and amount > 0 and amount >= number) then
-			return false, "You do not have enough items!"
+		local amount = (item == "money") and ply.cider._Money or pInventory[item]
+		if (not amount) then
+			return false, "You do not have any of this item!";
 		end
+		number = math.min(number, amount);
 	else
 		local amount = cInventory[item]
-		number = math.abs(tonumber(number) or amount or 0)
-		if not (amount and math.abs(amount) > 0 and math.abs(amount) >= number) then
-			return false, "There aren't enough items in the container!"
-		elseif amount < 0 then
-			return false, "You cannot take that item out!"
+		if (not amount) then
+			return false, "There is none of that item in here!";
+		elseif (amount < 0) then
+			return false, "You cannot take that item out!";
 		end
+		number = math.min(number, amount);
 	end
 	if filter and action == "put" and not filter[item] then
 		return false, "You cannot put that item in!"

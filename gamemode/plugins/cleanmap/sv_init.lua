@@ -108,7 +108,7 @@ function PLUGIN:InitPostEntity()
 	for _, ent in ipairs(ents.GetAll()) do
 		iclass = ent:GetClass();
 		next = false;
-		for _, class in ipairs(self.EntitiesToDelete.all) do
+		for _, class in pairs(self.EntitiesToDelete.all) do
 			if (string.find(iclass, class)) then
 				ent:Remove();
 				next = true;
@@ -116,7 +116,7 @@ function PLUGIN:InitPostEntity()
 			end
 		end
 		if (not next and self.EntitiesToDelete[mapname]) then
-			for _, class in ipairs(self.EntitiesToDelete[mapname]) do
+			for _, class in pairs(self.EntitiesToDelete[mapname]) do
 				if (string.find(iclass, class)) then
 					ent:Remove();
 					next = true;
@@ -126,7 +126,7 @@ function PLUGIN:InitPostEntity()
 		end
 		if (not next and self.SpecificEntitiesToDelete[mapname] and self.SpecificEntitiesToDelete[mapname][iclass]) then
 			pos = ent:GetPos();
-			for _,data in ipairs(self.SpecificEntitiesToDelete[mapname][iclass]) do
+			for _,data in pairs(self.SpecificEntitiesToDelete[mapname][iclass]) do
 				if (pos:Distance( data[1] ) <= (data[2] or 32)) then
 					ent:Remove();
 					break;
@@ -146,14 +146,14 @@ function PLUGIN:InitPostEntity()
 	filtr:SetKeyValue("targetname","aj_cm");
 	filtr:SetKeyValue("negated","1");
 	filtr:Spawn();
-	for k,v in ipairs(self.EntitiesToSpawn[mapname]) do
-		ent = ents.Create(v[1]);
+	for _, data in pairs(self.EntitiesToSpawn[mapname]) do
+		ent = ents.Create(data[1]);
 		if (not IsValid(ent)) then	
-			ErrorNoHalt("["..os.date().."] Applejack Cleanmap Plugin: "..v[1].." is not a valid entity!\n");
+			ErrorNoHalt("["..os.date().."] Applejack Cleanmap Plugin: "..data[1].." is not a valid entity!\n");
 		else
-			ent:SetModel (v[2]); 
-			ent:SetAngles(v[3]);
-			ent:SetPos   (v[4]);
+			ent:SetModel (data[2]); 
+			ent:SetAngles(data[3]);
+			ent:SetPos   (data[4]);
 			ent.PhysgunDisabled = true;
 			ent.m_tblToolsAllowed = {};
 			ent:Spawn();
@@ -161,10 +161,10 @@ function PLUGIN:InitPostEntity()
 			if (IsValid(phys)) then
 				phys:EnableMotion(false);
 			else
-				ErrorNoHalt("Applejack (Cleanmap): Model has no physics! "..v[1].."\n");
+				ErrorNoHalt("Applejack (Cleanmap): Model has no physics! "..data[1].."\n");
 			end
 			ent:Fire("setdamagefilter", "aj_cm", 0);
-			hook.Call("PropSpawned", GAMEMODE, v[2], ent);
+			hook.Call("PropSpawned", GAMEMODE, data[2], ent);
 			cider.propprotection.GiveToWorld(ent);
 			GAMEMODE.entities[ent] = ent;
 		end

@@ -69,6 +69,12 @@ end
     Returns true if entity is valid
 ---------------------------------------------------------]]--
 ValidEntity = IsValid
+--[[---------------------------------------------------------
+    Returns true if entity is valid and a player
+---------------------------------------------------------]]--
+function IsPlayer( object )
+	return IsValid( object ) and object:IsPlayer();
+end
 
 -- Create the Cider table and the configuration table.
 cider = {};
