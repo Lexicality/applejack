@@ -11,6 +11,7 @@ end);
 
 -- Called when the local player presses a bind.
 function PLUGIN:PlayerBindPress(player, bind, pressed)
+	if (player:InVehicle()) then return; end
 	local stamina = LocalPlayer()._Stamina or 100;
 	
 	-- Check if the stamina is smaller than 10.

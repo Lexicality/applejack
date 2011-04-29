@@ -12,7 +12,7 @@ end
 
 -- Called when a player presses a key.
 function PLUGIN:KeyPress(ply, key)
-	if  (not (ply:Arrested() or ply:Tied() or ply:GetNWBool"cider_Exausted")
+	if  (not (ply:InVehicle() or ply:Arrested() or ply:Tied() or ply:GetNWBool"cider_Exausted")
 	and (ply:Alive() and not ply:KnockedOut())
 	and (ply:IsOnGround() and key == IN_JUMP)) then
 		ply._Stamina = math.Clamp(ply._Stamina - 5, 0, 100);
@@ -21,10 +21,11 @@ end
 
 -- Called every tenth of a second that a player is on the server.
 function PLUGIN:PlayerTenthSecond(ply)
-	if (ply:Arrested() or ply:Tied() or ply._HoldingEnt or ply:GetMoveType() == MOVETYPE_NOCLIP) then
+	local inVehicle = ply:InVehicle();
+	if (ply:Arrested() or ply:Tied() or ply._HoldingEnt or (ply:GetMoveType() == MOVETYPE_NOCLIP and not (inVehicle and ply._Stamina < 100))) then
 		return;
 	end
-	if (ply:KeyDown(IN_SPEED) and ply:Alive() and not ply:KnockedOut() and not ply:GetNWBool"Exausted"
+	if (not inVehicle and ply:KeyDown(IN_SPEED) and ply:Alive() and not ply:KnockedOut() and not ply:GetNWBool"Exausted"
 	and ply:GetVelocity():Length() > 0) then
 		if (ply:Health() < 50) then
 			ply._Stamina = math.max(ply._Stamina - (GM.Config["Stamina Drain"] + ( ( 50 - ply:Health() ) * 0.05 ) ), 0);

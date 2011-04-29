@@ -13,6 +13,9 @@ local sidewidth,textheight = surface.GetTextSize("100%");
 local scrw, scrh = ScrW(), ScrH();
 local function unpackcolour(c)
 	if (not c) then error("what",2) end
+	if (type(c) == "string") then
+		error("what the christ '" .. c .. "'.", 2);
+	end
 	return c.r, c.g, c.b, c.a;
 end
 local ctime = CurTime()
