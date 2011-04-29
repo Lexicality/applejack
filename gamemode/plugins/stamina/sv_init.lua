@@ -44,13 +44,16 @@ function PLUGIN:PlayerTenthSecond(ply)
 	if (ply._Stamina <= 1) then
 		ply:Incapacitate();
 		ply:SetNWBool("Exausted", true)
-	elseif ply._Stamina <= 50 and ply:GetNWBool"Exausted" then
+	elseif ply:GetNWBool"Exausted" then
+		if (ply._Stamina >= 50) then
+			ply:Recapacitate();
+			ply:SetNWBool("Exausted", false);
+		end
 		-- If you get exausted, it takes a while to wear off. ;)
 	else
 		local r = ply._Stamina / 100
 		ply:SetRunSpeed((GM.Config["Run Speed"] - GM.Config["Walk Speed"]) * r + GM.Config["Walk Speed"]);
 		ply:SetWalkSpeed((GM.Config["Walk Speed"] - GM.Config["Incapacitated Speed"]) * r + GM.Config["Incapacitated Speed"]);
-		ply:SetNWBool("Exausted", false)
 	end
 	
 	-- Set it so that we can get the player's stamina client side.
