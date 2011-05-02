@@ -508,20 +508,20 @@ function GM:OnUndo( name, strCustomString )
 	if ( not strCustomString ) then
 		strCustomString = "#Undone_"..name
 	end
-	self:AddNotification( strCustomString, 2, "buttons/button15.wav" )
+	self:AddNotification( strCustomString, 2, nil, "buttons/button15.wav" )
 end
 
 function GM:OnCleanup( name )
 
 	Msg( name .." cleaned\n" )
-	self:AddNotification( "#Cleaned_"..name, 5, "buttons/button15.wav" )
+	self:AddNotification( "#Cleaned_"..name, 5, nil, "buttons/button15.wav" )
 
 end
 
 function GM:UnfrozeObjects( num )
 
 	Msg( "Unfroze "..num.." Objects\n" )
-	self:AddNotification( "Unfroze "..num.." Objects", 3, "npc/roller/mine/rmine_chirp_answer1.wav" )
+	self:AddNotification( "Unfroze "..num.." Objects", 3, nil, "npc/roller/mine/rmine_chirp_answer1.wav" )
 
 end
 
@@ -774,10 +774,14 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			return 100 - ((left/length) * 100);
 		end
 		local barcolor = Color(150,210,20);
+		local function timr()
+			GM:SetCenterBar("Respawning . . .", barcolor, callback);
+		end
+		
 		local function umsg(msg)
 			length = msg:ReadShort();
 			ends = CurTime() + length;
-			GM:SetCenterBar("Respawning . . .", barcolor, callback);
+			timer.Simple(0.01, timr);
 		end
 		usermessage.Hook("MS Respawn Time", umsg);
 	end
