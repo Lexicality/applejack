@@ -926,17 +926,17 @@ cider.command.add("door", "b", 1, function(ply, action, ...)
 	local tr = ply:GetEyeTraceNoCursor();
 	local ent = tr.Entity
 	action = action:lower();
-	if (not (IsValid(ent) and ent:IsDoor() and ply:GetPos():Distance(tr.HitPos) > 128)) then
+	if (not (IsValid(ent) and ent:IsDoor() and ply:GetPos():Distance(tr.HitPos) < 128)) then
 		return false, "You must be looking at a door!";
 	elseif (ent:IsOwned()) then
 		if (action == "purchase") then
 			return false, "Someone else owns this door!";
-		elseif (word == "sell") then
-			if (door:GetOwner() ~= ply or door._Unsellable) then
+		elseif (action == "sell") then
+			if (ent:GetOwner() ~= ply or ent._Unsellable) then
 				return false, "You cannot sell this door!";
 			end
+			GM:Log(EVENT_EVENT, "%s sold " .. ply._GenderWord .. " door %s.", ply:Name(), ent:GetDoorName());
 			ply:TakeDoor(ent);
-			GM:Log(EVENT_EVENT, "%s sold " .. ply._GenderWord .. " door%s.", ply:Name(), ent:TakeDoorName());
 			return true;
 		end
 		return false, "Invalid action!";
@@ -959,9 +959,9 @@ cider.command.add("door", "b", 1, function(ply, action, ...)
 		name = ply:Name();
 	end
 	ply:GiveDoor(ent, name);
-	cider.propprotection.ClearSpawner(door)
+	cider.propprotection.ClearSpawner(ent);
 	GM:Log(EVENT_EVENT, "%s bought a door called %q.",ply:Name(),ent:GetDoorName())
-end, "Menu Handlers", "<purchase|sell>", "Perform an action on the door you're looking at.");
+end, "Menu Handlers", "<purchase|sell>", "Perform an action on the door you're looking at.", 1);
 
 local function enthandle(ply, ent, action, ...)
 	action = action:lower();
@@ -1061,8 +1061,8 @@ cider.command.add("manufacture", "b", 1, function(ply, arguments)
 	-- Check if the item exists.
 	if (item) then
 		if (item.Category) then
-			if !table.HasValue(cider.team.query(ply:Team(),"canmake",{}), item.Category) then
-				return false, cider.team.query(ply:Team(),"name","Your team's member").."s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
+			if !table.HasValue(team.Query(ply:GetTeam(),"CanMake",{}), item.Category) then
+				return false, team.Query(ply:GetTeam(),"Name","Your team's member").."s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
 			end
 		end
 		-- Check if they can manufacture this item yet.
@@ -1227,14 +1227,18 @@ cider.command.add("mutiny","b",1,function(ply,arguments)
 	if not (ValidEntity(target) and target:IsPlayer()) then
 		return false, arguments[1].." is not a valid player!"
 	end
-	local pteam,tteam = ply:Team(),target:Team()
-	if 	cider.team.getGroupByTeam(pteam)	~=	cider.team.getGroupByTeam	(tteam)		or
-		cider.team.getGang		 (pteam) 	~=	cider.team.getGang			(tteam)		or
-		cider.team.getGang		 (tteam)	==	nil										or
-		cider.team.getGroupLevel (pteam)	>=	cider.team.getGroupLevel	(tteam)		or
-		not										cider.team.hasAccessGroup	(tteam,"D")	then
-			return false,"You cannot mutiny against this person"
-	end
+	local pteam,tteam = ply:Team(),target:Team();
+	local pgroup, tgroup = ply:GetTeam().Group, target:GetTeam().Group;
+	local pgang, tgang = ply:GetTeam().Gang, target:GetTeam().Gang;
+	local pglevel, tglevel = ply:GetTeam().GroupLevel, target:GetTeam().GroupLevel;
+	
+	if 	pgroup 	~= 	tgroup 	or
+		pgang	~=	tgang 	or
+		tgang	==	nil		or
+		pglevel	>=	tglevel	then 								-- or not cider.team.hasAccessGroup	(tteam,"D")
+			return false, "You cannot mutiny against this person";
+	end;
+	
 	target._Depositions = target._Depositions or {}
 	if target._Depositions [ply:UniqueID()] then	
 		return false,"You have already tried to mutiny against your leader!"
@@ -1243,18 +1247,20 @@ cider.command.add("mutiny","b",1,function(ply,arguments)
 	end
 	for ID,ply in pairs(target._Depositions) do
 		if ValidEntity(ply) then
-			local pteam = ply:Team()
-			if 	cider.team.getGroupByTeam(pteam)	~=	cider.team.getGroupByTeam(tteam)	or
-				cider.team.getGang		 (pteam) 	~=	cider.team.getGang		 (tteam)	or
-				cider.team.getGroupLevel (pteam)	>=	cider.team.getGroupLevel (tteam)	then
-					target._Depositions	 [ID]		 =	nil
-			end
+			local pteam = ply:Team();
+			
+			if 	pgroup	~=	tgroup	or
+				pgang 	~=	tgang	or
+				pglevel	>=	tglevel	then
+					target._Depositions[ID] = nil;
+			end;
+			
 		else
 			target._Depositions[ID] = nil
 		end
 	end
 	local count	= table.Count(target._Depositions)
-	local num	=  math.floor( table.Count( cider.team.getGangMembers( cider.team.getGroupByTeam(tteam), cider.team.getGang(tteam) ) ) * GM.Config["Mutiny Percentage"])
+	local num	=  math.floor( table.Count( GM:GetGangMembers( tgroup, tgang ) ) * GM.Config["Mutiny Percentage"])
 	if  num < GM.Config["Minimum to mutiny"] then
 		num = GM.Config["Minimum to mutiny"]
 	end
@@ -1436,29 +1442,31 @@ cider.command.add("setowner","s",1,function(ply,kind,id,gangid)
 		entity:GiveToPlayer(target)
 		name = target:Name()
 	elseif kind == "team" then
-		target = cider.team.get(id)
+		target = team.Get(id)
 		if not target then return false, "Invalid team specified!" end
 		name = target.name
 		target = target.index
-		cider.entity.setOwnerTeam(entity,target)
+		entity:GiveToTeam(target)
 	elseif kind == "gang" and gangid then
 		print("gange")
 		id = tonumber(id);
 		gangid = tonumber(gangid);
-		if not (cider.team.gangs[id] and cider.team.gangs[id][gangid]) then
+		if not (GM.Gangs[id] and GM.Gangs[id].GangID) then --cider.team.gangs[id] and cider.team.gangs[id][gangid]) then
 			return false,"Invalid gang"
 		end
-		cider.entity.setOwnerGang(entity,id,gangid)
-		name = cider.team.gangs[id][gangid][1]
+		entity:GiveToGang(gangid);
+		name = GM.Gangs[id].Name -- cider.team.gangs[id][gangid][1]
 		target = {id,gangid};
 	elseif kind == "remove" then
-		cider.entity.clearData(entity,true)
+		entity:ClearOwnershipData(); -- cider.entity.clearData(entity,true)
 		target = ""
 	end
 	if not target then
 		return false, "Invalid target!"
-	end
-	cider.entity.updateSlaves(entity)
+	end;
+	
+	--cider.entity.updateSlaves(entity)
+	
 	hook.Call("EntityOwnerSet",GAMEMODE,entity,kind,target)
 	GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"),name)
 end, "Super Admin Commands", "<player|team|gang|remove> [identifier] [gang identifier]", "Set the owner of a door",true)

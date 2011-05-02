@@ -179,18 +179,18 @@ function PLUGIN:EntitySealed(door,unsealed)
 end
 
 function PLUGIN:EntityOwnerSet(ent, owner)
-	if (not (IsValid(ent) and ent:IsOwnable() and door:IsDoor())) then
+	if (not (IsValid(ent) and ent:IsOwnable() and ent:IsDoor())) then
 		return;
 	end
 	local data = self:GetDoorData(ent, true);
 	if (not owner) then
 		data.Owner = nil;
 	else
-		if (owner.IsTeam) then
+		if (owner == "team") then
 			deta.Owner = "Team: " .. owner.TeamID;
-		elseif (owner.IsGroup) then
+		elseif (owner == "group") then
 			data.Owner = "Group: " .. owner.GroupID;
-		elseif (owner.IsGang) then
+		elseif (owner == "gang") then
 			data.Owner = "Gang: " .. owner.GangID;
 		end
 	end	if (data.Unownable) then

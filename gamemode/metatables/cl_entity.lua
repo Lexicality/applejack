@@ -131,7 +131,7 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 		local owner = self:GetDisplayName()
 		if (owner == "Nobody") then -- Door is for sale
 			owner = "For Sale - Press F2"
-			if (tent:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then	
+			if (self:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then	
 				owner = ""
 			end
 		end
