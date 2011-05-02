@@ -7,6 +7,9 @@ local PANEL = {};
 
 -- Store the changelog in a string.
 PANEL.changelog = [[
+[05/02/2011]
+[Fixed] /demote, /manufacture and /mutiny
+[Fixed] The store expandanding the categories your job can buy from.
 [22/04/2011]
 [Fixed] "Take All" button in containers taking only 1
 [Changed] Putting a higher amount than possible simply clamps the number instead of failing.
