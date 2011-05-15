@@ -320,12 +320,6 @@ local hintborder = 6;
 local hintstartpos = math.floor(scrh / 4);
 local hintendpos = math.floor(scrh * 2 / 3);
 
-concommand.Add("GODDAMNIT_unbreak", function()
-	print("y:", hinty,"sp:",hintstartpos,"ep:",hintendpos);
-	print("hints:")
-	PrintTable(hints);
-end);
-
 local width, height, x, y, calc, dir, lastdir;
 local IN, OUT, SHAKE_IT_ALL_ABOUT = 1, 2, 3;
 local function calcpos(x, y, dir, width)
@@ -459,7 +453,6 @@ function drawhints()
 		pfunc = hint.isalive and paintperm or painttimed;
 		if (pfunc(hint, time) == false) then
 			hints[_] = false;
-			print(hint.text, " died!");
 		else
 			hinty = hint.y - hintheight - 5;
 			if (hinty < 0) then break; end
