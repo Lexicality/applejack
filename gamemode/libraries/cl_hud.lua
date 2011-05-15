@@ -592,56 +592,59 @@ local sidepadheight = barheight+pad*2;
 
 local textx, texty, tw;
 texty = bary + textheight * 0.25
-local text
-function calculateBar(percent, down)
+local updown;
+function calculateBar(percent)
     percent = percent / 100
-    return (down and (barx + barwidth*(1-percent)) or barx), barwidth*percent;
+    return (updown and (barx + barwidth*(1-percent)) or barx), barwidth*percent;
 end
-local updown, x, width;
-local barcolor;
-local bartext, percentcallback = "", function() return false; end;
-local callbacka,callbackb;
+local stack = {};
+local x, width;
+local data;
+local perc, dir, txt;
+local size, cback;
 function drawcenterbar()
-    callbacka,callbackb = percentcallback(barpercent,updown);
-    if (not callbacka) then return; end
-    surface.SetDrawColor(0,0,0,200);
-    surface.DrawRect(0,backgroundy,scrw,backgroundheight);  
-    surface.SetDrawColor(0,0,0,255); 
-    surface.DrawRect(barx,toppady,barwidth,pad);  
-    surface.DrawRect(barx,bottompady,barwidth,pad);
-    surface.DrawRect(leftpadx,sidepady,pad,sidepadheight);
-    surface.DrawRect(rightpadx,sidepady,pad,sidepadheight);
-    surface.SetDrawColor(0,0,0,150);
-    surface.DrawRect(barx,bary,barwidth,barheight);
-    barpercent = callbacka;
-    updown = callbackb;
-    x, width = calculateBar(barpercent,updown,barcolor);
-    surface.SetDrawColor(unpackcolour(barcolor));
+	size = #stack;
+	if (size == 0) then return; end
+	-- Get datas
+	data = stack[size]
+    perc, dir = data.func(barpercent,updown);
+    if (not perc) then
+		-- If this bar dies, pop the stack
+		table.remove(stack);
+		-- Do the next bar
+		return drawcenterbar();		
+	end
+    surface.SetDrawColor(0, 0, 0, 200);
+    surface.DrawRect(0, backgroundy, scrw, backgroundheight);  
+    surface.SetDrawColor(0, 0, 0, 255); 
+    surface.DrawRect(barx, toppady, barwidth, pad);  
+    surface.DrawRect(barx, bottompady, barwidth, pad);
+    surface.DrawRect(leftpadx, sidepady, pad, sidepadheight);
+    surface.DrawRect(rightpadx, sidepady, pad, sidepadheight);
+    surface.SetDrawColor(0, 0, 0, 150);
+    surface.DrawRect(barx, bary, barwidth, barheight);
+    barpercent = perc;
+    updown = dir;
+    x, width = calculateBar(barpercent);
+    surface.SetDrawColor(unpackcolour(data.colour));
     surface.DrawRect(x, bary, width, barheight);
     surface.SetFont(font);
-    surface.SetTextColor(255,255,255,255);
-    surface.SetTextPos(textx,texty);
-    surface.DrawText(bartext);
+    surface.SetTextColor(255, 255, 255, 255);
+    surface.SetTextPos(data.textx, texty);
+    surface.DrawText(data.text);
 end
 local textcenter = barx + (barwidth / 2);
-function GM:SetCenterBar(text,color,callback)
-    bartext = text;
-    barcolor = color;
+function GM:SetCenterBar(text, color, callback)
+	local data = {}
+	data.text = text;
+	data.colour = color;
+	data.func = callback;
     surface.SetFont(font);
     tw = surface.GetTextSize(text);
-    textx = textcenter - tw / 2;
-    percentcallback = callback;
+    data.textx = textcenter - tw / 2;
+	table.insert(stack, data);
 end
 hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
-	local function dead()
-		return false;
-	end
-	local deadc = Color(0,0,0);
-	local function doclearbar()
-		GM:SetCenterBar("N/a",deadc,dead);
-	end
-	
-	usermessage.Hook("MS Clear Center Bar",doclearbar);
 	
 	do -- Sleepering
 		local endtime, length, left;
@@ -650,7 +653,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			if (not (length and endtime and endtime > 0)) then return false; end
 			left = endtime - ctime;
 			if (left < 0) then
-				doclearbar();
 				return false;
 			end
 			return (left/length) * 100, false;
@@ -673,7 +675,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 				if (not tends) then return false; end
 				left = tends - ctime;
 				if (left < 0) then
-					doclearbar();
 					return false;
 				end
 				return (left/length) * 100, false;
@@ -692,7 +693,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 				if (not bends) then return false; end
 				left = bends - ctime;
 				if (left < 0) then
-					doclearbar();
 					return false;
 				end
 				return (left/length) * 100, false;
@@ -730,7 +730,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 				if (not (length and dends)) then return false; end
 				left = dends - ctime;
 				if (left < 0) then
-					doclearbar();
 					return false;
 				end
 				return 100 - (left/length) * 100, true; -- Display backwards!
@@ -762,12 +761,11 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 	end
 	
 	do -- Respawning 
-		local endtime, length, left;
+		local ends, length, left;
 		local function callback()
 			if (not (length and ends)) then return false; end
 			left = ends - ctime;
-			if (left < 0 or lpl:Alive()) then
-				doclearbar();
+			if (left < 0) then
 				return false;
 			end
 			return 100 - ((left/length) * 100);
@@ -783,6 +781,9 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			timer.Simple(0.01, timr);
 		end
 		usermessage.Hook("MS Respawn Time", umsg);
+		usermessage.Hook("PlayerSpawned", function()
+			ends = false;
+		end);
 	end
 	
 	do -- Reganing Consiousness

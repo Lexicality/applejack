@@ -720,6 +720,7 @@ function GM:PlayerSpawn(ply)
 			ply._HideHealthEffects = false
 			ply._CannotBeWarranted = CurTime() + 15
 			ply._Deaded = nil
+			SendUserMessage("PlayerSpawned", ply);
 			
 			-- Make the ply become conscious again.
 			ply:WakeUp(true);
