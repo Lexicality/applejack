@@ -81,3 +81,17 @@ end
 function meta:GetTeam()
 	return team.Get(self:Team());
 end
+
+---
+-- Get the data table for the player's current group
+-- @return The Group table
+function meta:GetGroup()
+	return team.Query(self:Team(), "Group");
+end
+
+---
+-- Get the data table for the player's current gang
+-- @return The Gang table or nil if they're not in a gang
+function meta:GetGang()
+	return team.Query(self:Team(), "Gang");
+end

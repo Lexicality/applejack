@@ -17,7 +17,7 @@ ITEM.NoVehicles		= true;
 function ITEM:onUse(ply)
 	local trace	= ply:GetEyeTraceNoCursor();
 	local door	= trace.Entity;
-	if (not door:IsDoor()) then
+	if (not cider.entity.isDoor(door)) then
 		ply:Notify("That is not a valid door!", 1);
 	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then	
 		ply:Notify("You are not close enough to the door!", 1);

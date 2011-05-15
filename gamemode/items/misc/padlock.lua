@@ -17,7 +17,7 @@ ITEM.Base			= "item"
 function ITEM:onUse(ply)
 	local trace	= ply:GetEyeTraceNoCursor();
 	local door	= trace.Entity;
-	if (not (ValidEntity(door) and door:IsOwnable())) then
+	if (not (ValidEntity(door) and cider.entity.isOwnable(door))) then
 		ply:Notify("You can't put a padlock on that!", 1);
 	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then	
 		ply:Notify("You are not close enough to the door!", 1);
@@ -31,13 +31,13 @@ function ITEM:onUse(ply)
 		local event	= "";
 		local addon	= "";
 		local entname	= door._eName or "entity";
-		if (door:IsOwned()) then
-			event	= door:GetPossessiveName();
+		if (cider.entity.isOwned(door)) then
+			event	= cider.entity.getPossessiveName(door);
 		else
 			event	= "an unowned";
 		end
-		if (door:IsDoor()) then
-			addon	= door:GetDoorName();
+		if (cider.entity.isDoor(door)) then
+			addon	= cider.entity.getDoorName(door);
 			if (addon ~= "") then
 				addon = ": "..addon;
 			end

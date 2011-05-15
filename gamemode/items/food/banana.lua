@@ -4,10 +4,10 @@
 --]]
 
 ITEM.Name			= "Banana";
-ITEM.Cost			= 20;
+ITEM.Cost			= 5;
 ITEM.Model			= "models/props/cs_italy/bananna.mdl";
 ITEM.Store			= true;
 ITEM.Plural			= "Bananas";
-ITEM.Description	= "A banana that removes 25 hunger.";
-ITEM.Hunger			= 25;
+ITEM.Description	= "A banana that removes 5 hunger.";
+ITEM.Hunger			= 5;
 ITEM.Base			= "food";

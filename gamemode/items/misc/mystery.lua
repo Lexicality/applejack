@@ -6,11 +6,11 @@
 
 ITEM.Name			= "Alien Balls";
 ITEM.Size			= 0;
-ITEM.Cost			= 1000000;
+ITEM.Cost			= 2000000;
 ITEM.Model			= "models/gibs/gunship_gibs_sensorarray.mdl";
 ITEM.Plural			= "Alien Ballses";
-ITEM.Description	= "A pair of glittry alien balls, easily worth at least $1,000,000!"
-ITEM.Store 			= false;
+ITEM.Description	= "A pair of glittry alien balls, easily worth at least $2,000,000!"
+ITEM.Store 			= true;
 ITEM.Batch 			= 1;
 -- Called when a player uses the item
 function ITEM:onUse(player)

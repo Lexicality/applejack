@@ -3,10 +3,10 @@
 	~ Applejack ~
 --]]
 ITEM.Name			= "Prawn";
-ITEM.Cost			= 25;
+ITEM.Cost			= 15;
 ITEM.Model			= "models/Gibs/HGIBS_spine.mdl";
 ITEM.Store			= true;
 ITEM.Plural			= "Prawns";
-ITEM.Description	= "A prawn which removes 30 hunger.";
-ITEM.Hunger			= 30;
+ITEM.Description	= "A prawn which removes 15 hunger.";
+ITEM.Hunger			= 15;
 ITEM.Base			= "food";

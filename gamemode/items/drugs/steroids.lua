@@ -8,14 +8,14 @@ ITEM.Size			= 1;
 ITEM.Cost			= 100;
 ITEM.Model			= "models/items/battery.mdl";
 ITEM.Batch			= 10;
-ITEM.Store			= plugin;
 ITEM.Plural			= "Steroids";
 ITEM.Description	= "Small pills which restore 50 stamina, with side effects";
 ITEM.Equippable		= true;
 ITEM.Equipword		= "pop";
 ITEM.Base			= "item";
 
-if ((GM or GAMEMODE):GetPlugin("stamina")) then
+if (GM:GetPlugin("stamina")) then
+	ITEM.Store		= true;
 	function ITEM:onUse(player)
 		if (player._Stamina >= 100) then
 			player:Notify("You do not need any steroids!", 1);

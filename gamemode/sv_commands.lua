@@ -1222,56 +1222,45 @@ cider.command.add("fallover", "b", 0, function(ply,arguments)
 		GM:Log(EVENT_EVENT,"%s fell over.",ply:GetName())
 	end
 end, "Commands", "", "Fall over.");
-cider.command.add("mutiny","b",1,function(ply,arguments)
-	local target = player.Get( arguments[1] ) or nil
-	if not (ValidEntity(target) and target:IsPlayer()) then
-		return false, arguments[1].." is not a valid player!"
+local function canmutiny(ply, victim)
+	local pt, vt = ply:GetTeam(), victim:GetTeam();
+	return pt.Group == vt.Group
+	and    pt.Gang  == pt.Gang and pt.Gang
+	and    vt.GroupLevel == GROUP_GANGBOSS;
+end
+cider.command.add("mutiny","b",1,function(ply, args)
+	local victim = player.Get(args[1]);
+	if (not IsPlayer(victim)) then
+		return false, "No such player '" .. args[1] .. "'!";
 	end
-	local pteam,tteam = ply:Team(),target:Team();
-	local pgroup, tgroup = ply:GetTeam().Group, target:GetTeam().Group;
-	local pgang, tgang = ply:GetTeam().Gang, target:GetTeam().Gang;
-	local pglevel, tglevel = ply:GetTeam().GroupLevel, target:GetTeam().GroupLevel;
-	
-	if 	pgroup 	~= 	tgroup 	or
-		pgang	~=	tgang 	or
-		tgang	==	nil		or
-		pglevel	>=	tglevel	then 								-- or not cider.team.hasAccessGroup	(tteam,"D")
-			return false, "You cannot mutiny against this person";
-	end;
-	
-	target._Depositions = target._Depositions or {}
-	if target._Depositions [ply:UniqueID()] then	
-		return false,"You have already tried to mutiny against your leader!"
-	else
-		target._Depositions[ply:UniqueID()] = ply
+	if (not canmutiny(ply, victim)) then
+		return false, "You cannot mutiny against this person!";
 	end
-	for ID,ply in pairs(target._Depositions) do
-		if ValidEntity(ply) then
-			local pteam = ply:Team();
-			
-			if 	pgroup	~=	tgroup	or
-				pgang 	~=	tgang	or
-				pglevel	>=	tglevel	then
-					target._Depositions[ID] = nil;
-			end;
-			
+	victim.depositions = victim.depositions or {};
+	if (victim.depositions[ply]) then
+		return false, "Your mutiny vote has alrady been counted!";
+	end
+	victim.depositions[ply] = true;
+	i = 0;
+	for ply in pairs(victim.depositions) do
+		if (not (IsValid(ply) and canmutiny(ply, victim))) then
+			victim.depositions[ply] = nil;
 		else
-			target._Depositions[ID] = nil
+			i = i + 1;
 		end
 	end
-	local count	= table.Count(target._Depositions)
-	local num	=  math.floor( table.Count( GM:GetGangMembers( tgroup, tgang ) ) * GM.Config["Mutiny Percentage"])
-	if  num < GM.Config["Minimum to mutiny"] then
-		num = GM.Config["Minimum to mutiny"]
+	local gang = ply:GetTeam().Gang
+	local minimum = math.min( math.floor(
+		(#GM:GetGangMembers(gang)) * GM.Config["Mutiny Percentage"]),
+		GM.Config["Minimum to mutiny"]);
+	GM:Log(EVENT_EVENT, "%s voted to mutiny against %s. Votes: %i / %i", ply:Name(), victim:Name(), i, minimum);
+	if (i < minimum) then
+		ply:Notify("Your vote has been counted, but you are not yet in the majority...");
+		return;
 	end
-	if count < num then
-		ply:Notify("Not enough of the gang agrees with you yet to do anything, but they acknowledge your thoughts...")
-		GM:Log(EVENT_EVENT,"%s voted to mutiny against %s. %i/%i",ply:Name(),target:Name(),count,num)
-		return
-	end
-	target:Notify("Your gang has overthrown you!",1)
-	target:Demote()
-	player.NotifyAll("%s was overthrown as leader.",nil,target:Name())
+	player.NotifyAll("%s was overthrown as leader of the %s!", victim:Name(), gang.Name);
+	victim:Notify("Your gang has overthrown you!", nil, 1);
+	victim:Demote();
 end, "Commands","<player>","Try to start a mutiny against your leader")
 
 -- A command to give Donator status to a player.
