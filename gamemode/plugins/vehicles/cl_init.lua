@@ -64,7 +64,7 @@ local views,lastname;
 
 function PLUGIN:CalcView(ply, origin, angles, fov)
 	local car = ply:GetVehicle();
-	local name = car:GetNWString("VehicleName");
+	local name = car:GetNWString("Vehicle Name");
 	if (not IsValid(car)) then return
 	elseif (name ~= lastname) then
 		views = nil;
@@ -196,7 +196,7 @@ function PLUGIN:HUDPaint()
                 draw.DrawText(tostring(text),"textsmall",-92*cosd+ScrW()/2,top+22+0.6*math.sin((gyaw+k)/180*math.pi),color,1)
             end
         end
-        local name,text = ent:GetNWString("RPName"),""
+        local name,text = ent:GetNWString("Vehicle RP Name"),""
         if not name or name == "" then
             name = "car"
         end
@@ -218,7 +218,7 @@ function PLUGIN:AdjustESPLines(tent, class, lines, pos,distance,lookingat)
 		end
 	end
 	if class == "prop_vehicle_jeep" and lpl:GetVehicle() ~= tent then
-		local name,text = tent:GetNWString("DisplayName"),""
+		local name,text = tent:GetNWString("Vehicle RP Name"),""
 		if not name or name == "" then
 			name = "car"
 		end

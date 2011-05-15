@@ -396,6 +396,7 @@ function meta:MakeOwnable()
 	end
 	self:UnLock();
 	GM.OwnableEntities[self] = true;
+	self:SetNWString("DisplayName", "Nobody");
 	self:SetDTInt(3, self:GetDTInt(3) | OBJ_OWNABLE);
 end
 

@@ -120,8 +120,8 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 		car:SetSkin(tab.Skin);
 	end
 	car.RPName = tab.RPName or tab.Name;
-	car:SetNWString("RPName",car.RPName);
-	car:SetNWString("VehicleName",car.VehicleName);
+	car:SetNWString("Vehicle RP Name",car.RPName);
+	car:SetNWString("Vehicle Name",car.VehicleName);
 	if (tab.Passengers) then
 		local data = list.Get"Vehicles"[tab.SeatType];
 		if (not data) then

@@ -711,7 +711,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 				if (not (length and uends)) then return false; end
 				left = uends - ctime;
 				if (left < 0) then
-					doclearbar();
 					return false;
 				end
 				return 100 - (left/length) * 100, true; -- Display backwards!
@@ -794,7 +793,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			if (not (length and endtime)) then return false; end
 			left = endtime - ctime;
 			if (left < 0) then
-				doclearbar();
 				return false;
 			end
 			return (left/length) * 100;
@@ -812,7 +810,6 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			if (not (length and ends)) then return false; end
 			left = ends - ctime;
 			if (left < 0 or not lpl:KnockedOut()) then
-				doclearbar();
 				return false;
 			end
 			return 100 - ((left/length) * 100);
@@ -897,6 +894,10 @@ end
 
 --[[ ESP ]]--
 do
+	local snapshot, debug = 0, true;
+	local function debugs()
+		return debug and snapshot < ctime;
+	end
 	-- A more modular method of setting up the lines to be drawn
 	local esplines = {}
 	esplines.__index = esplines
@@ -955,25 +956,35 @@ do
 		vehicles[i] = lpl; -- Makes sure the visibility check doesn't hit us.
 	end)
 	-- Vars
-	local tr, cent, fdist, dist, class, pos, spos, lpos, cam, alpha, centre, x, y, lines;
+	local tr, cent, fdist, dist, class, pos, spos, lpos, cam, alpha, centre, x, y, lines, db;
 	function GM:HUDPaintESP()
 		if (not lpl:Alive() or lpl._Sleeping) then
 			return;
 		end
 		-- Vars
 		tr, cent, fdist, dist, class, pos, spos, lpos, cam, alpha, centre, x, y, lines = nil;
+		db = debugs();
 		-- Unchanging
-		tr = lpl:GetEyeTrace();
+		fdist = self.Config["Talk Radius"] * 2;
+		tr = util.TraceLine{
+			start = EyePos();
+			endpos = EyePos() + EyeVector() * fdist;
+			filter = lpl;
+		};
 		if (IsValid(tr.Entity)) then
 			cent = tr.Entity;
 		end
-		fdist = self.Config["Talk Radius"] * 2;
 		cam = self:IsUsingCamera();
-		lpos = lpl:GetPos();
+		lpos = EyePos();
+		if (db) then
+			print("ESP DEBUG BEGIN");
+			print(cent, lpos, cam);
+		end
+			
 		-- Loop
 		for _, ent in pairs(ents.GetAll()) do if (ent:IsValid()) then
 			-- Prelims
-			class, pos = ent:GetClass(), ent:LocalToWorld(vector_origin); -- OBBSCenter.
+			class, pos = ent:GetClass(), ent:LocalToWorld(ent:OBBCenter());
 			spos = pos:ToScreen();
 			dist = cam and 0 or pos:Distance(lpos);
 			-- On-Screen Check
@@ -984,7 +995,7 @@ do
 				if (ent == cent) then
 					centre = true;
 					x, y = self:GetScreenCenterBounce();
-				elseif (ent == lpl and EyePos() == lpl:EyePos()) then
+				elseif (ent == lpl and lpos == lpl:EyePos()) then
 					-- When in a third person situation, your eyepos is different to your models, and you might want to see your own info.
 					-- This prevents it being drawn otherwise by faking a trace.
 					tr.Hit = true;		-- We did hit something on the visibility checfk
@@ -992,7 +1003,7 @@ do
 				else
 					-- Run a trace to determine if we can see whatever it is we want to look at.
 					tr = util.TraceLine( {
-						start	= EyePos();
+						start	= lpos;
 						endpos	= pos;
 						filter	= vehicles;
 						-- This hitmask is bascially everything except windows.
@@ -1015,12 +1026,22 @@ do
 					end
 					gamemode.Call("AdjustESPLines", ent, class, lines, pos, dist, center, class);
 					alpha = cam and 255 or (255 * (1 - dist / fdist));
+					if (db) then
+						print(ent);
+					end
 					for _, line in pairs(lines:GetAll()) do
+						if (db) then
+							print("", _, ":", "", line.text);
+						end
 						y = self:DrawInformation(line.text, "ChatFont", x, y, line.color, alpha);
 					end
 				end -- End of visibility check
 			end -- End of on-screen check
 		end end -- End of for loop
+		if (db) then
+			snapshot = ctime + 10;
+			print("\n\n");
+		end
 	end -- End of function
 
 	function GM:HUDDrawTargetID()
