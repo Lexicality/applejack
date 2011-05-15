@@ -46,7 +46,15 @@ function GM:OnEntityCreated(entity)
 	-- Call the base class function.
 	return self.BaseClass:OnEntityCreated(entity);
 end
-function GM:LocalPlayerCreated(ply) end
+function GM:LocalPlayerCreated(ply)
+	-- Clean up people's consoles for them.
+	if (GetConVarString("con_filter_text_out") == "") then
+		print("All messages with the word 'vertex' in them have been filtered from your console.");
+		print("If you do not want this to happen, place +con_filter_text_out \"diabled\" in your launcher options.");
+		RunConsoleCommand("con_filter_enable", 1);
+		RunConsoleCommand("con_filter_text_out", "vertex");
+	end
+end
 
 function GM:Initialize()
 	ErrorNoHalt(os.date().." - Finished connecting\n")

@@ -773,6 +773,8 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 			end
 		end
 	end
+	-- Do not do this any more.
+	--[[
 	if #ply._StoredWeapons >= 1 then
 		for _, v in pairs(ply._StoredWeapons) do
 			local class = v
@@ -784,8 +786,9 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 				end
 			end
 		end
-		ply._StoredWeapons = {}
 	end
+	--]]
+	ply._StoredWeapons = {}
 	
 	-- Unwarrant them, unarrest them and stop them from bleeding.
 	ply:UnWarrant();
