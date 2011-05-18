@@ -119,7 +119,9 @@ end
 -- Checks to see if a player has access to the entity
 -- @return True if they do, false if they don't.
 function meta:HasAccess(ply)
-	cm(self);
+	if (not ent._Owner) then
+		return false;
+	end
 	if (not IsValid(ply)) then
 		error("bad argument #1 to 'HasAccess' (Player expected, got NULL)", 2);
 	end

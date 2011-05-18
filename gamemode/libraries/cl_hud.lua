@@ -974,7 +974,7 @@ do
 		self.invalid = true;
 	end
 	function esplines:IsValid()
-		return not (self.invalid or table.Count(lines) == 0);
+		return not (self.invalid or table.Count(self.lines) == 0);
 	end
 
 	-- To allow the penetration of cars with x-ray vizions

@@ -16,7 +16,7 @@ config["Command Prefix"]			= "/"; -- The prefix that is used for chat commands.
 config["Maximum Notes"]				= 2; -- The maximum amount of notes a player can write.
 config["Advert Cost"]				= 60; -- The money that it costs to advertise.
 config["Advert Timeout"]			= 150 -- How many seconds between adverts
-config["OOC Timeout"]				= 60 -- How many seconds between OOC messages
+config["OOC Timeout"]				= 10 -- How many seconds between OOC messages
 config["Item Timer"]				= 7 -- How many seconds between item uses
 config["Item Timer (S)"]			= 20 -- How many seconds between specific item uses
 config["Note Fade Speed"]			= 2.353 -- How many seconds to wait between each fade tick. (2.353 roughly = 10mins)
