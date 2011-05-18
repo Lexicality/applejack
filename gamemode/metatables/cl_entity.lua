@@ -127,6 +127,10 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 	end
 	local name = "";
 	if (self:IsDoor()) then
+		if (not center) then
+			lines:Kill();
+			return;
+		end
 		name = self:GetNWString("Name", "Door");
 		local owner = self:GetDisplayName()
 		if (owner == "Nobody") then -- Door is for sale
@@ -138,7 +142,7 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 		lines:Add("Owner", owner, color_white, 3);
 	else
 		name = self:GetNWString("Name", "Entity");
-		name = (name:find"^[aeiouAEIOU]" and "An" or "A") .. name;
+		name = (name:find"^[aeiouAEIOU]" and "An" or "A") .. " " .. name;
 	end
 	lines:Add("Name", name, color_purpleblue, 1);
 	local status = self:GetStatus();

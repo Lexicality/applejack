@@ -2,14 +2,6 @@
 Name: "cl_init.lua".
 	~ Applejack ~
 --]]
-
-include("sh_init.lua");
-include("scoreboard/scoreboard.lua");
-
--- Set some information for the gamemode.
-GM.topTextGradient = {};
-GM.variableQueue = {};
-GM.ammoCount = {};
 --Take some shit out of _G for speed
 local	ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util =
 		ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util
@@ -35,6 +27,14 @@ color_darkgray_alpha =	Color(025, 025, 025, 150)
 color_black_alpha =		Color(000, 000, 000, 200)
 lpl = 					NULL
 local startupmenu = 	CreateClientConVar("mshine_startupmenu", "1", true)
+
+include("sh_init.lua");
+include("scoreboard/scoreboard.lua");
+
+-- Set some information for the gamemode.
+GM.topTextGradient = {};
+GM.variableQueue = {};
+GM.ammoCount = {};
 
 -- Detect when the local player is created 
 function GM:OnEntityCreated(entity)

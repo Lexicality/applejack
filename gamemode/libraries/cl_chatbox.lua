@@ -63,7 +63,7 @@ usermessage.Hook("cider.chatBox.message", function(msg)
 end);
 -- Get the position of the chat area.
 function cider.chatBox.getPosition()
-	local x, y = 8, ScrH() - (ScrH() / 4);
+	local x, y = 30, ScrH() - (ScrH() / 4);
 	
 	-- Check if we have a custom chat area position set.
 	if (cider.chatBox.position) then

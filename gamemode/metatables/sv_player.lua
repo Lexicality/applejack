@@ -556,6 +556,7 @@ function meta:UnArrest(reset)
 	gamemode.Call("PlayerUnArrested", self);
 	self.cider._Arrested = false;
 	self:SetNWBool("Arrested", false);
+	self:SetCSVar(CLASS_LONG, "_UnarrestTime", 0);
 	timer.Stop("UnArrest: "..self:UniqueID());
 	if (not reset) then
 		self:Recapacitate();

@@ -4,7 +4,6 @@
 --]]
 
 include("sh_init.lua");
-local lpl = 			LocalPlayer()
 local gpstext =			Color(255,220,0,255)
 local divider = 		Color(255,220,0,50)
 local carnametext = 	Color(255,220,0,20)
@@ -35,7 +34,6 @@ local pointscard = {
 	[315] = "NW",
 }
 function PLUGIN:LoadData()
-	lpl = LocalPlayer()
 	RunConsoleCommand( "gmod_vehicle_viewmode", 0);
 end
 --[[
@@ -211,13 +209,12 @@ function PLUGIN:HUDPaint()
 end
 
 function PLUGIN:AdjustESPLines(tent, class, lines, pos,distance,lookingat)
-	if not ValidEntity(lpl) then
-		lpl = LocalPlayer()
-		if not ValidEntity(lpl) then
-			return
-		end
+	-- If the player is in the car we're working on, don't do anything.
+	if (lpl:GetVehicle() == tent) thena
+		lines:Kill();
+		return false;
 	end
-	if class == "prop_vehicle_jeep" and lpl:GetVehicle() ~= tent then
+	if class == "prop_vehicle_jeep" then
 		local name,text = tent:GetNWString("Vehicle RP Name"),""
 		if not name or name == "" then
 			name = "car"

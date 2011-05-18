@@ -47,6 +47,9 @@ local function drawbar(bar)
 	height = height - border2;
 	width = width - border2;
 	if (length > 0) then
+		if (not bar.colour) then
+			Error("wtf broken bar", bar.text);
+		end
 		surface.SetDrawColor(unpackcolour(bar.colour));
 		surface.DrawRect(x, y, length, height);
 	end
@@ -868,10 +871,9 @@ function GM:HUDPaint()
 	--self.BaseClass:HUDPaint()
 	
 	-- Legacy centerprints
-	-- TODO: Add a center text / timer bar system
 	if ( not self:IsUsingCamera() ) then
 		-- Set the position of the chat box.
-		cider.chatBox.position = {x = 8, y = scrh - 100};
+		cider.chatBox.position = {x = 30, y = scrh - 160};
 		
 		-- Call the base class function.
 		self.BaseClass:HUDPaint();
@@ -894,7 +896,7 @@ end
 
 --[[ ESP ]]--
 do
-	local snapshot, debug = 0, true;
+	local snapshot, debug = 0, false;
 	local function debugs()
 		return debug and snapshot < ctime;
 	end
@@ -940,6 +942,12 @@ do
 		end
 		table.sort(ret, function(a,b) return a.weight < b.weight end);
 		return ret;
+	end
+	function esplines:Kill()
+		self.invalid = true;
+	end
+	function esplines:IsValid()
+		return not (self.invalid or table.Count(lines) == 0);
 	end
 
 	-- To allow the penetration of cars with x-ray vizions
@@ -1029,11 +1037,13 @@ do
 					if (db) then
 						print(ent);
 					end
-					for _, line in pairs(lines:GetAll()) do
-						if (db) then
-							print("", _, ":", "", line.text);
+					if (lines:IsValid()) then
+						for _, line in pairs(lines:GetAll()) do
+							if (db) then
+								print("", _, ":", "", line.text);
+							end
+							y = self:DrawInformation(line.text, "ChatFont", x, y, line.color, alpha);
 						end
-						y = self:DrawInformation(line.text, "ChatFont", x, y, line.color, alpha);
 					end
 				end -- End of visibility check
 			end -- End of on-screen check
