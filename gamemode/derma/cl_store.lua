@@ -57,7 +57,7 @@ function PANEL:Init()
 			if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 				self.headers[k] = vgui.Create("DCollapsibleCategory", self)
 				self.headers[k]:SetSize(cider.menu.width, 50); -- Keep the second number at 50
-				self.headers[k]:SetExpanded( table.HasValue(team.Query(self.team,"CanMake",{}), k)) -- Expanded when popped up
+				self.headers[k]:SetExpanded(gamemode.Call("PlayerCanManufactureCategory", lpl, k)) -- Expanded when popped up
 				self.headers[k]:SetLabel( c.Name )
 				self.headers[k]:SetTooltip( c.Description )
 				self.itemsList:AddItem(self.headers[k]);

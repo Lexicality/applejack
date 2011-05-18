@@ -883,6 +883,7 @@ do --isolate vars
 		if (not ply:IsValid()) then return end
 		ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]:format(ply._GenderWord));
 		ply._Equipping = false;
+		SendUserMessage("MS Equippr FAIL", ply);
 	end
 
 	-- A command to holster your current weapon.
@@ -911,6 +912,10 @@ do --isolate vars
 			success(ply,_,class);
 			return true
 		end
+		umsg.Start("MS Equippr", ply)
+		umsg.Short(delay);
+		umsg.Bool(false);
+		umsg.End();
 		timer.Conditional(ply:UniqueID().." holster", delay, conditional, success, failure, ply, ply:GetPos(), class);
 		ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]:format(ply._GenderWord));
 	end, "Commands", nil, "Holster your current weapon.");
@@ -1055,52 +1060,41 @@ cider.command.add("entity", "b", 2, function(ply, action, ...)
 end, "Menu Handlers", "<give|take> <ID> <type> or <name> <mynamehere>", "Perform an action on the entity you're looking at", 1);
 
 -- A command to manufacture an item.
-cider.command.add("manufacture", "b", 1, function(ply, arguments)
-	local item = GM:GetItem(arguments[1]);
-	
-	-- Check if the item exists.
-	if (item) then
-		if (item.Category) then
-			if !table.HasValue(team.Query(ply:GetTeam(),"CanMake",{}), item.Category) then
-				return false, team.Query(ply:GetTeam(),"Name","Your team's member").."s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
-			end
-		end
-		-- Check if they can manufacture this item yet.
-		if ( !ply:IsAdmin() and ply._NextManufactureItem and ply._NextManufactureItem > CurTime() ) then
-			return false, "You cannot manufacture another item for "..math.ceil( ply._NextManufactureItem - CurTime() ).." second(s)!";
-		else
-			ply._NextManufactureItem = CurTime() + (5 * item.Batch);
-		end
-
-		if ( ply:CanAfford(item.Cost * item.Batch) ) then
-			if (item.canManufacture and not item:canManufacture(ply)) then return; end
-			-- Take the cost the from player.
-			ply:GiveMoney(-(item.Cost * item.Batch) );
-			
-			-- Get a trace line from the player's eye position.
-			local trace = ply:GetEyeTraceNoCursor();
-			local entity = item:Make(trace.HitPos + Vector(0,0,16),item.Batch );
-			if (item.onManufacture) then item:onManufacture(ply, entity, amount); end
-			cider.propprotection.PlayerMakePropOwner(entity,ply,true);
-			local text = ""
-			-- Check if the item comes as a batch.
-			if (item.Batch > 1) then
-				text = item.Batch.." "..item.Plural.."."
-			else
-				text = "a "..item.Name.."."
-			end
-			ply:Notify("You manufactured "..text)
-			GM:Log(EVENT_EVENT, "%s manufactured %s",ply:Name(),text)
-		else
-			local amount = (item.Cost * item.Batch) - ply.cider._Money;
-			
-			-- Print a message to the player telling them how much they need.
-			return false, "You need another $"..amount.."!";
-		end
-	else
-		return false, "This is not a valid item!";
+cider.command.add("manufacture", "b", 1, function(ply, itemid)
+	local item = GM:GetItem(itemid);
+	if (not item) then
+		return false, "No such item '" .. itemid .. "'!";
+	elseif (not gamemode.Call("PlayerCanManufactureCategory", ply, item.Category)) then
+		return false, ply:GetTeam().Name .. "s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
+	elseif (not gamemode.Call("PlayerCanManufactureItem", ply, item)) then
+		return false;
+	elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
+		return false, "You cannot manufacture another item for "..math.ceil( ply._NextManufactureItem - CurTime() ).." second(s)!";		
 	end
-end, "Menu Handlers", "<item>", "Manufacture an item (usually a shipment).");
+	local amt = item.Batch;
+	local price = item.Cost * amt;
+	local can, req = ply:CanAfford(price);
+	if (not can) then
+		return false, "You need another $" .. req .. " to afford that!";
+	end
+	ply:GiveMoney(-price);
+	ply.NextManufactureItem = CurTime() + 5 * amt;
+	
+	local tr = ply:GetEyeTraceNoCursor();
+	local ent = item:Make(tr.HitPos + Vector(0,0,16), amt);
+	if (item.onManufacture) then
+		item:onManufacture(ply, ent, amt);
+	end
+	cider.propprotection.GiveToWorld(ent);
+	local words = "";
+	if (amt > 1) then
+		words = amt .. " " .. item.Plural;
+	else
+		words = "a " .. item.Name;
+	end
+	ply:Notify("You manufactured " .. words .. ".");
+	GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), text);
+end, "Menu Handlers", "<item>", "Manufacture an item (usually a shipment).", true);
 
 -- A command to warrant a player.
 cider.command.add("warrant", "b", 1, function(ply, arguments)

@@ -210,7 +210,7 @@ end
 
 function PLUGIN:AdjustESPLines(tent, class, lines, pos,distance,lookingat)
 	-- If the player is in the car we're working on, don't do anything.
-	if (lpl:GetVehicle() == tent) thena
+	if (lpl:GetVehicle() == tent) then
 		lines:Kill();
 		return false;
 	end

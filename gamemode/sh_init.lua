@@ -16,7 +16,7 @@ function includecs(file)
 	AddCSLuaFile(file);
 end
 
-GM.Name = "Applejack - Cider Core";
+GM.Name = "Applejack Beta"--"Applejack - Cider Core";
 GM.Email = "mwaness@gmail.com";
 GM.Author = "Lexi, original gamemode by kuromeku";
 GM.Website = "http://www.ventmob.com";

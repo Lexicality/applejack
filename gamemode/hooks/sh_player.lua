@@ -69,3 +69,30 @@ function GM:PlayerNoClip(ply)
 	end
 	return true;
 end
+
+---
+-- Called when a player looks at the store menu or tries to manufacture an item. (IE: Be quiet)
+-- @param ply The player in question
+-- @param category The ID of the category in question
+-- @return True if they can, false if they can't.
+function GM:PlayerCanManufactureCategory(ply, category)
+	local t = ply:GetTeam();
+	for _, cat in pairs(t.CanMake) do
+		if (cat == category) then
+			return true;
+		end
+	end
+	for _, cat in pairs(t.Group.CanMake) do
+		if (cat == category) then
+			return true;
+		end
+	end
+	if (t.Gang) then
+		for _, cat in pairs(t.Gang.CanMake) do
+			if (cat == category) then
+				return true;
+			end
+		end
+	end
+	return false;	
+end

@@ -594,3 +594,15 @@ end
 function GM:PlayerCanRecieveWeapons(ply)
 	return not (ply:Arrested() or ply:Tied());
 end
+
+---
+-- Called when a player tries to manufacture an item. (Be as loud as you want, no other error message is given)
+-- @param ply The player in question
+-- @param item The table of the item in question
+-- @return True if they can, false if they can't.
+function GM:PlayerCanManufactureItem(ply, item)
+	if (item.CanManufacture) then
+		return item:CanManufacture(ply);
+	end
+	return true;
+end

@@ -162,12 +162,13 @@ SWEP.FireModes.Burst.FireFunction = function(self)
 	if not self:CanFire(clip) then return end
 
 	self:BaseAttack()
+	--[
 	timer.Simple(self.BurstDelay, self.BaseAttack, self)
 	
 	if clip > 1 then
 		timer.Simple(2*self.BurstDelay, self.BaseAttack, self)
 	end
-	
+	--]]
 	self.Weapon:SetNextPrimaryFire( CurTime() + 1 )
 
 end
@@ -197,10 +198,10 @@ local sndCycleFireMode = Sound("Weapon_Pistol.Special2")
 
 
 function SWEP:Initialize()
+	self:SetWeaponHoldType(self.HoldType)
 
 	if SERVER then
 		-- This is so NPCs know wtf they are doing
-		self:SetWeaponHoldType(self.HoldType)
 		self:SetNPCMinBurst(3)
 		self:SetNPCMaxBurst(6)
 		self:SetNPCFireRate(60/self.AutoRPM)
@@ -428,6 +429,8 @@ function SWEP:DoAmmoStuff()
 	or not  GAMEMODE.Items[self.Classname]
 	-- Make sure we haven't done this already
 	or		self.doneAmmoStuff
+	-- Make sure the owner isn't already holstering
+	or      self.previousOwner._Equipping
 	then return end
 	-- Set up a quick timer to remove the weapon
 	timer.Simple(0, ammostuff, self.previousOwner, self.Classname);
@@ -581,10 +584,18 @@ local function carshoot(self,tr,dmg)
 	end
 end
 function SWEP:RGShootBulletCheap(dmg, speed, spread, spray, sprayvec, numbul)
-
+--[[
+	if (self.Owner.LagCompensation) then
+		self.Owner:LagCompensation(true);
+	end
+	-]]
 	local PlayerAim = self.Owner:GetAimVector()
 	local PlayerPos = self.Owner:GetShootPos()
-	
+	--[[
+	if (self.Owner.LagCompensation) then
+		self.Owner:LagCompensation(false);
+	end
+	--]]
 	numbul = numbul or 1
 	if self.dt.silenced then
 		dmg = dmg / 2
@@ -658,7 +669,12 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 		debugoverlay.Text(trace.HitPos,"force: "..force,10)
 	end
 	local dir
-	if	-(trace.Normal:Dot(trace.HitNormal)) < ricochetmats[trace.MatType]
+	local mats = ricochetmats[trace.MatType]
+	if (not mats) then
+		ErrorNoHalt("Unkown material type '"..trace.MatType.."' for ricochet callback! o_O");
+		mats = -0.1
+	end
+	if	-(trace.Normal:Dot(trace.HitNormal)) < mats
 	and	hook.Call("CanRicochet",GAMEMODE,trace,force,self)
 	then
 		if SinglePlayer() then
@@ -691,6 +707,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 	end
 	dir:Normalize()
 	local bullet	= {}
+	local tr;
 	bullet.Num		= 1
 	bullet.Tracer	= self.PenetrateInfo.Tracer
 	bullet.Force	= force
@@ -703,8 +720,9 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 			debugoverlay.Line(_trace.StartPos,_trace.HitPos,10,Color(255,237,31,255),true)
 			debugoverlay.Line(trace.HitPos,_trace.HitPos,10,Color(200,200,255,255),true)
 		end
+		tr = _trace
 		carshoot(self,_trace,damage);
-		self:PenetrateCallback(pl, _trace,damage,force)
+		timer.Simple(0, self.PenetrateCallback, self, pl, _trace,damage,force);
 		--debugoverlay.Cross(_trace.HitPos,10,5,color_white,true)
 		local matTypes = {
 			[MAT_CONCRETE] = {"Impact.Concrete", "MetalSpark"},
@@ -731,7 +749,7 @@ end
 
 function SWEP:ApplyRecoil(recoil,spray)
 
-	if self.OwnerIsNPC or (SERVER and not self.Owner:IsListenServerHost()) then return end
+	if self.OwnerIsNPC or (SERVER--[[ and not self.Owner:IsListenServerHost()--]]) then return end
 	
 	local EyeAng = Angle(
 	recoil*math.Rand(-1,-0.7 + spray*0.4) + spray*math.Rand(-0.3,0.3), -- Up/Down recoil
@@ -910,15 +928,7 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 	if not self.Owner:KeyDown(IN_USE) then
 		self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		-- Fire function is defined under SWEP:SetFireMode()
-		if (self.Owner.LagCompensation) then
-			self.Owner:LagCompensation(true);
-		end
-		self:FireFunction()
-		if (self.Owner.LagCompensation) then
-			self.Owner:LagCompensation(false);
-		end
-	
+		self:FireFunction()	
 	else
 		if self.HasSilencer then
 			if self.dt.silenced then

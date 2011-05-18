@@ -105,6 +105,9 @@ function SWEP:PrimaryAttack()
 		self.Owner:LagCompensation(true);
 	end
 	local tr = self.Owner:GetEyeTraceNoCursor();
+	if (self.Owner.LagCompensation) then
+		self.Owner:LagCompensation(false);
+	end
 	self.Owner:FireBullets({
 		Num = self.Primary.NumShots;
 		Src = self.Owner:GetShootPos();
@@ -117,9 +120,6 @@ function SWEP:PrimaryAttack()
 	self:TakePrimaryAmmo(1);
 	self.Weapon:EmitSound(self.Primary.Sound)
 	self:Reload();
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(false);
-	end
 	local ent = tr.Entity;
 	if (SERVER and IsValid(ent) and ent:IsPlayer()) then
 		ent:KnockOut(60);

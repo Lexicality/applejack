@@ -44,22 +44,22 @@ SWEP.BulletTracer = 1;
 
 -- Set some information for the primary fire.
 SWEP.Primary.Sound = Sound("Weapon_Deagle.Single");
-SWEP.Primary.Damage = 200;
+SWEP.Primary.Damage = 150;
 SWEP.Primary.NumShots = 1;
-SWEP.Primary.ClipSize = 8;
-SWEP.Primary.DefaultClip = 8;
-SWEP.Primary.Ammo = "pistol";
+SWEP.Primary.ClipSize = 5;
+SWEP.Primary.DefaultClip = 5;
+SWEP.Primary.Ammo = "357";
 
 -- Set some information for the secondary fire.
 SWEP.Secondary.ClipSize = -1;
 SWEP.Secondary.DefaultClip = -1;
 
 -- Set some information about the recoil and spray.
-SWEP.RecoverTime = 0.7;
-SWEP.MinSpread = 0.02;
-SWEP.MaxSpread = 0.05;
+SWEP.RecoverTime = 1;
+SWEP.MinSpread = 0.05;
+SWEP.MaxSpread = 0.1;
 SWEP.DeltaSpread = 0.02;
-SWEP.MinRecoil = 10;
+SWEP.MinRecoil = 15;
 SWEP.MaxRecoil = 20;
 SWEP.DeltaRecoil = 1;
 SWEP.MinSpray = 0;

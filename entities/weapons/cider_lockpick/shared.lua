@@ -3,6 +3,22 @@
 	~ Applejack ~
 --]]
 
+if (SERVER) then
+	AddCSLuaFile("shared.lua");
+else
+	SWEP.PrintName = "Lockpick";
+	SWEP.Slot = 3;
+	SWEP.SlotPos = 3;
+	SWEP.DrawAmmo = false;
+	SWEP.IconLetter = "c"
+	SWEP.DrawCrosshair = true;
+	
+	function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
+		draw.SimpleText(self.IconLetter, "TitleFont2", x + 0.5*wide, y --[[+ tall*0.2]], Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
+		self:PrintWeaponInfo(x + wide + 20, y + tall*0.95, alpha)
+	end
+end
+
 -- Define some shared variables.
 SWEP.Author	= "Lexi";
 SWEP.Instructions = "Primary Fire: Attempt to pick Lock.";
@@ -83,6 +99,7 @@ local thumpsounds = {
 function SWEP:Initialize()
 	self:SetWeaponHoldType("melee");
 	if (SERVER) then
+		 -- TODO: Remove this is sounds are not precached.
 		for _,sound in pairs(fiddlesounds) do
 			Sound(sound);
 		end
@@ -122,4 +139,118 @@ function SWEP:DoSound(tabn,sn)
 		umsg.End();
 	end
 	self:EmitSound(tab[sn]);	
+end
+
+if (CLIENT) then
+	usermessage.Hook("dosnd", function(m)
+		local wpn = LocalPlayer():GetActiveWeapon()
+		if (IsValid(wpn) and wpn:GetClass() == "cider_lockpick") then
+			wpn:DoSound(m:ReadChar(), m:ReadChar());
+		end
+	end)
+else
+	umsg.PoolString("dosnd");
+end
+
+-- Called when the player attempts to primary fire.
+function SWEP:PrimaryAttack()
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
+	
+
+	-- Set the animation of the owner to one of them attacking.
+	-- self.Owner:SetAnimation(PLAYER_ATTACK1);
+
+
+	local tr = self.Owner:GetEyeTrace();
+	local owner = self.Owner;
+	if (owner:GetShootPos():Distance(tr.HitPos) > 128) then
+		self:SendWeaponAnim(ACT_VM_MISSCENTER);
+		self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav");
+		return;
+	end
+	self:SendWeaponAnim(ACT_VM_HITCENTER);
+	if (CLIENT) then return end
+	local ent = tr.Entity;
+	if (not gamemode.Call("PlayerCanLockpick", owner, ent)) then
+		owner:Notify("You can't lockpick this!", 1);
+		self:DoSound(3)
+		return;
+	elseif (not (ent._Locked or (ent:IsPlayer() and ent:Arrested()))) then
+		owner:Notify("That's not locked!", 1);
+		return;
+	end
+	ent._LockpickingCount = ent._LockpickingCount or 0;
+	-- Announce that we have started lockpicking, if we have.
+	if (ent._LockpickingCount == 0) then
+		owner:Emote("starts fiddling about with the lock");
+	end
+	owner._LockpickChance = owner._LockpickChance or 0;
+	-- An entity can specify the max hits it takes to unlock them
+	local maxhits = ent._LockpickHits or GM.Config["Maximum Lockpick Hits"];
+	-- Padlocks double the number of hits
+	if (ent:GetNWBool("Padlocked")) then
+		maxhits = maxhits * 2;
+	end
+	-- I'm not sure why, but it's still really easy to lockpick things with a high chance. Let's force it harder.
+	maxhits = maxhits * 11;
+	-- Update the count
+	ent._LockpickingCount = ent._LockpickingCount + (1 / maxhits);
+	-- Tell me wtf is going on with this silly system
+	--print("current num: " .. ent._LockpickingCount .. ", adding: : " .. 1 / maxhits);
+	-- Give the pick a chance of breaking
+	if (math.random() < owner._LockpickChance) then
+		-- Tell the world with text'n'noise
+		self:DoSound(2)
+		owner:Emote("manages to snap "..owner._GenderWord.." lockpick off in the lock.");
+		-- Reset the lock
+		ent._LockpickingCount = 0;
+		-- Reset the break chance
+		owner._LockpickChance = 0;
+		-- Remove the lockpick from the player
+		owner:StripWeapon("cider_lockpick");
+		owner:SelectWeapon("cider_hands");
+		-- End the picking
+		return;
+	-- Check if we have NOT managed to pick the lock
+	elseif (math.random() > ent._LockpickingCount) then
+		-- Make a fiddling with the lock sound
+		self:DoSound(0)
+		return;
+	end
+	-- We have successfully picked the lock! Tell people.
+	owner:Emote("opens the lock with a final thrust, slightly damaging " .. owner._GenderWord .." lockpick")
+	self:DoSound(1)
+	-- Reset the lock
+	ent._LockpickingCount = 0;
+	-- Add to the lockpicker's pick break chance and tell them.
+	owner._LockpickChance = owner._LockpickChance + GM.Config["Lockpick Break Chance"];
+	--owner:Notify("Your lockpick was damaged while picking the lock.");
+	-- Since we can now pick the cuffs on players to unarrest them, we need to treat them differently.
+	if (ent:IsPlayer()) then 
+		ent:UnArrest();
+		ent:Emote("pulls off the unlocked handcuffs and throws them away hard enough to break them.");
+		GM:Log(EVENT_EVENT, "%s picked the lock on %s handcuffs", owner:Name(), ent:Name());
+		return;
+	end
+	--Actually unlock it the entity
+	ent:UnLock();
+	-- ent:EmitSound("doors/door_latch3.wav");
+	local event, addon, entname = "","",ent._eName or "entity";
+	if (cider.entity.isOwned(ent)) then
+		event = cider.entity.getPossessiveName(ent);
+	else
+		event = "an unowned";
+	end
+	if (ent._isDoor) then
+		addon = cider.entity.getDoorName(ent);
+		if (addon ~= "") then
+			addon = ": "..addon;
+		end
+	else
+		local name = gamemode.Call("GetEntityName", ent);
+		if (name and name ~= "") then
+			addon = ": "..name;
+		end
+	end
+	GM:Log(EVENT_EVENT, "%s picked the lock on %s %s%s.", owner:GetName(), event, entname, addon);
 end

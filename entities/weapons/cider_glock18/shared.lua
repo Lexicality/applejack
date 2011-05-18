@@ -44,7 +44,7 @@ SWEP.BulletTracer = 1;
 
 -- Set some information for the primary fire.
 SWEP.Primary.Sound = Sound("Weapon_Glock.Single");
-SWEP.Primary.Damage = 7.5;
+SWEP.Primary.Damage = 5;
 SWEP.Primary.NumShots = 1;
 SWEP.Primary.ClipSize = 16;
 SWEP.Primary.DefaultClip = 16;
@@ -57,13 +57,13 @@ SWEP.Secondary.DefaultClip = -1;
 -- Set some information about the recoil and spray.
 SWEP.RecoverTime = 0.6;
 
-SWEP.MinSpread = 0.02;
-SWEP.MaxSpread = 0.05;
-SWEP.DeltaSpread = 0.012;
+SWEP.MinSpread = 0.4;
+SWEP.MaxSpread = 0.9;
+SWEP.DeltaSpread = 0.3;
 SWEP.MinRecoil = 5;
 SWEP.MaxRecoil = 7;
 SWEP.DeltaRecoil = 1;
-SWEP.MinSpray = 0;
+SWEP.MinSpray = 1;
 SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 

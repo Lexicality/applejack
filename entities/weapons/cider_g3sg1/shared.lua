@@ -45,7 +45,7 @@ SWEP.BulletTracer = 1;
 
 -- Set some information for the primary fire.
 SWEP.Primary.Sound = Sound("Weapon_M4A1.Silenced");
-SWEP.Primary.Damage = 100;
+SWEP.Primary.Damage = 300;
 SWEP.Primary.NumShots = 1;
 SWEP.Primary.ClipSize = 10;
 SWEP.Primary.DefaultClip = 10;
@@ -77,7 +77,7 @@ SWEP.IronSightsAng = Vector (1.0814, 0.4016, 0)
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = true;
 SWEP.ScopeScale = 0.4;
-SWEP.ScopeZooms = {5, 15};
+SWEP.ScopeZooms = {5, 15, 32};
 SWEP.DrawSniperSights = true;
 SWEP.DrawRifleSights = false;
 

@@ -9,7 +9,6 @@ local GM = GAMEMODE;
 -- Set up our convars
 TOOL.ClientConVar[ "class" ] = "prop_dynamic"
 TOOL.ClientConVar[ "model" ] = "models/props_combine/combine_door01.mdl"
-TOOL.ClientConVar[ "autoclose" ] = "1"
 TOOL.ClientConVar[ "autolock" ] = "1"
 TOOL.ClientConVar[ "closetime" ] = "5"
 TOOL.ClientConVar[ "hardware" ] = "1"
@@ -76,12 +75,8 @@ function TOOL:LeftClick(tr)
 	ent._State = "closed";
 	ent:Spawn();
 	ent:Activate();
-	if (self:GetClientNumber("autoclose") > 0) then
-		ent._Autoclose = math.max(self:GetClientNumber("closetime"),5);
-	else
-		ent._Autoclose = 0;
-	end
-	ent:MakeOwnable();
+	ent._Autoclose = math.max(self:GetClientNumber("closetime"),5);
+	cider.entity.makeOwnable(ent);
 	timer.Simple(0,function()
 		ply:GiveDoor(ent,ply:GetName().."'s door",true);
 		ent:Lock();
@@ -138,83 +133,8 @@ function TOOL.BuildCPanel( CPanel )
 								Min		= 5,
 								Max		= 120,
 								Command = "door_closetime" }	 )
-	CPanel:AddControl( "Checkbox", { Label = "#AutoClose", Command = "door_autoclose" } )
 end
 
-function TOOL:UpdateGhost(ent, ply) --( ent, player )
-	if (not IsValid(ent)) then
-		return;
-	end
-	local tr = ply:GetEyeTrace();
-	if (not tr.Hit or (IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_commandbox"))) then
-		ent:SetNoDraw(true);
-		return;
-	end
-	--[[
-	local angles = tr.HitNormal:Angle();
-	angles.pitch = angles.pitch + 90;
-	--]]
-	local angles = ply:GetAimVector():Angle();
-	angles.p = 0
-	angles.y = angles.y + 180
-	angles.r = 0
-	local pos = tr.HitPos;
-	pos.z = pos.z - (tr.HitNormal.z * ent:OBBMins().z);
-	ent:SetAngles(angles);
-	ent:SetPos(pos);
-	ent:SetNoDraw(false);
-end
-
-function TOOL:Think()
-	if (SERVER and not SinglePlayer()) then return end
-	if (CLIENT and SinglePlayer()) then return end
-	local ent = self.GhostEntity;
-	local model = string.lower(self:GetClientInfo("model"));
-	if (not (IsValid(ent) and ent:GetModel() == model)) then
-		self:MakeGhostEntity(model, vector_origin, Angle());
-	end
-	self:UpdateGhost(self.GhostEntity, self:GetOwner());
-end
-
-
--- This is in here so we can have all doors ghosted.
-function TOOL:MakeGhostEntity( model, pos, angle )
-
-	if (not util.IsValidModel(model)) then
-		return;
-	end
-	util.PrecacheModel( model )
-	
-	// We do ghosting serverside in single player
-	// It's done clientside in multiplayer
-	if (SERVER and not SinglePlayer()) then return end
-	if (CLIENT and SinglePlayer()) then return end
-	
-	// Release the old ghost entity
-	self:ReleaseGhostEntity()
-	
-	self.GhostEntity = ents.Create( "prop_physics" )
-	
-	// If there's too many entities we might not spawn..
-	if (not self.GhostEntity:IsValid()) then
-		self.GhostEntity = nil
-		return
-	end
-	
-	self.GhostEntity:SetModel( model )
-	self.GhostEntity:SetPos( pos )
-	self.GhostEntity:SetAngles( angle )
-	self.GhostEntity:Spawn()
-	
-	self.GhostEntity:SetSolid( SOLID_VPHYSICS );
-	self.GhostEntity:SetMoveType( MOVETYPE_NONE )
-	self.GhostEntity:SetNotSolid( true );
-	self.GhostEntity:SetRenderMode( RENDERMODE_TRANSALPHA )
-	self.GhostEntity:SetColor( 255, 255, 255, 150 )
-	
-end
-
---[[
 -- This is here because the ghost should match the spawnpos, and we spawn funky.
 function TOOL:UpdateGhost( ent, Player )
 
@@ -232,6 +152,41 @@ function TOOL:UpdateGhost( ent, Player )
 	
 end
 
+-- This is in here so we can have all doors ghosted.
+function TOOL:MakeGhostEntity( model, pos, angle )
+
+	if (!util.IsValidModel(model)) then return end
+	util.PrecacheModel( model )
+	
+	// We do ghosting serverside in single player
+	// It's done clientside in multiplayer
+	if (SERVER && !SinglePlayer()) then return end
+	if (CLIENT && SinglePlayer()) then return end
+	
+	// Release the old ghost entity
+	self:ReleaseGhostEntity()
+	
+	self.GhostEntity = ents.Create( "prop_physics" )
+	
+	// If there's too many entities we might not spawn..
+	if (!self.GhostEntity:IsValid()) then
+		self.GhostEntity = nil
+		return
+	end
+	
+	self.GhostEntity:SetModel( model )
+	self.GhostEntity:SetPos( pos )
+	self.GhostEntity:SetAngles( angle )
+	self.GhostEntity:Spawn()
+	
+	self.GhostEntity:SetSolid( SOLID_VPHYSICS );
+	self.GhostEntity:SetMoveType( MOVETYPE_NONE )
+	self.GhostEntity:SetNotSolid( true );
+	self.GhostEntity:SetRenderMode( RENDERMODE_TRANSALPHA )
+	self.GhostEntity:SetColor( 255, 255, 255, 150 )
+	
+end
+
 function TOOL:Think()
 
 	if (!self.GhostEntity || !self.GhostEntity:IsValid() || self.GhostEntity:GetModel() != self:GetClientInfo( "model" )) then
@@ -241,4 +196,3 @@ function TOOL:Think()
 	self:UpdateGhost( self.GhostEntity, self:GetOwner() )
 	
 end
---]]

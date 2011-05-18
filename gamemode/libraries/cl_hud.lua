@@ -848,6 +848,33 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		usermessage.Hook("MS Wakeup Call",wakethefuckup);
 	end
+	
+	do -- /holster and equipping
+		local ends, length, left;
+		local function callback()
+			if (not (length and ends)) then return false; end
+			left = ends - ctime;
+			if (left < 0) then
+				return false;
+			end
+			return 100 - ((left/length) * 100);
+		end
+		local barcolor = Color(54, 206, 197);
+		local function umsg(msg)
+			length = msg:ReadShort();
+			ends = CurTime() + length;
+			local mode = msg:ReadBool();
+			local str = "";
+			if (mode) then
+				str = "Equipp";
+			else
+				str = "Holster";
+			end
+			GM:SetCenterBar(str .. "ing . . .", barcolor, callback);
+		end
+		usermessage.Hook("MS Equippr", umsg);
+		usermessage.Hook("MS Equippr FAIL", function() ends = false; end);
+	end		
 end);
 end
 
