@@ -1252,7 +1252,7 @@ cider.command.add("mutiny","b",1,function(ply, args)
 		ply:Notify("Your vote has been counted, but you are not yet in the majority...");
 		return;
 	end
-	player.NotifyAll("%s was overthrown as leader of the %s!", victim:Name(), gang.Name);
+	player.NotifyAll("%s was overthrown as leader of the %s!", nil, victim:Name(), gang.Name);
 	victim:Notify("Your gang has overthrown you!", nil, 1);
 	victim:Demote();
 end, "Commands","<player>","Try to start a mutiny against your leader")

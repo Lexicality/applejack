@@ -139,6 +139,11 @@ end
 -- @param level The notification level. Nil or unspecified = chat message. 0 = Water drip. 1 = Failure buzzer. 2 = 'Bip' Notification. 3 = 'Tic' Notification. (Used by the cleanup)
 -- @param ... A series of strings to be applied to the message string via string.format().
 function player.NotifyAll(message, level, ...)
+	-- Insurance.
+	-- FIXME: Remove this before going into production.
+	if (level and type(level) ~= "number") then
+		error("Invalid level specified for NotifyAll!", 2);
+	end
 	local msg = message:format(...);
 	for _, ply in pairs(player.GetAll()) do
 		ply:Notify(msg, level);
