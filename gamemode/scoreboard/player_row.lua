@@ -45,16 +45,17 @@ end
 /*---------------------------------------------------------
    Name: Paint
 ---------------------------------------------------------*/
-local pong = CurTime()
 function PANEL:Paint()
 
 	if ( !ValidEntity( self.Player ) ) then return end
 	
-	local color = team.GetColor( self.Player:Team() ) color.a = 255
---[[	if pong <= CurTime() then
-		print( self.Player:Name()..": Color( "..color.r..", "..color.g..", "..color.b..", "..color.a..")")
-		pong = CurTime()+5
-	end]]
+	local color = team.GetColor(self.Player:Team())
+	-- FORCE THE FUCKER!!!
+	color.a = 255
+	-- Since the above apparently doesn't work, desperately try attacking render.
+	render.SetBlend(1);
+	render.SetColorModulation
+	-- Check if we're sliding
 	if ( self.Open || self.Size ~= self.TargetSize ) then
 	
 		draw.RoundedBox( 4, 0, 16, self:GetWide(), self:GetTall() - 16, color )
@@ -76,7 +77,13 @@ function PANEL:Paint()
 	surface.SetTexture( self.texRating )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 ) 	
-	
+
+	-- Debugging
+	if (self.FUCK) then
+		print( self.Player:Name()..": Color( "..color.r..", "..color.g..", "..color.b..", "..color.a..")")
+		self.FUCK = false;
+	end
+
 	return true
 
 end
