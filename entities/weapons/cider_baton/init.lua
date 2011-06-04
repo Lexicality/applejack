@@ -6,9 +6,20 @@ includecs("shared.lua");
 AddCSLuaFile("cl_init.lua");
 
 function SWEP:GetTarget()
-	local tr = self.Owner:GetEyeTrace();
+	-- Compensate lag for the owner.
+	if (self.Owner.LagCompensation) then
+		self.Owner:LagCompensation(true);
+	end
+
+	local tr = self.Owner:GetEyeTraceNoCursor();
+
+	-- Uncompensate lag for the owner.
+	if (self.Owner.LagCompensation) then
+		self.Owner:LagCompensation(false);
+	end
+
 	local ent = tr.Entity;
-	if (not IsValid(ent) or self.Owner:GetPos():Distance(tr.HitPos) > 128) then
+	if (not IsValid(ent) or tr.StartPos:Distance(tr.HitPos) > 128) then
 		return false;
 	elseif(IsValid(ent._Player)) then -- Player Ragdoll
 		ent = ent._Player;
@@ -42,18 +53,7 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetAnimation(PLAYER_ATTACK1);
 	self:DoHitEffects()
 	
-	-- Compensate lag for the owner.
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(true);
-	end
-	
-	local ply = self:GetTarget();
-	
-	-- Uncompensate lag for the owner.
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(false);
-	end
-	
+	local ply = self:GetTarget();	
 	if (not ply) then return false; end
 	
 	if (not ply:IsPlayer()) then
@@ -96,17 +96,7 @@ function SWEP:SecondaryAttack()
 	self.Owner:SetAnimation(PLAYER_ATTACK1);
 	self:DoHitEffects()
 	
-	-- Compensate lag for the owner.
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(true);
-	end
-	
 	local ply = self:GetTarget();
-	
-	-- Uncompensate lag for the owner.
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(false);
-	end
 	
 	if (not ply) then return false; end
 	
