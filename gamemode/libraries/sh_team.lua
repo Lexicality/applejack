@@ -125,7 +125,7 @@ function newteam()
 	TEAM.Name = "Example Team";
 	TEAM.Description = "This team is an example to demonstrate the new team system";
 	TEAM.Color = color_white; -- This team shows up as white in the scoreboard / ooc
-	TEAM.Salary = 200; -- Players get $300 every payday when in this team.
+	TEAM.Salary = 200; -- Players get $200 every payday when in this team.
 	TEAM.Models = {
 		Male = GM.Config["Male Citizen Models"]; -- This job uses the default male citzien models
 		Female = GM.Config["Female Citizen Models"]; -- This job uses the default female citizen models

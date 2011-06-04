@@ -10,7 +10,7 @@
 -- @return True if they can, False if they can't.
 function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
-	if (not tdata) then
+	if (not tdata or tdata.Invisible) then
 		return false, "Invalid team!";
 	--elseif (tdata.SizeLimit ~= 0 and #team.GetPlayers(tdata.UniqueID) >= tdata.SizeLimit) then
 	--	return false, "That team is full!";

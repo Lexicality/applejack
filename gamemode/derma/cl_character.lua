@@ -95,6 +95,7 @@ function PANEL:Think()
 	
 	-- Loop through each of our groups in numerical order
 	for index, group in ipairs(GM.Groups) do
+		if (group.Invisible) then continue; end
 		local header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
 		header:SetLabel( group.Name )

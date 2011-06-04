@@ -70,6 +70,7 @@ local function handlePlys(self)
 	end
 	for GroupID, teams in SortedPairs(self.inventory) do
 		res = GM:GetGroup(GroupID);
+		-- if (res.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(width/2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
@@ -82,6 +83,7 @@ local function handlePlys(self)
 		header:SetContents(sublist);
 		for TeamID, plys in SortedPairs(teams) do
 			res = team.Get(TeamID);
+			-- if (res.Invisible) then continue; end
 			header = vgui.Create("DCollapsibleCategory", self);
 			header:SetSize(width/2, 50); -- Keep the second number at 50
 			header:SetLabel(res.Name);
@@ -127,6 +129,7 @@ local function handleTeams(self)
 	end
 	for GroupID, teams in SortedPairs(self.inventory) do
 		res = GM:GetGroup(GroupID);
+		if (res.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(width/2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
@@ -138,6 +141,7 @@ local function handleTeams(self)
 		sublist:SetSpacing(3);
 		header:SetContents(sublist);
 		for _, team in SortedPairs(teams) do
+			if (team.Invisible) then continue; end
 			item = vgui.Create("Accessmenu Item", self);
 			item:SetName(team.Name);
 			item:SetDescription(team.Description);
@@ -161,6 +165,7 @@ local function handleGangs(self)
 	end
 	for GroupID, gangs in SortedPairs(self.inventory) do
 		res = GM:GetGroup(GroupID);
+		if (res.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(width/2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
@@ -172,6 +177,7 @@ local function handleGangs(self)
 		sublist:SetSpacing(3);
 		header:SetContents(sublist);
 		for _, gang in SortedPairs(gangs) do
+			if (gang.Invisible) then continue; end
 			item = vgui.Create("Accessmenu Item", self);
 			item:SetName(gang.Name);
 			item:SetDescription(gang.Description);
