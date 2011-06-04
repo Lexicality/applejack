@@ -1,5 +1,5 @@
-TEAM.Name = "Secretary";
-TEAM.Description = "Takes care of the basic running of government";
+TEAM.Name = "Quartermaster";
+TEAM.Description = "Supplies the police with their needs";
 TEAM.Color = Color(50,200,255);
 TEAM.CantUse = { CATEGORY_WEAPONS, CATEGORY_POLICEWEAPONS };
 TEAM.CanMake = {CATEGORY_WEAPONS, CATEGORY_POLICEWEAPONS, CATEGORY_AMMO};
