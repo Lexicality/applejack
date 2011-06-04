@@ -949,10 +949,12 @@ end
 function SWEP:Think()
 	if self.Weapon then
 		if self.HasSilencer then
+			-- OPTIMIZE: What the fuck?
 			if self.dt.silenced then
-				self.Primary.Sound = Sound("Weapon_M4A1.Silenced")
+				self.Primary.sound = self.Primary.Sound
+				self.Primary.Sound = self.Primary.SilencedSound
 			else
-				self.Primary.Sound = Sound("Weapon_M4A1.Single")
+				self.Primary.Sound = self.Primary.sound
 			end
 		end
 	end

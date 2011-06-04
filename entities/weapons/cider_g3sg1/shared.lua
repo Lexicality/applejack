@@ -25,7 +25,7 @@ SWEP.Category = "Cider";
 -- Set some shared information.
 SWEP.PrintName = "G3SG1";
 SWEP.Author = "kuromeku";
-SWEP.Purpose = "A very high powered sniper rifle with a silencer.";
+SWEP.Purpose = "A very high powered sniper rifle.";
 SWEP.Instructions = "Primary Fire: Shoot.\nSecondary Fire: Zoom.";
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
@@ -44,7 +44,7 @@ SWEP.CanPenetrateWorld = true;
 SWEP.BulletTracer = 1;
 
 -- Set some information for the primary fire.
-SWEP.Primary.Sound = Sound("Weapon_M4A1.Silenced");
+SWEP.Primary.Sound = Sound("Weapon_G3SG1.Single");
 SWEP.Primary.Damage = 300;
 SWEP.Primary.NumShots = 1;
 SWEP.Primary.ClipSize = 10;
@@ -91,7 +91,7 @@ SWEP.ShellEjectAttachment = "2";
 
 -- Set some modifier information.
 SWEP.CrouchModifier = 0.75;
-SWEP.IronSightModifier = 0;
+SWEP.IronSightModifier = 0.01;
 SWEP.RunModifier = 1.5;
 SWEP.JumpModifier = 2;
 

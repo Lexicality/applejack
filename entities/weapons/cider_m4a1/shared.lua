@@ -45,6 +45,7 @@ SWEP.BulletTracer = 1;
 
 -- Set some information for the primary fire.
 SWEP.Primary.Sound = Sound("Weapon_M4A1.Single");
+SWEP.Primary.SilencedSound = Sound("Weapon_M4A1.Silenced");
 SWEP.Primary.Damage = 15;
 SWEP.Primary.NumShots = 1;
 SWEP.Primary.ClipSize = 30;
