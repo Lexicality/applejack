@@ -3,6 +3,9 @@
 	~ Applejack ~
 --]]
 
+-- Plugin Disabled
+do return; end
+
 local charge = 2;
 
 -- Rated artistic?
