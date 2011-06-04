@@ -388,7 +388,7 @@ local function painttimed(hint, time)
 				surface.DrawRect(x, y, width, height);
 				if (calc <= 0) then
 					hint.flash = time + 0.5;
-					hint.flashes = (hint.flashes or 0) + 1;
+					hint.flashes = hint.flashes + 1;
 					if (hint.flashes == 2) then
 						hint.colour = nil;
 					end
@@ -429,13 +429,19 @@ local function paintperm(hint, time)
 			hint.sound = nil;
 		end
 		if (hint.colour) then
-			hint.flash = hint.flash or (time + 0.5);
-			calc = hint.flash - time;
+			-- Change to a steady colour after 5 flashes.
+			if (hint.flashes > 5) then
+				calc = 0.1;
+			else
+				hint.flash = hint.flash or (time + 0.5);
+				calc = hint.flash - time;
+			end
 			if (calc <= 0.25) then
 				surface.SetDrawColor(unpackcolour(hint.colour));
 				surface.DrawRect(x, y, width, height);
 				if (calc <= 0) then
 					hint.flash = time + 0.5;
+					hint.flashes = hint.flashes + 1;
 				end
 			end
 		end
@@ -473,6 +479,7 @@ local function dohint(text, colour, sound)
 		num = cnum;
 		x = scrw;
 		y = hinty;
+		flashes = 0;
 	}
 	hints[cnum] = hint;
 	cnum = cnum + 1;
