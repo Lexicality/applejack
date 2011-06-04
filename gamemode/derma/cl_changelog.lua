@@ -10,6 +10,8 @@ PANEL.changelog = [[
 [04/06/2011]
 [Fixed] USP45 + G3SG1 having the wrong shot sounds
 [Changed] G3SG1 is no longer silenced.
+[Fixed] /wakeupall now wakes everyone up instead of knocking them out
+[Changed] Made it more clear who had access to what abuse commands.
 [03/06/2011]
 [Fixed] /demote breaking the logging system
 [Fixed] Infinite size teams showing up wrong in the character menu

@@ -3,6 +3,19 @@ name: "cl_chatbox.lua".
 Product: "Cider (Roleplay)"
 --]]
 
+-- FUCKING EVOLVE.
+function chat.AddText(...)
+	local str = "[Evolve] ";
+	for _, word in pairs{...} do
+		if (type(word) == "Player") then
+			str = str .. word:Name();
+		elseif (type(word) == "string") then
+			str = str .. word;
+		end
+	end
+	cider.chatBox.chatText(nil, nil, str, "notify");
+end
+
 -- Called when a player begins typing.
 function GM:StartChat(team) return true; end
 

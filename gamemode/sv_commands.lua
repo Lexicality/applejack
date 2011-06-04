@@ -23,7 +23,7 @@ cider.command.add("knockout","s",1,function(ply, target, time)
 	else
 		return false, "Invalid player '"..target.."'!";
 	end
-end, "Admin Abuse Commands", "<player> [time]", "Knock a player out", true);
+end, "Super Admin Abuse Commands", "<player> [time]", "Knock a player out", true);
 
 -- Wake a player up
 cider.command.add("wakeup","s",1,function(ply, target)
@@ -34,7 +34,7 @@ cider.command.add("wakeup","s",1,function(ply, target)
 	else
 		return false, "Invalid player '"..target.."'!";
 	end
-end, "Admin Abuse Commands", "<player>", "wake a player up", true);
+end, "Super Admin Abuse Commands", "<player>", "wake a player up", true);
 
 local function knockoutfunct(tbl,tiem)
 	local target = table.remove(tbl);
@@ -47,7 +47,7 @@ cider.command.add("knockoutall","s",0,function(ply, time)
 	local tbl = player.GetAll();
 	player.NotifyAll("%s knocked everyone out .", 0, ply:Name());
 	timer.Create(ply:Name().." admin abuse knockout", 0, #tbl,knockoutfunct, tbl, tonumber(time) or 5);
-end, "Admin Abuse Commands", "[time]", "Knock out all players", true);
+end, "Super Admin Abuse Commands", "[time]", "Knock out all players", true);
 
 local function unknockoutfunct(tbl)
 	local target = table.remove(tbl);
@@ -59,8 +59,8 @@ end
 cider.command.add("wakeupall","s",0,function(ply)
 	local tbl = player.GetAll();
 	player.NotifyAll("%s woke everyone up.", 0, ply:Name());
-	timer.Create(ply:Name().." admin abuse unknockout", 0, #tbl,knockoutfunct, tbl);
-end, "Admin Abuse Commands", "[time]", "wake up all players");
+	timer.Create(ply:Name().." admin abuse unknockout", 0, #tbl,unknockoutfunct, tbl);
+end, "Super Admin Abuse Commands", "[time]", "wake up all players");
 
 -- Tie a player up
 cider.command.add("tie","s",1,function(ply, target)
@@ -71,7 +71,7 @@ cider.command.add("tie","s",1,function(ply, target)
 	else
 		return false, "Invalid player '"..target.."'!";
 	end
-end, "Admin Abuse Commands", "<player>", "tie a player", true);
+end, "Super Admin Abuse Commands", "<player>", "tie a player", true);
 
 cider.command.add("untie","s",1,function(ply, target)
 	local victim = player.Get(target);
@@ -81,7 +81,7 @@ cider.command.add("untie","s",1,function(ply, target)
 	else
 		return false, "Invalid player '"..target.."'!";
 	end
-end, "Admin Abuse Commands", "<player>", "untie a player", true);
+end, "Super Admin Abuse Commands", "<player>", "untie a player", true);
 
 -- There were '(un)tieall' commands here but they were removed.
 
@@ -94,21 +94,7 @@ cider.command.add("spawn","s",1,function(ply, target)
 	else
 		return false, "Invalid player '"..target.."'!";
 	end
-end, "Admin Abuse Commands", "<player>", "respawn a player", true);
-
--- Set a player to a particular team (ignoring all restrictions like team size)
-cider.command.add("setteam","s",2,function(ply, target, targetteam)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local tdata = team.Get(targetteam);
-	if (not tdata) then
-		return false, "Invalid team '"..targetteam.."'!";
-	end
-	victim:JoinTeam(tdata.TeamID);
-	GM:Log(EVENT_EVENT,"%s set %s's team to %q", ply:Name(), victim:Name(), tdata.Name);
-end, "Admin Abuse Commands", "<player> <team>", "set a player's team", true);
+end, "Super Admin Abuse Commands", "<player>", "respawn a player", true);
 
 -- Arrest a player with optional arrest time
 cider.command.add("arrest","s",1,function(ply, target, time)
@@ -118,7 +104,7 @@ cider.command.add("arrest","s",1,function(ply, target, time)
 	end
 	victim:Arrest(tonumber(time));
 	GM:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
-end, "Admin Abuse Commands", "<player> [time]", "arrest a player", true);
+end, "Super Admin Abuse Commands", "<player> [time]", "arrest a player", true);
 
 -- Unarrest a player
 cider.command.add("unarrest","s",1,function(ply, target)
@@ -128,7 +114,7 @@ cider.command.add("unarrest","s",1,function(ply, target)
 	end
 	victim:UnArrest();
 	GM:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
-end, "Admin Abuse Commands", "<player>", "unarrest a player", true);
+end, "Super Admin Abuse Commands", "<player>", "unarrest a player", true);
 
 -- Give a player an instant warrant with optional length
 cider.command.add("awarrant","s",2,function(ply, target, kind, time)
@@ -143,7 +129,7 @@ cider.command.add("awarrant","s",2,function(ply, target, kind, time)
 	time = tonumber(time);
 	GM:Log(EVENT_EVENT,"%s gave %s a %s warrant for %s seconds", ply:Name(), victim:Name(), kind, time or "default");
 	victim:Warrant(kind, time);
-end, "Admin Abuse Commands", "<player> <warrant> [time]", "warrant a player without going through the normal routes", true);
+end, "Super Admin Abuse Commands", "<player> <warrant> [time]", "warrant a player without going through the normal routes", true);
 
 -- Give a player a named SWep/HL2 gun
 cider.command.add("give","s",2,function(ply, target, kind)
@@ -155,7 +141,7 @@ cider.command.add("give","s",2,function(ply, target, kind)
 		return false, "Invalid weapon '"..kind.."'!";
 	end
 	GM:Log(EVENT_EVENT, "%s gave %s a %s", ply:Name(), victim:Name(), kind);
-end, "Admin Abuse Commands", "<player> <swep>", "give a player a named swep (ie cider_baton)", true);
+end, "Super Admin Abuse Commands", "<player> <swep>", "give a player a named swep (ie cider_baton)", true);
 
 -- give a player some ammo
 cider.command.add("giveammo","s",2,function(ply, target, kind, amount)
@@ -166,34 +152,7 @@ cider.command.add("giveammo","s",2,function(ply, target, kind, amount)
 	amount = tonumber(amount) or 20
 	victim:GiveAmmo(amount, kind);
 	GM:Log(EVENT_EVENT, "%s gave %s %s %s ammo", ply:Name(), victim:Name(), amount, kind);
-end, "Admin Abuse Commands", "<player> <ammo> [amoun]", "give a player named ammo (ie SMG1_Grenade)", true);
-
-cider.command.add("invisible","i",0,function(ply, target)
-	local victim
-	if (target) then
-		victim = player.Get(target);
-		if (not victim) then
-			return false, "Invalid player '"..target.."'!";
-		end
-	else
-		victim = ply;
-	end
-	if (victim:GetColor() == 0) then
-		victim:SetColor(255,255,255,255)
-		victim:DrawShadow(true);
-		victim:Notify("You are now visible",0);
-		if (ply ~= victim) then
-			ply:Notify(tostring(victim) .. " is now visible.",0);
-		end
-	else
-		victim:SetColor(0,0,0,0)
-		victim:DrawShadow(false);
-		victim:Notify("You are now invisible",0);
-		if (ply ~= victim) then
-			ply:Notify(tostring(victim) .. " is now invisible.",0);
-		end
-	end
-end, "Admin Abuse Commands","[target]","Make yourself or someone else invisible. (needs 'i' access)", true)
+end, "Super Admin Abuse Commands", "<player> <ammo> [amoun]", "give a player named ammo (ie SMG1_Grenade)", true);
 
 -- Give or take items away from players.
 cider.command.add("giveitem", "s", 2, function(ply, target, name, amount, force)
@@ -236,9 +195,58 @@ cider.command.add("giveitem", "s", 2, function(ply, target, name, amount, force)
 	end
 	player.NotifyByAccess("s", ply:Name() .. " gave " .. person .. " " .. amount .. " " .. name .. ".", 0);
 	GM:Log(EVENT_SUPEREVENT, "%s gave %s %s %s.", ply:Name(), person, amount, name);
-end, "Admin Abuse Commands", "<player> <item> [number] [force]", "Give an item to a player. (Or take it away with negative numbers.)", true);
+end, "Super Admin Abuse Commands", "<player> <item> [number] [force]", "Give an item to a player. (Or take it away with negative numbers.)", true);
 
-cider.command.add("setmodel","s",2,function(ply, target, model)
+--]
+--[[
+	The following abuse commands apply to all admins.
+	If you do not want them, do as above.
+--]]
+
+--[ [ <-- Space to remove.
+
+-- Set a player to a particular team (ignoring all restrictions like team size)
+cider.command.add("setteam","a",2,function(ply, target, targetteam)
+	local victim = player.Get(target);
+	if (not victim) then
+		return false, "Invalid player '"..target.."'!";
+	end
+	local tdata = team.Get(targetteam);
+	if (not tdata) then
+		return false, "Invalid team '"..targetteam.."'!";
+	end
+	victim:JoinTeam(tdata.TeamID);
+	GM:Log(EVENT_EVENT,"%s set %s's team to %q", ply:Name(), victim:Name(), tdata.Name);
+end, "Admin Abuse Commands", "<player> <team>", "set a player's team", true);
+
+cider.command.add("invisible","a",0,function(ply, target)
+	local victim
+	if (target) then
+		victim = player.Get(target);
+		if (not victim) then
+			return false, "Invalid player '"..target.."'!";
+		end
+	else
+		victim = ply;
+	end
+	if (victim:GetColor() == 0) then
+		victim:SetColor(255,255,255,255)
+		victim:DrawShadow(true);
+		victim:Notify("You are now visible",0);
+		if (ply ~= victim) then
+			ply:Notify(victim:Name() .. " is now visible.",0);
+		end
+	else
+		victim:SetColor(0,0,0,0)
+		victim:DrawShadow(false);
+		victim:Notify("You are now invisible",0);
+		if (ply ~= victim) then
+			ply:Notify(victim:Name() .. " is now invisible.",0);
+		end
+	end
+end, "Admin Abuse Commands","[target]","Make yourself or someone else invisible.", true)
+
+cider.command.add("setmodel","a",2,function(ply, target, model)
 	local victim = player.Get(target);
 	if (not victim) then
 		return false, "Invalid player '"..target.."'!";
@@ -249,7 +257,7 @@ cider.command.add("setmodel","s",2,function(ply, target, model)
 	GM:Log(EVENT_EVENT,"%s set %s's model to %q", ply:Name(), victim:Name(), model);
 end, "Admin Abuse Commands", "<name> <model>","Override the player's current model.", true)
 
-cider.command.add("notify", "s", 3, function(ply, target, level, ...)
+cider.command.add("notify", "a", 3, function(ply, target, level, ...)
 	local victim = player.Get(target);
 	if (not victim) then
 		return false, "Invalid player '"..target.."'!";
@@ -270,7 +278,7 @@ cider.command.add("notify", "s", 3, function(ply, target, level, ...)
 	victim:Notify(words, level);
 	GM:Log(EVENT_SUPEREVENT, "%s sent %s a level %s notification saying %q", ply:Name(), victim:Name(), level or "chat", words);
 end, "Admin Abuse Commands", "<player> <chat|drip/0|error/1|undo/2|bell/3> <words>", "Send a player a notification using the built in system.", true);
-cider.command.add("notifyall", "s", 2, function(ply, level, ...)
+cider.command.add("notifyall", "a", 2, function(ply, level, ...)
 	local words = string.Trim(table.concat({...}, " "));
 	--<chat|drip/0|error/1|bip/2|tic/3>
 	level = string.lower(level);
@@ -1453,3 +1461,27 @@ cider.command.add("setowner","s",1,function(ply,kind,id,gangid)
 	hook.Call("EntityOwnerSet",GAMEMODE,entity,kind,target)
 	GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"),name)
 end, "Super Admin Commands", "<player|team|gang|remove> [identifier] [gang identifier]", "Set the owner of a door",true)
+
+cider.command.add("a","a",1,function(ply,arguments)
+	local text = table.concat(arguments," ")
+	if not text or text == "" then return false,"wat" end
+	local rp = RecipientFilter()
+	for _,ply in pairs(player.GetAll()) do
+		if (ply:IsAdmin()) then
+			rp:AddPlayer(ply)
+		end
+	end
+	cider.chatBox.add(rp, ply, "achat", text);
+end, "Admin Commands", "<text>", "Say something only to the other admins")
+
+cider.command.add("m","m",1,function(ply,arguments)
+	local text = table.concat(arguments," ")
+	if not text or text == "" then return false,"wat" end
+	local rp = RecipientFilter()
+	for _,ply in pairs(player.GetAll()) do
+		if (ply:IsModerator()) then
+			rp:AddPlayer(ply)
+		end
+	end
+	cider.chatBox.add(rp, ply, "mchat", text);
+end, "Moderator Commands", "<text>", "Say something only to the other admins and moderators")

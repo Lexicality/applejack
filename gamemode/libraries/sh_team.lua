@@ -146,6 +146,7 @@ function newteam()
 	TEAM.Blacklist = true; -- Players can be blacklisted from this team
 	TEAM.Valid = true; -- This is a valid team
 	TEAM.Default = false; -- This is not the default starting team
+	TEAM.Invisible = false; -- This team is not hidden from the client's dermas
 	TEAM.IsTeam = true;
 end
 function newgang()
@@ -162,6 +163,7 @@ function newgang()
 	GANG.Blacklist = true; -- Players can be blacklisted from this gang
 	GANG.Valid = true; -- This is a valid gang
 	GANG.Model = "error.mdl"; -- The model this gang will be represented by on the client
+	GANG.Invisible = false -- This gang is not hidden from the client's dermas
 	GANG.IsGang = true;
 end
 function newgroup()
@@ -178,6 +180,7 @@ function newgroup()
 	GROUP.Blacklist = true; -- Players can be blacklisted from this group
 	GROUP.Model = "error.mdl"; -- The model this group will be represented by on the client
 	GROUP.Valid = true; -- This is a valid group
+	GROUP.Invisible = false; -- This group is not hidden from the client's dermas
 	GROUP.IsGroup = true;
 end
 end
@@ -192,7 +195,9 @@ local function genericget(id, tab)
 	local ret,len,lon;
 	id = string.lower(id);
 	for _,data in pairs(tab) do
-		if (data.Name:lower():find(id)) then
+		if (data.UniqueID == id) then
+			return data;
+		elseif (data.Name:lower():find(id)) then
 			lon = data.Name:len()
 			if (not ret or lon < len) then
 				ret = data;
