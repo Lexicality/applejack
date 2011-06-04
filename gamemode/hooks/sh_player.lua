@@ -12,6 +12,8 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
 	if (not tdata) then
 		return false, "Invalid team!";
+	--elseif (tdata.SizeLimit ~= 0 and #team.GetPlayers(tdata.UniqueID) >= tdata.SizeLimit) then
+	--	return false, "That team is full!";
 	end
 	
 	local mdata = ply:GetTeam();

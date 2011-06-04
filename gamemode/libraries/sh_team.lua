@@ -110,7 +110,7 @@ function loadteams(path)
 			newteam();
 			includecs(path..filename);
 			if (TEAM.Valid) then
-				TEAM.UniqueID = filename:gsub(t,b);
+				TEAM.UniqueID = string.lower(filename:gsub(t,b));
 				str = str .. TEAM.Name .. ", ";
 				regteam();
 			end

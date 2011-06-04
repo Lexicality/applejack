@@ -226,6 +226,9 @@ function PANEL:Init()
 	
 	-- Create the button and the spawn icon.
 	self.button = vgui.Create("DButton", self);
+	function self.button:DoClick()
+		RunConsoleCommand("cider", "team", self.tid);
+	end
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 	self.spawnIcon:SetToolTip();
 	self.spawnIcon.DoClick = function() end;
@@ -240,8 +243,9 @@ function PANEL:SetTeam(team)
 	self.description:SetText(self.Team.Description);
 	self.button:SetText("Become");
 	self.button.tid = team.TeamID;
-	function self.button:DoClick()
-		RunConsoleCommand("cider", "team", self.tid);
+	if (team.SizeLimit == 0) then
+		self.nolimit = true;
+		self.label:SetText(team.Name);
 	end
 	if (lpl:Team() == self.TeamID) then
 		self.button:SetText("Joined");
@@ -272,7 +276,7 @@ function PANEL:Think()
 		self.spawnIcon:SetModel(model);
 	end
 	local nump = team.NumPlayers(self.TeamID);
-	if (self.LastNump ~= nump) then
+	if (not self.nolimit and self.LastNump ~= nump) then
 		self.LastNump = nump;
 		self.label:SetText(self.Team.Name .. " (" .. nump .. "/" .. self.Team.SizeLimit .. ")");
 		if (not self.NoButton and nump > self.Team.SizeLimit) then

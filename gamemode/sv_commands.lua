@@ -713,7 +713,7 @@ cider.command.add("team", "b", 1, function(ply, identifier)
 	local teamid = teamdata.TeamID;
 	if (teamid == ply:Team()) then
 		return false, "You are already that team!";
-	elseif (team.NumPlayers(teamid) >= teamdata.SizeLimit and teamdata.SizeLimit ~= 0) then
+	elseif (teamdata.SizeLimit ~= 0 and team.NumPlayers(teamid) > teamdata.SizeLimit) then
 		return false, "That team is full!";
 	elseif (not gamemode.Call("PlayerCanJoinTeam", ply, teamid)) then
 		return false;

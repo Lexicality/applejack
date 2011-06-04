@@ -7,7 +7,10 @@ local PANEL = {};
 
 -- Store the changelog in a string.
 PANEL.changelog = [[
-[05/02/2011]
+[03/06/2011]
+[Fixed] /demote breaking the logging system
+[Fixed] Infinite size teams showing up wrong in the character menu
+[02/05/2011]
 [Fixed] /demote, /manufacture and /mutiny
 [Fixed] The store expandanding the categories your job can buy from.
 [22/04/2011]

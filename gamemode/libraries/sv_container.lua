@@ -2,8 +2,8 @@
 Name: "sv_container.lua".
 	~ Applejack ~
 --]]
-cider.container = {}
-;
+cider.container = {};
+
 --[[
 	We use hooks here to allow plugins to create their own fake containers that include player specific content, like for instance a banking system.
 ]]
@@ -35,7 +35,7 @@ end
 
 --Get the contents of a container
 function cider.container.getContents(entity,player,forMenu)
-	if not entity then error("wtf",2) end
+	if not entity then error("no entity passed to cider.container.getContents!",2) end
 	if not cider.container.isContainer(entity) then
 		return nil
 	end
