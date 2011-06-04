@@ -6,90 +6,81 @@
 --[[
 Changelog:
 29/1/10: Mostly rewritten to use the new plugin format and be sane.
+04/06/11: Completely rewritten to use v113 game.CleanupMap compatible shizzle + team lib
 ]]
 
--- Include the shared file and add it to the client download list.
-includecs("sh_init.lua");
-
---[[
-	This function will load saved data from a file with this map's name and attempt to apply it to doors on the map.
-	Uses bits of code by grea$emonkey who posted them here: http://www.facepunch.com/showthread.php?t=886729
---]]
+PLUGIN.Name = "Doors";
+PLUGIN.Doors = {};
+local getFuncs = {
+	Group = function(id)
+		return GM:GetGroup(id);
+	end;
+	Gang = function(id)
+		return GM:GetGang(id)
 function PLUGIN:LoadDoors()
-	local results,validents,numents,radiussquared; -- Important vars
-	local data, path, status, entity; -- Unimportant vars
-	self.Doors = {}
-	-- Check there is actually data for us to load
-	path = GM.LuaFolder.."/doors/"..game.GetMap()..".txt"
+	self.Doors = {};
+	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
 	if (not file.Exists(path)) then
-		return
+		return;
 	end
-	-- Load the data and attempt to decode it
-	data = file.Read(path);
-	status, results = pcall(glon.decode, data);
-	if (status == false) then -- Yes I know 'not status' is the same thing but this looks nicer in the circumstances.
-		error("["..os.date().."] Doors Plugin: Error GLON decoding '"..path.."': "..results);
-	elseif (not results) then -- If we end up with an empty table, why bother doing more?
-		return
+	local stat, res = pcall(glon.decode, file.Read(path));
+	if (not stat) then
+		error("["..os.date().."] Doors Plugin: Error GLON decoding '"..path.."': "..res);
+	elseif (not results) then
+		return;
 	end
-	status,path,data = nil;
-	validents = {};
-	for _, ent in pairs(ents.GetAll()) do
-		if (ent:IsValid() and ent:IsOwnable() and ent:IsDoor()) then
-			validents[#validents + 1] = ent;
-			ent._StartPos = ent:GetPos();
+	local ent, ment;
+	for id, data in pairs(res) do
+		ent = ents.GetMapCreatedEntity(id);
+		if (not IsValid(ent)) then
+			ErrorNoHalt("[",os.date(),"] Doors Plugin: No such entity '", id, "' as specified for map ", game.GetMap(), " in the stored data!");
+			continue;
 		end
-	end
-	numents = #validents;
-	if (numents < 1) then -- You never know.
-		error("["..os.date().."] Doors Plugin: a "..#results.." long file exists for "..game.GetMap().." but it has no suitable entities!");
-	end
-	radiussquared = 1; -- Our SQUARED search radius. A 1r sphere should do the job fine.
-	for i = 1, #results do-- Loop through our results
-		data = results[i];
-		for i = 1, numents do -- Loop through our suitable ents
-			entity = validents[i];
-			if ((data.Position - entity:GetPos()):LengthSqr() <= radiussquared) then -- Check if the current ent is within a unit of our target
-				-- Now we check if the data has various things set on it, and apply them if so
-				if (data.Master) then -- Does this door have a master entity?
-					for i = 1, numents do -- Loop through our suitable ents (again!)
-						master = validents[i];
-						if ((data.Master - entity:GetPos()):LengthSqr() <= radiussquared) then -- Check if the current ent is within a unit of our target
-							entity:SetMaster(master); -- If it is, set it as the entity's master.
-							break; -- We can either have the last appropriate entity as the master, or the first. Let's choose the first for speed.
-						end
-					end
-				end if (data.Sealed) then -- Is this door sealed?
-					entity._Sealed = true; -- Tell the server that it is sealed
-					entity:SetDTInt(3, entity:GetDTInt(3) | OBJ_SEALED); -- Tell the client that it is sealed.
-				end if (data.Owner) then -- Is this door pre-owned by a team or gang?
-					data.Owner = tostring(data.Owner);
-					local kind, id = string.match(data.Owner, "(%a+): (.+)");
-					if (kind == "Group") then
-						entity:GiveToGroup(id);
-					elseif (kind == "Gang") then
-						entity:GiveToGang(id);
-					elseif (kind == "Team") then
-						entity:GiveToTeam(id);
-					end
-				end if (data.Name) then -- Does this door have a custom name?
-					entity:SetNWString("Name", data.Name);
-				end if (data.Unownable) then -- Is this door unownable?
-					if (not data.Owner) then -- If the door doesn't already have an owner
-						entity:GiveToTeam(TEAM_NONE); -- Give it to the dummy team we set up earlier, so no one else can have it.
-					end
-					entity:SetDisplayName(data.Unownable); -- Give it it's custom name.
-					entity._Unownable = true; -- Let the server know.
-				end
-				self.Doors[entity] = data; -- Save all this for future usage/saveage
+		if (data.Master) then
+			ment = ents.GetMapCreatedEntity(data.Master);
+			if (IsValid(ment)) then
+				ent:SetMaster(ment);
 			end
 		end
+		if (data.Sealed) then
+			ent:Seal();
+		end
+		if (data.Owner) then
+			local kind, id = string.match(data.Owner, "(.+): (.+)");
+			if (not (kind and id)) then
+				ErrorNoHalt("[",os.date(),"] Doors Plugin: Malformed owner field for ", id, ": ", data.Owner); 
+				continue;
+			end
+			local func = GM["Get" .. kind];
+			if (not func) then
+				ErrorNoHalt("[",os.date(),"] Doors Plugin: Malformed owner field for ", id, ": ", data.Owner); 
+				continue;
+			end
+			local owner = func(GM, id);
+			if (not owner) then
+				ErrorNoHalt("[",os.date(),"] Doors Plugin: Unknown owner for ", id, ": ", data.Owner);
+				continue;
+			end
+			ent["GiveTo" .. kind](ent, owner);
+		end
+		if (data.Name) then
+			entity:SetNWSTring("Name", data.Name);
+		end
+		if (data.Unownable) then
+			if (not data.Owner) then
+				ent:GiveToTeam(TEAM_NOBODY);
+			end
+			ent:SetDisplayName(data.Unownable);
+			ent._Unownable = true;
+		end
+		self.Doors[ent] = data;
 	end
 end
 
+
 -- Called when all good plugins should load their datas. (Normally a frame after InitPostEntity)
 function PLUGIN:LoadData()
-	timer.Simple(FrameTime()*5, self.LoadDoors,self); -- Load the doors in what (if we're lucky) will be 5 frames time.
+	self:LoadDoors();
 end
 
 -- Called when a player attempts to jam a door (ie with a breach)
@@ -122,31 +113,38 @@ function PLUGIN:GetDoorData(door, create)
 	return ret;
 end
 
+local function care(door)
+	return IsValid(door) and door:CreatedByMap() and door:IsDoor() and door:IsOwnable();
+end
+
 -- Called when data needs to be saved
 function PLUGIN:SaveData()
-	local tocode, status, result, count;
-	tocode = {};
-	count = 0;
-	for ent, data in pairs(self.Doors) do -- Loop through our stored door data
-		if (IsValid(ent) and table.Count(data) > 0) then -- Make sure this door exists and has data
-			count = count + 1;
-			tocode[count] = data;
-		else
-			self.Doors[ent] = nil;
+	local ret = {};
+	local stat = 0;
+	local res;
+	for ent, data in pairs(self.Doors) do
+		if (care(ent)) then
+			stat = stat + 1;
+			res = data;
+			if (res.Owner) then
+				res.Owner = res.Owner.Type .. ": " .. res.Owner.UniqueID;
+			end
+			if (res.Master and care(res.Master)) then
+				res.Master = res.Master:MapCreationID();
+			end
+			ret[ent:MapCreationID()] = res;
 		end
 	end
-	if (count < 1) then
-		return
+	if (stat == 0) then return; end
+	stat, res = pcall(glon.encode, ret);
+	if (not stat) then
+		error("["..os.date().."] Doors Plugin: Error GLON encoding "..game.GetMap().."'s door data: "..res);
 	end
-	status, result = pcall(glon.encode, tocode); -- Encode the data with glon.
-	if (status == false) then
-		error("["..os.date().."] Doors Plugin: Error GLON encoding "..game.GetMap().."'s door data: "..result);
-	end
-	file.Write(GM.LuaFolder.."/doors/"..game.GetMap()..".txt", tostring(result));
+	file.Write(GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt", res);
 end
 
 function PLUGIN:EntityNameSet(door, name)
-	if (not (IsValid(door) and door:IsOwnable() and door._isDoor)) then
+	if (not care(door)) then
 		return
 	elseif (not name or name == "") then
 		self:GetDoorData(door).Name = nil;
@@ -157,10 +155,10 @@ function PLUGIN:EntityNameSet(door, name)
 end
 
 function PLUGIN:EntityMasterSet(door,master)
-	if (not (IsValid(door) and door:IsOwnable() and door._isDoor)) then
+	if (not care(door)) then
 		return
 	elseif (IsValid(master)) then
-		self:GetDoorData(door,true).Master = master:GetPos();
+		self:GetDoorData(door,true).Master = master;
 	else
 		self:GetDoorData(door).Master = nil;
 	end
@@ -168,7 +166,7 @@ function PLUGIN:EntityMasterSet(door,master)
 end
 
 function PLUGIN:EntitySealed(door,unsealed)
-	if (not (IsValid(door) and door:IsOwnable() and door._isDoor)) then
+	if (not care(door)) then
 		return
 	elseif (unsealed) then
 		self:GetDoorData(door).Sealed = nil;
@@ -179,20 +177,13 @@ function PLUGIN:EntitySealed(door,unsealed)
 end
 
 function PLUGIN:EntityOwnerSet(ent, owner)
-	if (not (IsValid(ent) and ent:IsOwnable() and ent:IsDoor())) then
+	if (not care(door)) then
 		return;
 	end
-	local data = self:GetDoorData(ent, true);
 	if (not owner) then
-		data.Owner = nil;
+		self:GetDoorData(door).Owner = nil;
 	else
-		if (owner == "team") then
-			deta.Owner = "Team: " .. owner.TeamID;
-		elseif (owner == "group") then
-			data.Owner = "Group: " .. owner.GroupID;
-		elseif (owner == "gang") then
-			data.Owner = "Gang: " .. owner.GangID;
-		end
+		self:GetDoorData(ent, true).Owner = owner;
 	end	if (data.Unownable) then
 		ent:SetDisplayName(data.Unownable);
 	end
@@ -202,7 +193,7 @@ end
 local plugin = PLUGIN;
 cider.command.add("unownable", "s", 0, function(ply, action, ...)
 	local door = ply:GetEyeTraceNoCursor().Entity;
-	if (not (IsValid(door) and door:IsOwnable() and door._isDoor)) then
+	if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
 		return false, "You must look at a valid door!";
 	end
 	door = door:GetMaster() or door;
@@ -214,14 +205,7 @@ cider.command.add("unownable", "s", 0, function(ply, action, ...)
 		door:ClearOwnershipData();
 		local data = plugin:GetDoorData(door);
 		if (data.Owner) then -- Is this door pre-owned by a team or gang?
-			local kind, id = string.match(data.Owner, "(%a+): (.+)");
-			if (kind == "Group") then
-				entity:GiveToGroup(id);
-			elseif (kind == "Gang") then
-				entity:GiveToGang(id);
-			elseif (kind == "Team") then
-				entity:GiveToTeam(id);
-			end
+			door["GiveTo" .. data.Owner.Type](door, data.Owner);
 		end
 		local name = door:GetDoorName()
 		ply:Notify("'"..name.."' is no longer unownable.");
@@ -234,16 +218,9 @@ cider.command.add("unownable", "s", 0, function(ply, action, ...)
 		door._Unownable = true;
 		if (not data.Owner) then
 			door:ClearOwnershipData();
-			door:GiveToTeam(TEAM_NONE);
+			door:GiveToTeam(TEAM_NOBODY);
 		elseif (data.Owner ~= door:GetOwner()) then -- Does someone who shouldn't own this?
-			local kind, id = string.match(data.Owner, "(%a+): (.+)");
-			if (kind == "Group") then
-				entity:GiveToGroup(id);
-			elseif (kind == "Gang") then
-				entity:GiveToGang(id);
-			elseif (kind == "Team") then
-				entity:GiveToTeam(id);
-			end
+			door["GiveTo" .. data.Owner.Type](door, data.Owner);
 		end
 		door:SetDisplayName(name)
 		name = door:GetDoorName()
@@ -251,4 +228,4 @@ cider.command.add("unownable", "s", 0, function(ply, action, ...)
 		GM:Log(EVENT_EVENT,"%s unownable'd %q",ply:Name(),name)
 	end
 	plugin:SaveData();
-end, "Super Admin Commands", "[name|remove]", "Add (and optionally name) or remove an unownable door.", true);
+end, "Super Admin Commands", "<name|remove>", "Add (and optionally name) or remove an unownable door.", true);

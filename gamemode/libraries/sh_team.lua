@@ -148,6 +148,7 @@ function newteam()
 	TEAM.Default = false; -- This is not the default starting team
 	TEAM.Invisible = false; -- This team is not hidden from the client's dermas
 	TEAM.IsTeam = true;
+	TEAM.Type = "Team";
 end
 function newgang()
 	GANG = {}
@@ -165,6 +166,7 @@ function newgang()
 	GANG.Model = "error.mdl"; -- The model this gang will be represented by on the client
 	GANG.Invisible = false -- This gang is not hidden from the client's dermas
 	GANG.IsGang = true;
+	GANG.Type = "Gang";
 end
 function newgroup()
 	GROUP = {}
@@ -182,6 +184,7 @@ function newgroup()
 	GROUP.Valid = true; -- This is a valid group
 	GROUP.Invisible = false; -- This group is not hidden from the client's dermas
 	GROUP.IsGroup = true;
+	GROUP.Type = "Group";
 end
 end
 do
@@ -228,6 +231,14 @@ end
 -- @param id The ID
 -- @return The team in question
 function team.Get(id)
+	return genericget(id, GM.Teams);
+end
+
+---
+-- Gets a team by it's ID
+-- @param id The ID
+-- @return The team in question
+function GM:GetTeam(id)
 	return genericget(id, GM.Teams);
 end
 end
