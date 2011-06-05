@@ -171,7 +171,6 @@ end
 -- @param tojoin What team to join
 -- @return success or failure, failure message.
 function meta:JoinTeam(tojoin)
-	local oldteam;
 	tojoin = team.Get(tojoin);
 	if (not tojoin) then
 		return false, "That is not a valid team!";
@@ -179,10 +178,22 @@ function meta:JoinTeam(tojoin)
 		self:BlacklistAlert("team", tojoin.TeamID, tojoin.name);
 		return false;
 	end
-	timer.Violate(self:UniqueID().." holster");
-	oldteam = self:Team();
-	GM:Log(EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), team.Query(oldteam, "Name", "Unconnected / Joining"), tojoin.Name);
-	self._NextChangeTeam[oldteam] = CurTime() + team.Query(oldteam, "Cooldown", 300); -- Make it so we can't join our old team for x seconds (default 5 mins)
+	local oldteam = self:GetTeam();
+	-- Ensure they're coming from a team that exists in the gamemode.
+	if (oldteam) then
+		-- Prevent stored starting weapons being given to people who don't deserve them.
+		for _, class in pairs(oldteam.StartingEquipment.Weapons) do
+			self._StoredWeapons[class] = nil;
+		end
+		-- Prevent weapons holstering twice
+		timer.Violate(self:UniqueID().." holster");
+		-- Prevent hopping back and forth
+		self._NextChangeTeam[oldteam.TeamID] = CurTime() + team.Cooldown;
+		-- Spam about it
+		GM:Log(EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), oldteam.Name, tojoin.Name);
+	else
+		GM:Log(EVENT_TEAM, "%s changed team to %q", self:Name(), tojoin.Name);
+	end
 	self:SetTeam(tojoin.TeamID);
 	self._Job = tojoin.Name;
 	self:SetNWString("Job", self._Job);
