@@ -190,7 +190,7 @@ end
 do
 local function genericget(id, tab)
 	local nid = tonumber(id)
-	if (nid and tab[nid]) then
+	if (nid) then
 		return tab[nid];
 	elseif (type(id) == "table") then
 		return id;

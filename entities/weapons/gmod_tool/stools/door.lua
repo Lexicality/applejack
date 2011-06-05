@@ -76,7 +76,7 @@ function TOOL:LeftClick(tr)
 	ent:Spawn();
 	ent:Activate();
 	ent._Autoclose = math.max(self:GetClientNumber("closetime"),5);
-	cider.entity.makeOwnable(ent);
+	ent:MakeOwnable();
 	timer.Simple(0,function()
 		ply:GiveDoor(ent,ply:GetName().."'s door",true);
 		ent:Lock();

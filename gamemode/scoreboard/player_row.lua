@@ -54,7 +54,7 @@ function PANEL:Paint()
 	color.a = 255
 	-- Since the above apparently doesn't work, desperately try attacking render.
 	render.SetBlend(1);
-	render.SetColorModulation
+	render.SetColorModulation(1,1,1);
 	-- Check if we're sliding
 	if ( self.Open || self.Size ~= self.TargetSize ) then
 	

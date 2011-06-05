@@ -7,11 +7,18 @@ local PANEL = {};
 
 -- Store the changelog in a string.
 PANEL.changelog = [[
+[05/06/2011]
+[Fixed] Typo preventing prop spawning
+[Fixed] Exploit that let people keep their spawn weapons
 [04/06/2011]
 [Fixed] USP45 + G3SG1 having the wrong shot sounds
 [Changed] G3SG1 is no longer silenced.
 [Fixed] /wakeupall now wakes everyone up instead of knocking them out
 [Changed] Made it more clear who had access to what abuse commands.
+[Changed] Doors plugin uses a completely different save system now (and so shouldn't break as much)
+[Fixed] The scoreboard fading SOME MORE. >:C
+[Fixed] Quartermaster showing up as Secretary
+[Changed] Permanotifications only flash a few times now
 [03/06/2011]
 [Fixed] /demote breaking the logging system
 [Fixed] Infinite size teams showing up wrong in the character menu

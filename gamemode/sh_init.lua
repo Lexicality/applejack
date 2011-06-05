@@ -153,7 +153,6 @@ gamemode.Call("LibrariesLoaded");
 -- Check if we're running on the server.
 if (SERVER) then
 	include("sv_commands.lua")
-	include("sv_umsgs.lua")
 	AddCSLuaFile("cl_content.lua")
 else
 	include("cl_content.lua")

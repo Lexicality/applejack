@@ -166,6 +166,12 @@ local function jobtimer(ply)
 	ply:Notify("You have reached the timelimit for this job!", 1);
 	ply:Demote();
 end
+local function TeamChange(ply, id)
+	-- Tell the client they can't join this team again.
+	umsg.Start("TeamChange", ply);
+	umsg.Char(id);
+	umsg.End();
+end
 ---
 -- Makes the player join a specific team with associated actions
 -- @param tojoin What team to join
@@ -188,9 +194,11 @@ function meta:JoinTeam(tojoin)
 		-- Prevent weapons holstering twice
 		timer.Violate(self:UniqueID().." holster");
 		-- Prevent hopping back and forth
-		self._NextChangeTeam[oldteam.TeamID] = CurTime() + team.Cooldown;
+		self._NextChangeTeam[oldteam.TeamID] = CurTime() + oldteam.Cooldown;
 		-- Spam about it
 		GM:Log(EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), oldteam.Name, tojoin.Name);
+		-- Tell the client they can't join this team again.
+		timer.Simple(0, TeamChange, self, oldteam.TeamID);
 	else
 		GM:Log(EVENT_TEAM, "%s changed team to %q", self:Name(), tojoin.Name);
 	end
@@ -210,10 +218,6 @@ function meta:JoinTeam(tojoin)
 	self._Salary = tojoin.Salary;
 	gamemode.Call("PlayerAdjustSalary", self);
 
-	-- Tell the client they can't join this team again.
-	umsg.Start("TeamChange", self);
-	umsg.Char(oldteam);
-	umsg.End();
 	
 	-- Some tidying up
 	-- Unwarrant the player.

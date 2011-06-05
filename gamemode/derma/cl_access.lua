@@ -113,8 +113,11 @@ local function handlePlys(self)
 				item:SetButton(ply ~= lpl and accessmenu.owned);
 				subsublist:AddItem(item);
 			end
+			subsublist:Rebuild();
 		end
-	end	
+		sublist:Rebuild();
+	end
+	self.itemsList:Rebuild();
 end
 
 local function handleTeams(self)
@@ -150,7 +153,9 @@ local function handleTeams(self)
 			item:SetButton(accessmenu.owned);
 			sublist:AddItem(item);
 		end
+		sublist:Rebuild();
 	end
+	self.itemsList:Rebuild();
 end
 
 local function handleGangs(self)
@@ -190,7 +195,9 @@ local function handleGangs(self)
 			item:SetButton(accessmenu.owned);
 			sublist:AddItem(item);
 		end
+		sublist:Rebuild();
 	end
+	self.itemsList:Rebuild();
 end
 
 -- Called every frame.

@@ -12,7 +12,7 @@ local function spawnImmunity(hudBox)
 	if (not (time > 0 and lpl:Alive() and lpl:Team() == TEAM_MAYOR)) then
 		return -1;
 	end
-	timeleft = time - CurTime();
+	timeleft = math.ceil(time - CurTime());
 	if (timeleft <= 0) then
 		lpl._SpawnImmunityTime = 0;
 		return -1;

@@ -11,12 +11,7 @@ Changelog:
 
 PLUGIN.Name = "Doors";
 PLUGIN.Doors = {};
-local getFuncs = {
-	Group = function(id)
-		return GM:GetGroup(id);
-	end;
-	Gang = function(id)
-		return GM:GetGang(id)
+
 function PLUGIN:LoadDoors()
 	self.Doors = {};
 	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
