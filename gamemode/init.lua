@@ -279,7 +279,7 @@ function GM:PlayerCanSpawnProp(ply, mdl)
 		end
 	end
 	local ent = ents.Create("prop_physics")
-	ent:SetModel(model)
+	ent:SetModel(mdl)
 	local radius = ent:BoundingRadius()
 	ent:Remove()
 	ent = nil
