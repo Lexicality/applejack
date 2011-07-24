@@ -16,6 +16,7 @@ function PLUGIN:LoadDoors()
 	self.Doors = {};
 	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
 	if (not file.Exists(path)) then
+		error("Can't find the path '" .. path .. "'!");
 		return;
 	end
 	local stat, res = pcall(glon.decode, file.Read(path));

@@ -156,7 +156,6 @@ function meta:TakeDoor(door, norefund)
 	self:TakeCount("doors", door)
 	-- Give the player a refund for the door if we're not forcing it to be taken.
 	if (not norefund) then
-		print("wefund")
 		self:GiveMoney(GM.Config["Door Cost"] / 2);
 	end
 end
@@ -305,7 +304,6 @@ end
 
 local function doforce(ragdoll, velocity)
 	if (IsValid(ragdoll) and IsValid(ragdoll:GetPhysicsObject())) then
-		--print("setting ",ragdoll,"'s velocity to ",velocity);
 		ragdoll:GetPhysicsObject():SetVelocity(velocity);
 	end
 end
@@ -587,7 +585,6 @@ local function handleKnownKey(ply, k, v)
 	elseif (a == "number") then
 		ply.cider[k] = tonumber(v) or 0;
 	elseif (a == "GLON") then
-		print("it's a GLON table!");
 		local s,r = pcall(glon.decode, v);
 		if not s then
 			ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..r.."'\n");
@@ -603,21 +600,14 @@ end
 
 -- Called if a player has saved data
 local function loadCallback(ply, data)
---	print("loadCallback");
 	for k,v in pairs(data) do
---		print("Just hit ",k," ",v);
 		if (player.loadIgnoreKeys[k]) then
---			print("Ignoring ",k);
 		elseif (player.loadKnownKeys[k]) then
---			print("Known key ", k);
 			handleKnownKey(ply, k, v);
 		else
---			print("dunno what ", k, "is!");
 			if (tonumber(v)) then
---				print("it's a number!");
 				ply.cider[k] = tonumber(v);
 			elseif (v:sub(1,1):byte() == 2) then
---				print("it's a GLON table!");
 				local a,b = pcall(glon.decode, v);
 				if not a then
 					ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..b.."'\n");
@@ -625,7 +615,6 @@ local function loadCallback(ply, data)
 					ply.cider[k] = b or {};
 				end
 			elseif (v == "true" or v == "false") then
---				print("it's a boolean!");
 				ply.cider[k] = tobool(v);
 			else
 				ply.cider[k] = tostring(v);
@@ -685,16 +674,12 @@ local function getKVs(ply)
 	local keys, values = {}, {};
 	local value;
 	for k,v in pairs(ply.cider) do
---		print(k,v)
 		value = nil;
 		if (player.saveIgnoreKeys[k]) then
---			print"ignoran"
 			value = false;
 		elseif (player.saveFunctions[k]) then
---			print"funcshan"
 			value = player.saveFunctions[k](ply, v);
 		elseif (type(v) == "table") then
---			print"table"
 			local s, r = pcall(glon.encode, v);
 			if (not s) then
 				ErrorNoHalt("["..os.date().."] Error encoding "..ply:Name().."'s '"..k.."' table: "..r.."\n");
@@ -702,14 +687,11 @@ local function getKVs(ply)
 				value = r;
 			end
 		elseif (player.saveEscapeKeys[k]) then
---			print"escapan"
 			value = tmysql.escape(tostring(v));
 		else
---			print"strang"
 			value = tostring(v);
 		end
 		if (value) then
---			print"savan"
 			table.insert(keys, k);
 			table.insert(values, value);
 		end
@@ -747,7 +729,6 @@ end
 function meta:SaveData(create)
 	if (not self._Initialized) then return end
 	local query = create and createCreateQuery(self) or createUpdateQuery(self);
---	print(query);
 	local name = self:Name(); -- In case they leave and then cause an error.
 	tmysql.query(query, function(r, s, e)
 		if (e ~= 0) then
@@ -875,7 +856,6 @@ end
 -- Adds an amount of money to the player's money count and triggers an alert on the client.
 -- @param amount How much money to add (can be negative)
 function meta:GiveMoney(amount)
-	print("Giving $",amount,"to",self:GetName());
 	self.cider._Money = math.max(self.cider._Money + amount, 0);
 	SendUserMessage("MoneyAlert", self, amount);
 end
