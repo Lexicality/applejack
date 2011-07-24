@@ -1419,48 +1419,37 @@ cider.command.add("setname","s",1,function(ply,arguments)
 	hook.Call("EntityNameSet",GAMEMODE,entity,words)
 end, "Super Admin Commands", "<name>", "Set the name of a door")
 
-cider.command.add("setowner","s",1,function(ply,kind,id,gangid)
-	local entity = ply:GetEyeTraceNoCursor().Entity
-	if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
-		return false,"That is not a valid door!"
+cider.command.add("setowner","s",1,function(ply, kind, id)
+	local ent = ply:GetEyeTraceNoCursor().Entity
+	if (not (IsValid(ent) and ent:IsOwnable())) then
+		return false, "You cannot set the owner of this!";
 	end
-	entity = entity:GetMaster() or entity
-	local target
-	local name
-	if kind == "player" then
-		target = player.Get(id)
-		if not target then return false, "Invalid player specified!" end
-		entity:GiveToPlayer(target)
-		name = target:Name()
-	elseif kind == "team" then
-		target = team.Get(id)
-		if not target then return false, "Invalid team specified!" end
-		name = target.name
-		target = target.index
-		entity:GiveToTeam(target)
-	elseif kind == "gang" and gangid then
-		print("gange")
-		id = tonumber(id);
-		gangid = tonumber(gangid);
-		if not (GM.Gangs[id] and GM.Gangs[id].GangID) then --cider.team.gangs[id] and cider.team.gangs[id][gangid]) then
-			return false,"Invalid gang"
-		end
-		entity:GiveToGang(gangid);
-		name = GM.Gangs[id].Name -- cider.team.gangs[id][gangid][1]
-		target = {id,gangid};
-	elseif kind == "remove" then
-		entity:ClearOwnershipData(); -- cider.entity.clearData(entity,true)
-		target = ""
+	kind = string.lower(kind);
+	-- Slavery
+	ent = ent:GetMaster() or ent;
+	if (kind == "none") then
+		ent:ClearOwnershipData();
+		GM:Log(EVENT_ENTITY, "%s wiped the ownership data on %s",
+			ply:Name(), ent:GetNWString("Name", "an entity"));
+		gamemode.Call("EntityOwnerSet", ent, nil)
+		return;
 	end
-	if not target then
-		return false, "Invalid target!"
-	end;
-	
-	--cider.entity.updateSlaves(entity)
-	
-	hook.Call("EntityOwnerSet",GAMEMODE,entity,kind,target)
-	GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"),name)
-end, "Super Admin Commands", "<player|team|gang|remove> [identifier] [gang identifier]", "Set the owner of a door",true)
+	-- Motherfucking miricles
+	local kind_ = string.upper(string.sub(kind, 1, 1)) .. string.sub(kind, 2);
+	local func = GM["Get" .. kind_];
+	if (not func) then
+		return false, "Unknown kind '" .. kind .. "'!";
+	end
+	local target = func(GM, id);
+	if (not target) then
+		return false, "Unknown " .. kind .. " '" .. id .. "'";
+	end
+	ent["GiveTo" .. kind_](ent, target);
+	local name = target.IsPlayer and target:Name() or target.Name;
+	gamemode.Call("EntityOwnerSet", ent, target)
+	GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.", 
+		ply:Name(), ent:GetNWString("Name", "an entity"), name);
+end, "Super Admin Commands", "<player|team|group|gang|none> [identifier]", "Set the owner of a door", true);
 
 cider.command.add("a","a",1,function(ply,arguments)
 	local text = table.concat(arguments," ")

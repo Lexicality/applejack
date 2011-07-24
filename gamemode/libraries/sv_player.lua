@@ -118,6 +118,10 @@ function player.Get(id)
 	end
 	return res;
 end
+-- Compat
+function GM:GetPlayer(id)
+	return player.Get(id);
+end
 
 ---
 -- Notifies every player on the server that has the specified access.
