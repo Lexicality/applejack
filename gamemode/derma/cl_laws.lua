@@ -18,7 +18,13 @@ function PANEL:Init()
 	self.itemsList:EnableVerticalScrollbar();
 end
 
+-- TODO: Rewrite this towering pile of shit.
+local lteam = -1;
 function PANEL:Think()
+	if (lpl:Team() ~= lteam) then
+		cider.laws.update = true;
+		lteam = lpl:Team();
+	end
 	if !cider.laws.update then return end
 	cider.laws.update = false
 	-- Get the asploded text.
