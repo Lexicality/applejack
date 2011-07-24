@@ -59,6 +59,7 @@ function PLUGIN:LoadDoors()
 				continue;
 			end
 			ent["GiveTo" .. kind](ent, owner);
+			data.Owner = owner;
 		end
 		if (data.Name) then
 			ent:SetNWString("Name", data.Name);
@@ -116,16 +117,26 @@ end
 function PLUGIN:SaveData()
 	local ret = {};
 	local stat = 0;
-	local res;
+	local res, str;
 	for ent, data in pairs(self.Doors) do
 		if (care(ent)) then
 			stat = stat + 1;
-			res = data;
-			if (res.Owner) then
-				res.Owner = res.Owner.Type .. ": " .. res.Owner.UniqueID;
+			res = table.Copy(data);
+			if (data.Owner) then
+				--[[
+				print(type(res.Owner), res.Owner);
+				print(type(res.Owner.Type), res.Owner.Type);
+				print(type(res.Owner.UniqueID), res.Owner.UniqueID);
+				print(res.Owner, res.Owner.Type, res.Owner.UniqueID);
+				str = res.Owner.Type 
+					.. ": "
+					.. res.Owner.UniqueID;
+				res.Owner = str;
+				--]]
+				res.Owner = data.Owner.Type .. ": " .. data.Owner.UniqueID;
 			end
-			if (res.Master and care(res.Master)) then
-				res.Master = res.Master:MapCreationID();
+			if (data.Master and care(data.Master)) then
+				res.Master = data.Master:MapCreationID();
 			end
 			ret[ent:MapCreationID()] = res;
 		end
@@ -175,11 +186,13 @@ function PLUGIN:EntityOwnerSet(ent, owner)
 	if (not care(ent)) then
 		return;
 	end
-	if (not owner) then
+	if (not owner or owner.IsPlayer) then
 		self:GetDoorData(ent).Owner = nil;
 	else
 		self:GetDoorData(ent, true).Owner = owner;
-	end	if (data.Unownable) then
+	end
+	local data = self:GetDoorData(ent);
+	if (data.Unownable) then
 		ent:SetDisplayName(data.Unownable);
 	end
 	self:SaveData();
