@@ -57,15 +57,15 @@ SWEP.Secondary.DefaultClip = -1;
 
 -- Set some information about the recoil and spray.
 SWEP.RecoverTime = 1;
-SWEP.MinSpread = 0.5;
-SWEP.MaxSpread = 5;
-SWEP.DeltaSpread = 0.5;
+SWEP.MinSpread = 0;
+SWEP.MaxSpread = 2;
+SWEP.DeltaSpread = 0.3;
 SWEP.MinRecoil = 5;
 SWEP.MaxRecoil = 5;
 SWEP.DeltaRecoil = 2;
 SWEP.MinSpray = 0;
-SWEP.MaxSpray = 2;
-SWEP.DeltaSpray = 0.5;
+SWEP.MaxSpray = 0.5;
+SWEP.DeltaSpray = 0.1;
 
 -- Set some information about the iron sights.
 SWEP.IronSightsPos = Vector(5.4341, -6.4904, 2.0689);

@@ -441,6 +441,7 @@ end
 -- We need to call ResetVars() on these functions so we don't whip out a weapon with scope mode or insane recoil right of the bat or whatnot
 function SWEP:Holster(wep)
 	--MsgN"Holster!"
+	--[[
 	if self.NextHolster and self.NextHolster >= CurTime() then
 		if SERVER then
 			timer.Simple(0,function()
@@ -452,6 +453,7 @@ function SWEP:Holster(wep)
 		end
 		return false
 	end
+	--]]
 	if SERVER and ValidEntity(self.Owner) and self.Owner:Alive() and not self.Owner._Deaded then
 		timer.Violate(self.Owner:UniqueID().." holster");
 		if not self.Owner:KnockedOut() then
@@ -934,9 +936,14 @@ function SWEP:PrimaryAttack()
 			if self.dt.silenced then
 				self.Weapon:SendWeaponAnim(ACT_VM_DETACH_SILENCER)
 				self.dt.silenced = false;
+				-- Sounds
+				self.Primary.sound = self.Primary.Sound
+				self.Primary.Sound = self.Primary.SilencedSound
 			else
 				self.Weapon:SendWeaponAnim(ACT_VM_ATTACH_SILENCER)
 				self.dt.silenced = true;
+				-- Sounds
+				self.Primary.Sound = self.Primary.sound
 			end
 			self.Weapon:SetNextPrimaryFire( CurTime() + 2.1 )
 		end
@@ -947,17 +954,6 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:Think()
-	if self.Weapon then
-		if self.HasSilencer then
-			-- OPTIMIZE: What the fuck?
-			if self.dt.silenced then
-				self.Primary.sound = self.Primary.Sound
-				self.Primary.Sound = self.Primary.SilencedSound
-			else
-				self.Primary.Sound = self.Primary.sound
-			end
-		end
-	end
 	if self.HasLaser then
 		if (self.LaserLastRespawn + self.LaserRespawnTime) < CurTime() then
 			local effectdata = EffectData()
