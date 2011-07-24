@@ -100,9 +100,7 @@ function PLUGIN:GetDoorData(door, create)
 	if (self.Doors[door]) then
 		ret = self.Doors[door];
 	elseif (create) then
-		ret = {
-			Position = door._StartPos or door:GetPos();
-		}
+		ret = {}
 		self.Doors[door] = ret;
 	else
 		ret = {};
@@ -174,11 +172,11 @@ function PLUGIN:EntitySealed(door,unsealed)
 end
 
 function PLUGIN:EntityOwnerSet(ent, owner)
-	if (not care(door)) then
+	if (not care(ent)) then
 		return;
 	end
 	if (not owner) then
-		self:GetDoorData(door).Owner = nil;
+		self:GetDoorData(ent).Owner = nil;
 	else
 		self:GetDoorData(ent, true).Owner = owner;
 	end	if (data.Unownable) then
