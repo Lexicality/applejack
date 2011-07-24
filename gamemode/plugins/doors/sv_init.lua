@@ -61,7 +61,7 @@ function PLUGIN:LoadDoors()
 			ent["GiveTo" .. kind](ent, owner);
 		end
 		if (data.Name) then
-			entity:SetNWSTring("Name", data.Name);
+			ent:SetNWSTring("Name", data.Name);
 		end
 		if (data.Unownable) then
 			if (not data.Owner) then
