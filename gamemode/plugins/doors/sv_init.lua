@@ -16,20 +16,21 @@ function PLUGIN:LoadDoors()
 	self.Doors = {};
 	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
 	if (not file.Exists(path)) then
-		error("Can't find the path '" .. path .. "'!");
+		ErrorNoHalt("[",os.date(),"] Doors Plugin: cannot find the file " .. path .. "!\n");
 		return;
 	end
 	local stat, res = pcall(glon.decode, file.Read(path));
 	if (not stat) then
 		error("["..os.date().."] Doors Plugin: Error GLON decoding '"..path.."': "..res);
-	elseif (not results) then
+	elseif (not res) then
+		ErrorNoHalt("[",os.date(),"] Doors Plugin: No results for map " .. game.GetMap() .. "!\n");
 		return;
 	end
 	local ent, ment;
 	for id, data in pairs(res) do
 		ent = ents.GetMapCreatedEntity(id);
 		if (not IsValid(ent)) then
-			ErrorNoHalt("[",os.date(),"] Doors Plugin: No such entity '", id, "' as specified for map ", game.GetMap(), " in the stored data!");
+			ErrorNoHalt("[",os.date(),"] Doors Plugin: No such entity '", id, "' as specified for map ", game.GetMap(), " in the stored data!\n");
 			continue;
 		end
 		if (data.Master) then
