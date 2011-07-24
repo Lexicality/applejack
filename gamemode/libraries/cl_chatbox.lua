@@ -818,6 +818,7 @@ end
 
 -- Called when a player says something or a message is received from the server.
 function cider.chatBox.chatText(index, name, text, filter)
+	filter = string.lower(filter);
 	local class = filter;
 	local filtered = false;
 	
