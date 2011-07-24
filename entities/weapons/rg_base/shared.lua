@@ -937,13 +937,13 @@ function SWEP:PrimaryAttack()
 				self.Weapon:SendWeaponAnim(ACT_VM_DETACH_SILENCER)
 				self.dt.silenced = false;
 				-- Sounds
-				self.Primary.sound = self.Primary.Sound
-				self.Primary.Sound = self.Primary.SilencedSound
+				self.Primary.Sound = self.Primary.sound
 			else
 				self.Weapon:SendWeaponAnim(ACT_VM_ATTACH_SILENCER)
 				self.dt.silenced = true;
 				-- Sounds
-				self.Primary.Sound = self.Primary.sound
+				self.Primary.sound = self.Primary.Sound
+				self.Primary.Sound = self.Primary.SilencedSound
 			end
 			self.Weapon:SetNextPrimaryFire( CurTime() + 2.1 )
 		end
