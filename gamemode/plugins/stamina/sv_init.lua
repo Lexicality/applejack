@@ -45,7 +45,7 @@ function PLUGIN:PlayerTenthSecond(ply)
 		ply:Incapacitate();
 		ply:SetNWBool("Exausted", true)
 	elseif ply:GetNWBool"Exausted" then
-		if (ply._Stamina >= 50) then
+		if (ply._Stamina >= 25) then
 			ply:SetNWBool("Exausted", false);
 			ply:Recapacitate();
 		end
