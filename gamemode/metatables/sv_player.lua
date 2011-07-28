@@ -816,10 +816,13 @@ end
 -- @return True if they can pick it up, false if they can't.
 function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     if (pObject == NULL) then
+        print"null"
         return false;
     elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
+        print"movetype"
         return false;
     elseif (self:GetGroundEntity() == pObject) then
+        print"ground entity"
         return false;
     end
 
@@ -833,6 +836,7 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     local count = pObject:GetPhysicsObjectCount();
      
     if (not count) then
+        print"no physobjs"
         return false;
     end
      
@@ -843,6 +847,7 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
         local pList = pObject:GetPhysicsObjectNum(i);
         objectMass = objectMass + pList:GetMass();
         if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
+            print"flag"
             return false;
         --[[elseif ( pList:IsHinged() ) then -- Not possible now
             return false;]]
@@ -852,8 +857,10 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     end
      
     if (massLimit > 0 and objectMass > massLimit) then
+        print("mass:",objectMass, massLimit);
         return false;
     elseif (checkEnable and not pObject:HasSpawnFlags(64)) then
+        print("checkEnable")
         return false;
     end
      
@@ -864,9 +871,11 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
         local sizey = maxs.y - mins.y;
         local sizex = maxs.x - mins.x;
         if (sizex > sizeLimit or sizey > sizeLimit or sizez > sizeLimit) then
+            print("size", sizex, sizeLimit, sizey, sizeLimit, sizez, sizeLimit)
             return false;
         end
     end
+    return true;
 end
 
 ----------------------------

@@ -102,10 +102,13 @@ function SWEP:PrimaryAttack()
     end
     local dmg = DamageInfo();
     dmg:SetAttacker(ply);
-    dmg:SetInflcitor(self);
+    dmg:SetInflictor(self);
     dmg:SetDamage(self.Primary.Damage);
     -- TODO: Is this adequate knockbock?
-    dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass());
+    local phys = ent:GetPhysicsObject();
+    if (IsValid(phys) and phys:IsMoveable()) then
+        dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass() * 10000);
+    end
     dmg:SetDamagePosition(tr.HitPos);
     if (self:GetDTBool(1)) then -- super
         -- Wheeee :D
@@ -154,11 +157,33 @@ function SWEP:SecondaryAttack()
         ent:UnLock();
         ent:EmitSound("doors/door_latch3.wav");
     else
-        self:Pickup(ent, tr);
+        self:PickUp(ent, tr);
     end
 end
 
 
+function SWEP:Reload()
+	if (not (self.Owner:IsAdmin() and self.Owner:KeyDown(IN_SPEED)) or self.Primary.NextSwitch > CurTime()) then
+        return false;
+    elseif (self.Primary.Super) then
+        self.Primary.PunchAcceleration = 100
+        self.Primary.ThrowAcceleration = 200
+        self.Primary.Damage = 1.5
+        self.Primary.Super = false
+        self.Primary.Refire = 1
+        self.Owner:PrintMessage(HUD_PRINTCENTER, "Super mode disabled")
+        self:SetDTBool(1, false);
+    else
+        self.Primary.PunchAcceleration = 500
+        self.Primary.ThrowAcceleration = 1000
+        self.Primary.Damage = 200
+        self.Primary.Super = true
+        self.Primary.Refire = 0
+        self.Owner:PrintMessage(HUD_PRINTCENTER, "Super mode enabled")
+        self:SetDTBool(1, true);
+    end
+    self.Primary.NextSwitch = CurTime() + 1
+end
 
 
 
@@ -213,12 +238,15 @@ end
 
 function SWEP:PickUp(ent, tr)
     if (ent.held) then
+        print"held"
         return;
     end
     if (IsValid(self.HeldEnt)) then
+        print"held2"
         return;
     end
-    if (not self.Owner:CanPickup(ent)) then
+    if (not self.Owner:CanPickupObject(ent)) then
+        print"cant pick up"
         return;
     end
     -- TODO: What happens if you pickup a ragdoll?
