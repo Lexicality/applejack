@@ -40,7 +40,7 @@ function PLUGIN:PlayerAdjustRadioRecipients(ply, text, recipients)
 	for k in pairs(recipients) do
 		recipients[k] = nil;
 	end
-	for _,id in pairs(self.group.teams) do
+	for _,id in pairs(self.group.Teams) do
 		table.Add(recipients, team.GetPlayers(id));
 	end
 end
