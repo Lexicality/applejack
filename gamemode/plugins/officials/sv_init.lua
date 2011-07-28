@@ -122,7 +122,9 @@ function PLUGIN:PlayerCanUnarrest(ply, target)
 end
 
 local function tmr(ply)
-	ply:GodDisable();
+    if (IsValid(ply)) then
+        ply:GodDisable();
+    end
 end
 -- Called when a player spawns.
 function PLUGIN:PostPlayerSpawn(ply, light, teamchange)
