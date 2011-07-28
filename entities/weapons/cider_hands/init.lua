@@ -107,7 +107,7 @@ function SWEP:PrimaryAttack()
     -- TODO: Is this adequate knockbock?
     local phys = ent:GetPhysicsObject();
     if (IsValid(phys) and phys:IsMoveable()) then
-        dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass() * 10000);
+        dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass() * 10);
     end
     dmg:SetDamagePosition(tr.HitPos);
     if (self:GetDTBool(1)) then -- super
@@ -252,6 +252,8 @@ function SWEP:PickUp(ent, tr)
     -- TODO: What happens if you pickup a ragdoll?
     --       If it doesn't work, then make a small prop, weld that to the physbone and then pickup that.
     self.Owner:PickupObject(ent);
+    self.HeldEnt = ent;
+    ent.held = true;
 end
 --[[
 	if ent.held then return end
@@ -297,6 +299,8 @@ function SWEP:DropObject(acceleration)
     if (IsValid(phys)) then
         phys:ApplyForceCenter(self.Owner:GetAimVector() * pent:GetMass() * acceleration);
     end
+    self.HeldEnt.held = nil;
+    self.HeldEnt = nil;
 end
 
 
