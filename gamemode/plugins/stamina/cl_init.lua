@@ -16,7 +16,7 @@ function PLUGIN:PlayerBindPress(player, bind, pressed)
 	
 	-- Check if the stamina is smaller than 10.
 	if not player:KnockedOut()
-	and player:GetNWBool"Exausted"
+	and player:GetNWBool"Exhausted"
 	and bind:find"+jump" then
 		return true;
 	end

@@ -12,7 +12,7 @@ end
 
 -- Called when a player presses a key.
 function PLUGIN:KeyPress(ply, key)
-	if  (not (ply:InVehicle() or ply:Arrested() or ply:Tied() or ply:GetNWBool"cider_Exausted")
+	if  (not (ply:InVehicle() or ply:Arrested() or ply:Tied() or ply:GetNWBool"cider_Exhausted")
 	and (ply:Alive() and not ply:KnockedOut())
 	and (ply:IsOnGround() and key == IN_JUMP)) then
 		ply._Stamina = math.Clamp(ply._Stamina - 5, 0, 100);
@@ -25,7 +25,7 @@ function PLUGIN:PlayerTenthSecond(ply)
 	if (ply:Arrested() or ply:Tied() or ply._HoldingEnt or (ply:GetMoveType() == MOVETYPE_NOCLIP and not (inVehicle and ply._Stamina < 100))) then
 		return;
 	end
-	if (not inVehicle and ply:KeyDown(IN_SPEED) and ply:Alive() and not ply:KnockedOut() and not ply:GetNWBool"Exausted"
+	if (not inVehicle and ply:KeyDown(IN_SPEED) and ply:Alive() and not ply:KnockedOut() and not ply:GetNWBool"Exhausted"
 	and ply:GetVelocity():Length() > 0) then
 		if (ply:Health() < 50) then
 			ply._Stamina = math.max(ply._Stamina - (GM.Config["Stamina Drain"] + ( ( 50 - ply:Health() ) * 0.05 ) ), 0);
@@ -43,13 +43,13 @@ function PLUGIN:PlayerTenthSecond(ply)
 	-- Check the player's stamina to see if it's at it's maximum.
 	if (ply._Stamina <= 1) then
 		ply:Incapacitate();
-		ply:SetNWBool("Exausted", true)
-	elseif ply:GetNWBool"Exausted" then
+		ply:SetNWBool("Exhausted", true)
+	elseif ply:GetNWBool"Exhausted" then
 		if (ply._Stamina >= 25) then
-			ply:SetNWBool("Exausted", false);
+			ply:SetNWBool("Exhausted", false);
 			ply:Recapacitate();
 		end
-		-- If you get exausted, it takes a while to wear off. ;)
+		-- If you get exhausted, it takes a while to wear off. ;)
 	else
 		local r = ply._Stamina / 100
 		ply:SetRunSpeed((GM.Config["Run Speed"] - GM.Config["Walk Speed"]) * r + GM.Config["Walk Speed"]);
@@ -61,7 +61,7 @@ function PLUGIN:PlayerTenthSecond(ply)
 end
 
 function PLUGIN:PlayerCanBeRecapacitated(ply)
-	if (ply:GetNWBool("Exausted")) then
+	if (ply:GetNWBool("Exhausted")) then
 		return false;
 	end
 end

@@ -806,6 +806,69 @@ function meta:GetMoney()
 	return self.cider._Money;
 end
 
+---
+-- Checks if a player is able to pick up an entity based on various limits.
+-- This is a Lua version of CBasePlayer::CanPickupObject kindly ported by blackops7799 and then tweaked by me.
+-- You can find the original at http://goo.gl/FEFFE
+-- @param pObject The entity you wish to pick up
+-- @param massLimit The maximum mass the entity may possess.
+-- @param sizeLimit The maximum size the entity may be in the X, Y or Z planes. (Diagonal lengths ignored)
+-- @return True if they can pick it up, false if they can't.
+function meta:CanPickupObject( pObject, massLimit, sizeLimit )
+    if (pObject == NULL) then
+        return false;
+    elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
+        return false;
+    elseif (self:GetGroundEntity() == pObject) then
+        return false;
+    end
+
+    if (not massLimit) then
+        massLimit = 35;
+    end
+    if (not sizeLimit) then
+        sizeLimit = 128;
+    end
+     
+    local count = pObject:GetPhysicsObjectCount();
+     
+    if (not count) then
+        return false;
+    end
+     
+    local objectMass = 0;
+    local checkEnable = false;
+         
+    for i = 0, count - 1 do
+        local pList = pObject:GetPhysicsObjectNum(i);
+        objectMass = objectMass + pList:GetMass();
+        if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
+            return false;
+        --[[elseif ( pList:IsHinged() ) then -- Not possible now
+            return false;]]
+        elseif (not pList:IsMoveable()) then
+            checkEnable = true;
+        end
+    end
+     
+    if (massLimit > 0 and objectMass > massLimit) then
+        return false;
+    elseif (checkEnable and not pObject:HasSpawnFlags(64)) then
+        return false;
+    end
+     
+    if (sizeLimit > 0) then       
+        local maxs = pObject:OBBMaxs();
+        local mins = pObject:OBBMins();
+        local sizez = maxs.z - mins.z;
+        local sizey = maxs.y - mins.y;
+        local sizex = maxs.x - mins.x;
+        if (sizex > sizeLimit or sizey > sizeLimit or sizez > sizeLimit) then
+            return false;
+        end
+    end
+end
+
 ----------------------------
 --    Action Functions    --
 ----------------------------

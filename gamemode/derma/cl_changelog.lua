@@ -7,6 +7,16 @@ local PANEL = {};
 
 -- Store the changelog in a string.
 PANEL.changelog = [[
+[27/06/2011]
+[Changed] Stamina exhaustion is now only 25%
+[Changed] Rewrote hands, they should glitch less.
+[Changed] Hands now use the HL2 pickup system instead of glitchy one.
+[Fixed] Unable to use admin/mod chat in some circumstances.
+[24/06/2011]
+[Fixed] Being unable to talk while tied/arrested
+[Fixed] Gun duplication glitch involving auto demotion and incapacitation.
+[Fixed] Silenced weapons all having the same noise
+[Changed] G3SG1 is now unsilenced.
 [05/06/2011]
 [Fixed] Typo preventing prop spawning
 [Fixed] Exploit that let people keep their spawn weapons
