@@ -192,7 +192,7 @@ config["sv_tags"] = {
 } -- tags you want added to the sv_tags convar
 config["Usable Commands"] = {
 	"demote","blacklist","unblacklist","giveaccess","takeaccess","giveitem","save","pm","job","clan","gender","laws","ooc","looc",
-	"knockout","knockoutall","wakeup","wakeupall","arrest","unarrest","spawn","awarrant","tie","untie"
+	"knockout","knockoutall","wakeup","wakeupall","arrest","unarrest","spawn","awarrant","tie","untie","a","m","s"
 }; -- Commands that players may use at any time
 config["Default Inventory"] = {
 	health_vial = 5,
