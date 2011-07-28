@@ -759,7 +759,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 		ply:ExitVehicle()
 	end
 	if (ply:GetNWBool("Typing") and IsValid(attacker) and attacker:IsPlayer()) then
-		player.NotifyAll(nil, "%s (%s) killed %s while " .. ply._GenderWord == "his" and "he" or "she" .. " was typing!", attacker:Name(), attacker:SteamID(), ply:Name());
+		player.NotifyAll("%s (%s) killed %s while " .. ply._GenderWord == "his" and "he" or "she" .. " was typing!", nil, attacker:Name(), attacker:SteamID(), ply:Name());
 	end
 	if ValidEntity(ply._BackGun) then
 		ply._BackGun:Remove()
