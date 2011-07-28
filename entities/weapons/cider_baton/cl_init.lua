@@ -20,18 +20,10 @@ killicon.AddFont( "cider_baton", "Titlefont", SWEP.IconLetter, Color( 255, 80, 0
 
 -- Called when the player attempts to primary fire.
 function SWEP:PrimaryAttack()
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
-	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay);
-	-- Set the animation of the owner and weapon and play the sound.
-	self.Owner:SetAnimation(PLAYER_ATTACK1);
-	self:DoHitEffects()
+	self:OnAttack();
 end
 
 -- Called when the player attempts to secondary fire.
 function SWEP:SecondaryAttack()
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
-	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay);
-	-- Set the animation of the owner and weapon and play the sound.
-	self.Owner:SetAnimation(PLAYER_ATTACK1);
-	self:DoHitEffects()
+	self:OnAttack();
 end

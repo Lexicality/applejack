@@ -4,7 +4,7 @@
 --]]
 
 -- Define some shared variables.
-SWEP.Author	= "Lexi"; --Admitedly, mostly made up of kudo's parts.
+SWEP.Author	= "Lexi";
 SWEP.Instructions = "Primary Fire: Knock Out. Use+Primary Fire: Damage\nSecondary Fire: Arrest/breach door.";
 SWEP.Purpose = "General Purpous Electrical Baton";
 
@@ -72,4 +72,12 @@ function SWEP:DoHitEffects(sound)
 		self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 		self.Weapon:EmitSound("weapons/stunstick/stunstick_swing1.wav");
 	end
+end
+
+function SWEP:OnAttack()
+	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
+	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay);
+	-- Set the animation of the owner and weapon and play the sound.
+	self.Owner:SetAnimation(PLAYER_ATTACK1);
+	self:DoHitEffects()
 end
