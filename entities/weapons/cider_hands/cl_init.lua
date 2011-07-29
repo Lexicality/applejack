@@ -49,7 +49,7 @@ function SWEP:PrimaryAttack()
     local ply = self.Owner;
     local keys = ply:KeyDown(IN_SPEED);
     -- If the player is exhausted, they can only use their keys.
-    if (not keys and ply:GetNWBool("Exhausted")) then
+    if (not (keys or self:GetDTBool(0)) and ply:GetNWBool("Exhausted")) then
         return;
     end
 	-- Punch and woosh.
@@ -57,10 +57,6 @@ function SWEP:PrimaryAttack()
 	self:SendWeaponAnim(ACT_VM_HITCENTER);
     -- Slow down the punches.
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Refire);
-    -- Check if we're holding something, and don't do the punching code if we are
-    if (self:GetDTBool(0)) then
-        return;
-    end
     -- Get where we're punching.
     local tr = ply:GetEyeTraceNoCursor();
     if (not (tr.Hit or tr.HitWorld) or tr.StartPos:Distance(tr.HitPos) > 128) then

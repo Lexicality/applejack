@@ -15,7 +15,7 @@ end
 function SWEP:PrimaryAttack()
     local ply = self.Owner;
     local keys = ply:KeyDown(IN_SPEED);
-    if (not keys and ply:GetNWBool("Exhausted")) then
+    if (not (keys or self:GetDTBool(0)) and ply:GetNWBool("Exhausted")) then
         return;
     end
    	-- Punch and woosh.
@@ -23,11 +23,6 @@ function SWEP:PrimaryAttack()
 	self:SendWeaponAnim(ACT_VM_HITCENTER);
     -- Slow down the punches.
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Refire);
-    -- Check if we're holding something, and throw it instead of doing the punching code if we are
-    if (IsValid(self.HeldEnt)) then
-		self:DropObject(self.Primary.ThrowAcceleration);
-		return;
-	end
 
     -- See where we're punching
     local tr = ply:GetEyeTraceNoCursor();
@@ -53,7 +48,7 @@ function SWEP:PrimaryAttack()
         return;
     end
     -- Stamina
-	if (stamina and not self:GetDTBool(1)) then
+	if (stamina and not self:GetDTBool(0)) then
 		self.Owner._Stamina = math.Clamp(self.Owner._Stamina - 20,0,100)
 	end
     -- Smack
@@ -69,7 +64,7 @@ function SWEP:PrimaryAttack()
         Damage = 0;
     }
     -- Check if super punch mode is on
-    if (not tr.HitWorld and self:GetDTBool(1)) then
+    if (not tr.HitWorld and self:GetDTBool(0)) then
         bullet.Callback = wtfboom;
     end
     ply:FireBullets(bullet);
@@ -77,17 +72,9 @@ function SWEP:PrimaryAttack()
     if (tr.HitWorld) then
         return;
     end
-    -- We have hit an entity.
-    -- Knockback
-    --[[
-    local phys = ent:GetPhysicsObject();
-    if (IsValid(phys) and phys:IsMovable()) then
-        phys:ApplyForceOffset(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass(), tr.HitPos);
-    end
-    --]]
-    -- Damage
+    -- We have hit an entity. Beat it's pasty ass into the ground
     -- Don't let people punch each other to death
-    if ((ent._Player or ent:IsPlayer()) and not self:GetDTBool(1) and ent:Health() <= 15) then
+    if ((ent._Player or ent:IsPlayer()) and not self:GetDTBool(0) and ent:Health() <= 15) then
         -- Re stun (OH WAIT STUN ISN'T PROGRESSIVE EVEN THOUGH IT SHOULD BE >:c)
         local pl = ent;
         if (IsValid(ent._Player)) then
@@ -100,19 +87,18 @@ function SWEP:PrimaryAttack()
         end
         return;
     end
+    -- Use CDamageInfo for superior damage control.
     local dmg = DamageInfo();
     dmg:SetAttacker(ply);
     dmg:SetInflictor(self);
     dmg:SetDamage(self.Primary.Damage);
-    -- TODO: Is this adequate knockbock?
     local phys = ent:GetPhysicsObject();
     if (IsValid(phys) and phys:IsMoveable()) then
         dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass() * 10);
     end
     dmg:SetDamagePosition(tr.HitPos);
-    if (self:GetDTBool(1)) then -- super
-        -- Wheeee :D
-        dmg:SetDamageType(DMG_BLAST | DMG_SONIC);
+    if (self:GetDTBool(0)) then -- super
+        dmg:SetDamageType(DMG_BLAST);
     else
         dmg:SetDamageType(DMG_CLUB);
     end
@@ -122,10 +108,7 @@ end
 
 -- Called when the player attempts to secondary fire.
 function SWEP:SecondaryAttack()
-    if (IsValid(self.HeldEnt)) then
-        self:DropObject();
-        return;
-    end
+    self:SetNextSecondaryFire(CurTime() + 0.25);
     local ply = self.Owner;
     local tr = ply:GetEyeTraceNoCursor();
     if (tr.HitWorld or not tr.Hit or tr.StartPos:Distance(tr.HitPos) > 128) then
@@ -137,9 +120,8 @@ function SWEP:SecondaryAttack()
         -- Knock
         self:SendWeaponAnim(ACT_VM_HITCENTER);
         self:EmitSound("physics/wood/wood_crate_impact_hard2.wav")
-        self:SetNextSecondaryFire(CurTime() + 0.25);
         -- Cheats!
-        if (self:GetDTBool(1) and ply:IsSuperAdmin()) then
+        if (self:GetDTBool(0) and ply:IsSuperAdmin()) then
             GM:OpenDoor(ent, 0);
         end
     elseif (ply:KeyDown(IN_SPEED)) then
@@ -165,160 +147,48 @@ end
 function SWEP:Reload()
 	if (not (self.Owner:IsAdmin() and self.Owner:KeyDown(IN_SPEED)) or self.Primary.NextSwitch > CurTime()) then
         return false;
-    elseif (self.Primary.Super) then
+    elseif (self:GetDTBool(0)) then
         self.Primary.PunchAcceleration = 100
         self.Primary.ThrowAcceleration = 200
         self.Primary.Damage = 1.5
-        self.Primary.Super = false
         self.Primary.Refire = 1
         self.Owner:PrintMessage(HUD_PRINTCENTER, "Super mode disabled")
-        self:SetDTBool(1, false);
+        self:SetDTBool(0, false);
     else
         self.Primary.PunchAcceleration = 500
         self.Primary.ThrowAcceleration = 1000
         self.Primary.Damage = 200
-        self.Primary.Super = true
         self.Primary.Refire = 0
         self.Owner:PrintMessage(HUD_PRINTCENTER, "Super mode enabled")
-        self:SetDTBool(1, true);
+        self:SetDTBool(0, true);
     end
     self.Primary.NextSwitch = CurTime() + 1
 end
 
-
-
-
--- TODO: Make this use kuro's method.
-function SWEP:Think()
-	if (not self.HeldEnt) then
-        return;
-    end
-    if (not IsValid(self.HeldEnt)) then
-        self.HeldEnt = nil;
-        self:SetDTBool(0, false);
-    end
-    --[[
-	if !ValidEntity(self.HeldEnt) then
-		if ValidEntity(self.EntWeld) then self.EntWeld:Remove() end
-		self.Owner._HoldingEnt, self.HeldEnt.held, self.HeldEnt, self.EntWeld, self.EntAngles, self.OwnerAngles = nil
-		self:Speed()
-		return
-	elseif !ValidEntity(self.EntWeld) then
-		self.Owner._HoldingEnt, self.HeldEnt.held, self.HeldEnt, self.EntWeld, self.EntAngles, self.OwnerAngles = nil
-		self:Speed()
-		return
-	end
-	if !self.HeldEnt:IsInWorld() then
-		self.HeldEnt:SetPos(self.Owner:GetShootPos())
-		self:DropObject()
-		return
-	end
-	if self.NoPos then return end
-	local pos = self.Owner:GetShootPos()
-	local ang = self.Owner:GetAimVector()
-	self.HeldEnt:SetPos(pos+(ang*60))
-	self.HeldEnt:SetAngles(Angle(self.EntAngles.p,(self.Owner:GetAngles().y-self.OwnerAngles.y)+self.EntAngles.y,self.EntAngles.r))
-    --]]
-end
---[[
-function SWEP:Speed(down)
-	if down then
-		self.Owner:Incapacitate()
-	else
-		self.Owner:Recapacitate()
-	end
-end
---]]
-
-function SWEP:Holster()
-	self:DropObject()
-	self.Primary.NextSwitch = CurTime() + 1
-	return true
-end
-
 function SWEP:PickUp(ent, tr)
-    if (ent.held) then
+    if (ent:IsPlayerHolding()) then
         print"held"
         return;
     end
-    if (IsValid(self.HeldEnt)) then
-        print"held2"
-        return;
-    end
-    if (not self.Owner:CanPickupObject(ent)) then
+    if (not self.Owner:CanPickupObject(ent, 60, 200)) then
         print"cant pick up"
         return;
     end
     -- TODO: What happens if you pickup a ragdoll?
     --       If it doesn't work, then make a small prop, weld that to the physbone and then pickup that.
-    self.Owner:PickupObject(ent);
-    self.HeldEnt = ent;
-    ent.held = true;
+    self.PickupAttempt = ent;
+    --self.Owner:PickupObject(ent);
 end
---[[
-	if ent.held then return end
-	if (constraint.HasConstraints(ent) or ent:IsVehicle()) then
-		return false
-	end
-	local pent = ent:GetPhysicsObject( )
-	if !ValidEntity(pent) then return end
-	if pent:GetMass() > 60 or not pent:IsMoveable() then
-		return
-	end
-	if ent:GetClass() == "prop_ragdoll" then
-		return false
-	else
-		ent:SetCollisionGroup( COLLISION_GROUP_WORLD )
-		local EntWeld = {}
-		EntWeld.ent = ent
-		function EntWeld:IsValid() return ValidEntity(self.ent) end
-		function EntWeld:Remove()
-			if ValidEntity(self.ent) then self.ent:SetCollisionGroup( COLLISION_GROUP_NONE ) end
-		end
-		self.NoPos = false
-		self.EntWeld = EntWeld
-	end
-	--print(self.EntWeld)
---	print("k, pickin up")
-	self.Owner._HoldingEnt = true
-	self.HeldEnt = ent
-	self.HeldEnt.held = true
-	self.EntAngles = ent:GetAngles()
-	self.OwnerAngles = self.Owner:GetAngles()
-	self:Speed(true)
-end
---]]
 
-function SWEP:DropObject(acceleration)
-	acceleration = acceleration or 0.1;
-    if (not IsValid(self.HeldEnt)) then
+function SWEP:Think()
+    if (not self.PickupAttempt) then
         return;
+    elseif (self.Owner:KeyDown(IN_ATTACK2)) then
+        -- While the guy holds the right mouse button down, they'll drop the object instantly.
+        return;
+    elseif (IsValid(self.PickupAttempt)) then
+        self.Owner:PickupObject(self.PickupAttempt);
     end
-    self.Owner:DropObject(self.HeldEnt);
-    local phys = self.HeldEnt:GetPhysicsObject();
-    if (IsValid(phys)) then
-        phys:ApplyForceCenter(self.Owner:GetAimVector() * pent:GetMass() * acceleration);
-    end
-    self.HeldEnt.held = nil;
-    self.HeldEnt = nil;
+    self.PickupAttempt = nil;
 end
 
-
---[[
-	acceleration = acceleration or 0.1
-	if !ValidEntity(self.HeldEnt) then return true end
-	if ValidEntity(self.EntWeld) then self.EntWeld:Remove() end
-	local pent = self.HeldEnt:GetPhysicsObject( )
-	if pent:IsValid() then
-		pent:ApplyForceCenter(self.Owner:GetAimVector() * pent:GetMass() * acceleration)
-		--print(pent:GetMass() , acceleration,pent:GetMass() * acceleration)
-	end
-	self.Owner._HoldingEnt, self.HeldEnt.held, self.HeldEnt, self.EntWeld, self.EntAngles, self.OwnerAngles = nil
-	self:Speed()
-end
---]]
-
-function SWEP:OnRemove()
-	self:DropObject()
-	return true
-end
