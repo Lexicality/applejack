@@ -48,8 +48,6 @@ function SWEP:PrimaryAttack()
 	maxhits = maxhits * 11;
 	-- Update the count
 	ent._LockpickingCount = ent._LockpickingCount + (1 / maxhits);
-	-- Tell me wtf is going on with this silly system
-	--print("current num: " .. ent._LockpickingCount .. ", adding: : " .. 1 / maxhits);
 	-- Give the pick a chance of breaking
 	if (math.random() < owner._LockpickChance) then
 		-- Tell the world with text'n'noise
@@ -77,7 +75,6 @@ function SWEP:PrimaryAttack()
 	ent._LockpickingCount = 0;
 	-- Add to the lockpicker's pick break chance and tell them.
 	owner._LockpickChance = owner._LockpickChance + GM.Config["Lockpick Break Chance"];
-	--owner:Notify("Your lockpick was damaged while picking the lock.");
 	-- Since we can now pick the cuffs on players to unarrest them, we need to treat them differently.
 	if (ent:IsPlayer()) then 
 		ent:UnArrest();
