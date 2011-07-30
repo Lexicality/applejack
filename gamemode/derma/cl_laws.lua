@@ -81,10 +81,6 @@ function PANEL:Think()
 		button._NextPress = CurTime()
 		button:SetText("Edit");
 		button.DoClick = function()
-			if button._NextPress > CurTime() then
-				return false
-			end
-			button._NextPress = CurTime() + 120
 			local EditPanel = vgui.Create( "DFrame" )
 			EditPanel:SetPos( (ScrW()- 400)/2,(ScrH() -500)/2 )
 			EditPanel:SetSize( 400 ,265 )
@@ -128,7 +124,6 @@ function PANEL:Think()
 					datastream.StreamToServer( "cider_Laws",tab)
 				end
 				EditPanel:Close()
-				button._NextPress = CurTime() + 120
 			end
 			savebutton:SetPos(EditPanel:GetWide()-savebutton:GetWide()-10,y)--[[
 			y = y + button:GetTall() + 5
