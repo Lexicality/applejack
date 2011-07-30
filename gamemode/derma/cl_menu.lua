@@ -89,7 +89,6 @@ function PANEL:Init()
 	self.tabs:AddSheet("Changelog",vgui.Create("cider_Changelog", self.tabs), "gui/silkicons/plugin");
 	self.tabs:AddSheet("Donate", vgui.Create("cider_Donate", self.tabs), "gui/silkicons/heart");
 	self.tabs:AddSheet("Credits",vgui.Create("cider_Credits",self.tabs), "gui/silkicons/group");
-	--self.tabs:AddSheet("Log",vgui.Create("cider_Log",self.tabs), "gui/silkicons/page_white_magnify");
 end
 
 -- Called when the layout should be performed.
