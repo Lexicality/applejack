@@ -2,13 +2,6 @@
 Name: "cl_store.lua".
 	~ Applejack ~
 --]]
---[[
-local cmo = RunConsoleCommand
-local RunConsoleCommand = function(...)
-	print(...)
-	cmo(...)
-end
---]]
 local PANEL = {};
 
 -- Called when the panel is initialized.

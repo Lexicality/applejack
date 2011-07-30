@@ -18,13 +18,6 @@ local function CheckPos()
 	end
 	return true
 end
---[[
-local cmo = RunConsoleCommand
-local RunConsoleCommand = function(...)
-	print(...)
-	cmo(...)
-end
---]]
 -- Called when the panel is initialized.
 function PANEL:Init()
 --	self:StretchToParent(0,0,width/2+10,0)
@@ -440,26 +433,9 @@ function PANEL:PerformLayout()
 		end
 	else
 	end
---[[	self.label1:SetText"Change Name:"
-	self.label1:SizeToContents()
-	self.label1:SetTall(21)
-	--self.label1:SetPaintBackground(false)
---]]
 	self.sheets:SetPos(8, 25)
 	self.sheets:StretchToParent(8,25,8,8)
 	self.sheets:InvalidateLayout()
-	--[[
-	if CurTab then
-		print(CurTab)
-		accessmenu.sheets:SetActiveTab(CurTab)
-	end
-	--]]
-	--[[
-	for _,tab in pairs(self.sheets.Items) do
-		tab.Tab:SetWide((self.sheets:GetWide()-5)/3)
-	end
-	self.sheets:InvalidateLayout()
-	--]]
 	-- Check if the local player's position is different from our captured one.
 	if ( LocalPlayer():GetPos() ~= localPlayerPosition or !LocalPlayer():Alive() ) then
 		self:Close();
@@ -486,11 +462,6 @@ local function gsort(a, b)
 end
 local function UpdateContainer(decoded)
 	if not accessmenu then return end
-	--[[
-	local tab = {}
-	tab.tab = accessmenu.sheets:GetActiveTab()
-	print(tab.tab)
-	--]]
 	accessmenu:SetTitle(decoded.title)
 	local paccess = {}
 	local taccess = {}
@@ -522,7 +493,6 @@ local function UpdateContainer(decoded)
 			done[key] = true;
 		else
 			local kind, id = string.match(key, "(.+): (.+)");
-			--print(key, kind, id);
 			id = tonumber(id);
 			if (kind == "Team") then
 				res = team.Get(id);
@@ -617,20 +587,8 @@ local function UpdateContainer(decoded)
 	end
 	accessmenu:InvalidateLayout()
 	accessmenu.Buttoned = false
-	--[[
-	print(accessmenu.sheets.Items[1].Tab,tab.tab)
-	PrintTable(accessmenu.sheets.Items)
-	accessmenu.sheets:SetActiveTab(accessmenu.sheets.Items[2].Tab)
-	accessmenu.sheets:SetActiveTab(tab.tab)
-	--]]
-	--[[
-	print(accessmenu.sheets:GetActiveTab(),tab.tab)
-	timer.Simple(1,accessmenu.sheets.SetActiveTab,accessmenu.sheets,tab.tab)
-	--]]
-	
 end
 function NewContainer( handle, id, encoded, decoded )
-	--PrintTable(decoded)
 	if accessmenu then accessmenu:Remove() end
 	accessmenu = vgui.Create"Accessmenu"
 	gui.EnableScreenClicker(true);

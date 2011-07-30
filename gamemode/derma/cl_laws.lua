@@ -101,16 +101,6 @@ function PANEL:Think()
 			local savebutton = vgui.Create("DButton",EditPanel)
 			savebutton:SetText("Save")
 			savebutton.DoClick = function()
-				--[[text = ""
-				for k,v in pairs(boxes) do
-					val = v:GetValue()
-					if string.len(val) > 80 then
-						val = string.sub(val,1,80)
-					end
-					text = text..string.Replace(string.Replace(val,"#","")," ","_").."#"
-				end
-				text = string.sub(text,1,-2)
-				RunConsoleCommand("cider", "laws", text);]]
 				local tab = {}
 				local diff = false
 				for k,v in ipairs(boxes) do
@@ -119,15 +109,12 @@ function PANEL:Think()
 						diff = true
 					end
 				end
-				--PrintTable(tab)
 				if diff then
 					datastream.StreamToServer( "cider_Laws",tab)
 				end
 				EditPanel:Close()
 			end
-			savebutton:SetPos(EditPanel:GetWide()-savebutton:GetWide()-10,y)--[[
-			y = y + button:GetTall() + 5
-			print (y)]]
+			savebutton:SetPos(EditPanel:GetWide()-savebutton:GetWide()-10,y)
 		end
 		self.itemsList:AddItem(button)
 	end

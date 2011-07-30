@@ -213,13 +213,9 @@ local function checkpos(ply,car,pos)
 			end
 		end
 	end
-	--print(pos, util.PointContents(pos));
 	if (table.Count(enttab) == 0 and util.IsInWorld(pos) and car:VisibleVec(pos)) then
-		--print("got")
 		return pos
 	elseif (ply:HasAccess("D")) then
-		--print("missed",util.IsInWorld(pos), car:VisibleVec(pos))
-		--PrintTable(enttab);
 		ply:ConCommand("drawcross "..pos.x.." "..pos.y.." "..pos.z)
 	end
 end

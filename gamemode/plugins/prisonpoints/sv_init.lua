@@ -25,37 +25,27 @@ function PLUGIN:LoadData()
 end
 
 function PLUGIN:SaveData()
---	print("savedata!");
 	local data,status,result,path;
---	PrintTable(self.Prisonpoints);
 	status, result = pcall(glon.encode,self.Prisonpoints);
---	print("status",status,"result",result);
 	if (status == false) then
 		error("["..os.date().."] Prisonpoints Plugin: Error GLON encoding prisonpoints : "..results);
 	end
 	path = GM.LuaFolder.."/prisonpoints/"..game.GetMap()..".txt";
---	print("path",path);
 	if (not result or result == "") then
---		print("no result");
 		if (file.Exists(path)) then
---			print("file exists");
 			file.Delete(path);
 		end
 		return;
 	end
---	print("result, writing.");
 	file.Write(path,result);
 end
 
 function PLUGIN:PlayerArrested(ply)
---	MsgAll("Plugin called PlayerArrested");
 	if (table.Count(self.Prisonpoints) < 1) then
 		player.NotifyAll("The Prisonpoints plugin is active but has no prison points set!");
 		return;
 	end
---	MsgAll("Gots Points");
 	local data = table.Random(self.Prisonpoints);
---	MsgAll("Data: "..tostring(data)..", pos: "..data.pos..", ang: "..data.ang);
 	ply:SetPos(data.pos);
 	ply:SetAngles(data.ang);
 end
@@ -70,7 +60,6 @@ cider.command.add("prisonpoint", "a", 1, function(ply,action)
 		local pos = ply:GetPos();
 		table.insert(points,{pos = pos, ang = ply:GetAngles()});
 		ply:Notify("You have added a prisonpoint where you are standing.");
-		--ply:ConCommand("drawcross "..pos.x.." "..pos.y.." "..pos.z)
 	elseif (action == "remove") then
 		if (not table.Count(points)) then
 			return false, "there are no prisonpoints!";

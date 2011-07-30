@@ -59,7 +59,6 @@ usermessage.Hook("cider.chatBox.playerMessage", function(msg)
 	local player = msg:ReadEntity();
 	local filter = msg:ReadString();
 	local text = msg:ReadString();
-	--print(player, "ar", filter, text);
 	-- Check to see if the player is a player.
 	if ( player:IsPlayer() ) then
 		cider.chatBox.chatText(player:EntIndex(), player:Name(), text, filter);
@@ -837,7 +836,6 @@ function cider.chatBox.chatText(index, name, text, filter)
 	if (ConVarExists("cider_chatbox_"..filter) and GetConVarNumber("cider_chatbox_"..filter) == 1) then
 		filtered = true;
 	elseif filter == "ic" and !(LocalPlayer():Alive() or LocalPlayer()._Sleeping) then --Kant stop the music.
-		--print("Test")
 		return
 	end
 	

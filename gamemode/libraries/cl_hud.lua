@@ -930,10 +930,6 @@ end
 
 --[[ ESP ]]--
 do
-	local snapshot, debug = 0, false;
-	local function debugs()
-		return debug and snapshot < ctime;
-	end
 	-- A more modular method of setting up the lines to be drawn
 	local esplines = {}
 	esplines.__index = esplines
@@ -1005,7 +1001,6 @@ do
 		end
 		-- Vars
 		tr, cent, fdist, dist, class, pos, spos, lpos, cam, alpha, centre, x, y, lines = nil;
-		db = debugs();
 		-- Unchanging
 		fdist = self.Config["Talk Radius"] * 2;
 		tr = util.TraceLine{
@@ -1018,10 +1013,6 @@ do
 		end
 		cam = self:IsUsingCamera();
 		lpos = EyePos();
-		if (db) then
-			print("ESP DEBUG BEGIN");
-			print(cent, lpos, cam);
-		end
 			
 		-- Loop
 		for _, ent in pairs(ents.GetAll()) do if (ent:IsValid()) then
@@ -1068,24 +1059,14 @@ do
 					end
 					gamemode.Call("AdjustESPLines", ent, class, lines, pos, dist, center, class);
 					alpha = cam and 255 or (255 * (1 - dist / fdist));
-					if (db) then
-						print(ent);
-					end
 					if (lines:IsValid()) then
 						for _, line in pairs(lines:GetAll()) do
-							if (db) then
-								print("", _, ":", "", line.text);
-							end
 							y = self:DrawInformation(line.text, "ChatFont", x, y, line.color, alpha);
 						end
 					end
 				end -- End of visibility check
 			end -- End of on-screen check
 		end end -- End of for loop
-		if (db) then
-			snapshot = ctime + 10;
-			print("\n\n");
-		end
 	end -- End of function
 
 	function GM:HUDDrawTargetID()

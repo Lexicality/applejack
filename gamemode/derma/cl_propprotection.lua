@@ -8,15 +8,12 @@ cider.menu.pp.ClientCPanel = nil
 
 CreateClientConVar("sppa_check", 1, false, true)
 CreateClientConVar("sppa_admin", 1, false, true)
---CreateClientConVar("sppa_use", 1, false, true)
---CreateClientConVar("sppa_edmg", 1, false, true)
 CreateClientConVar("sppa_pgr", 1, false, true)
 CreateClientConVar("sppa_awp", 0, false, true)
 CreateClientConVar("sppa_dpd", 1, false, true)
 CreateClientConVar("sppa_dae", 1, false, true)
 CreateClientConVar("sppa_delay", 120, false, true)
 function cider.menu.pp.AdminPanel(Panel)
-	--print"admin called"
 	Panel:ClearControls()
 	
 	if(!LocalPlayer():IsAdmin()) then
@@ -32,8 +29,6 @@ function cider.menu.pp.AdminPanel(Panel)
 	
 	Panel:AddControl("CheckBox", {Label = "Prop Protection", Command = "sppa_check"})
 	Panel:AddControl("CheckBox", {Label = "Admins Can Do Everything", Command = "sppa_admin"})
---	Panel:AddControl("CheckBox", {Label = "Use Protection", Command = "sppa_use"})	--Should always be off
---	Panel:AddControl("CheckBox", {Label = "Entity Damage Protection", Command = "sppa_edmg"})	--Should always be off
 	Panel:AddControl("CheckBox", {Label = "Physgun Reload Protection", Command = "sppa_pgr"})
 	Panel:AddControl("CheckBox", {Label = "Admins Can Touch World Prop", Command = "sppa_awp"})	
 	Panel:AddControl("CheckBox", {Label = "Disconnect Prop Deletion", Command = "sppa_dpd"})
@@ -54,7 +49,6 @@ function cider.menu.pp.AdminPanel(Panel)
 end
 
 function cider.menu.pp.ClientPanel(Panel)
-	--print"client called"
 	Panel:ClearControls()
 	
 	if(!cider.menu.pp.ClientCPanel) then

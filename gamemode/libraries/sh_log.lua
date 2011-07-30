@@ -81,18 +81,6 @@ function GM:RegisterLogSubCategory(master, access)
 	return index;
 end
 
-
-concommand.Add("consoleprinttest",function()
-	console.Print(Color(000,000,000), "Black");
-	console.Print(Color(255,000,000), "Red");
-	console.Print(Color(000,255,000), "Green");
-	console.Print(Color(000,000,255), "Blue");
-	console.Print(Color(255,255,000), "Yellow");
-	console.Print(Color(000,255,255), "Cyan");
-	console.Print(Color(255,000,255), "Magenta");
-	console.Print(Color(255,255,255), "White");
-end);
-
 -- Prints the new log entry to the console
 local function doprint(name, msg, ...)
 	-- Create our log text

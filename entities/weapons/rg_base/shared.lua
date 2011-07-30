@@ -294,12 +294,6 @@ end
 
 concommand.Add("DropPrim",function(p) p:DropWeapon(p:GetActiveWeapon()) end)
 function SWEP:Deploy()
-	--MsgN"Deploy!"
-	--[[
-	if self.Owner._NextDeploy > CurTime() then
-		print"AFKSLDFKSL"
-		return false
-	end--]]
 	if (SERVER) then
 		if (!self.DrawCrosshair or self.CustomCrosshair) then self.Owner:CrosshairDisable() end
 		if (self.Owner._Ammo[self.Classname]) then

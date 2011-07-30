@@ -123,16 +123,6 @@ function PLUGIN:SaveData()
 			stat = stat + 1;
 			res = table.Copy(data);
 			if (data.Owner) then
-				--[[
-				print(type(res.Owner), res.Owner);
-				print(type(res.Owner.Type), res.Owner.Type);
-				print(type(res.Owner.UniqueID), res.Owner.UniqueID);
-				print(res.Owner, res.Owner.Type, res.Owner.UniqueID);
-				str = res.Owner.Type 
-					.. ": "
-					.. res.Owner.UniqueID;
-				res.Owner = str;
-				--]]
 				res.Owner = data.Owner.Type .. ": " .. data.Owner.UniqueID;
 			end
 			if (data.Master and care(data.Master)) then

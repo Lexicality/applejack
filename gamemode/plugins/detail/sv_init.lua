@@ -641,14 +641,12 @@ function PLUGIN:InitPostEntity()
 	timer.Simple(FrameTime() * 4,self.FrameOne,self);
 end
 function PLUGIN:FrameOne()
---	print("FrameOne");
 	local filtr = ents.Create( "filter_activator_name" );
 	filtr:SetKeyValue( "targetname", "aj_details" );
 	filtr:SetKeyValue( "negated", "1" );
 	filtr:Spawn();
 	local mapname = game.GetMap():lower();
 	local ent;
---	print("Physics Props");
 	if (self.ToSpawn[mapname]) then
 		for _,tab in pairs(self.ToSpawn[mapname]) do
 			ent = ents.Create("prop_physics");
@@ -672,18 +670,14 @@ function PLUGIN:FrameOne()
 				hook.Call("PropSpawned", GM, tab[1], ent);
 				cider.propprotection.GiveToWorld(ent);
 				GM.entities[ent] = ent;
---				Msg("|");
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
 			end
 		end
 	end
---	MsgN("");
 	timer.Simple(FrameTime() * 2,self.FrameTwo,self,mapname);
 end
 function PLUGIN:FrameTwo(mapname)
---	print("FrameTwo");
---	print("Effects");
 	if (self.Effects[mapname]) then
 		for _,tab in pairs(self.Effects[mapname]) do
 			ent = ents.Create("prop_effect");
@@ -698,18 +692,14 @@ function PLUGIN:FrameTwo(mapname)
 				ent:SetDTBool(3,true);
 				cider.propprotection.GiveToWorld(ent);
 				GM.entities[ent] = ent;
---				Msg("|");
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
 			end
 		end
 	end
---	MsgN("");
 	timer.Simple(FrameTime() * 2,self.FrameThree,self,mapname);
 end
 function PLUGIN:FrameThree(mapname)
---	print("FrameThree");
---	print("Vehicles");
 	if (self.Vehicles[mapname]) then
 		local VehicleList = list.Get( "Vehicles" );
 		local vehicle;
@@ -750,17 +740,13 @@ function PLUGIN:FrameThree(mapname)
 					ent:Fire("setdamagefilter", "aj_details", 0);
 					cider.propprotection.GiveToWorld(ent);
 					GM.entities[ent] = ent;
---					Msg("|");
 				end
 			end
 		end
 	end
---	MsgN("");
 	timer.Simple(FrameTime() * 2,self.FrameFour,self,mapname);
 end
 function PLUGIN:FrameFour(mapname)
---	print("FrameFour");
---	print("Doors");
 	if (self.Doors[mapname]) then
 		for _,tab in pairs(self.Doors[mapname]) do
 			ent = ents.Create(tab[1]);
@@ -790,9 +776,7 @@ function PLUGIN:FrameFour(mapname)
 				ent._Autoclose = 30;
 				ent:MakeOwnable();
 				ent:SetNWString("Name",tab[5]);
---				Msg("|");
 			end
 		end
 	end
---	MsgN("");
 end

@@ -35,7 +35,6 @@ function PLUGIN:Think()
 	if (LD ~= last and LD == true) then
 		GM:AddPermaNotification("A lockdown is in progress. Please return to your home.", live, color_red);
 		last = LD;
---		print("print LOCKDOWN MOTHERFUKKAS")
 	end
 end
 

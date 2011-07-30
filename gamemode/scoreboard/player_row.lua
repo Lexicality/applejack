@@ -80,7 +80,6 @@ function PANEL:Paint()
 
 	-- Debugging
 	if (self.FUCK) then
-		print( self.Player:Name()..": Color( "..color.r..", "..color.g..", "..color.b..", "..color.a..")")
 		self.FUCK = false;
 	end
 

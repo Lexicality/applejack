@@ -48,7 +48,6 @@ function PLUGIN:SaveData()
 	path = GM.LuaFolder.."/spawnpoints/"..game.GetMap()..".txt";
 	if (not result or result == "") then
 		if (file.Exists(path)) then
-			print("deleted");
 			file.Delete(path);
 		end
 		return;

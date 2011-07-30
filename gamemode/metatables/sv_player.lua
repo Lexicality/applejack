@@ -816,14 +816,11 @@ end
 -- @return True if they can pick it up, false if they can't.
 function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     if (pObject == NULL) then
-        print"null"
-        return false;
+        return false, "Object is NULL";
     elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
-        print"movetype"
-        return false;
+        return false, "Object cannot be moved!";
     elseif (self:GetGroundEntity() == pObject) then
-        print"ground entity"
-        return false;
+        return false, "You're standing on that!";
     end
 
     if (not massLimit) then
@@ -836,8 +833,7 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     local count = pObject:GetPhysicsObjectCount();
      
     if (not count) then
-        print"no physobjs"
-        return false;
+        return false, "This object has no physics!";
     end
      
     local objectMass = 0;
@@ -847,8 +843,7 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
         local pList = pObject:GetPhysicsObjectNum(i);
         objectMass = objectMass + pList:GetMass();
         if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
-            print"flag"
-            return false;
+            return false, "The map maker has asked that you not be able to pick this up.";
         --[[elseif ( pList:IsHinged() ) then -- Not possible now
             return false;]]
         elseif (not pList:IsMoveable()) then
@@ -857,11 +852,9 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
     end
      
     if (massLimit > 0 and objectMass > massLimit) then
-        print("mass:",objectMass, massLimit);
-        return false;
+        return false, "That object is too heavy!";
     elseif (checkEnable and not pObject:HasSpawnFlags(64)) then
-        print("checkEnable")
-        return false;
+        return false, "That object is stuck!";
     end
      
     if (sizeLimit > 0) then       
@@ -871,8 +864,7 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
         local sizey = maxs.y - mins.y;
         local sizex = maxs.x - mins.x;
         if (sizex > sizeLimit or sizey > sizeLimit or sizez > sizeLimit) then
-            print("size", sizex, sizeLimit, sizey, sizeLimit, sizez, sizeLimit)
-            return false;
+            return false, "That object is too big for you to move!";
         end
     end
     return true;

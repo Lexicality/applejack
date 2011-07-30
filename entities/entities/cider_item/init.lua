@@ -49,7 +49,6 @@ function ENT:UpdateAmount(add)
 end
 
 function ENT:CanTool(player, trace, tool)
-	--print(player,trace,tool)
 	return player:IsSuperAdmin();
 end
 

@@ -12,16 +12,10 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
 	if (not tdata or tdata.Invisible) then
 		return false, "Invalid team!";
-	--elseif (tdata.SizeLimit ~= 0 and #team.GetPlayers(tdata.UniqueID) >= tdata.SizeLimit) then
-	--	return false, "That team is full!";
 	end
 	
 	local mdata = ply:GetTeam();
 	local tlevel, mlevel = tdata.GroupLevel, mdata.GroupLevel;
-	-- print(tdata.Name, mdata.Name);
-	-- print(tdata.Group, mdata.Group);
-	-- print(tdata.Group.Name, mdata.Group.Name);
-	-- print(tlevel, mlevel);
 	if(tdata.Group ~= mdata.Group) then -- We're moving between groups
 		-- While not immediately apprent, this returns true if they are switching from level 1 to level 1 and takes advantage of the fact that the message is not displayed if 'true' is returned.
 		return (tlevel == mlevel and mlevel == GROUP_BASE), "You can only swap groups from the base!";

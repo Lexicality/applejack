@@ -254,7 +254,6 @@ function PANEL:SetTeam(team)
 		self.NoButton = true;
 	else
 		local c = nextChanges[self.TeamID];
-		--print(team.Name, nextChanges[self.TeamID], (nextChanges[self.TeamID] or 0) - CurTime());
 		if (c and c > CurTime()) then
 			self.cd = true;
 		end

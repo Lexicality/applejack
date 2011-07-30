@@ -2,19 +2,6 @@
 Name: "init.lua".
 	~ Applejack ~
 --]]
---[[
-do
-	local m = getmetatable("");
-	local i = m.__index;
-	function m.__index(self, key)
-		if (not string[key] and type(key) != "number") then
-			local i = debug.getinfo(2,"Sln");
-			ErrorNoHalt("Attempt to incorrectly index string: "..tostring(self).."["..key.."] in function '"..tostring(i.name).."' in file "..i.short_src..":"..tostring(i.currentline).."\n");
-		end
-		return i(self,key);
-	end
-end
---]]
 
 --
 require"tmysql"
@@ -318,7 +305,6 @@ function GM:PlayerSpawnEffect(ply, model)
 end
 
 function GM:PlayerCanDoSomething(ply,ignorealive,spawning)
-	--print((not ply:Alive() and not ignorealive), ply:Arrested(), ply:KnockedOut(), ply:Tied(), ply._Stunned, ply._HoldingEnt, ply._Equipping, ply._StuckInWorld, spawning and (ply:InVehicle()))
 	if	(not ply:Alive() and not ignorealive) or
 		ply:Arrested()		or
 		ply:KnockedOut()	or
@@ -460,12 +446,6 @@ end
 --Called when a player connectsf
 function GM:PlayerConnect(name,ip,steamID)
 	print(string.format("Player connected %q, (%s): %s,",name,ip,steamID))
-	--[[
-	if name == "kickme" then
-		print"kick teh fag"
-		game.ConsoleCommand("kick "..name.."\n")
-	end
-	--]]
 end
 
 -- Called when the player has initialized.
@@ -873,7 +853,6 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
 		return
 	end
-	--print("OW!",tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount))
 	local logme = false
 	if (attacker:IsPlayer() and ValidEntity( attacker:GetActiveWeapon() )) then
 		if attacker:GetActiveWeapon():GetClass() == "weapon_stunstick" then
@@ -896,7 +875,6 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	local asplode = false
 	local asplodeent = nil
 	if inflictor:GetClass() == "npc_tripmine" and ValidEntity(inflictor._planter) then
-		print"Trippy!"
 		damageInfo:SetAttacker(inflictor._planter)
 		attacker = inflictor._planter
 		asplode = true
@@ -915,7 +893,6 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		else
 			-- :/ hacky
 			if attacker:IsVehicle() and attacker:GetClass() ~= "prop_vehicle_prisoner_pod" then
-				--print(attacker:GetClass())
 				entity:KnockOut(10,attacker:GetVelocity());
 				damageInfo:SetDamage(0)
 				local smitee = entity:GetName()
@@ -1026,9 +1003,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 				weapon = " with a "..attacker:GetActiveWeapon():GetClass()
 			end
 		end
-	--	print(entity:Health(),damageInfo:GetDamage())
 		entity:SetHealth(entity:Health()-damageInfo:GetDamage())
-	--	print(entity:Health())
 		if entity:Health() <= 0 then
 			text = "%s destroyed a %s with %G damage%s"
 			entity:SetHealth(0)

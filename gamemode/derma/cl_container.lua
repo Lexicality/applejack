@@ -17,20 +17,12 @@ end
 usermessage.Hook("cider_CloseContainerMenu",closeMenu)
 local function CheckPos()
 	if not ValidEntity(lpl) then lpl = LocalPlayer() end
-	--print("POS!")
 	if not (lpl:Alive() and lpl:GetEyeTraceNoCursor().Entity == targetEntity) then
 		closeMenu()
 		return false
 	end
 	return true
 end
---[[
-local cmo = RunConsoleCommand
-local RunConsoleCommand = function(...)
-	print(...)
-	cmo(...)
-end
---]]
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetSize(width/2 -12, height - 40);

@@ -128,9 +128,7 @@ function PLUGIN:HUDPaint()
     --Compass and environment
     local car = {}
     for ent in pairs(GM.AccessableEntities) do
-     --   print(ent:IsVehicle())
         if ValidEntity(ent) and ent:GetClass() == "prop_vehicle_jeep" then
-            --print"car"
             table.insert(car, ent)
             height = height + 12
         end

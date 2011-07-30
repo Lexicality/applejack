@@ -42,7 +42,6 @@ function GM:LoadTeams()
 						includecs(path..group.."/"..gang.."/init.lua");
 						if (GANG.Valid) then
 							MsgN("  Loaded gang " .. GANG.Name .. ".");
-							--print(gang);
 							GANG.UniqueID = gang:gsub(a,b);
 							reggang();
 							loadteams(path..group.."/"..gang.."/");

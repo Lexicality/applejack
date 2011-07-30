@@ -15,8 +15,7 @@ end
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
 	self:StretchToParent(0, 22, 0, 0)
-	self.tabs:StretchToParent(4, --[[28]]0, 4, 4)
-	--print("Layout'd!")
+	self.tabs:StretchToParent(4, 0, 4, 4)
 end
 local tick = 0;
 function PANEL:Think()
@@ -101,8 +100,6 @@ function PANEL:SetText(text)
 		-- Increase the y position.
 		y = y + label:GetTall() + 8
 	end
-	--print("new")
-	--PrintTable(self.labels)
 	local reversed = {}
 	for i = #self.labels, 1, -1 do
 		reversed[#self.labels - i + 1] = self.labels[i]

@@ -167,11 +167,12 @@ end
 
 function SWEP:PickUp(ent, tr)
     if (ent:IsPlayerHolding()) then
-        print"held"
+        self.Owner:Notify("Someone else is already holding that!", 1);
         return;
     end
-    if (not self.Owner:CanPickupObject(ent, 60, 200)) then
-        print"cant pick up"
+    local res, err = self.Owner:CanPickupObject(ent, 60, 200)
+    if (not res) then
+        self.Owner:Notify(err);
         return;
     end
     -- TODO: What happens if you pickup a ragdoll?

@@ -249,7 +249,6 @@ function painthints()
 	surface.SetFont(hintfont);
 	surface.SetTextColor(255,255,255,255);
 	for _, hint in pairs(hints) do
-	--	PrintTable(hint);
 		if (p(hint,time) == false) then
 			hints[_] = nil;
 		else
