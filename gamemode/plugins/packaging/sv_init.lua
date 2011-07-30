@@ -2,8 +2,6 @@
 	~ Packaging Plugin ~
 	~ Applejack ~
 --]]
-
-PLUGIN.Name = "Packaging"
 --[[
 	Packaging plugin, to create disposable containers that automatically seal themselves after being spawned initially.
 	(Does not work every time in actual application on the server =/)
