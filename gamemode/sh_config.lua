@@ -103,7 +103,7 @@ config["UnTying Timeout"]			= 5 -- How many seconds it takes to untie someone
 
 -- Tables
 config["Spawnable Containers"]	={
-	["models/props/de_train/lockers_long.mdl"] 					= {100,"A lot of lockers"},
+	["models/props/de_train/lockers_long.mdl"] 					= {100,"Row of lockers"},
 	["models/props_c17/furnituredrawer001a.mdl"] 				= {30,"Chest of Drawers"},
 	["models/props/de_inferno/furnituredrawer001a.mdl"] 		= {30,"Chest of Drawers"},
 	["models/props_lab/partsbin01.mdl"] 						= {10,"Chest of Drawers"},
@@ -126,8 +126,8 @@ config["Spawnable Containers"]	={
 	["models/props_c17/furnituredresser001a.mdl"] 				= {40,"Wardrobe"},
 	["models/props_c17/suitcase001a.mdl"] 						= {20,"Suitcase"},
 	["models/props_c17/suitcase_passenger_physics.mdl"] 		= {10,"Suitcase"},
-	["models/props/de_train/lockers001a.mdl"] 					= {40,"Lockers"},
-	["models/props_c17/lockers001a.mdl"]						= {40,"Lockers"},
+	["models/props/de_train/lockers001a.mdl"] 					= {40,"Couple of Lockers"},
+	["models/props_c17/lockers001a.mdl"]						= {40,"Couple of Lockers"},
 	["models/props_interiors/furniture_cabinetdrawer01a.mdl"] 	= {20,"Cabinet"},
 	["models/props_interiors/furniture_cabinetdrawer02a.mdl"] 	= {20,"Dresser"},
 	["models/props_c17/furniturefridge001a.mdl"] 				= {30,"Fridge"},
