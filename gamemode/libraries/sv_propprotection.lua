@@ -97,71 +97,91 @@ function cider.propprotection.PlayerMakePropOwner(ply, ent, spawned)
 	--gamemode.Call("CPPIAssignOwnership", ply, ent)
 	return true
 end
-local a = "-- %-15s: %-68s --"
-local function f(p,b,c)
-	p:PrintMessage(HUD_PRINTCONSOLE,string.format(a,b,c))
-end
-local b = "Vector(%09.4f, %09.4f, %09.4f)";
-local function makepos(a)
-	return string.format(b,a.x,a.y,a.z);
-end
-local c = "Angle(%4i, %4i, %4i)";
-local function makeang(b)
-	return string.format(c,b.p,b.y,b.r);
-end
-concommand.Add("sppa_info",function(p)
-	local ent = p:GetEyeTrace().Entity
-	if not ValidEntity(ent) then
-		p:Notify("No entity.",0)
-		return
-	elseif not p:HasAccess("m") then
-		p:Notify("You do not have access to that.",1)
-		return
-	end
-	--p:Notify(( tostring( ent ).."["..ent:GetModel().."]"),0)
-	if ent:IsPlayer() then
-		p:Notify(ent:Name()..": "..ent:SteamID().." ("..ent:IPAddress()..")",0)
-	elseif ent._POwner and ent._POwner ~= "" then
-		local word = tostring( ent ).." is owned by "..ent._POwner
-		if ent._PSpawned and ent._PSpawned ~= "" then
-			word = word.." and was spawned by "..ent._PSpawned
-		end
-		word = word..". ("..ent:GetModel()..")"
-		p:Notify(word,0)
-		
-		if p:HasAccess("D") then
-			p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-			p:PrintMessage(HUD_PRINTCONSOLE, "--                                       Prop info                                       --" )
-			p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-			f(p,"Info",tostring( ent ) )
-			f(p,"Model",'"'..tostring( ent:GetModel() )..'"' )
-			p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-			f(p, "Position",makepos(ent:GetPos()))
-			f(p, "Angle",makeang(ent:GetAngles()))
-			local r,g,b,a = ent:GetColor()
-			f(p,"Colour","Color("..r..", "..g..", "..b..", "..a..")" )
-			f(p,"Material",tostring( ent:GetMaterial() ) )
-			f(p,"Size",tostring( ent:OBBMaxs() - ent:OBBMins() ) )
-			f(p,"Radius",tostring( ent:BoundingRadius() ) )
+do
+    local function s(p, r)
+        p:PrintMessage(HUD_PRINTCONSOLE, r);
+    end
+    local a = "-- %-15s: %-68s --"
+    local function f(p,b,c)
+        p:PrintMessage(HUD_PRINTCONSOLE,string.format(a,b,c))
+    end
+    local b = "Vector(%09.4f, %09.4f, %09.4f)";
+    local function makepos(a)
+        return string.format(b,a.x,a.y,a.z);
+    end
+    local c = "Angle(%4i, %4i, %4i)";
+    local function makeang(b)
+        return string.format(c,b.p,b.y,b.r);
+    end
+    local function n(p, a)
+        timer.Simple(0, _R.Player.Notify, p, 0, a);
+    end
+    local function cmd(p)
+        local ent = p:GetEyeTrace().Entity
+        if (not IsValid(ent)) then
+            p:Notify("No entity.",0)
+            return
+        elseif not p:HasAccess("m") then
+            p:Notify("You do not have access to that.",1)
+            return
+        end
 
-			local ph = ent:GetPhysicsObject()
-			if ValidEntity(ph) and p:HasAccess("H") then
-				p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-				p:PrintMessage(HUD_PRINTCONSOLE, "--                                        PhysObj                                        --" )
-				p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-				f(p,"Mass",tostring(ph:GetMass()))
-				f(p,"Inertia",tostring(ph:GetInertia()))
-				f(p,"Velocity",tostring(ph:GetVelocity()))
-				f(p,"Angle Velocity",tostring(ph:GetAngleVelocity()))
-				f(p,"Rot Damping",tostring(ph:GetRotDamping()))
-				f(p,"Speed Damping",tostring(ph:GetSpeedDamping()))
-			end
-			p:PrintMessage(HUD_PRINTCONSOLE, "-------------------------------------------------------------------------------------------" )
-		end
-	else
-		p:Notify(tostring(ent).." is unowned!",0)
-	end
-end)
+        s(p, "-------------------------------------------------------------------------------------------");
+        s(p, "--                                      Prop info                                        --");
+        s(p, "-------------------------------------------------------------------------------------------");
+        f(p, "Info", tostring(ent));
+        f(p, "Model", '"'..ent:GetModel()..'"');
+        local str = tostring( ent ).."["..ent:GetModel().."]";
+        if (ent._POwner and ent._POwner ~= "" and ent._POwner ~= "World") then
+            str = str .. "[" .. ent._POwner .. "]";
+            f(p, "Owner", ent._POwner);
+        end
+        f(p, "Quick", str);
+        n(p, str);
+        s(p, "-------------------------------------------------------------------------------------------");
+        if (ent:IsPlayer()) then
+            s(p, "--                                     Player info                                       --");
+            s(p, "-------------------------------------------------------------------------------------------");
+            local name, sid, uid = ent:Name(), ent:SteamID(), ent:UniqueID()
+            local str = "[" .. name .. "][" .. sid .. "][" .. uid .. "]"
+            f(p, "Name", name )
+            f(p, "SteamID", sid )
+            f(p, "UniqueID", uid )
+            local ug = ent:GetNWString("usergroup");
+            if (ug ~= "") then
+                f(p, "UserGroup", ug);
+                str = str .. "[" .. ug .. "]";
+            end
+            n(p, str);
+            f(p, "Quick", str )
+            s(p, "-------------------------------------------------------------------------------------------");
+        end
+        s(p, "--                                     Other info                                        --");
+        s(p, "-------------------------------------------------------------------------------------------");
+        f(p, "Position", makepos(ent:GetPos()))
+        f(p, "Angle",    makeang(ent:GetAngles()))
+        local r,g,b,a = ent:GetColor()
+        f( "Colour",     "Color("..r..", "..g..", "..b..", "..a..")");
+        f( "Material",   tostring(ent:GetMaterial()));
+        f( "Size",       tostring(ent:OBBMaxs() - ent:OBBMins()));
+        f( "Radius",     tostring(ent:BoundingRadius()));
+        local ph = ent:GetPhysicsObject();
+        if (IsValid(ph)) then
+            s(p, "-------------------------------------------------------------------------------------------");
+            s(p, "--                                        PhysObj                                        --");
+            s(p, "-------------------------------------------------------------------------------------------");
+            f(p,"Mass",           tostring(ph:GetMass()));
+            f(p,"Inertia",        tostring(ph:GetInertia()));
+            f(p,"Velocity",       tostring(ph:GetVelocity()));
+            f(p,"Angle Velocity", tostring(ph:GetAngleVelocity()));
+            f(p,"Rot Damping",    tostring(ph:GetRotDamping()));
+            f(p,"Speed Damping",  tostring(ph:GetSpeedDamping()));
+        end
+        s(p, "-------------------------------------------------------------------------------------------");
+    end
+    concommand.Add("sppa_info", cmd);
+    concommand.Add("propinfo",  cmd);
+end
 
 function cider.propprotection.GiveToWorld(ent)
 	if(ent:GetClass() == "transformer" and ent.spawned and !ent.Part) then
