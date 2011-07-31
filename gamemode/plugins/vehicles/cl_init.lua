@@ -206,36 +206,40 @@ function PLUGIN:HUDPaint()
     end
 end
 
-function PLUGIN:AdjustESPLines(tent, class, lines, pos,distance,lookingat)
+function PLUGIN:AdjustESPLines(ent, class, lines, pos, dist, center)
 	-- If the player is in the car we're working on, don't do anything.
-	if (lpl:GetVehicle() == tent) then
+	if (lpl:GetVehicle() == ent) then
 		lines:Kill();
 		return false;
+    elseif (class ~= "prop_vehicle_jeep") then
+        return;
 	end
-	if class == "prop_vehicle_jeep" then
-		local name,text = tent:GetNWString("Vehicle RP Name"),""
-		if not name or name == "" then
-			name = "car"
-		end
-		if tent:IsOwned() then
-			text = tent:GetDisplayName().."'s "
-		else
-			text = "A "
-		end
-		
-		-- Draw the information and get the new y position.
-		lines:Add("Name",text..name,color_purple,1)
-		if lookingat then
-			local ang = tent:GetAngles()
-			local text = ""	
-			if ang.r > 10 or ang.r < -10 then
-				if tent:GetDTInt(3) & OBJ_LOCKED == OBJ_LOCKED then
-					text = "Press 'use' to flip this car";
-				else
-					text = "This car must be locked before it can be flipped";
-				end
-				lines:Add("FlipStatus",text,color_orange,3)
-			end
-		end
-	end
+    -- Get vehicle name
+    local name = ent:GetNWString("Vehicle RP Name");
+    if (name == "") then
+        name = "Car";
+    end
+    -- Get ownership detailz
+    local text;
+    if (ent:IsOwned()) then
+        text = ent:GetDisplayName() .. "'s ";
+    else
+        text = "A ";
+    end
+    -- Add the name line
+    lines:Add("Name", text .. name, color_purple, 1);
+    -- We don't need to add anything if we're not looking at it.
+    if (not center) then
+        return;
+    end
+    -- See if it's a flipper
+    local ang = = ent:GetAngles();
+    if (math.abs(ang.r) > 10) then
+        if (ent:Locked()) then
+            text = "Press 'use' to flip this car";
+        else
+            text = "This car must be locked before it can be flipped.";
+        end
+        lines:Add("Flipped", text, color_orange, 3);
+    end
 end

@@ -39,6 +39,13 @@ function meta:HasAccess()
 	return self._HasAccess;
 end
 
+---
+-- Checks to see if an entity is locked.
+-- @return True if it is, false if it isn't.
+function meta:Locked()
+    return self:GetDTInt(3) & OBJ_LOCKED == OBJ_LOCKED;
+end
+
 --[[ 'Get' functions ]]--
 
 

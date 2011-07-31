@@ -1069,7 +1069,7 @@ do
 					else	
 						ent:DefaultESPPaint(lines, pos, dist, centre)
 					end
-					gamemode.Call("AdjustESPLines", ent, class, lines, pos, dist, center, class);
+					gamemode.Call("AdjustESPLines", ent, class, lines, pos, dist, center);
 					alpha = cam and 255 or (255 * (1 - dist / fdist));
 					if (lines:IsValid()) then
 						for _, line in pairs(lines:GetAll()) do
@@ -1087,6 +1087,6 @@ do
 	
 	---
 	-- TODO: desc
-	function GM:AdjustESPLines(ent, class, lines, pos, dist, center, class)
+	function GM:AdjustESPLines(ent, class, lines, pos, dist, center)
 	end
 end
