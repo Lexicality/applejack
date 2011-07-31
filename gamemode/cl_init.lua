@@ -217,6 +217,7 @@ function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shad
 	
 	-- Get the width and height of the text.
 	local width, height = surface.GetTextSize(text);
+    local ba = color.a;
 	if alpha then color.a = alpha end
 	-- Check if we shouldn't left align it, if we have a callback, and if we should draw a shadow.
 	if (!left) then x = x - (width / 2); end
@@ -225,6 +226,7 @@ function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shad
 	
 	-- Draw the text on the player.
 	draw.DrawText(text, font, x, y, color);
+    color.a = ba;
 	
 	-- Return the new y position.
 	return y + height + 8;
