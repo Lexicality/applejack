@@ -849,10 +849,12 @@ end
 -- Called when an entity takes damage.
 local vector0 = Vector(5,0,0)
 function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
+    --[[
 	if !entity or !inflictor or !attacker or entity == NULL or inflictor == NULL or attacker == NULL then
 		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
 		return
 	end
+    --]]
 	local logme = false
 	if (attacker:IsPlayer() and ValidEntity( attacker:GetActiveWeapon() )) then
 		if attacker:GetActiveWeapon():GetClass() == "weapon_stunstick" then
@@ -884,6 +886,9 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		attacker = attacker._Planter
 		asplode = true
 		asplodeent = "breach"
+    elseif (inflictor:GetClass() == "cider_hands" and amount == 0) then
+        -- Because of the dual damage system, ignore this.
+        return;
 	end
 	if ( entity:IsPlayer() ) then
 		if (entity:KnockedOut()) then
