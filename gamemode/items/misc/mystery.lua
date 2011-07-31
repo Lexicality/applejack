@@ -28,6 +28,6 @@ end
 
 -- Called when a player destroys the item.
 function ITEM:onDestroy(player)
-	player.NotifyAll(player:Name().." just DESTROYED $1,000,000 worth of shiny alien balls!!!",1);
-	player:Notify("You realise you just destroyed $1,000,000 for which there is no refund, right?",1);
+	player.NotifyAll(NOTIFY_ERROR, "%s just DESTROYED $2,000,000 worth of shiny alien balls!!!", player:Name());
+	player:Notify("You realise you just destroyed $2,000,000 for which there is no refund, right?", NOTIFY_ERROR);
 end

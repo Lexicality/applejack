@@ -336,7 +336,7 @@ function cider.propprotection.DRemove(SteamID, PlayerName)
 			cider.propprotection.Props[k] = nil
 		end
 	end
-	player.NotifyAll(tostring(PlayerName).."'s props have been cleaned up",0)
+	player.NotifyAll(NOTIFY_GENERIC, "%s's props have been cleaned up", tostring(PlayerName))
 end
 
 function cider.propprotection.PlayerInitialSpawn(ply)
@@ -498,7 +498,7 @@ function cider.propprotection.CDP(ply, cmd, args)
 			cider.propprotection.Props[k] = nil
 		end
 	end
-	player.NotifyAll("Disconnected players props have been cleaned up",0)
+	player.NotifyAll(NOTIFY_GENERIC, "Disconnected players props have been cleaned up")
 end
 concommand.Add("sppa_cdp", cider.propprotection.CDP)
 
@@ -525,7 +525,7 @@ function cider.propprotection.CleanupProps(ply, cmd, args)
 		for k,v in pairs(player.GetAll()) do
 			if(tonumber(EntIndex) == v:EntIndex()) then
 				cider.propprotection.CleanupPlayerProps(v)
-				player.NotifyAll(v:Nick().."'s props have been cleaned up",0)
+				player.NotifyAll(NOTIFY_GENERIC, "%s's props have been cleaned up", v:Nick())
 			end
 		end
 	end

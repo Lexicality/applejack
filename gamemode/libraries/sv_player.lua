@@ -142,7 +142,7 @@ end
 -- @param message The message to display. (Use same form as GM:Log)
 -- @param level The notification level. Nil or unspecified = chat message. 0 = Water drip. 1 = Failure buzzer. 2 = 'Bip' Notification. 3 = 'Tic' Notification. (Used by the cleanup)
 -- @param ... A series of strings to be applied to the message string via string.format().
-function player.NotifyAll(message, level, ...)
+function player.NotifyAll(level, message, ...)
 	-- Insurance.
 	-- FIXME: Remove this before going into production.
 	if (level and type(level) ~= "number") then

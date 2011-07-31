@@ -45,7 +45,7 @@ end
 -- Knock out everyone for a specified time. (Try not to use)
 cider.command.add("knockoutall","s",0,function(ply, time)
 	local tbl = player.GetAll();
-	player.NotifyAll("%s knocked everyone out .", 0, ply:Name());
+	player.NotifyAll(NOTIFY_GENERIC, "%s knocked everyone out .", ply:Name());
 	timer.Create(ply:Name().." admin abuse knockout", 0, #tbl,knockoutfunct, tbl, tonumber(time) or 5);
 end, "Super Admin Abuse Commands", "[time]", "Knock out all players", true);
 
@@ -58,7 +58,7 @@ end
 -- Wake everyone up
 cider.command.add("wakeupall","s",0,function(ply)
 	local tbl = player.GetAll();
-	player.NotifyAll("%s woke everyone up.", 0, ply:Name());
+	player.NotifyAll(NOTIFY_GENERIC, "%s woke everyone up.", ply:Name());
 	timer.Create(ply:Name().." admin abuse unknockout", 0, #tbl,unknockoutfunct, tbl);
 end, "Super Admin Abuse Commands", "[time]", "wake up all players");
 
@@ -292,7 +292,7 @@ cider.command.add("notifyall", "a", 2, function(ply, level, ...)
 		level = 3;
 	end
 	level = tonumber(level);
-	player.NotifyAll("%s", level, words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
+	player.NotifyAll(level, "%s", words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
 	GM:Log(EVENT_SUPEREVENT, "%s sent %s a level %s notification saying %q", ply:Name(), "everyone", level or "chat", words);
 end, "Admin Abuse Commands", "<chat|drip/0|error/1|undo/2|bell/3> <words>", "Send a player a notification using the built in system.", true);
 --]]
@@ -310,7 +310,7 @@ cider.command.add("giveaccess", "s", 2, function(ply, target, flags)
 		return false;
 	end
 	victim:GiveAccess(flags);
-	player.NotifyAll("%s gave %s access to the %q flag%s", nil, ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
+	player.NotifyAll(NOTIFY_CHAT, "%s gave %s access to the %q flag%s", ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
 end, "Super Admin Commands", "<player> <access>", "Give access to a player.", true);
 
 -- A command to take access from a player.
@@ -324,7 +324,7 @@ cider.command.add("takeaccess", "s", 2, function(ply, target, flags)
 		return false;
 	end
 	victim:TakeAccess(flags);
-	player.NotifyAll("%s took %s's access to the %q flag%s", nil, ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
+	player.NotifyAll(NOTIFY_CHAT, "%s took %s's access to the %q flag%s", ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
 end, "Super Admin Commands", "<player> <access>", "Take access from a player.", true);
 
 
@@ -333,7 +333,7 @@ cider.command.add("restartmap", "a", 0, function(ply)
 		pl:HolsterAll();
 		pl:SaveData();
 	end
-	player.NotifyAll(ply:Name().." restarted the map!");
+	player.NotifyAll(NOTIFY_CHAT, "%s restarted the map!", ply:Name());
 	game.ConsoleCommand("changelevel "..game.GetMap().."\n");
 end, "Admin Commands", "", "Restart the map immediately.");
 

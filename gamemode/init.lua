@@ -739,7 +739,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 		ply:ExitVehicle()
 	end
 	if (ply:GetNWBool("Typing") and IsValid(attacker) and attacker:IsPlayer()) then
-		player.NotifyAll("%s (%s) killed %s while " .. ply._GenderWord == "his" and "he" or "she" .. " was typing!", nil, attacker:Name(), attacker:SteamID(), ply:Name());
+		player.NotifyAll(NOTIFY_CHAT, "%s (%s) killed %s while " .. ply._GenderWord == "his" and "he" or "she" .. " was typing!", attacker:Name(), attacker:SteamID(), ply:Name());
 	end
 	if ValidEntity(ply._BackGun) then
 		ply._BackGun:Remove()
@@ -1277,7 +1277,7 @@ end)
 hook.Add("Think","Timer Checker.h",function()
 	if timenow < CurTime() - 3 then
 		GM:Log(EVENT_ERROR,"Timers have stopped running!")
-		player.NotifyAll("Timers have stopped running! Oh shi-",1)
+		player.NotifyAll(NOTIFY_ERROR, "Timers have stopped running! Oh shi-")
 		hook.Remove("Think","Timer Checker.h")
 	end
 end)

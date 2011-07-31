@@ -45,7 +45,7 @@ if SERVER then
 			return
 		end
 		cider.laws.update(decoded)
-		player.NotifyAll(ply:GetName().." just updated the city laws",0)
+		player.NotifyAll(NOTIFY_GENERIC, "%s just updated the city laws", ply:GetName())
 	end datastream.Hook( "cider_Laws",  getLaws );
 else
 	cider.laws.update = true
