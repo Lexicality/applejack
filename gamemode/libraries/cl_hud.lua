@@ -178,10 +178,14 @@ local function staticbox(box) -- Boxes with static text (You are wearing kevlar 
 	by = by + boxheight + 2;
 end
 
+local w;
 function drawboxes()
 	by = 10;
-	if (GetConVarNumber("developer") > 0) then
-		by = by + (boxheight + 3) * 3 + 3;
+    w = lpl:GetActiveWeapon();
+    if (IsValid(w) and w:GetClass() == "gmod_tool") then
+        by = by + w.ToolNameHeight + w.InfoBoxHeight - 8;
+    elseif (GetConVarNumber("developer") > 0) then
+		by = by + 82;--(boxheight + 3) * 3 + 3;
 	end
 	surface.SetFont(font);
 	surface.SetTextColor(255, 255, 255, 255);
@@ -891,7 +895,15 @@ function GM:HUDPaint()
 	ctime = CurTime();
 	self:HUDPaintESP();
 	surface.SetDrawColor(0,0,0,150);
-	local num = (GetConVarNumber("developer") > 0 and 82 or 0);
+    
+    local num = 0;
+    local w = lpl:GetActiveWeapon();
+    if (IsValid(w) and w:GetClass() == "gmod_tool") then
+        num = 0;--w.ToolNameHeight + w.InfoBoxHeight; -- I figure do the whole thing, it looks pretty pimp.
+    elseif (GetConVarNumber("developer") > 0) then
+        num = 82;
+    end
+
 	surface.DrawRect(0,num,sidewidth,scrh - num);
 	if (gamemode.Call("HUDShouldDraw", "MSBars")) then
 		drawbars();
