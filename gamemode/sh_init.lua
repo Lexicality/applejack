@@ -117,7 +117,7 @@ local function doload(path, name, plural) -- path must be the relative path from
 	if (path:sub(-1) ~= "/") then
 		path = path.."/";
 	end
-	MsgN("Applejack: Loading "..name.."s");
+	MsgN("Applejack: Loading "..plural);
 	local count = 0;
 	local subd, fname;
 	for k, v in pairs( file.FindInLua(GM.LuaFolder.."/gamemode/"..path.."*.lua") ) do
@@ -143,7 +143,7 @@ local function doload(path, name, plural) -- path must be the relative path from
 			end
 		end
 	end
-	MsgN("Applejack: Loaded "..count.." "..name.."s.\n")
+	MsgN("Applejack: Loaded "..count.." "..plural..".\n")
 end
 doload("libraries/",     "Library",   "Libraries");
 doload("metatables/",  "Metatable",  "Metatables");

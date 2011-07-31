@@ -153,6 +153,8 @@ function PANEL:ApplySchemeSettings()
 	self.lblDeaths:SetFont( "ScoreboardPlayerName" )
 	self.lblPing:SetFont( "ScoreboardPlayerName" )
 	
+    -- I don't even know.
+    color_white.a = 255;
 	self.lblName:SetFGColor( color_white )
 	self.lblFrags:SetFGColor( color_white )
 	self.lblDeaths:SetFGColor( color_white )
