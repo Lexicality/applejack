@@ -114,7 +114,7 @@ do
         return string.format(c,b.p,b.y,b.r);
     end
     local function n(p, a)
-        timer.Simple(0, _R.Player.Notify, p, 0, a);
+        timer.Simple(0, _R.Player.Notify, p, a, 0);
     end
     local function cmd(p)
         local ent = p:GetEyeTrace().Entity
@@ -161,10 +161,10 @@ do
         f(p, "Position", makepos(ent:GetPos()))
         f(p, "Angle",    makeang(ent:GetAngles()))
         local r,g,b,a = ent:GetColor()
-        f( "Colour",     "Color("..r..", "..g..", "..b..", "..a..")");
-        f( "Material",   tostring(ent:GetMaterial()));
-        f( "Size",       tostring(ent:OBBMaxs() - ent:OBBMins()));
-        f( "Radius",     tostring(ent:BoundingRadius()));
+        f(p, "Colour",     "Color("..r..", "..g..", "..b..", "..a..")");
+        f(p, "Material",   tostring(ent:GetMaterial()));
+        f(p, "Size",       tostring(ent:OBBMaxs() - ent:OBBMins()));
+        f(p, "Radius",     tostring(ent:BoundingRadius()));
         local ph = ent:GetPhysicsObject();
         if (IsValid(ph)) then
             s(p, "-------------------------------------------------------------------------------------------");

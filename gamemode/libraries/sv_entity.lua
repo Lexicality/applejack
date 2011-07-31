@@ -135,8 +135,8 @@ end
 -- @param ply The player in question
 function GM:RestoreAccess(ply)
 	local id, pl = ply:UniqueID();
-	local filtr = RecipientFilter();
 	if (not saves[id]) then return; end
+	local filter = RecipientFilter();
 	for ent,access in pairs(saves[id]) do
 		if (IsValid(ent) and not ent:IsOwned()) then
 			filter:RemoveAllPlayers();
