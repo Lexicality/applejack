@@ -407,7 +407,7 @@ cider.command.add("blacklist", "m", 5, function(ply, target, kind, thing, time, 
 	gamemode.Call("PlayerBlacklisted", victim, kind, thing, time, reason, ply);
 	victim:Blacklist(kind, thing, time, reason, ply:Name());
 	time = getBlacklistTime(time);
-	player.NotifyAll("%s blacklisted %s from using %s for %s for %q.", nil, ply:Name(), victim:Name(), name, time, reason);
+	player.NotifyAll(NOTIFY_CHAT, "%s blacklisted %s from using %s for %s for %q.", ply:Name(), victim:Name(), name, time, reason);
 end, "Moderator Commands", "<player> <team|item|cat|cmd> <thing> <time> <reason>", "Blacklist a player from something", true);
 
 cider.command.add("unblacklist", "m", 3, function(ply, target, kind, thing)
@@ -429,7 +429,7 @@ cider.command.add("unblacklist", "m", 3, function(ply, target, kind, thing)
 	end
 	gamemode.Call("PlayerUnBlacklisted", victim, kind, thing, ply);
 	victim:UnBlacklist(kind, thing);
-	player.NotifyAll("%s unblacklisted %s from using %s.", nil, ply:Name(), victim:Name(), name);
+	player.NotifyAll(NOTIFY_CHAT, "%s unblacklisted %s from using %s.", ply:Name(), victim:Name(), name);
 end, "Moderator Commands", "<player> <team|item|cat|cmd> <thing>", "Unblacklist a player from something", true)
 
 cider.command.add("blacklistlist", "m", 1, function(ply, target)
@@ -499,7 +499,7 @@ cider.command.add("demote", "b", 2, function(ply, target, ...)
 	end
 	local tid = victim:Team();
 	victim:Demote();
-	player.NotifyAll("%s demoted %s from %s for %q.", nil, ply:Name(), victim:Name(), team.GetName(tid), reason);
+	player.NotifyAll(NOTIFY_CHAT, "%s demoted %s from %s for %q.", ply:Name(), victim:Name(), team.GetName(tid), reason);
 end, "Commands", "<player> <reason>", "Demote a player from their current team.", true);
 
 cider.command.add("save", "s", 0, function(ply)
@@ -1260,7 +1260,7 @@ cider.command.add("mutiny","b",1,function(ply, args)
 		ply:Notify("Your vote has been counted, but you are not yet in the majority...");
 		return;
 	end
-	player.NotifyAll("%s was overthrown as leader of the %s!", nil, victim:Name(), gang.Name);
+	player.NotifyAll(NOTIFY_CHAT, "%s was overthrown as leader of the %s!", victim:Name(), gang.Name);
 	victim:Notify("Your gang has overthrown you!", nil, 1);
 	victim:Demote();
 end, "Commands","<player>","Try to start a mutiny against your leader")
@@ -1292,7 +1292,7 @@ cider.command.add("donator", "s", 1, function(ply, arguments)
 		target._KnockOutTime = target._KnockOutTime / 2;
 		
 		-- Print a message to all players about this player getting Donator status.
-		player.NotifyAll("%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
+		player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
 end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
 
 -- A command to change your clan.

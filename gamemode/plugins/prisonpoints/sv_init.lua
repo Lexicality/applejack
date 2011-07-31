@@ -42,7 +42,7 @@ end
 
 function PLUGIN:PlayerArrested(ply)
 	if (table.Count(self.Prisonpoints) < 1) then
-		player.NotifyAll("The Prisonpoints plugin is active but has no prison points set!");
+		player.NotifyAll(NOTIFY_CHAT, "The Prisonpoints plugin is active but has no prison points set!");
 		return;
 	end
 	local data = table.Random(self.Prisonpoints);
