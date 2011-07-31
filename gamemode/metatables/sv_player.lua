@@ -343,8 +343,6 @@ function meta:KnockOut(time, velocity)
 	angles.p = 0;
 	ragdoll:SetAngles(angles);
 	ragdoll:Spawn();
-	-- Stops the ragdoll colliding with players, to prevent accidental/intentional stupid deaths.
-	ragdoll:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	
 	-- Gief to world to prevent people picking it up and waving it about
 	cider.propprotection.GiveToWorld(ragdoll);
@@ -389,6 +387,11 @@ function meta:KnockOut(time, velocity)
 			umsg.End();
 			timer.Simple(time, recoveryTimer, self);
 		end
+        -- Stops the ragdoll colliding with players, to prevent accidental/intentional stupid deaths.
+        ragdoll:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    else
+        -- Stops the ragdoll colliding with anything, to prevent ragdoll spazzing after a stupid death.
+        ragdoll:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	end
 	-- Get us ready for spectation
 	self:StripWeapons();

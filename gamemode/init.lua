@@ -797,11 +797,14 @@ end
 -- Called when a ply dies.
 function GM:PlayerDeath(ply, inflictor, attacker, ragdoll,fall)
 	
-	-- Knock out the ply to simulate their death. (Even if they're allready a ragdoll, we need to handle the multiple raggies.
-	ply:KnockOut();
+	if (ply:KnockedOut()) then
+        ply:GetRagdollEntity():SetCollisionGroup(COLLISION_GROUP_WORLD);
+    else
+        ply:KnockOut();
+    end
 	
 	-- Set their next spawn time.
-	ply.NextSpawnTime = CurTime() + ply._SpawnTime
+	ply.NextSpawnTime = CurTime() + ply._SpawnTime;
 	
 	-- Set it so that we can the next spawn time client side.
 	umsg.Start("MS Respawn Time", ply);
