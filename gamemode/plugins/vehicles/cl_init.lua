@@ -233,7 +233,7 @@ function PLUGIN:AdjustESPLines(ent, class, lines, pos, dist, center)
         return;
     end
     -- See if it's a flipper
-    local ang = = ent:GetAngles();
+    local ang = ent:GetAngles();
     if (math.abs(ang.r) > 10) then
         if (ent:Locked()) then
             text = "Press 'use' to flip this car";
