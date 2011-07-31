@@ -91,7 +91,7 @@ SWEP.ShellEjectAttachment = "2";
 
 -- Set some modifier information.
 SWEP.CrouchModifier = 0.75;
-SWEP.IronSightModifier = 0.01;
+SWEP.IronSightModifier = 0.07;
 SWEP.RunModifier = 1.5;
 SWEP.JumpModifier = 2;
 
