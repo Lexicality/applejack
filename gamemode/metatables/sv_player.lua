@@ -31,7 +31,7 @@ function meta:AddCount(name, ent)
 	return self:oAddCount(name,ent);
 end
 function meta:TakeCount(name, ent)
-	local tab = g_SBoxObjects[self:UniqueID()];
+	local tab = SBoxObjects[self:UniqueID()];
 	if (not( tab and tab[name])) then return end
 	for k,e in ipairs(tab[name]) do
 		if (e == ent) then

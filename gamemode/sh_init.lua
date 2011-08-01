@@ -1,20 +1,12 @@
 --[[
-Name: "sh_init.lua".
+    ~ Shared Init ~
 	~ Applejack ~
 --]]
 --[[
 	Custom ENUM highlights (paste into style configurator)
 	TEAM GROUP GANG EVENT_SUPEREVENT EVENT_ADMINEVENT EVENT_EVENT EVENT_POLICEEVENT EVENT_PUBLICEVENT EVENT_DEBUG EVENT_SQLDEBUG EVENT_DEBUGERROR EVENT_ERROR EVENT_ALL EVENT_TALKING EVENT_BUILD EVENT_PICKUP EVENT_COMMAND EVENT_ITEM EVENT_PLAYERDAMAGE EVENT_DAMAGE EVENT_DEATH EVENT_ENTITY EVENT_TEAM CLASS_STRING CLASS_LONG CLASS_SHORT CLASS_BOOL CLASS_VECTOR CLASS_ENTITY CLASS_ANGLE CLASS_CHAR CLASS_FLOAT  TYPE_SMALL TYPE_LARGE CAN_TAKE CAN_PUT  OBJ_OWNABLE OBJ_LOCKED OBJ_SEALED  OBJ_PADLOCKED  OBJ_CONTAINER OBJ_INUSE 
 --]]
-function includecs(file)
---[[
-	if (string.find(file, "shared.lua")) then
-		ErrorNoHalt("includecs(\""..file.."\"): "..debug.getinfo(2,"S").source.."\n");
-	end
---]]
-	include(file);
-	AddCSLuaFile(file);
-end
+include("sh_functions.lua");
 
 GM.Name = "Applejack Beta"--"Applejack - Cider Core";
 GM.Email = "mwaness@gmail.com";
@@ -25,56 +17,6 @@ includecs("timer.lua");
 -- Derive the gamemode from sandbox.
 DeriveGamemode("Sandbox");
 require("datastream")
-function math.DecimalPlaces(numb,places)
-	return math.Round(numb*10^places)/10^places
-end
-function validfile(filename) -- A curse brought on by editing things in mac/linux - Unwanted files!
-	return filename:sub(1,1) ~= "." and not filename:find"~";
-end
--- This makes more sense tbh
-function gamemode.Call(name, ...)
-	local gm = gmod.GetGamemode() or GM or GAMEMODE or {};
-	if (not gm[name]) then
-		ErrorNoHalt("Hook called '",name,"' called that does not have a GM: function!\n");
-	end
-	return hook.Call(name, gm, ...);
-end
-
--- "I do this because I use some of these variable names a lot by habbit." - kuro
--- Left in because shit still uses this that I haven't rewritten yet. - Lexi
-for k, v in pairs(_G) do
-	if (!tonumber(k) and type(v) == "table") then
-		if (!string.find(k, "%u") and string.sub(k, 1, 1) ~= "_") then
-			_G[ "g_"..string.upper( string.sub(k, 1, 1) )..string.sub(k, 2) ] = v;
-		end
-	end
-end
---Because some people are numpties and call ValidEntity on non entity objects, so I need to modify what Garry did
---[[---------------------------------------------------------
-    Returns true if object is valid (is not nil and IsValid)
----------------------------------------------------------]]--
-function IsValid( object )
-	--[[
-	local object = object or nil
-	local etype = type(object);
-	if etype == "number" or etype == "function" or etype == "string" or etype == "boolean" or etype == "thread" then
-		error("What the fuck just passed me a non-ent? "..etype,2)
-	end
-	if (not (object and object.IsValid)) then return false end
-	return object:IsValid()	
-	--]]
-	return object and object.IsValid and object:IsValid();
-end
---[[---------------------------------------------------------
-    Returns true if entity is valid
----------------------------------------------------------]]--
-ValidEntity = IsValid
---[[---------------------------------------------------------
-    Returns true if entity is valid and a player
----------------------------------------------------------]]--
-function IsPlayer( object )
-	return IsValid( object ) and object:IsPlayer();
-end
 
 -- Create the Cider table and the configuration table.
 cider = {};
@@ -179,13 +121,6 @@ for k, v in pairs( file.FindInLua(GM.LuaFolder.."/gamemode/derma/*.lua") ) do
 end
 
 --A few things need to be shared
-function util.IsWithinBox(topleft,bottomright,pos)
-	if not (pos.z < math.min(topleft.z, bottomright.z) or pos.z > math.max(topleft.z, bottomright.z) or
-			pos.x < math.min(topleft.x, bottomright.x) or pos.x > math.max(topleft.x, bottomright.x) or
-			pos.y < math.min(topleft.y, bottomright.y) or pos.y > math.max(topleft.y, bottomright.y)) then
-		return true
-	end
-end
 
 -- Called when a bullet tries to ricochet
 function GM:CanRicochet(trace,force,swep)

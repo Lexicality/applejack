@@ -55,7 +55,8 @@ while true do
 	end
 end
 
-local hook,player,g_player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math = hook,player,g_player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math
+local hook,player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math =
+      hook,player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math
 
 do
 	-- Store the old hook.Call function.
@@ -348,7 +349,7 @@ end]]
 
 -- A function to check whether we're running on a listen server.
 function GM:IsListenServer()
-	for k, v in pairs( g_Player.GetAll() ) do
+	for k, v in pairs( player.GetAll() ) do
 		if ( v:IsListenServerHost() ) then return true end
 	end
 	
@@ -1188,7 +1189,7 @@ function GM:ShutDown()
 	ErrorNoHalt"----------------------\n"
 	ErrorNoHalt(os.date().." - Server shutting down\n")
 	ErrorNoHalt"----------------------\n"
-	for k, v in pairs( g_Player.GetAll() ) do
+	for k, v in pairs( player.GetAll() ) do
 		v:HolsterAll()
 		ply:SaveData()
 	end

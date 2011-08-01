@@ -222,7 +222,7 @@ if Meta and Meta.AddCount then
 	function Meta:TakeCount(str,ent)
 		if ( !self:IsValid() ) then return end
 		local key = self:UniqueID()
-		local tab = g_SBoxObjects[ key ]
+		local tab = SBoxObjects[ key ]
 		if ( !tab || !tab[ str ] ) then 
 			return
 		end
@@ -300,7 +300,7 @@ function cider.propprotection.PlayerCanTouch(ply, ent)
 			return true
 		end
 	else
-		for k,v in pairs(g_SBoxObjects) do
+		for k,v in pairs(SBoxObjects) do
 			for b, j in pairs(v) do
 				for _, e in pairs(j) do
 					if(k == ply:SteamID() and e == ent) then
