@@ -11,13 +11,6 @@ local texLogo 		= surface.GetTextureID( "gui/gmod_logo" )
 
 local PANEL = {}
 
-concommand.Add("FUCKTHESCOREBOARD", function()
-	for ply, row in pairs(SCOREBOARD.PlayerRows) do
-		if (IsValid(ply)) then
-			row.FUCK = true;
-		end
-	end
-end);
 /*---------------------------------------------------------
    Name: Paint
 ---------------------------------------------------------*/

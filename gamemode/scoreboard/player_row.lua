@@ -50,11 +50,6 @@ function PANEL:Paint()
 	if ( !ValidEntity( self.Player ) ) then return end
 	
 	local color = team.GetColor(self.Player:Team())
-	-- FORCE THE FUCKER!!!
-	color.a = 255
-	-- Since the above apparently doesn't work, desperately try attacking render.
-	render.SetBlend(1);
-	render.SetColorModulation(1,1,1);
 	-- Check if we're sliding
 	if ( self.Open || self.Size ~= self.TargetSize ) then
 	
@@ -77,11 +72,6 @@ function PANEL:Paint()
 	surface.SetTexture( self.texRating )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 ) 	
-
-	-- Debugging
-	if (self.FUCK) then
-		self.FUCK = false;
-	end
 
 	return true
 
@@ -153,8 +143,6 @@ function PANEL:ApplySchemeSettings()
 	self.lblDeaths:SetFont( "ScoreboardPlayerName" )
 	self.lblPing:SetFont( "ScoreboardPlayerName" )
 	
-    -- I don't even know.
-    color_white.a = 255;
 	self.lblName:SetFGColor( color_white )
 	self.lblFrags:SetFGColor( color_white )
 	self.lblDeaths:SetFGColor( color_white )
