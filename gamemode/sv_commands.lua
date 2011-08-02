@@ -354,7 +354,7 @@ local function getnamething(kind,thing)
 	-- Category blacklist
 		local  cat = GM:GetCategory(thing)
 		if not cat then return false,thing.." is not a valid category!" end
-		return cat.Name, cat.index;
+		return cat.Name, cat.UniqueID;
 	elseif kind == "cmd" then
 	-- Command blacklist
 		local cmd = cider.command.stored[thing]

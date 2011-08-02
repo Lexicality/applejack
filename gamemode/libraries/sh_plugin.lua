@@ -4,6 +4,7 @@
 --]]
 
 local stored = {};
+GM.Plugins = stored;
 
 --[[
 	Makes any hook call act like cider.plugin.call acted.
@@ -40,20 +41,21 @@ function GM:LoadPlugins()
 			PLUGIN = {};
 			PLUGIN.Folder = id;
 			PLUGIN.FullPath = cpath;
-			if (file.Exists("../gamemodes/"..cpath.."/sh_init.lua")
-			or  file.Exists("../lua_temp/" ..cpath.."/sh_init.lua")) then
+			if (file.ExistsInLua(cpath.."/sh_init.lua")) then
 				includecs(cpath.."/sh_init.lua");
 			end
 			if (SERVER) then
-				if (file.Exists("../gamemodes/"..cpath.."/sv_init.lua")) then
+				if (file.ExistsInLua(cpath.."/sv_init.lua")) then
 					include(cpath.."/sv_init.lua");
-				end if (file.Exists("../gamemodes/"..cpath.."/cl_init.lua")) then
+				end if (file.ExistsInLua(cpath.."/cl_init.lua")) then
 					AddCSLuaFile(cpath.."/cl_init.lua");
 				end
-			elseif (file.Exists("../gamemodes/"..cpath.."/cl_init.lua")
-				or  file.Exists("../lua_temp/" ..cpath.."/cl_init.lua")) then
+			elseif (file.ExistsInLua(cpath.."/cl_init.lua")) then
 				include(cpath.."/cl_init.lua");
 			end
+            if (file.ExistsInLua(cpath.."/items")) then
+                PLUGIN._HasItems = true;
+            end
 			if (PLUGIN.Name) then
 				MsgN(" Loaded plugin '"..PLUGIN.Name.."'")
 				stored[id] = PLUGIN;

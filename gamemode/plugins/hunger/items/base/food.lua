@@ -2,7 +2,8 @@
 	~ Base food ~
 	~ Applejack ~
 --]]
-include("item.lua");
+-- hurk
+ITEM:Derive("item");
 ITEM.Batch			= 5;
 ITEM.Size			= 1;
 ITEM.Hunger			= 0

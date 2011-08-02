@@ -12,6 +12,10 @@ function cider.inventory.update(player, id, amount, force)
 	local item = GM.Items[id];
 	if (not item) then
 		return false, "That is not a valid item!";
+    elseif (not item.Size) then
+        ErrorNoHalt("Uh, something broke here with item ", id, ".\n");
+        PrintTable(item);
+        return false, "shits broke cap'tan";
 	elseif ( not(amount < 1 or cider.inventory.canFit(player, item.Size * amount) or force)) then
 		return false, "You do not have enough inventory space!";
 	end--
