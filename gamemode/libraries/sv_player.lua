@@ -48,7 +48,7 @@ player.loadFunctions = {
 			if (GM.Items[item]) then
 				cider.inventory.update(ply, item, tonumber(amount), true);
 			else
-				ErrorNoHalt("Ignoring " .. amount .. " nonexistant '" .. item .. "' items in " .. ply:Name() .. "'s inventory.");
+				ErrorNoHalt("Ignoring " .. amount .. " nonexistant '" .. item .. "' items in " .. ply:Name() .. "'s inventory.\n");
 			end
 		end)
 	end;
