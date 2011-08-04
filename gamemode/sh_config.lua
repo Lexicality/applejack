@@ -1,5 +1,5 @@
 --[[
-Name: "sh_configuration.lua".
+    ~ Shared Configuration ~
 	~ Applejack ~
 --]]
 local config = {};

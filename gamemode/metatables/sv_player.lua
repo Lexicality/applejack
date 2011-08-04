@@ -11,39 +11,58 @@ local meta = _R.Player;
 if (not meta) then
 	error("["..os.date().."] Applejack Serverside Player metatable: No metatable found!");
 end
-;
---[[
+
+---------------------
+-- Prop Protection --
+---------------------
+
 function meta:AddPPFriend(ply)
-	self.ppFriends[ply:UniqueID()] = ply:Name();
+    if (not IsPlayer(ply)) then
+        return;
+    end
+    self._ppFriends[ply:UniqueID] = ply:Name();
 end
+
 function meta:RemovePPFriend(ply)
-	self.ppFriends[ply:UniqueID()] = nil;
+    if (not IsPlayer(ply)) then
+        return;
+    end
+    self._ppFriends[ply:UniqueID] = nil;
 end
+
 function meta:ClearPPFriends()
-	self.ppFriends = {};
+    for uid in pairs(self._ppFriends) do
+        self._ppFriends[uid] = nil;
+    end
+end
+
+function meta:IsPPFriendsWith(ply)
+    if (not IsPlayer(ply)) then
+        return false;
+    end
+    return (self._ppFriends[ply:UniqueID] ~= nil);
 end
 
 if (not meta.oAddCount) then
 	meta.oAddCount = meta.AddCount;
 end
 function meta:AddCount(name, ent)
-	ent:GiveToPlayer(self);
+	ent:SetPPOwner(self);
 	return self:oAddCount(name,ent);
 end
 function meta:TakeCount(name, ent)
 	local tab = SBoxObjects[self:UniqueID()];
-	if (not( tab and tab[name])) then return end
-	for k,e in ipairs(tab[name]) do
+	if (not ( tab and tab[name])) then return end
+	for k, e in pairs(tab[name]) do
 		if (e == ent) then
-			table.remove(tab[name],k);
-			break
+			table.remove(tab[name], k);
+			break;
 		end
 	end
 	self:GetCount(name);
-	ent:GiveToWorld();
-	ent:SetSpawner();
+	ent:SetPPOwner(NULL);
+    ent:SetPPSpawner(NULL);
 end
---]] 
 
 
 
