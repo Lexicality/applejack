@@ -608,8 +608,18 @@ function GM:PlayerCanManufactureItem(ply, item)
 end
 
 ---
--- Called when the player's data is about to be saved, so any plugins that wish to compact anything into _Misc or
+-- Called before a player.SaveAll() function call is executed.
+function GM:PrePlayerSaveData()
+end
+
+---
+-- Called when a player's data is about to be saved, so any plugins that wish to compact anything into _Misc or
 --  do their own saving process should do so in this hook.
 -- @param ply The player whose data is being saved.
 function GM:PlayerSaveData(ply)
+end
+
+---
+-- Called after every player's data has been saved in a player.SaveAll() call.
+function GM:PostPlayerSaveData()
 end

@@ -159,7 +159,10 @@ local function saveallTimer(playerlist)
 	local ply;
 	for i = 1, 5 do
 		ply = table.remove(playerlist);
-		if (IsValid(ply)) then
+        if (not ply) then
+            gamemode.Call("PostPlayerSaveData");
+            break;
+        elseif (IsValid(ply)) then
 			ply:SaveData();
 		end
 	end
@@ -169,10 +172,12 @@ end
 -- Saves every player on the server's data. Unless told otherwise, this will do 5 per frame until they're all done, to ease server load.
 -- @param now Process every player's profile right now - used when time is urgent.
 function player.SaveAll(now)
+    gamemode.Call("PrePlayerSaveData");
 	if (now) then
 		for _, ply in pairs(player.GetAll()) do
 			ply:SaveData();
 		end
+        gamemode.Call("PostPlayerSaveData");
 		return;
 	end
 	local plys = player.GetAll();
