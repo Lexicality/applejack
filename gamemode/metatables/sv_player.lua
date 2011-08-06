@@ -750,6 +750,7 @@ end
 -- @param create Whether to create a new entry or do a normal update.
 function meta:SaveData(create)
 	if (not self._Initialized) then return end
+    gamemode.Call("PlayerSaveData", self);
 	local query = create and createCreateQuery(self) or createUpdateQuery(self);
 	local name = self:Name(); -- In case they leave and then cause an error.
 	tmysql.query(query, function(r, s, e)

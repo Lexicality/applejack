@@ -1191,7 +1191,7 @@ function GM:ShutDown()
 	ErrorNoHalt"----------------------\n"
 	for k, v in pairs( player.GetAll() ) do
 		v:HolsterAll()
-		ply:SaveData()
+		ply:SaveData(true)
 	end
 end
 
