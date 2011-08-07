@@ -85,7 +85,7 @@ do
 end
 
 -- A table that will hold entities that were there when the map started.
-GM.entities = {}
+GM.Entities = {}
 
 -- Called when the server initializes.
 function GM:Initialize()
@@ -116,86 +116,31 @@ function AcceptStream ( pl, handler, id )
 	end
 end 
 hook.Add( "AcceptStream", "AcceptStream", AcceptStream )
---Extra congratualtions to our great Deco.
--- TODO: Is this fixed?
-local META = FindMetaTable("CRecipientFilter")
-if META then
-	function META:IsValid()
-		return true
-	end
-else
-	ErrorNoHalt(os.date().." Failed to fix datastream fuckup: \"CRecipientFilter\"'s metatable invalid.")
-end
 
 -- Called when all of the map entities have been initialized.
 function GM:InitPostEntity()
+    local count = 0;
 	for _, ent in pairs(ents.GetAll()) do
 		if (ent:IsDoor()) then
 			ent:MakeOwnable();
 			doors.Load(ent)
 		end
-		self.entities[ent] = ent;
+		self.Entities[ent] = ent;
+        count = count + 1;
+        ent:SetPPOwner(NULL);
 	end
-	timer.Simple(0,hook.Call,"LoadData",self); -- Tell plugins to load their datas a frame after this.
+    MsgN("=========================================================");
+    MsgN("Map finished loading with ", count, " entities active.");
+    MsgN("=========================================================");
+    -- Tell plugins to load their datas a frame after this.
+	timer.Simple(0,hook.Call,"LoadData",self);
+    -- Inform anything loaded after this that it's not going to get an InitPostEntity call.
 	self.Inited = true;
 	-- Call the base class function.
 	return self.BaseClass:InitPostEntity()
 end
 
-
--- Called when a player attempts to punt an entity with the gravity gun.
-function GM:GravGunPunt(ply, entity) return ply:IsAdmin() or ply:HasAccess("G") end
-
--- Called when a player attempts to pick up an entity with the physics gun.
-function GM:PhysgunPickup(ply, entity)
-	if ( entity:IsValid() && entity.PhysgunPickup ) then
-		return entity:PhysgunPickup( ply )
-	elseif entity.PhysgunDisabled then
-		return false
-	elseif self.entities[entity] and !((entity:GetClass() == "prop_physics" or entity:GetClass() == "prop_physics_multiplayer") and ply:IsAdmin()) then
-			return false
-	elseif entity:IsVehicle() and not ply:IsSuperAdmin() and (IsValid(entity:GetDriver()) or not (string.find(entity:GetModel(), "chair") or string.find(entity:GetModel(), "seat"))) then
-		return false
-	elseif ( ply:IsAdmin() ) then
-		if ( entity:IsPlayer() ) then
-			if ( entity:InVehicle() ) then
-				return false
-			else
-				entity:SetMoveType(MOVETYPE_NOCLIP)
-				ply._Physgunnin = true
-			end
-		end
-		-- Return true because administrators can pickup any entity.
-		return true
-	end
-	
-	-- Check if this entity is a player's ragdoll.
-	if ( ValidEntity(entity._Player) ) then return false end
-	
-	-- Check if the entity is a forbidden class.
-	if ( string.find(entity:GetClass(), "npc_")
-	or string.find(entity:GetClass(), "cider_")
-	or string.find(entity:GetClass(), "prop_dynamic") ) then
-		return false
-	end
-	
-	-- Call the base class function.
-	return self.BaseClass:PhysgunPickup(ply, entity)
-end
-
--- Called when a player attempts to drop an entity with the physics gun.
-function GM:PhysgunDrop(ply, entity)
-	if ( entity:IsPlayer() ) then
-		entity:SetMoveType(MOVETYPE_WALK)
-		ply._Physgunnin = false
-	end
-end
-function GM:OnPhysgunFreeze( weapon, phys, ent, ply )
-	if ent:IsVehicle() and not ply:IsAdmin() then
-		return false
-	end
-	return self.BaseClass:OnPhysgunFreeze( weapon, phys, ent, ply ) 
-end
+-- TODO: Move this stuff into the sv_player hooks
 -- Called when a player attempts to arrest another player.
 function GM:PlayerCanArrest(ply, target)
 	if (target._Warranted == "arrest") then
@@ -374,21 +319,6 @@ function GM:CanTool(ply, trace, tool,nailee)
 				return false
 			end
 		end
-		// If we have a toolsallowed table, check to make sure the toolmode is in it
-		if ( trace.Entity.m_tblToolsAllowed ) then
-			local vFound = false	
-			for k, v in pairs( trace.Entity.m_tblToolsAllowed ) do
-				if ( tool == v ) then vFound = true end
-			end
-
-			if ( !vFound ) then return false end
-
-		end
-		
-		// Give the entity a chance to decide
-		if ( trace.Entity.CanTool ) then
-			return trace.Entity:CanTool( ply, trace, tool )
-		end
 		if  tool == "remover"
 		and trace.Entity._Removeable
 		and trace.Entity:IsDoor()
@@ -418,7 +348,7 @@ function GM:CanTool(ply, trace, tool,nailee)
 			
 			-- Check if the trace entity is valid.
 			if ( ValidEntity(line.Entity) ) then
-				if self.entities[line.Entity] or not hook.Call("CanTool",GAMEMODE,ply,line,tool,true) then
+				if self.Entities[line.Entity] or not hook.Call("CanTool",GAMEMODE,ply,line,tool,true) then
 					return false
 				end
 			end
@@ -429,12 +359,12 @@ function GM:CanTool(ply, trace, tool,nailee)
 			
 			-- Loop through the constained entities.
 			for k, v in pairs(entities) do
-				if (self.entities[v]) then return false end
+				if (self.Entities[v]) then return false end
 			end
 		end
 		
 		-- Check if this entity cannot be used by the tool.
-		if (self.entities[trace.Entity]) then return false end
+		if (self.Entities[trace.Entity]) then return false end
 		
 		-- Check if this entity is a player's ragdoll.
 		if ValidEntity(trace.Entity._Player) and not ply:IsAdmin() then return false end

@@ -668,8 +668,8 @@ function PLUGIN:FrameOne()
 				end
 				ent:Fire ( "setdamagefilter", "aj_details", 0 );
 				hook.Call("PropSpawned", GM, tab[1], ent);
-				cider.propprotection.GiveToWorld(ent);
-				GM.entities[ent] = ent;
+                ent:SetPPOwner(NULL);
+				GM.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
 			end
@@ -690,8 +690,8 @@ function PLUGIN:FrameTwo(mapname)
 				ent:Spawn();
 				ent:Activate();
 				ent:SetDTBool(3,true);
-				cider.propprotection.GiveToWorld(ent);
-				GM.entities[ent] = ent;
+                ent:SetPPOwner(NULL);
+				GM.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
 			end
@@ -738,8 +738,8 @@ function PLUGIN:FrameThree(mapname)
 						ErrorNoHalt("Applejack (Details): Vehicle model has no physics! "..tab[1]);
 					end
 					ent:Fire("setdamagefilter", "aj_details", 0);
-					cider.propprotection.GiveToWorld(ent);
-					GM.entities[ent] = ent;
+                    ent:SetPPOwner(NULL);
+					GM.Entities[ent] = ent;
 				end
 			end
 		end
@@ -775,6 +775,7 @@ function PLUGIN:FrameFour(mapname)
 				ent._DoorState = "closed";
 				ent._Autoclose = 30;
 				ent:MakeOwnable();
+                ent:SetPPOwner(NULL);
 				ent:SetNWString("Name",tab[5]);
 			end
 		end

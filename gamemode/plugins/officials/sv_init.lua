@@ -64,7 +64,7 @@ function PLUGIN:PlayerDeath(ply, inflictor, killer)
 		end
 		self.Lockdown = false; -- Disable the lockdown
 		SetGlobalBool("lockdown",false);
-		cider.propprotection.CleanupPlayerProps(ply); -- Since the mayor's reign is over, his props should go.
+        GM:ClearProps(ply);
 		ply:Demote(); -- Drop dem to da bttom
 	end
 end

@@ -27,7 +27,8 @@ function ITEM:onUse(ply)
 		local entity = ents.Create("cider_padlock");
 		entity:Spawn();
 		entity:SetDoor(door, trace, ply);
-		cider.propprotection.PlayerMakePropOwner(ply,entity,true);
+        ent:SetPPOwner(ply);
+        ent:SetPPSpawner(ply);
 		local event	= "";
 		local addon	= "";
 		local entname	= door._eName or "entity";

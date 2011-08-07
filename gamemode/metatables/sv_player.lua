@@ -16,26 +16,50 @@ end
 -- Prop Protection --
 ---------------------
 
+---
+-- Adds a person to the player's prop protection buddy list
+-- @param ply the person to add
 function meta:AddPPFriend(ply)
     if (not IsPlayer(ply)) then
         return;
     end
-    self._ppFriends[ply:UniqueID] = ply:Name();
+    local uid  = ply:UniqueID();
+    local name = ply:Name();
+    self._ppFriends[uid] = name;
+    umsg.Start("MS PPUpdate", self);
+    umsg.Char(1);
+    umsg.Long(uid);
+    umsg.String(name);
+    umsg.End();
 end
 
+---
+-- Removes a person from the player's prop protection buddy list
+-- @param ply The person to remove
 function meta:RemovePPFriend(ply)
     if (not IsPlayer(ply)) then
         return;
     end
-    self._ppFriends[ply:UniqueID] = nil;
+    local uid =  ply:UniqueID();
+    self._ppFriends[uid] = nil;
+    umsg.Start("MS PPUpdate", self);
+    umsg.Char(2);
+    umsg.Long(uid);
+    umsg.End();
 end
 
+---
+-- Wipes a player's prop protection buddy list
 function meta:ClearPPFriends()
-    for uid in pairs(self._ppFriends) do
-        self._ppFriends[uid] = nil;
-    end
+    self._ppFriends[uid] = {};
+    umsg.Start("MS PPUpdate", self);
+    umsg.Char(3);
+    umsg.End();
 end
 
+---
+-- Checks to see if a person is on the player's buddy list
+-- @param ply The person to check
 function meta:IsPPFriendsWith(ply)
     if (not IsPlayer(ply)) then
         return false;
@@ -50,6 +74,11 @@ function meta:AddCount(name, ent)
 	ent:SetPPOwner(self);
 	return self:oAddCount(name,ent);
 end
+
+---
+-- Removes an entity from the player's sandbox count and gives it to the world
+-- @param name The AddCount name
+-- @param ent The entity to remove
 function meta:TakeCount(name, ent)
 	local tab = SBoxObjects[self:UniqueID()];
 	if (not ( tab and tab[name])) then return end
@@ -364,7 +393,7 @@ function meta:KnockOut(time, velocity)
 	ragdoll:Spawn();
 	
 	-- Gief to world to prevent people picking it up and waving it about
-	cider.propprotection.GiveToWorld(ragdoll);
+    ragdoll:SetPPOwner(NULL);
 	-- Pose the ragdoll in the same shape as us
 	for i, matrix in pairs(bones) do
 		ragdoll:SetBoneMatrix(i, matrix);

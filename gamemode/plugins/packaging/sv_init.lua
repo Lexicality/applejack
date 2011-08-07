@@ -43,7 +43,8 @@ function PLUGIN:CrateTime(player,item)
 		crate:SetPos( trace.HitPos - trace.HitNormal * crate:OBBMins().z )
 		crate:SetAngles( Ang )
 	end
-	cider.propprotection.PlayerMakePropOwner(player,crate,true)
+    crate:SetPPOwner(ply);
+    crate:SetPPSpawner(ply);
 	crate:Spawn()
 	crate:Activate()
 	if item.skin then

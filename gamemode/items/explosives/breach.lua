@@ -30,7 +30,8 @@ function ITEM:onUse(ply)
 		ent:Spawn();
 		ent:SetDoor(door, trace, ply);
 		door._Breach = ent;
-		cider.propprotection.PlayerMakePropOwner(ply, ent, true);
+        ent:SetPPOwner(ply);
+        ent:SetPPSpawner(ply);
 		return true;
 	end
 	return false;

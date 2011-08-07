@@ -573,7 +573,11 @@ cider.command.add("dropmoney", "b", 1, function(ply, amt)
 	end
 	ply._NextMoneyDrop = CurTime() + 30;
 	ply:GiveMoney(-amt);
-	cider.propprotection.PlayerMakePropOwner(GM.Items["money"]:Make(pos, amt), ply, true);
+
+    local ent = GM.Items["money"]:Make(pos, amt);
+    ent:SetPPOwner(ply);
+    ent:SetPPSpawner(ply);
+
 	GM:Log(EVENT_EVENT,"%s dropped $%i.", ply:Name(), amt);
 end, "Commands", "<amount>", "Drop some money where you are looking.", true);
 
@@ -599,7 +603,8 @@ cider.command.add("note", "b", 1, function(ply, ...)
 	
 	-- Spawn the money entity.
 	entity:Spawn();
-	cider.propprotection.PlayerMakePropOwner(ply, entity, true);	
+    entity:SetPPOwner(ply);
+    entity:SetPPSpawner(ply);
 	
 	ply:AddCount("notes", entity);
 	local index = entity:EntIndex()
@@ -972,7 +977,7 @@ cider.command.add("door", "b", 1, function(ply, action, ...)
 		name = ply:Name();
 	end
 	ply:GiveDoor(ent, name);
-	cider.propprotection.ClearSpawner(ent);
+    ent:SetPPSpawner(NULL);
 	GM:Log(EVENT_EVENT, "%s bought a door called %q.",ply:Name(),ent:GetDoorName())
 end, "Menu Handlers", "<purchase|sell>", "Perform an action on the door you're looking at.", 1);
 
@@ -1093,7 +1098,7 @@ cider.command.add("manufacture", "b", 1, function(ply, itemid)
 	if (item.onManufacture) then
 		item:onManufacture(ply, ent, amt);
 	end
-	cider.propprotection.GiveToWorld(ent);
+    ent:SetPPOwner(NULL);
 	local words = "";
 	if (amt > 1) then
 		words = amt .. " " .. item.Plural;

@@ -1,102 +1,449 @@
 --[[
-Name: "sv_propprotection.lua".
-	~ Applejack ~
+	~ Prop Protectoin ~
+	~ Moonshine ~
 --]]
-------------------------------------
---	Simple Prop Protection
---	By Spacetech
--- 	http://code.google.com/p/simplepropprotection
-------------------------------------
-cider.propprotection = {}
-cider.propprotection.Props = {}
-cider.propprotection.WeirdTraces = {
-	"wire_winch",
-	"wire_hydraulic",
-	"slider",
-	"hydraulic",
-	"winch",
-	"muscle"
-}
+--[[
+	My thanks to Spacetech for the original code.
+	This is a heavily modified version of Simple Prop Protection.
+	http://code.google.com/p/simplepropprotection
+--]]
 
-function cider.propprotection.SetupSettings()
-	if(!sql.TableExists("spropprotectiona")) then
-		sql.Query("CREATE TABLE IF NOT EXISTS spropprotectiona(toggle INTEGER NOT NULL, admin INTEGER NOT NULL, pgr INTEGER NOT NULL, awp INTEGER NOT NULL, dpd INTEGER NOT NULL, dae INTEGER NOT NULL, delay INTEGER NOT NULL);")
-		sql.Query("CREATE TABLE IF NOT EXISTS spropprotectionafriends(steamid TEXT NOT NULL PRIMARY KEY, bsteamid TEXT);")
-		sql.Query("INSERT INTO spropprotectiona(toggle, admin, pgr, awp, dpd, dae, delay) VALUES(1, 1, 1, 0, 1, 1, 120)")
-	end
-	local c = sql.QueryRow("SELECT * FROM spropprotectiona LIMIT 1")
-	return c
+--[[ Settings ]]--
+if (not sql.TableExists("ms_ppconfig")) then
+	sql.Query("CREATE TABLE ms_ppconfig("..
+				"enabled INTEGER NOT NULL, ".. -- Are we enabled?
+				"cleanup INTEGER NOT NULL, ".. -- Should disconnected player's props be cleaned up?
+				"delay INTEGER NOT NULL);" -- Cleanup delay
+			 );
+	sql.Query("INSERT INTO ms_ppconfig(enabled, cleanup, delay) VALUES(1, 1, 120);");
+end
+local config = sql.QueryRow("SELECT * FROM ms_ppconfig LIMIT 1");
+if (not (config and config.enabled and config.cleanup and config.delay)) then
+	ErrorNoHalt("["..os.date().."] Applejack Prop Protection: Config is corrupt!\n");
+	config.enabled = 1;
+    config.cleanup = 1;
+	config.delay = 120;
 end
 
-cider.propprotection.Config = cider.propprotection.SetupSettings()
+local function SaveData()
+    local str = "";
+    for key, value in pairs(config) do
+        str = str .. "," .. key .. "=" .. tostring(value);
+    end
+    sql.Query("UPDATE ms_ppconfig SET " .. str:sub(2) .. ";");
+end
 
-function cider.propprotection.AdminReloadPlayer(ply)
-	if(!ply or !ply:IsValid()) then
-		return
+--[[ Convars to tell clients the settings ]]--
+for name, value in pairs(config) do
+    value = tonumber(value);
+    config[name] = value;
+	CreateConVar("ms_ppconfig_"..name, value, FCVAR_REPLICATED);
+end
+
+--[[ Adjustment of existing functions ]]--
+if (cleanup) then
+	if (not cleanup.oAdd) then
+		cleanup.oAdd = cleanup.Add;
 	end
-	for k,v in pairs(cider.propprotection.Config) do
-		local stuff = k
-		if(stuff == "toggle") then
-			stuff = "check"
+	function cleanup.Add(ply, _, ent)
+        if (IsValid(ent) and IsPlayer(ply)) then
+            ent:SetPPOwner(ply);
+            ent:SetPPSpawner(ply);
+        end
+        cleanup.oAdd(ply, _, ent);
+    end
+end
+
+--[[ Buddies ]]--
+if (not sql.TableExists("ms_ppbuddies")) then
+    sql.Query("CREATE TABLE ms_ppfriends(UID INTEGER PRIMARY KEY, Buddies TEXT NOT NULL);");
+end
+
+--[[ Local Definitions ]]--
+local disconnected = {}; -- Disconnected players
+local weirdtraces = { -- Tool modes that can be right-clicked to link them 
+	wire_winch		= true;
+	wire_hydraulic	= true;
+	slider			= true;
+	hydraulic		= true;
+	winch			= true;
+	muscle			= true;
+};
+local function checkConstrainedEntities(ply, ent)
+	for _, ent in pairs(constraint.GetAllConstrainedEntities(ent)) do
+		if (not GM:PlayerCanTouch(ply, ent)) then
+			return false;
 		end
-		ply:ConCommand("sppa_"..stuff.." "..v.."\n")
 	end
+	return true;
 end
-
-function cider.propprotection.AdminReload()
-	if(ply) then
-		cider.propprotection.AdminReloadPlayer(ply)
-	else
-		for k,v in pairs(player.GetAll()) do
-			cider.propprotection.AdminReloadPlayer(v)
-		end
-	end
-end
-
-function cider.propprotection.LoadFriends(ply)
-	local PData = ply:GetPData("SPPFriends", "")
-	if(PData ~= "") then
-		for k,v in pairs(string.Explode(";", PData)) do
-			local String = string.Trim(v)
-			if(String ~= "") then
-				table.insert(cider.propprotection[ply:SteamID()], String)
+local function deletePropsByUID(uid, name)
+	for _, ent in pairs(ents.GetAll()) do
+		local owner, name, UID = ent:GetPPOwner();
+		if (UID == uid) then
+			if (GM.Entities[ent]) then
+				ent:SetPPOwner(NULL);
+			else
+				ent:Remove();
 			end
 		end
 	end
+	disconnected[uid] = nil;
+	if (name) then
+		player.NotifyAll(NOTIFY_GENERIC, "%s's props have been cleaned up.", name);
+	end
 end
-function cider.propprotection.PlayerMakePropSpawner(ply,ent)
-	if not ValidEntity(ent) then error("PlayerMakePropSpawner passed no ent!",2) end
-	ent._PSpawned	= ply:Nick()
-	ent._PSpawnedObj= ply
+local function physhandle(ply, ent)
+	return IsValid(ent) and gamemode.Call("PlayerCanTouch", ply, ent);
 end
-function cider.propprotection.ClearSpawner(ent)
-	if not ValidEntity(ent) then error("ClearSpawner passed no ent!",2) end
-	ent._PSpawned	= nil
-	ent._PSpawnedObj= nil
+
+--[[ Public functions ]]--
+
+---
+-- Deletes a player's props
+-- @param ply The player whose props should be deleted
+-- @param silent Whether the cleanup should be announced.
+function GM:ClearProps(ply, silent)
+    if (not IsPlayer(ply)) then
+        return;
+    end
+    deletePropsByUID(ply:UniqueID(), (not silent) and ply:Name() or false);
 end
-function cider.propprotection.PlayerMakePropOwner(ply, ent, spawned)
-	if(ent:GetClass() == "transformer" and ent.spawned and !ent.Part) then
-		for k,v in pairs(transpiece[ent]) do
-			v.Part = true
-			cider.propprotection.PlayerMakePropOwner(ply, v, spawned)
+
+--[[ Hooks ]]--
+---
+-- Called if a player can 'touch' an entity with the toolgun/physgun
+-- @param ply The player in question
+-- @param ent The entity in question
+-- @return True if they can touch it, false if they can't.
+function GM:PlayerCanTouch(ply, ent)
+	if (config["enabled"] == 0  or
+	    ent:GetClass() == "worldspawn" or
+	    ent.SPPOwnerless) then
+		return true;
+	end
+	local owner = ent:GetPPOwner()
+	if (not owner) then
+		ent:GiveToPlayer(ply);
+		ply:Notify("You now own this prop.", NOTIFY_GENERIC);
+		return true
+	elseif (owner == GetWorldEntity()) then
+		return ply:IsAdmin() and tobool(config["adminabuse"]);
+	elseif (owner == ply or (IsPlayer(ply) and owner:IsPPFriendsWith(ply))) then
+		return true;
+	else
+		return false;
+	end
+end
+function GM:CanTool(ply, tr, mode, nailee)
+
+    -- FIXME: THIS CANTOOL HOOK IS FUCKED
+    error("HOOK IS BROKENNNN~")
+
+	-- Before we do anything, let's make it so people can point cameras at whatever they want.
+	if (mode == "camera" or mode == "rtcamera") then
+		return true;
+	elseif (not self.BaseClass:CanTool(ply, tr, mode)) then -- Firstly, let's let sandbox decide if they can't do it
+		return false;
+	elseif (tr.HitWorld or not IsValid(tr.Entity)) then -- If sandbox says it's ok, we don't care about anything that's not an entity.
+		return true;
+	end
+	local ent = tr.Entity;
+	
+	if (not gamemode.Call("PlayerCanTouch", ply, ent)) then
+		return false;
+	elseif (mode == "nail" and not nailee) then
+		local line = util.TraceLine({
+			start = tr.HitPos,
+			endpos = tr.HitPos + tr.Normal * 16,
+			filter = ent
+		});
+		if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, tr, mode, true)) then
+			return false;
+		end
+	elseif (ply:KeyDown(IN_ATTACK2) or ply:KeyDownLast(IN_ATTACK2)) then
+		if (weirdtraces[mode]) then
+			local line = util.TraceLine({
+				start = tr.HitPos,
+				endpos = tr.HitPos + tr.HitNormal * 16384,
+				filter = ply
+			});
+			if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, tr, mode)) then
+				return false;
+			end
+		elseif (mode == "remover" and not checkConstrainedEntities(ply, ent)) then
+			return false;
+		end
+	elseif (IsValid(ent._Player) and not ply:IsAdmin()) then
+		return false;
+	elseif (mode ~= "remover" and not ply:IsAdmin()) then 
+		local class = ent:GetClass();
+		if (class:find("camera") or class:find("vehicle") or ent:IsDoor()) then
+			return false
 		end
 	end
-	if(ent:IsPlayer()) then
-		return false
-	end
-	cider.propprotection.Props[ent:EntIndex()] = {
-		Ent 			= ent,
-		Owner 			= ply,
-		SteamID			= ply:SteamID()
-	}
-	ent._POwner			= ply:Nick()
-	ent._POwnerObj		= ply
-	if spawned then
-		cider.propprotection.PlayerMakePropSpawner(ply,ent)
-	end
-	--gamemode.Call("CPPIAssignOwnership", ply, ent)
-	return true
+	self:Log(EVENT_BUILD,"%s used %s on a %s",ply:Name(),mode,ent:GetClass());
+	return true;
+end;
+
+-- Called when a player attempts to punt an entity with the gravity gun.
+function GM:GravGunPunt(ply, ent)
+	return physhandle(ply, ent) and (ply:IsAdmin() or ply:HasAccess("G"));
 end
+
+function GM:PhysgunPickup(ply, ent)
+	if (not IsValid(ent)) then
+		return false;
+	elseif (not physhandle(ply, ent)) then
+		return false
+	elseif (ent.PhysgunPickup) then	
+		return ent:PhysgunPickup(ply);
+	elseif (ent.PhysgunDisabled) then
+		return false;
+    elseif (self.Entities[ent]) then
+        if (not ply:IsAdmin()) then
+            return false;
+        elseif (not string.find(ent:GetClass(), "prop_physics")) then
+            return false;
+        end
+        -- Admins can pick up world physics props
+        return true;
+	elseif (ent:IsVehicle()) then
+		local model = ent:GetModel();
+		if (not (player:IsAdmin() or model:find("chair") or model:find("seat"))) then
+			return false;
+		end
+	elseif (ent:IsDoor()) then
+		return false; -- physgunning doors always leads to trouble.
+	elseif (ply:IsAdmin()) then
+		if (ent:IsPlayer()) then
+			if (ent:InVehicle()) then
+				return false;
+			end
+			ent:SetMoveType(MOVETYPE_NOCLIP);
+			ply._Physgunnin = true;
+		end
+		return true; -- Admins need to be able to pick stuff up.
+	elseif (IsValid(ent._Player)) then -- Stop players grabbing ragdolls
+		return false;
+	elseif (ent:IsNPC()) then -- Don't want people picking up npcs, now do we?
+		return false;
+	elseif (ent:GetPos():Distance(ply:GetPos()) > self.Config["Maximum Pickup Distance"]) then
+		return false; -- Stop people picking up things on the other side of the map!
+	end
+	-- Let's let sandbox have a go at them
+	
+	return self.BaseClass.PhysgunPickup(self, ply, ent)
+end;
+
+-- Called when a player attempts to drop an entity with the physics gun.
+function GM:PhysgunDrop(player, entity)
+	if (entity:IsPlayer()) then
+		entity:SetMoveType(MOVETYPE_WALK);
+		player._Physgunnin = false;
+	end
+end
+function GM:OnPhysgunFreeze(weapon, phys, ent, ply)
+	if (ent:IsVehicle() and not ply:IsAdmin()) then
+		return false;
+	end
+	self.BaseClass.OnPhysgunFreeze(self, weapon, phys, ent, ply);
+end
+
+function GM:OnPhysgunReload(_, ply)
+	local tr = ply:GetEyeTrace();
+	if (IsValid(tr.Entity) and not gamemode.Call("PlayerCanTouch", ply, tr.Entity)) then	
+		return false;
+	end
+	return self.BaseClass.OnPhysgunReload(self, _, ply);
+end;
+
+function GM:GravGunPickupAllowed(ply, ent)
+	if (not physhandler(ply, ent)) then
+		return false;
+	elseif (ent.GravGunPickupAllowed) then
+		return ent:GravGunPickupAllowed(ply);
+	end
+	return true;
+end
+
+do
+    --       --
+    -- Hooks --
+    --       --
+
+    local function PlayerAuthed(ply, sid, uid)
+        disconnected[uid] = nil;
+        timer.Destroy("Prop Cleanup "..uid);
+        local str = sql.QueryValue("SELECT Buddies FROM ms_ppbuddies WHERE UID = '" .. uid .. "';");
+        if (not str or str == "") then
+            ply._ppFriends = {};
+            ply._ppInsert = true;
+            return
+        end
+        local res, err = pcall(glon.decode, str);
+        if (not res) then
+            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppbuddies table: ", err, "\n");
+            res = {};
+        end
+        ply._ppFriends = res;
+    end
+    local function PlayerInitialSpawn(ply)
+        -- Keep names up to date.
+        do
+            local uid = ply:UniqueID();
+            local name = ply:Name();
+            for _, pl in pairs(player.GetAll()) do
+                if (pl._ppFriends[uid]) then
+                    pl._ppFriends[uid] = name;
+                end
+            end
+        end
+        -- See who we know is online/offline
+        local onlinec, offlinec = 0, 0;
+        local online , offline  = {}, {};
+        local ply;
+        for uid, name in pairs(ply._ppFriends) do
+            pl = player.Get(uid);
+            if (pl) then
+                onlinec = onlinec + 1;
+                -- Keep names up to date
+                ply._ppFriends[uid] = pl:Name();
+                table.insert(online, ply);
+            else
+                offlinec = offlinec + 1;
+                table.insert(offline, uid);
+            end
+        end
+        -- Check if we actually have any friends to be told about
+        if (onlinec == 0 and offlinec == 0) then
+            return;
+        end
+        -- This could potentially overflow clients connecting if they have a rediculous
+        --  number of prop protection buddies and/or the server is very busy.
+        -- TODO: See if it causes a problem and find a way of dragging it out if it does.
+        umsg.Start("MS PPUpdate", ply);
+        umsg.Char(0);
+        umsg.Short(onlinec);
+        for _, pl in pairs(online) do
+            umsg.Entity(pl);
+        end
+        umsg.Short(offlinec);
+        for _, uid in pairs(offline) do
+            umsg.Long(uid);
+            umsg.String(ply._ppFriends[uid]);
+        end
+        umsg.End();
+    end
+
+    local sqlqs, buffering = {}, false;
+    local function PrePlayerSaveData()
+        -- Buffer the SQLite queries
+        sqlqs = {};
+        buffering = true;
+    end
+    local function PlayerSaveData(ply)
+        local res, err = pcall(glon.encode, ply._ppFriends);
+        if (not res) then
+            ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Buddy table: ", err, "\n");
+            return;
+        end
+        local q = "INSERT OR REPLACE INTO ms_ppbuddies (UID, Buddies)
+            VALUES (" .. ply:UniqueID() .. ",'" .. res .. "');";
+        if (buffering) then
+            table.insert(sqlqs, q);
+        else
+            sql.Query(q);
+        end
+    end
+    local function PostPlayerSaveData()
+        sql.Begin();
+        for _, q in pairs(sqlqs) do
+            sql.Query(q);
+        end
+        sql.Commit();
+        buffering = false;
+    end
+    local function PlayerDisconnected(ply)
+        timer.Create("Prop Cleanup " .. ply:UniqueID(),
+            config["delay"], 1, deletePropsByUID, ply:UniqueID(), ply:Name());
+        disconnected[ply:UniqueID()] = true;
+    end
+    local function spawnHandler(ply, ent)
+        ent:SetPPPlayer(ply)
+        ent:SetPPSpawner(ply)
+    end
+    hook.Add("PlayerAuthed",         "Mshine Prop Protection", PlayerAuthed);
+    hook.Add("PlayerDisconnected",   "Mshine Prop Protection", PlayerDisconnected);
+    hook.Add("PlayerInitialSpawn",   "MShine Prop Protection", PlayerInitialSpawn);
+    hook.Add("PrePlayerSaveData",    "MShine Prop Protection", PrePlayerSaveData);
+    hook.Add("PlayerSaveData",       "MShine Prop Protection", PlayerSaveData);
+    hook.Add("PostPlayerSaveData",   "MShine Prop Protection", PostPlayerSaveData);
+    hook.Add("PlayerSpawnedSENT",    "Mshine Prop Protection", spawnHandler);
+    hook.Add("PlayerSpawnedVehicle", "Mshine Prop Protection", spawnHandler);
+end
+
+
+
+--[[ Commands ]]--
+cider.command.add("ppfriends", "b", 1, function(ply, action, target)
+    action = string.lower(action);
+    -- Check if we've got a valid action
+    if (action == "clear") then
+        ply:ClearPPFriends();
+        return true;
+    elseif (not (action == "add" or action == "remove")) then
+        return false, "Invalid action '" .. action .. "'!";
+    end
+    -- TODO: Make it so people can remove offline buddies.
+    -- Get our victim
+    local victim = player.Get(target);
+    if (not IsValid(victim)) then
+        return false, "Unable to find target '" .. target .. "'!";
+    end
+    -- See what we're up to
+    if (action == "add") then
+        ply:AddPPFriend(victim);
+        ply:Notify(victim:Name() .. " is now on your PP Buddies!", NOTIFY_GENERIC);
+    else
+        ply:RemovePPFriend(victim);
+        ply:Notify(victim:Name() .. " is no longer on your PP Buddies!", NOTIFY_GENERIC);
+    end
+    return true;
+end, "Prop Protection", "<Add|Remove|Clear> [Target]", "Mess with your PP buddies", true);
+
+cider.command.add("ppcleardisconnected", "m", 0, function()
+    local _, uid;
+    for _, ent in pairs(ents.GetAll()) do
+        if (not IsValid(ent)) then
+            continue;
+        end
+        _, _, uid = ent:GetPPOwner();
+        if (not (uid and disconnected[uid])) then
+            continue;
+        elseif (GM.Entities[ent]) then
+            ent:SetPPOwner(NULL);
+        else
+            ent:Remove();
+        end
+    end
+end, "Prop Protection", "", "Clean up all disconncted player's props", true);
+
+cider.command.add("ppclearprops", "b", 0, function(ply, target)
+    local victim;
+    if (not target) then
+        victim = ply;
+    elseif (not ply:HasAccess("m")) then
+        return false, "You do not have access to delete other people's props!";
+    else
+        victim = player.Get(target);
+        if (not victim) then
+            return false, "Unknown target '" .. target .. "'!";
+        end
+    end
+    deletePropsByUID(victim:UniqueID(), victim:Name());
+end, "Prop Protection", "[Target]", "Clean up your (or someone else's) props.", true);
+
 do
     local function s(p, r)
         p:PrintMessage(HUD_PRINTCONSOLE, r);
@@ -182,455 +529,3 @@ do
     concommand.Add("sppa_info", cmd);
     concommand.Add("propinfo",  cmd);
 end
-
-function cider.propprotection.GiveToWorld(ent)
-	if(ent:GetClass() == "transformer" and ent.spawned and !ent.Part) then
-		for k,v in pairs(transpiece[ent]) do
-			v.Part = true
-			cider.propprotection.GiveToWorld( v)
-		end
-	end
-	if(ent:IsPlayer()) then
-		return false
-	end
-	ent._POwner = "World"
-	--gamemode.Call("CPPIAssignOwnership", ply, ent)
-	return true
-end
-
-if(cleanup) then
-	local Clean = cleanup.Add
-	function cleanup.Add(Player, Type, Entity)
-		if(Entity) then
-			local Check = Player:IsPlayer()
-			local Valid = Entity:IsValid()
-		    if(Check and Valid) then
-		        cider.propprotection.PlayerMakePropOwner(Player, Entity)
-		    end
-		end
-	    Clean(Player, Type, Entity)
-	end
-end
-
-local Meta = FindMetaTable("Player")
-if Meta and Meta.AddCount then
-	local Backup = Meta.AddCount
-	function Meta:AddCount(Type, Entity)
-		cider.propprotection.PlayerMakePropOwner(self, Entity, true)
-		Backup(self, Type, Entity)
-	end
-	function Meta:TakeCount(str,ent)
-		if ( !self:IsValid() ) then return end
-		local key = self:UniqueID()
-		local tab = SBoxObjects[ key ]
-		if ( !tab || !tab[ str ] ) then 
-			return
-		end
-		for k,v in ipairs(tab[ str ]) do
-			if v == ent then
-				table.remove(tab[ str ],k)
-				break
-			end
-		end
-		self:GetCount(str)
-		cider.propprotection.GiveToWorld(ent)
-		cider.propprotection.ClearSpawner(ent)
-	end
-end
-
-function cider.propprotection.CheckConstraints(ply, ent)
-	for k,v in pairs(constraint.GetAllConstrainedEntities(ent) or {}) do
-		if(v and v:IsValid()) then
-			if(!cider.propprotection.PlayerCanTouch(ply, v)) then
-				return false
-			end
-		end
-	end
-	return true
-end
-
-function cider.propprotection.IsFriend(ply, ent)
-	local Players = player.GetAll()
-	if(table.Count(Players) == 1) then
-		return true
-	end
-	for k,v in pairs(Players) do
-		if(v and v:IsValid() and v ~= ply) then
-	        if(cider.propprotection.Props[ent:EntIndex()].SteamID == v:SteamID()) then
-                if(table.HasValue(cider.propprotection[v:SteamID()], ply:SteamID())) then
-					return true
-				else
-					return false
-				end
-            end
-		end
-	end	
-end
-
-function cider.propprotection.PlayerCanTouch(ply, ent)
-	if(tonumber(cider.propprotection.Config["toggle"]) == 0 or ent:GetClass() == "worldspawn" or ent.SPPOwnerless) then
-		return true
-	end
-	
-	if(string.find(ent:GetClass(), "stone_") == 1 or string.find(ent:GetClass(), "rock_") == 1 or string.find(ent:GetClass(), "stargate_") == 0 or string.find(ent:GetClass(), "dhd_") == 0 or ent:GetClass() == "flag" or ent:GetClass() == "item") then
-		if(!ent._POwner or ent._POwner == "") then
-			ent._POwner = "World"
-		end
-		if(ply:GetActiveWeapon():GetClass() ~= "weapon_physgun" and ply:GetActiveWeapon():GetClass() ~= "gmod_tool") then
-			return true
-		end
-	end
-
-	if (!ent._POwner or ent._POwner == "") and !ent:IsPlayer() then
-		cider.propprotection.PlayerMakePropOwner(ply, ent)
-		ply:Notify("You now own this prop",0)
-		return true
-	end
-	
-	if(ent._POwner == "World") then
-		if(ply:IsAdmin() and tonumber(cider.propprotection.Config["awp"]) == 1 and tonumber(cider.propprotection.Config["admin"]) == 1) then
-			return true
-		end
-	elseif(ply:IsAdmin() and tonumber(cider.propprotection.Config["admin"]) == 1) then
-		return true
-	end
-	
-	if(cider.propprotection.Props[ent:EntIndex()]) then
-		if(cider.propprotection.Props[ent:EntIndex()].SteamID == ply:SteamID() or cider.propprotection.IsFriend(ply, ent)) then
-			return true
-		end
-	else
-		for k,v in pairs(SBoxObjects) do
-			for b, j in pairs(v) do
-				for _, e in pairs(j) do
-					if(k == ply:SteamID() and e == ent) then
-						cider.propprotection.PlayerMakePropOwner(ply, ent)
-						ply:Notify("You now own this prop",0)
-						return true
-					end
-				end
-			end
-		end
-		for k,v in pairs(GAMEMODE.CameraList) do
-			for b, j in pairs(v) do
-				if(j == ent) then
-					if(k == ply:SteamID() and e == ent) then
-						cider.propprotection.PlayerMakePropOwner(ply, ent)
-						ply:Notify("You now own this prop",0)
-						return true
-					end
-				end
-			end
-		end
-	end
-	if(game.GetMap() == "gm_construct" and ent._POwner == "World") then
-		return true
-	end
-	return false
-end
-
-function cider.propprotection.DRemove(SteamID, PlayerName)
-	for k,v in pairs(cider.propprotection.Props) do
-		if(v.SteamID == SteamID and v.Ent:IsValid() and not GAMEMODE.entities[v.Ent]) then
-			v.Ent:Remove()
-			cider.propprotection.Props[k] = nil
-		end
-	end
-	player.NotifyAll(NOTIFY_GENERIC, "%s's props have been cleaned up", tostring(PlayerName))
-end
-
-function cider.propprotection.PlayerInitialSpawn(ply)
-	ply:SetNWString("SPPSteamID", string.gsub(ply:SteamID(), ":", "_"))
-	cider.propprotection[ply:SteamID()] = {}
-	cider.propprotection.LoadFriends(ply)
-	cider.propprotection.AdminReload(ply)
-	local TimerName = "cider.propprotection.DRemove: "..ply:SteamID()
-	if(timer.IsTimer(TimerName)) then
-		timer.Stop(TimerName)
-	end
-end
-hook.Add("PlayerInitialSpawn", "cider.propprotection.PlayerInitialSpawn", cider.propprotection.PlayerInitialSpawn)
-
-function cider.propprotection.Disconnect(ply)
-	if(tonumber(cider.propprotection.Config["dpd"]) == 1) then
-		if(ply:IsAdmin() and tonumber(cider.propprotection.Config["dae"]) == 0) then
-			return
-		end
-		timer.Create("cider.propprotection.DRemove: "..ply:SteamID(), tonumber(cider.propprotection.Config["delay"]), 1, cider.propprotection.DRemove, ply:SteamID(), ply:Nick())
-	end
-end
-hook.Add("PlayerDisconnected", "cider.propprotection.Disconnect", cider.propprotection.Disconnect)
-
-function cider.propprotection.PhysGravGunPickup(ply, ent)
-	if(!ent or !ent:IsValid()) then
-		return
-	end
-	if(ent:IsPlayer() and ply:IsAdmin() and tonumber(cider.propprotection.Config["admin"]) == 1) then
-		return
-	end
-	if(!ent:IsValid() or !cider.propprotection.PlayerCanTouch(ply, ent)) then
-		return false
-	end
-end
-hook.Add("GravGunPunt", "cider.propprotection.GravGunPunt", cider.propprotection.PhysGravGunPickup)
-hook.Add("GravGunPickupAllowed", "cider.propprotection.GravGunPickupAllowed", cider.propprotection.PhysGravGunPickup)
-hook.Add("PhysgunPickup", "cider.propprotection.PhysgunPickup", cider.propprotection.PhysGravGunPickup)
-
-function cider.propprotection.CanTool(ply, tr, mode)
-	if(tr.HitWorld) then
-		return
-	end
-	local ent = tr.Entity
-	if(!ent:IsValid() or ent:IsPlayer()) then
-		return false
-	end
-	if(!cider.propprotection.PlayerCanTouch(ply, ent)) then
-		return false
-	elseif(mode == "nail") then
-		local Trace = {}
-		Trace.start = tr.HitPos
-		Trace.endpos = tr.HitPos + (ply:GetAimVector() * 16.0)
-		Trace.filter = {ply, tr.Entity}
-		local tr2 = util.TraceLine(Trace)
-		if(tr2.Hit and ValidEntity(tr2.Entity) and !tr2.Entity:IsPlayer()) then
-			if(!cider.propprotection.PlayerCanTouch(ply, tr2.Entity)) then
-				return false
-			end
-		end
-	elseif(table.HasValue(cider.propprotection.WeirdTraces, mode)) then
-		local Trace = {}
-		Trace.start = tr.HitPos
-		Trace.endpos = Trace.start + (tr.HitNormal * 16384)
-		Trace.filter = {ply}
-		local tr2 = util.TraceLine(Trace)
-		if(tr2.Hit and ValidEntity(tr2.Entity) and !tr2.Entity:IsPlayer()) then
-			if(!cider.propprotection.PlayerCanTouch(ply, tr2.Entity)) then
-				return false
-			end
-		end
-	elseif(mode == "remover") then
-		if(ply:KeyDown(IN_ATTACK2) or ply:KeyDownLast(IN_ATTACK2)) then
-			if(!cider.propprotection.CheckConstraints(ply, ent)) then
-				return false
-			end
-		end
-	end
-end
-hook.Add("CanTool", "cider.propprotection.CanTool", cider.propprotection.CanTool)
---[[
-function cider.propprotection.EntityTakeDamageFireCheck(ent)
-    if(!ent or !ent:IsValid()) then
-		return
-	end
-	if(ent:IsOnFire()) then
-		ent:Extinguish()
-	end
-end
-
-function cider.propprotection.EntityTakeDamage(ent, inflictor, attacker, amount, dmginfo)
-	if(tonumber(cider.propprotection.Config["edmg"]) == 0) then
-		return
-	end
-    if(!ent:IsValid() or ent:IsPlayer() or !attacker:IsPlayer()) then
-		return
-	end
-	if(!cider.propprotection.PlayerCanTouch(attacker, ent)) then
-		dmginfo:SetDamage(0)
-		timer.Simple(0.1, cider.propprotection.EntityTakeDamageFireCheck, ent)
-	end
-end
-hook.Add("EntityTakeDamage", "cider.propprotection.EntityTakeDamage", cider.propprotection.EntityTakeDamage)
-
-function cider.propprotection.PlayerUse(ply, ent)
-	if(ent:IsValid() and tonumber(cider.propprotection.Config["use"]) == 1) then
-		if(!cider.propprotection.PlayerCanTouch(ply, ent) and ent._POwner ~= "World") then
-			return false
-		end
-	end
-end
-hook.Add("PlayerUse", "cider.propprotection.PlayerUse", cider.propprotection.PlayerUse)--]]
-
-function cider.propprotection.OnPhysgunReload(weapon, ply)
-	if(tonumber(cider.propprotection.Config["pgr"]) == 0) then
-		return
-	end
-	local tr = util.TraceLine(util.GetPlayerTrace(ply))
-	if(!tr.HitNonWorld or !tr.Entity:IsValid() or tr.Entity:IsPlayer()) then
-		return
-	end
-	if(!cider.propprotection.PlayerCanTouch(ply, tr.Entity)) then
-		return false
-	end
-end
-hook.Add("OnPhysgunReload", "cider.propprotection.OnPhysgunReload", cider.propprotection.OnPhysgunReload)
-
-function cider.propprotection.EntityRemoved(ent)
-	cider.propprotection.Props[ent:EntIndex()] = nil
-end
-hook.Add("EntityRemoved", "cider.propprotection.EntityRemoved", cider.propprotection.EntityRemoved)
-
-function cider.propprotection.PlayerSpawnedSENT(ply, ent)
-	cider.propprotection.PlayerMakePropOwner(ply, ent, true)
-end
-hook.Add("PlayerSpawnedSENT", "cider.propprotection.PlayerSpawnedSENT", cider.propprotection.PlayerSpawnedSENT)
-
-function cider.propprotection.PlayerSpawnedVehicle(ply, ent)
-	cider.propprotection.PlayerMakePropOwner(ply, ent, true)
-end
-hook.Add("PlayerSpawnedVehicle", "cider.propprotection.PlayerSpawnedVehicle", cider.propprotection.PlayerSpawnedVehicle)
-
-function cider.propprotection.CDP(ply, cmd, args)
-	if(!ply:IsAdmin()) then
-		return
-	end
-	for k,v in pairs(cider.propprotection.Props) do
-		local Found = false
-		for k2,v2 in pairs(player.GetAll()) do
-			if(v.SteamID == v2:SteamID()) then
-				Found = true
-			end
-		end
-		if(!Found) then
-			local Ent = v.Ent
-			if(Ent and Ent:IsValid() and not GAMEMODE.entities[Ent]) then
-				Ent:Remove()
-			end
-			cider.propprotection.Props[k] = nil
-		end
-	end
-	player.NotifyAll(NOTIFY_GENERIC, "Disconnected players props have been cleaned up")
-end
-concommand.Add("sppa_cdp", cider.propprotection.CDP)
-
-function cider.propprotection.CleanupPlayerProps(ply)
-	for k,v in pairs(cider.propprotection.Props) do
-		if(v.SteamID == ply:SteamID()) then
-			local Ent = v.Ent
-			if (not Ent.NoClear or Ent:GetClass():find"cider") then
-				if(Ent and Ent:IsValid() and not GAMEMODE.entities[Ent] ) then
-					Ent:Remove()
-				end
-				cider.propprotection.Props[k] = nil
-			end
-		end
-	end
-end
-
-function cider.propprotection.CleanupProps(ply, cmd, args)
-	local EntIndex = args[1]
-	if(!EntIndex or EntIndex == "") then
-		cider.propprotection.CleanupPlayerProps(ply)
-		ply:Notify("Your props have been cleaned up",0)
-	elseif(ply:IsAdmin()) then
-		for k,v in pairs(player.GetAll()) do
-			if(tonumber(EntIndex) == v:EntIndex()) then
-				cider.propprotection.CleanupPlayerProps(v)
-				player.NotifyAll(NOTIFY_GENERIC, "%s's props have been cleaned up", v:Nick())
-			end
-		end
-	end
-end
-concommand.Add("sppa_cleanupprops", cider.propprotection.CleanupProps)
-
-function cider.propprotection.ApplyFriends(ply, cmd, args)
-	local Players = player.GetAll()
-	if(table.Count(Players) > 1) then
-		local ChangedFriends = false
-		for k,v in pairs(Players) do
-			local PlayersSteamID = v:SteamID()
-			local PData = ply:GetPData("SPPFriends", "")
-			if(tonumber(ply:GetInfo("sppa_friend_"..v:GetNWString("SPPSteamID"))) == 1) then
-				if(!table.HasValue(cider.propprotection[ply:SteamID()], PlayersSteamID)) then
-					ChangedFriends = true
-					table.insert(cider.propprotection[ply:SteamID()], PlayersSteamID)
-					if(PData == "") then
-						ply:SetPData("SPPFriends", PlayersSteamID..";")
-					else
-						ply:SetPData("SPPFriends", PData..PlayersSteamID..";")
-					end
-				end
-			else
-				if(table.HasValue(cider.propprotection[ply:SteamID()], PlayersSteamID)) then
-					for k2,v2 in pairs(cider.propprotection[ply:SteamID()]) do
-						if(v2 == PlayersSteamID) then
-							ChangedFriends = true
-							table.remove(cider.propprotection[ply:SteamID()], k2)
-							ply:SetPData("SPPFriends", string.gsub(PData, PlayersSteamID..";", ""))
-						end
-					end
-				end
-			end
-		end--[[
-		if(ChangedFriends) then
-			local Table = {}
-			for k,v in pairs(cider.propprotection[ply:SteamID()]) do
-				for k2,v2 in pairs(player.GetAll()) do
-					if(v == v2:SteamID()) then
-						table.insert(Table, v2)
-					end
-				end
-			end
-			gamemode.Call("CPPIFriendsChanged", ply, Table)
-		end--]]
-	end
-	ply:Notify("Your friends have been updated",0)
-end
-concommand.Add("sppa_applyfriends", cider.propprotection.ApplyFriends)
-
-function cider.propprotection.ClearFriends(ply, cmd, args)
-	local PData = ply:GetPData("SPPFriends", "")
-	if(PData ~= "") then
-		for k,v in pairs(string.Explode(";", PData)) do
-			local String = string.Trim(v)
-			if(String ~= "") then
-				ply:ConCommand("sppa_friend_"..string.gsub(String, ":", "_").." 0\n")
-			end
-		end
-		ply:SetPData("SPPFriends", "")
-	end
-	for k,v in pairs(cider.propprotection[ply:SteamID()]) do
-		ply:ConCommand("sppa_friend_"..string.gsub(v, ":", "_").." 0\n")
-	end
-	cider.propprotection[ply:SteamID()] = {}
-	ply:Notify("Your friends have been cleared",0)
-end
-concommand.Add("sppa_clearfriends", cider.propprotection.ClearFriends)
-
-function cider.propprotection.ApplySettings(ply, cmd, args)
-	if(!ply:IsAdmin()) then
-		return
-	end
-	
-	local toggle = tonumber(ply:GetInfo("sppa_check") or 1)
-	local admin = tonumber(ply:GetInfo("sppa_admin") or 1)
---	local use = tonumber(ply:GetInfo("sppa_use") or 1)
---	local edmg = tonumber(ply:GetInfo("sppa_edmg") or 1)
-	local pgr = tonumber(ply:GetInfo("sppa_pgr") or 1)
-	local awp = tonumber(ply:GetInfo("sppa_awp") or 1)
-	local dpd = tonumber(ply:GetInfo("sppa_dpd") or 1)
-	local dae = tonumber(ply:GetInfo("sppa_dae") or 1)
-	local delay = math.Clamp(tonumber(ply:GetInfo("sppa_delay") or 120), 1, 500)
-	
-	sql.Query("UPDATE spropprotectiona SET toggle = "..toggle..", admin = "..admin..", pgr = "..pgr..", awp = "..awp..", dpd = "..dpd..", dae = "..dae..", delay = "..delay)
-	
-	cider.propprotection.Config = sql.QueryRow("SELECT * FROM spropprotectiona LIMIT 1")
-	
-	timer.Simple(2, cider.propprotection.AdminReload)
-	
-	ply:Notify("Admin settings have been updated",0)
-end
-concommand.Add("sppa_apply", cider.propprotection.ApplySettings)
-
-function cider.propprotection.WorldOwner()
-	local WorldEnts = 0
-	for _,v in ipairs(ents.GetAll()) do
-		if(!v:IsPlayer() and !v._POwner) then
-			v._POwner = "World"
-			WorldEnts = WorldEnts + 1
-		end
-	end
-	Msg("=================================================\n")
-	Msg("Simple Prop Protection (Ajack): "..tostring(WorldEnts).." props belong to world\n")
-	Msg("=================================================\n")
-end
-hook.Add("InitPostEntity","GrabWorldEnts",cider.propprotection.WorldOwner)

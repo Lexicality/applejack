@@ -28,7 +28,8 @@ function ITEM:onUse(ply)
 	ent._planter = ply;
 	ent:SetSolid(false);
 	ent:Spawn();
-	cider.propprotection.PlayerMakePropOwner(ply, ent, true); --Let admins know who planted the mine
+    ent:SetPPOwner(ply);
+    ent:SetPPSpawner(ply);
 	ent.PhysgunDisabled	= true;
 	ent.m_tblToolsAllowed	= {};
 end

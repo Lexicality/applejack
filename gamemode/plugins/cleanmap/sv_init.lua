@@ -165,8 +165,8 @@ function PLUGIN:InitPostEntity()
 			end
 			ent:Fire("setdamagefilter", "aj_cm", 0);
 			hook.Call("PropSpawned", GAMEMODE, data[2], ent);
-			cider.propprotection.GiveToWorld(ent);
-			GAMEMODE.entities[ent] = ent;
+            ent:SetPPOwner(NULL);
+			GAMEMODE.Entities[ent] = ent;
 		end
 	end
 end
