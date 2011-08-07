@@ -135,11 +135,7 @@ function GM:PlayerCanTouch(ply, ent)
 		return false;
 	end
 end
-function GM:CanTool(ply, tr, mode, nailee)
-
-    -- FIXME: THIS CANTOOL HOOK IS FUCKED
-    error("HOOK IS BROKENNNN~")
-
+function GM:CanTool(ply, tr, mode, chained)
 	-- Before we do anything, let's make it so people can point cameras at whatever they want.
 	if (mode == "camera" or mode == "rtcamera") then
 		return true;
@@ -148,32 +144,35 @@ function GM:CanTool(ply, tr, mode, nailee)
 	elseif (tr.HitWorld or not IsValid(tr.Entity)) then -- If sandbox says it's ok, we don't care about anything that's not an entity.
 		return true;
 	end
-	local ent = tr.Entity;
-	
-	if (not gamemode.Call("PlayerCanTouch", ply, ent)) then
+	local ent = tr.Entity;	
+    if (self.Entities[ent]) then
+        return false;
+    elseif (not gamemode.Call("PlayerCanTouch", ply, ent)) then
 		return false;
-	elseif (mode == "nail" and not nailee) then
-		local line = util.TraceLine({
-			start = tr.HitPos,
-			endpos = tr.HitPos + tr.Normal * 16,
-			filter = ent
-		});
-		if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, tr, mode, true)) then
-			return false;
-		end
-	elseif (ply:KeyDown(IN_ATTACK2) or ply:KeyDownLast(IN_ATTACK2)) then
-		if (weirdtraces[mode]) then
-			local line = util.TraceLine({
-				start = tr.HitPos,
-				endpos = tr.HitPos + tr.HitNormal * 16384,
-				filter = ply
-			});
-			if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, tr, mode)) then
-				return false;
-			end
-		elseif (mode == "remover" and not checkConstrainedEntities(ply, ent)) then
-			return false;
-		end
+    elseif (not chained) then
+        if (mode == "nail") then
+            local line = util.TraceLine({
+                start = tr.HitPos,
+                endpos = tr.HitPos + tr.Normal * 16,
+                filter = ent
+            });
+            if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, line, mode, true)) then
+                return false;
+            end
+        elseif (ply:KeyDown(IN_ATTACK2) or ply:KeyDownLast(IN_ATTACK2)) then
+            if (weirdtraces[mode]) then
+                local line = util.TraceLine({
+                    start = tr.HitPos,
+                    endpos = tr.HitPos + tr.HitNormal * 16384,
+                    filter = ply
+                });
+                if (IsValid(line.Entity) and not gamemode.Call("CanTool", ply, line, mode, true)) then
+                    return false;
+                end
+            elseif (mode == "remover" and not checkConstrainedEntities(ply, ent)) then
+                return false;
+            end
+        end
 	elseif (IsValid(ent._Player) and not ply:IsAdmin()) then
 		return false;
 	elseif (mode ~= "remover" and not ply:IsAdmin()) then 

@@ -36,6 +36,15 @@ else
 
 end
 
+local function refund(ent)
+    local owner = ent:GetOwner();
+    if (not IsPlayer(owner)) then
+        return;
+    end
+    owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
+    owner:TakeDoor(trace.Entity)
+end
+    
 
 function TOOL:LeftClick(tr)
 	if ( CLIENT ) then
@@ -71,12 +80,12 @@ function TOOL:LeftClick(tr)
 		ent:SetKeyValue("spawnflags",	8192); //"Use closes"
 		ent:SetKeyValue("forceclosed",	0);
 	end
-	ent._Removeable = true;
 	ent._State = "closed";
 	ent:Spawn();
 	ent:Activate();
 	ent._Autoclose = math.max(self:GetClientNumber("closetime"),5);
 	ent:MakeOwnable();
+    ent:CallOnRemove("Refund", refund);
 	timer.Simple(0,function()
 		ply:GiveDoor(ent,ply:GetName().."'s door",true);
 		ent:Lock();
@@ -86,13 +95,6 @@ function TOOL:LeftClick(tr)
 	ply:AddCleanup("doors", ent );
 	undo.Create("Door");
 	undo.AddEntity( ent );
-	undo.AddFunction(function(undo)
-		if ValidEntity(undo.Entities[1]) then
-			undo.Owner:Notify("You got $"..GM.Config["Door Cost"]/2 .." for selling your door.",0);
-			undo.Owner:TakeDoor(undo.Entities[1]);
-			return true;
-		end
-	end);
 	undo.SetPlayer( ply );
 	undo.Finish();
 	return true

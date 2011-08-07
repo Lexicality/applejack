@@ -292,87 +292,25 @@ end
 	if (!ValidEntity(player._Vehicle)) then player._Vehicle = entity end
 end]]
 
+---
 -- A function to check whether we're running on a listen server.
+-- @return The listen server host if we are, false if we're not.
 function GM:IsListenServer()
+    if (self.ListenServer ~= nil) then
+        return self.ListenServer;
+    end
+	self.ListenServer = false;
 	for k, v in pairs( player.GetAll() ) do
-		if ( v:IsListenServerHost() ) then return true end
+		if (v:IsListenServerHost()) then
+            self.ListenServer = v;
+        end
 	end
-	
-	-- Check if we're running on single player.
-	if ( SinglePlayer() ) then return true end
-	
-	-- Return false because there is no listen server host and it isn't single player.
-	return false
+	if ( SinglePlayer() ) then
+        self.ListenServer = Entity(1);
+    end
+    return self.ListenServer
 end
 
--- Called when a player attempts to use a tool.
-function GM:CanTool(ply, trace, tool,nailee)
-
-	-- Check if the trace entity is valid.
-	if ( ValidEntity(trace.Entity) ) then
-		--Overwrite certain ents that should not be tooled no matter what
-		if tool ~= "remover" and not ply:IsAdmin() then
-			local class = trace.Entity:GetClass()
-			if string.find(class,"camera")
-			or trace.Entity:IsDoor()
-			or string.find(class,"vehicle") then
-				return false
-			end
-		end
-		if  tool == "remover"
-		and trace.Entity._Removeable
-		and trace.Entity:IsDoor()
-		and trace.Entity:IsOwned()
-		and type(trace.Entity:GetOwner() == "Player")
-		and not ply:KeyDown(IN_RELOAD) then
-			local owner = trace.Entity:GetOwner();
-			owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
-			owner:TakeDoor(trace.Entity)
-		end
-		if !ply:HasAccess("w") and string.sub(tool, 1, 5) == "wire_" then
-			ply:ConCommand("gmod_toolmode \"\"\n")
-			
-			-- Return false because we cannot use the tool.
-			return false
-		end
-		if (tool == "nail" and not nailee) then
-			local line = {}
-			
-			-- Set the information for the trace line.
-			line.start = trace.HitPos
-			line.endpos = trace.HitPos + ply:GetAimVector() * 16
-			line.filter = {ply, trace.Entity}
-			
-			-- Perform the trace line.
-			line = util.TraceLine(line)
-			
-			-- Check if the trace entity is valid.
-			if ( ValidEntity(line.Entity) ) then
-				if self.Entities[line.Entity] or not hook.Call("CanTool",GAMEMODE,ply,line,tool,true) then
-					return false
-				end
-			end
-		end
-		-- Check if we're using the remover tool and we're trying to remove constrained entities.
-		if tool == "remover" and ply:KeyDown(IN_ATTACK2) and !ply:KeyDownLast(IN_ATTACK2) then
-			local entities = constraint.GetAllConstrainedEntities(trace.Entity)
-			
-			-- Loop through the constained entities.
-			for k, v in pairs(entities) do
-				if (self.Entities[v]) then return false end
-			end
-		end
-		
-		-- Check if this entity cannot be used by the tool.
-		if (self.Entities[trace.Entity]) then return false end
-		
-		-- Check if this entity is a player's ragdoll.
-		if ValidEntity(trace.Entity._Player) and not ply:IsAdmin() then return false end
-		GM:Log(EVENT_BUILD,"%s used %s on a %s.",ply:Name(),tool,trace.Entity:GetClass())
-	end
-	-- Call the base class function.
-	return self.BaseClass:CanTool(ply, trace, tool)
-end
 
 --Called when a player connectsf
 function GM:PlayerConnect(name,ip,steamID)
@@ -1223,6 +1161,7 @@ end)
 
 -- Create a timer to give players money for their contraband.
 timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
+    -- FIXME: Christ on a bike this is a shithole redo the entire thing jesus
 	local contratypes = {}
 	for key in pairs(GM.Config["Contraband"]) do
 		contratypes[key] = true
@@ -1291,10 +1230,11 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 				
 				-- Loop through the doors.
 				for k2, v2 in pairs( v[2] ) do
-					if v2._Removeable then
-						v2:Remove()
-					else
+					if GM.Entities[v2] then
 						k:TakeDoor(v2, true)
+					else
+                        v2:RemoveCallOnRemove("refund");
+						v2:Remove()
 					end
 				end
 			end
