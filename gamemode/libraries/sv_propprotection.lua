@@ -372,6 +372,11 @@ do
         ent:SetPPPlayer(ply)
         ent:SetPPSpawner(ply)
     end
+    local function AcceptStream(ply, handler, id)
+        if (handleer == "ppconfig") then
+            return ply:HasAccess("a");
+        end
+    end
     hook.Add("PlayerAuthed",         "Mshine Prop Protection", PlayerAuthed);
     hook.Add("PlayerDisconnected",   "Mshine Prop Protection", PlayerDisconnected);
     hook.Add("PlayerInitialSpawn",   "MShine Prop Protection", PlayerInitialSpawn);
@@ -380,6 +385,7 @@ do
     hook.Add("PostPlayerSaveData",   "MShine Prop Protection", PostPlayerSaveData);
     hook.Add("PlayerSpawnedSENT",    "Mshine Prop Protection", spawnHandler);
     hook.Add("PlayerSpawnedVehicle", "Mshine Prop Protection", spawnHandler);
+    hook.Add("AcceptStream",         "Mshine Prop Protection", AcceptStream);
 end
 
 
@@ -411,7 +417,7 @@ cider.command.add("ppfriends", "b", 1, function(ply, action, target)
     return true;
 end, "Prop Protection", "<Add|Remove|Clear> [Target]", "Mess with your PP buddies", true);
 
-cider.command.add("ppcleardisconnected", "m", 0, function()
+cider.command.add("ppcleardisconnected", "a", 0, function()
     local _, uid;
     for _, ent in pairs(ents.GetAll()) do
         if (not IsValid(ent)) then
@@ -432,7 +438,7 @@ cider.command.add("ppclearprops", "b", 0, function(ply, target)
     local victim;
     if (not target) then
         victim = ply;
-    elseif (not ply:HasAccess("m")) then
+    elseif (not ply:HasAccess("a")) then
         return false, "You do not have access to delete other people's props!";
     else
         victim = player.Get(target);
@@ -442,6 +448,25 @@ cider.command.add("ppclearprops", "b", 0, function(ply, target)
     end
     deletePropsByUID(victim:UniqueID(), victim:Name());
 end, "Prop Protection", "[Target]", "Clean up your (or someone else's) props.", true);
+
+local function ppconfig(ply, _, _, _, upload)
+    -- This really shouldn't be an issue but I don't trust datastream.
+    if (not ply:HasAccess("a")) then
+        ply:Notify("You do not have access to the prop protection config!", NOTIFY_GENERIC);
+        return;
+    end
+    local n;
+    -- Minimal exploit mode. Only looks for keys already extant in the config and only accepts numbers.
+    for key in pairs(config) do
+        n = tonumber(upload[key]);
+        if (n) then
+            config[key] = n;
+            -- Notify everyone else
+            game.ConsoleCommand("ms_ppconfig_" .. key .. " " .. n .. "\n");
+        end
+    end
+end
+datastream.Hook("ppconfig", ppconfig);
 
 do
     local function s(p, r)
