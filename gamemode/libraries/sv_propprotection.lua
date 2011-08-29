@@ -388,7 +388,31 @@ do
     hook.Add("AcceptStream",         "Mshine Prop Protection", AcceptStream);
 end
 
-
+local fakeplayer;
+do
+    local function Name(self)
+        return self.name;
+    end
+    local function UniqueID(self)
+        return self.uid;
+    end
+    local function IsValid(self)
+        return true;
+    end
+    local function IsPlayer(self)
+        return true;
+    end
+    function fakeplayer(uid, name)
+        return {
+            uid      = uid;
+            name     = name;
+            Name     = Name;
+            UniqueID = UniqueID;
+            IsValid  = IsValid;
+            IsPlayer = IsPlayer;
+        };
+    end
+end
 
 --[[ Commands ]]--
 cider.command.add("ppfriends", "b", 1, function(ply, action, target)
@@ -400,11 +424,27 @@ cider.command.add("ppfriends", "b", 1, function(ply, action, target)
     elseif (not (action == "add" or action == "remove")) then
         return false, "Invalid action '" .. action .. "'!";
     end
-    -- TODO: Make it so people can remove offline buddies.
     -- Get our victim
     local victim = player.Get(target);
     if (not IsValid(victim)) then
-        return false, "Unable to find target '" .. target .. "'!";
+        -- Make it so people can remove offline buddeies
+        if (action == "remove") then
+            -- But only using their UIDs
+            --  (They shouldn't be using anything else but meh)
+            target = tonumber[target];
+            -- Verify they've used a valid UID
+            if (target and ply._ppFriends[target]) then
+                -- Make a fake player object to keep everyone happy
+                --  (Unless someone tries to actually do something with it :D)
+                victim = fakeplayer(target, ply._ppFriends[target]);
+            else
+                -- (Damn, exceptions would come in handy here.)
+                return false, "Unable to find target '" .. target .. "'!";
+            end
+        else
+            -- (Mainly to avoid this duplication.)
+            return false, "Unable to find target '" .. target .. "'!";
+        end
     end
     -- See what we're up to
     if (action == "add") then
