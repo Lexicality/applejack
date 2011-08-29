@@ -1,29 +1,46 @@
 --[[
-Name: "cl_propprotection.lua".
+    ~ Clientside Prop Protection ~
 	~ Applejack ~
 --]]
-cider.menu.pp = {}
-cider.menu.pp.AdminCPanel = nil
-cider.menu.pp.ClientCPanel = nil
 
-CreateClientConVar("sppa_check", 1, false, true)
-CreateClientConVar("sppa_admin", 1, false, true)
-CreateClientConVar("sppa_pgr", 1, false, true)
-CreateClientConVar("sppa_awp", 0, false, true)
-CreateClientConVar("sppa_dpd", 1, false, true)
-CreateClientConVar("sppa_dae", 1, false, true)
-CreateClientConVar("sppa_delay", 120, false, true)
-function cider.menu.pp.AdminPanel(Panel)
-	Panel:ClearControls()
-	
-	if(!LocalPlayer():IsAdmin()) then
-		Panel:AddControl("Label", {Text = "You are not an admin"})
-		return
-	end
-	
-	if(!cider.menu.pp.AdminCPanel) then
-		cider.menu.pp.AdminCPanel = Panel
-	end
+local cPanel, aPanel;
+
+-- TODO: Find some kind of way of working these names out automagically
+local config = {
+	enabled = 1;
+    cleanup = 1;
+	delay = 120;
+}
+for key in pairs(config) do
+    local cvar = "ms_ppconfig_" .. key;
+    -- Get the convar values from the server
+    if (ConVarExists(cvar)) then
+        config[key] = GetConVarNumber(cvar);
+    else
+        -- I'm not 100% sure what to do here. D:
+        ErrorNoHalt("Could not find convar ", cvar, " for prop protection config!\n");
+    end
+    -- Create the dummy client convars for the panel
+    CreateClientConVar("_ms_ppconfig_" .. key, config[key], false, false);
+end
+
+local function adminpanel(Panel)
+    Panel:ClearControls();
+
+    -- Thou shalt remember me
+    aPanel = Panel;
+
+    -- Only admins admin. 
+    if (not lpl:IsAdmin()) then
+        Panel:AddControl(
+            "Label",
+            {
+                Text = "You're not an admin!";
+            });
+        return;
+    end
+
+    
 	
 	Panel:AddControl("Label", {Text = "SPP - Admin Panel - Applejack version - Spacetech/Lexi"})
 	
