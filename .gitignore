@@ -3,4 +3,5 @@
 /content
 /gamemode/sv_config.lua
 *.swp
+*.swo
 *~

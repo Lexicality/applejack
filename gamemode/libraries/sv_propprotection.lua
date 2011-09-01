@@ -373,8 +373,8 @@ do
         ent:SetPPSpawner(ply)
     end
     local function AcceptStream(ply, handler, id)
-        if (handleer == "ppconfig") then
-            return ply:HasAccess("a");
+        if (handler == "ppconfig") then
+            return ply:HasAccess("s");
         end
     end
     hook.Add("PlayerAuthed",         "Mshine Prop Protection", PlayerAuthed);
@@ -491,7 +491,7 @@ end, "Prop Protection", "[Target]", "Clean up your (or someone else's) props.", 
 
 local function ppconfig(ply, _, _, _, upload)
     -- This really shouldn't be an issue but I don't trust datastream.
-    if (not ply:HasAccess("a")) then
+    if (not ply:HasAccess("s")) then
         ply:Notify("You do not have access to the prop protection config!", NOTIFY_GENERIC);
         return;
     end
