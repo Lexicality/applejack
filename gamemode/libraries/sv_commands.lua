@@ -1,7 +1,134 @@
 --[[
-Name: "sv_commands.lua".
+    ~ Serverside Commands Library ~
 	~ Applejack ~
 --]]
+
+GM.Commands = {};
+
+--[[
+GM:RegisterCommand{
+    Command   = "whatever";
+    Access    = "a";
+    Arguments = "<thing> <bees|what|dix> [meh]";
+    Types     = "Player Phrase ...";
+    Category  = "Stuff";
+    Help      = "I don't really care tbh";
+    Hidden    = false;
+    Function  = function(ply, thing, otherthing, words)
+        return false, "GO AWAY!";
+    end
+};
+--]]
+local Types = {
+    ["string"] = true; -- Do nothing
+    ["number"] = true; -- tonumber(arg) or error
+    ["bool"]   = true; -- tobool(arg);
+    ["player"] = true; -- player.Get(arg) or error
+    ["phrase"] = true; -- phrases[arg] or error
+    ["..."]    = true; -- Every remaining argument is combined into a string seperated by spaces.
+};
+
+function GM:RegisterCommand(tab)
+    -- Catch various shit not defined
+    if (not tab.Command) then
+        error("Command not defined!", 2);
+    elseif (not tab.Function) then
+        error("Function not defined!", 2);
+    end
+    if (not tab.Access) then
+        tab.Access = self.Config["Base Access"];
+    end
+    if (not tab.Hidden) then
+        if (not tab.Category) then
+            if (tab.Access == "s") then
+                tab.Category = "Superadmin Commands";
+            elseif (tab.Access == "a") then
+                tab.Category = "Admin commands";
+            elseif (tab.Access == "m") then
+                tab.Category = "Moderator Commands";
+            else
+                tab.Category = "Commands";
+            end
+        end
+        if (not tab.Help) then
+            tab.Help = "No help specified.";
+        end
+    end
+    if (not tab.Arguments or tab.Arguments == "") then
+        tab.targs    = 0;
+    else
+        -- First, explode the types
+        local types = {};
+        for kind in pairs(tab.Types) do
+            types[#types+1] = string.lower(kind);
+        end
+        -- Now explode the argument strings
+        local req, opt, tot = 0, 0, 0;
+        local args = {};
+        local kind;
+        for mode, name in string.gmatch(tab.Arguments, "([[<])(.-)[%]>]") do
+            if (mode == "<") then
+                req = req + 1;
+                -- Catch a potential fuckup
+                if (opt ~= 0) then
+                    --[[
+                        If you're reading this because you've triggered this error and are confused, here's why it's there.
+                        Optional arguments should only ever be at the end of the command, both due to sanity and how this
+                         system is coded. You should generally only have one optional argument anyway - If you're using more than
+                         two you really should look at how much you're trying to jam into a single command.
+                        Perhaps you should split the command up into several commands, one for each option.
+                        If you are making this for users, remember that the average person is a complete moron when it comes to
+                         typing commands into the chatbox and is unlikely to remember any syntax longer than two arguments.
+                        Keep your commands simple and use menus as much as possible.
+                        ~Lex
+                    --]]
+                    -- TODO: Saneify this lecture into a proper docstring and shove it at the top of the function. ;)
+                    error("Malformed argument string! You can only have optional arguments at the end of the call.", 2);
+                    -- If you've come here wondering what this means, you have put a required argument after an optional argument
+                    --  This is a logical error and while I could potentially automatically fix it, that might cause probelms with
+                    --  your internal logic. Better to design right in the first place, no? :o)
+            elseif (mode == "[") then
+                opt = opt + 1;
+            end
+            args[tot] = name;
+            tot = tot + 1;
+            kind = types[tot];
+            if (not kind) then
+                error("There are more Arguments than Types!", 2);
+            end
+            if (kind == "...") then
+                -- Vararg endings overrule anything else
+                tab.VarArg = tot;
+                break;
+            elseif (kind == "phrase") then
+                tab.Phrases = tab.Phrases or {};
+                local ps = {};
+                for match in string.gmatch(name .. "|", "(.-)|") do
+                    ps[string.lower(match)] = true;
+                end
+                tab.Phrases[tot] = ps;
+            elseif (not Types[kind]) then
+                error("Unknown Type '" .. kind .. "'!", 2);
+            end
+        end
+        tab.Types = types;
+        tab.aargs = args;
+        tab.rargs = req;
+        tab.oargs = opt;
+        tab.targs = tot;
+    end
+    self.Commands[tab.Command] = tab;
+    if (tab.Hidden) then
+        return;
+    end
+    -- TODO: Setup help files and send to client.
+end
+
+
+
+
+
+
 
 cider.command = {};
 cider.command.stored = {};

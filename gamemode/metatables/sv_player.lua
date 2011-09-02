@@ -694,7 +694,7 @@ function meta:LoadData()
 		_Misc = {},
 		_Clan = GM.Config["Default Clan"],
 		_Money = GM.Config["Default Money"],
-		_Access = "", -- No one needs the default access any more, as hasAccess catches it. GM.Config["Default Access"],
+		_Access = GM.Config["Default Access"],
 		_Donator = 0,
 		_SteamID = ply:SteamID();
 		_UniqueID = ply:UniqueID();
@@ -801,12 +801,14 @@ end
 -- @param any Whether to search for any flag on the list (return true at the first flag found), or for every flag on the list. (return false on the first flag not found)
 -- @return true on succes, false on failure.
 function meta:HasAccess(flaglist, any)
-	local access, teamaccess, flag;
+	local access, daccess, flag;
 	access = self.cider._Access;
+    daccess = GM.Config["Default Access"];
 	for i = 1, flaglist:len() do
 		flag = flaglist:sub(i,i);
-		if(flag == GM.Config["Default Access"]
+		if (flag == GM.Config["Base Access"]
 		or GM.FlagFunctions[flag] and GM.FlagFunctions[flag](self)
+		or daccess:find(flag)
 		or access:find(flag)) then
 			if (any) then return true; end -- If 'any' is selected, then return true whenever we get a match
 		elseif (not any) then -- If 'any' is not selected we don't get a match, return false.
