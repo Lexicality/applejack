@@ -5,7 +5,6 @@
 
 local cPanel, aPanel;
 
-
 local function adminPanel(panel)
     panel:ClearControls();
 
@@ -91,18 +90,123 @@ local function adminPanel(panel)
     --panel:Button("Everyone", "cider", "ppcleareveryone");
 end
 
-function clientPanel(panel)
+local lView;
+local addButton, delButton, clrButton;
+
+do -- Add
+    function addButton()
+        local menu = DermaMenu();
+        -- I HATE YOU FOR THIS GARRYYYYYYYYYYYYY Give DMenus varargs
+        -- TODO: Make the player picker for the access menu a standard thing for everything!
+        for _, ply in pairs(player.GetAll()) do
+            menu:AddOption(ply:Name(), function()
+                RunConsoleCommand("cider", "ppfriends", "add", ply:UniqueID());
+            end)
+        end
+        menu:Open();
+    end
+end
+
+do -- Remove
+    local function si()
+        local line = lView:GetSelectedLine();
+        if (not line) then
+            return;
+        end
+        RunConsoleCommand("cider", "ppfriends", "remove", line:GetColumnText(2));
+    end
+    function delButton()
+        if (not lView:GetSelectedLine()) then
+            return;
+        end
+        local menu = DermaMenu();
+        menu:AddOption("Cancel");
+        menu:AddOption("Confirm", si);
+        menu:Open();
+    end
+end
+
+do -- Clear
+    local function si()
+        RunConsoleCommand("cider", "ppfriends", "clear");
+    end
+    function clrButton()
+        local m = DermaMenu();
+        m:AddOption("Cancel");
+        m:AddOption("Confirm", si);
+        m:Open();
+    end
+end
+
+local function clientPanel(panel)
     panel:ClearControls();
 
     cPanel = panel;
 
     panel:Help("Applejack - Prop Protection");
+    Mpanel:Help(" ");
+    panel:Button("Delete my props", "cider", "ppcleanprops");
     panel:Help(" ");
-    panel:Button("Cleanup my props", "cider", "ppcleanprops");
-    panel:Help(" ");
-    panel:Help("Buddies");
-    -- TODO: Classy spreadsheet action
+    panel:Help("Friends");
+    panel:Button("Add Friend").DoClick = addButton;
+    local view = vgui.Create("DListView", self);
+    lView = view;
+    view:SetMultiSelect(false);
+    panel:AddPanel(view);
+    view:AddColumn("Name");
+    view:AddColumn("UniqueID");
+    view:SetTall(10);
+    panel:Button("Remove Friend").DoClick = delButton;
+    panel:Button("Clear Friends").DoClick = clrButton;
 end
+
+usermessage.Hook("MS PPUpdate", function(msg)
+    local action = msg:ReadChar();
+    if (action == 1) then
+        -- Add
+        lView:AddRow(msg:ReadString(), msg:ReadLong());
+    elseif (action == 2) then
+        -- Remove
+        local uid = msg:ReadLong();
+        local liens = lView:GetLines();
+        for lineID, line in pairs(lView:GetLines()) do
+            -- | Name | UID |
+            if (tonumber(line:GetColumnText(2)) == uid) then
+                lView:RemoveLine(lineID);
+                return;
+            end
+        end
+    elseif (action == 3) then
+        -- Clear
+        lView:Clear();
+    elseif (action == 0) then
+        -- FUN TIME
+        local count;
+        -- Online people
+        count = msg:ReadShort();
+        if (count > 0) then
+            local ply;
+            for i = 1, count do
+                ply = msg:ReadEntity();
+                if (ply:IsValid()) then
+                    lView:AddLine(ply:Name(), ply:UniqueID());
+                end
+            end
+        end
+        -- Offline people
+        count = msg:ReadShort();
+        if (count > 0) then
+            for i = 1, count do
+                lView:AddLine(msg:ReadString(), msg:ReadLong());
+            end
+        end
+    end
+end)
+
+
+----------
+-- Hoox --
+----------
 
 local function SpawnMenuOpen()
     if (aPanel) then

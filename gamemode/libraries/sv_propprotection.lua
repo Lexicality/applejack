@@ -54,9 +54,9 @@ if (cleanup) then
     end
 end
 
---[[ Buddies ]]--
-if (not sql.TableExists("ms_ppbuddies")) then
-    sql.Query("CREATE TABLE ms_ppfriends(UID INTEGER PRIMARY KEY, Buddies TEXT NOT NULL);");
+--[[ Friends ]]--
+if (not sql.TableExists("ms_ppfriends")) then
+    sql.Query("CREATE TABLE ms_ppfriends(UID INTEGER PRIMARY KEY, Friends TEXT NOT NULL);");
 end
 
 --[[ Local Definitions ]]--
@@ -274,7 +274,7 @@ do
     local function PlayerAuthed(ply, sid, uid)
         disconnected[uid] = nil;
         timer.Destroy("Prop Cleanup "..uid);
-        local str = sql.QueryValue("SELECT Buddies FROM ms_ppbuddies WHERE UID = '" .. uid .. "';");
+        local str = sql.QueryValue("SELECT Friends FROM ms_ppfriends WHERE UID = '" .. uid .. "';");
         if (not str or str == "") then
             ply._ppFriends = {};
             ply._ppInsert = true;
@@ -282,7 +282,7 @@ do
         end
         local res, err = pcall(glon.decode, str);
         if (not res) then
-            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppbuddies table: ", err, "\n");
+            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", err, "\n");
             res = {};
         end
         ply._ppFriends = res;
@@ -319,7 +319,7 @@ do
             return;
         end
         -- This could potentially overflow clients connecting if they have a rediculous
-        --  number of prop protection buddies and/or the server is very busy.
+        --  number of prop protection friends and/or the server is very busy.
         -- TODO: See if it causes a problem and find a way of dragging it out if it does.
         umsg.Start("MS PPUpdate", ply);
         umsg.Char(0);
@@ -329,8 +329,8 @@ do
         end
         umsg.Short(offlinec);
         for _, uid in pairs(offline) do
-            umsg.Long(uid);
             umsg.String(ply._ppFriends[uid]);
+            umsg.Long(uid);
         end
         umsg.End();
     end
@@ -344,10 +344,10 @@ do
     local function PlayerSaveData(ply)
         local res, err = pcall(glon.encode, ply._ppFriends);
         if (not res) then
-            ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Buddy table: ", err, "\n");
+            ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Friends table: ", err, "\n");
             return;
         end
-        local q = "INSERT OR REPLACE INTO ms_ppbuddies (UID, Buddies)
+        local q = "INSERT OR REPLACE INTO ms_ppfriends (UID, Friends)
             VALUES (" .. ply:UniqueID() .. ",'" .. res .. "');";
         if (buffering) then
             table.insert(sqlqs, q);
@@ -427,7 +427,7 @@ cider.command.add("ppfriends", "b", 1, function(ply, action, target)
     -- Get our victim
     local victim = player.Get(target);
     if (not IsValid(victim)) then
-        -- Make it so people can remove offline buddeies
+        -- Make it so people can remove offline friends
         if (action == "remove") then
             -- But only using their UIDs
             --  (They shouldn't be using anything else but meh)
@@ -449,13 +449,13 @@ cider.command.add("ppfriends", "b", 1, function(ply, action, target)
     -- See what we're up to
     if (action == "add") then
         ply:AddPPFriend(victim);
-        ply:Notify(victim:Name() .. " is now on your PP Buddies!", NOTIFY_GENERIC);
+        ply:Notify(victim:Name() .. " is now on your PP Friends list!", NOTIFY_GENERIC);
     else
         ply:RemovePPFriend(victim);
-        ply:Notify(victim:Name() .. " is no longer on your PP Buddies!", NOTIFY_GENERIC);
+        ply:Notify(victim:Name() .. " is no longer on your PP Friends list!", NOTIFY_GENERIC);
     end
     return true;
-end, "Prop Protection", "<Add|Remove|Clear> [Target]", "Mess with your PP buddies", true);
+end, "Prop Protection", "<Add|Remove|Clear> [Target]", "Mess with your PP Friends list", true);
 
 cider.command.add("ppcleardisconnected", "a", 0, function()
     local _, uid;

@@ -28,8 +28,8 @@ function meta:AddPPFriend(ply)
     self._ppFriends[uid] = name;
     umsg.Start("MS PPUpdate", self);
     umsg.Char(1);
-    umsg.Long(uid);
     umsg.String(name);
+    umsg.Long(uid);
     umsg.End();
 end
 
