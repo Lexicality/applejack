@@ -64,7 +64,7 @@ function meta:IsPPFriendsWith(ply)
     if (not IsPlayer(ply)) then
         return false;
     end
-    return (self._ppFriends[ply:UniqueID] ~= nil);
+    return self._ppFriends[ply:UniqueID()] ~= nil;
 end
 
 if (not meta.oAddCount) then

@@ -288,12 +288,17 @@ do
         ply._ppFriends = res;
     end
     local function PlayerInitialSpawn(ply)
+        -- You wouldn't think this would happen but hey.
+        if (not ply._ppFriends) then
+            ply._ppFriends = {};
+        end
+
         -- Keep names up to date.
         do
             local uid = ply:UniqueID();
             local name = ply:Name();
             for _, pl in pairs(player.GetAll()) do
-                if (pl._ppFriends[uid]) then
+                if (pl ~= ply and pl._ppFriends[uid]) then
                     pl._ppFriends[uid] = name;
                 end
             end
@@ -301,7 +306,7 @@ do
         -- See who we know is online/offline
         local onlinec, offlinec = 0, 0;
         local online , offline  = {}, {};
-        local ply;
+        local pl;
         for uid, name in pairs(ply._ppFriends) do
             pl = player.Get(uid);
             if (pl) then
@@ -342,13 +347,13 @@ do
         buffering = true;
     end
     local function PlayerSaveData(ply)
-        local res, err = pcall(glon.encode, ply._ppFriends);
-        if (not res) then
-            ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Friends table: ", err, "\n");
+        local stat, res = pcall(glon.encode, ply._ppFriends);
+        if (not stat) then
+            ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Friends table: ", res, "\n");
             return;
         end
-        local q = "INSERT OR REPLACE INTO ms_ppfriends (UID, Friends)
-            VALUES (" .. ply:UniqueID() .. ",'" .. res .. "');";
+        local q = "INSERT OR REPLACE INTO ms_ppfriends (UID, Friends)" ..
+            "VALUES (" .. ply:UniqueID() .. ",'" .. res .. "');";
         if (buffering) then
             table.insert(sqlqs, q);
         else
@@ -365,7 +370,7 @@ do
     end
     local function PlayerDisconnected(ply)
         timer.Create("Prop Cleanup " .. ply:UniqueID(),
-            config["delay"], 1, deletePropsByUID, ply:UniqueID(), ply:Name());
+            config["delay"], 1, deletePropsByUID, ply:UniqueID(), ply:Name());
         disconnected[ply:UniqueID()] = true;
     end
     local function spawnHandler(ply, ent)
