@@ -69,7 +69,7 @@ local function adminPanel(panel)
 
         panel:Help(" ");
         panel:Help("Settings");
-        panel:Checkbox("Active", "_ms_ppconfig_enabled");
+        panel:CheckBox("Active", "_ms_ppconfig_enabled");
         panel:CheckBox("Disconnection Cleanup", "_ms_ppconfig_cleanup");
         panel:NumSlider("Cleanup Delay", "_ms_ppconfig_delay", 10, 300, 0);
         panel:Button("Apply Settings", "_ms_ppconfig");
@@ -98,10 +98,13 @@ do -- Add
         local menu = DermaMenu();
         -- I HATE YOU FOR THIS GARRYYYYYYYYYYYYY Give DMenus varargs
         -- TODO: Make the player picker for the access menu a standard thing for everything!
+        menu:AddOption("Cancel");
         for _, ply in pairs(player.GetAll()) do
-            menu:AddOption(ply:Name(), function()
-                RunConsoleCommand("cider", "ppfriends", "add", ply:UniqueID());
-            end)
+            if (ply ~= lpl) then
+                menu:AddOption(ply:Name(), function()
+                    RunConsoleCommand("cider", "ppfriends", "add", ply:UniqueID());
+                end)
+            end
         end
         menu:Open();
     end
@@ -144,7 +147,7 @@ local function clientPanel(panel)
     cPanel = panel;
 
     panel:Help("Applejack - Prop Protection");
-    Mpanel:Help(" ");
+    panel:Help(" ");
     panel:Button("Delete my props", "cider", "ppcleanprops");
     panel:Help(" ");
     panel:Help("Friends");
@@ -155,7 +158,7 @@ local function clientPanel(panel)
     panel:AddPanel(view);
     view:AddColumn("Name");
     view:AddColumn("UniqueID");
-    view:SetTall(10);
+    --view:SetTall(10);
     panel:Button("Remove Friend").DoClick = delButton;
     panel:Button("Clear Friends").DoClick = clrButton;
 end
@@ -208,10 +211,15 @@ end)
 -- Hoox --
 ----------
 
+local dun;
 local function SpawnMenuOpen()
+    if (dun) then
+        error("wat");
+    end
     if (aPanel) then
         adminPanel(aPanel);
         hook.Remove("SpawnMenuOpen", "Post Init Spawnmenu Rebuild");
+        dun = true;
     end
 end
 local function PopulateToolMenu()
