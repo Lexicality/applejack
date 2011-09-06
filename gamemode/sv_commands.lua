@@ -3,10 +3,13 @@
 	~ Applejack ~
 --]]
 
-cider.command.add("fuck","b",0,function(p)
-	p:Notify("FUCK!", 1);
-end,"Commands", "", "Free gratuitous swearing");
-
+GM:RegisterCommand{
+    Command = "fuck";
+    Help = "Free gratuitous swearing";
+    Function = function(ply)
+        ply:Notify("FUCK!", NOTIFY_ERROR);
+    end
+}
 --[[ ADMIN ABUSE COMMANDS ]]--
 --[[
 	These are only here at the insistance of my admins. They only apply to SuperAdmins, who probably can be trusted.
@@ -15,39 +18,54 @@ end,"Commands", "", "Free gratuitous swearing");
 --[ [<--Delete the space between these [s if you want to disable the abuse commands
 
 -- Knock out one person for an optional amount of time. Will default to 5.
-cider.command.add("knockout","s",1,function(ply, target, time)
-	local victim = player.Get(target);
-	if (victim) then
-		victim:KnockOut(tonumber(time) or 5);
-		GM:Log(EVENT_EVENT, "%s knocked out %s", ply:Name(), victim:Name());
-	else
-		return false, "Invalid player '"..target.."'!";
-	end
-end, "Super Admin Abuse Commands", "<player> [time]", "Knock a player out", true);
+GM:RegisterCommand{
+    Command     = "knockout";
+    Access      = "s";
+    Arguments   = "<victim> [time]";
+    Types       = "Player Number";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Knock someone out. (Defaults to 5 seconds)";
+    Function    = function(ply, victim, time)
+        victim:KnockOut(time or 5);
+        GM:Log(EVENT_EVENT, "%s knocked out %s", ply:Name(), victim:Name());
+    end
+};
 
 -- Wake a player up
-cider.command.add("wakeup","s",1,function(ply, target)
-	local victim = player.Get(target);
-	if (victim) then
-		victim:WakeUp();
-		GM:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
-	else
-		return false, "Invalid player '"..target.."'!";
-	end
-end, "Super Admin Abuse Commands", "<player>", "wake a player up", true);
+GM:RegisterCommand{
+    Command     = "wakeup";
+    Access      = "s";
+    Arguments   = "<victim>";
+    Types       = "Player";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Wake someone up";
+    Function    = function(ply, victim);
+        victim:WakeUp();
+        GM:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
+    end
+};
 
 local function knockoutfunct(tbl,tiem)
 	local target = table.remove(tbl);
-	if (IsValid(target)) then
+	if (IsValid(target) and target:Alive()) then
+        target:HolsterAll();
 		target:KnockOut(tiem);
 	end
 end
 -- Knock out everyone for a specified time. (Try not to use)
-cider.command.add("knockoutall","s",0,function(ply, time)
-	local tbl = player.GetAll();
-	player.NotifyAll(NOTIFY_GENERIC, "%s knocked everyone out .", ply:Name());
-	timer.Create(ply:Name().." admin abuse knockout", 0, #tbl,knockoutfunct, tbl, tonumber(time) or 5);
-end, "Super Admin Abuse Commands", "[time]", "Knock out all players", true);
+GM:RegisterCommand{
+    Command     = "knockoutall";
+    Access      = "s";
+    Arguments   = "[time]";
+    Types       = "Number";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Knock everyoneone out. (Defaults to 5 seconds)";
+    Function    = function(ply, time)
+        local tbl = player.GetAll();
+        player.NotifyAll(NOTIFY_GENERIC, "%s knocked everyone out .", ply:Name());
+        timer.Create(ply:Name() .. " admin abuse knockout", 0.1, #tbl, knockoutfunct, tbl, time or 5);
+    end
+};
 
 local function unknockoutfunct(tbl)
 	local target = table.remove(tbl);
@@ -56,32 +74,44 @@ local function unknockoutfunct(tbl)
 	end
 end
 -- Wake everyone up
-cider.command.add("wakeupall","s",0,function(ply)
-	local tbl = player.GetAll();
-	player.NotifyAll(NOTIFY_GENERIC, "%s woke everyone up.", ply:Name());
-	timer.Create(ply:Name().." admin abuse unknockout", 0, #tbl,unknockoutfunct, tbl);
-end, "Super Admin Abuse Commands", "[time]", "wake up all players");
+GM:RegisterCommand{
+    Command     = "wakeupall";
+    Access      = "s";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Wake everyone up";
+    Function    = function(ply);
+        local tbl = player.GetAll();
+        player.NotifyAll(NOTIFY_GENERIC, "%s woke everyone up.", ply:Name());
+        timer.Create(ply:Name() .. " admin abuse unknockout", 0.1, #tbl, unknockoutfunct, tbl);
+    end
+};
 
 -- Tie a player up
-cider.command.add("tie","s",1,function(ply, target)
-	local victim = player.Get(target);
-	if (victim) then
+GM:RegisterCommand{
+    Command     = "tie";
+    Access      = "s";
+    Arguments   = "<victim>";
+    Types       = "Player";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Tie someone up";
+    Function    = function(ply, victim);
 		victim:TieUp();
 		GM:Log(EVENT_EVENT, "%s tied up %s", ply:Name(), victim:Name());
-	else
-		return false, "Invalid player '"..target.."'!";
 	end
-end, "Super Admin Abuse Commands", "<player>", "tie a player", true);
+};
 
-cider.command.add("untie","s",1,function(ply, target)
-	local victim = player.Get(target);
-	if (victim) then
+GM:RegisterCommand{
+    Command     = "untie";
+    Access      = "s";
+    Arguments   = "<victim>";
+    Types       = "Player";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Untie someone";
+    Function    = function(ply, victim);
 		victim:UnTie();
 		GM:Log(EVENT_EVENT, "%s untied %s", ply:Name(), victim:Name());
-	else
-		return false, "Invalid player '"..target.."'!";
 	end
-end, "Super Admin Abuse Commands", "<player>", "untie a player", true);
+};
 
 -- There were '(un)tieall' commands here but they were removed.
 
