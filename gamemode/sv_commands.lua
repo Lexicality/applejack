@@ -39,7 +39,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Wake someone up";
-    Function    = function(ply, victim);
+    Function    = function(ply, victim)
         victim:WakeUp();
         GM:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
     end
@@ -79,7 +79,7 @@ GM:RegisterCommand{
     Access      = "s";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Wake everyone up";
-    Function    = function(ply);
+    Function    = function(ply)
         local tbl = player.GetAll();
         player.NotifyAll(NOTIFY_GENERIC, "%s woke everyone up.", ply:Name());
         timer.Create(ply:Name() .. " admin abuse unknockout", 0.1, #tbl, unknockoutfunct, tbl);
@@ -94,7 +94,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Tie someone up";
-    Function    = function(ply, victim);
+    Function    = function(ply, victim)
 		victim:TieUp();
 		GM:Log(EVENT_EVENT, "%s tied up %s", ply:Name(), victim:Name());
 	end
@@ -107,7 +107,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Untie someone";
-    Function    = function(ply, victim);
+    Function    = function(ply, victim)
 		victim:UnTie();
 		GM:Log(EVENT_EVENT, "%s untied %s", ply:Name(), victim:Name());
 	end
@@ -116,258 +116,305 @@ GM:RegisterCommand{
 -- There were '(un)tieall' commands here but they were removed.
 
 -- Respawn a player completely
-cider.command.add("spawn","s",1,function(ply, target)
-	local victim = player.Get(target);
-	if (victim) then
+GM:RegisterCommand{
+    Command     = "spawn";
+    Access      = "s";
+    Arguments   = "<victim>";
+    Types       = "Player";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Instantly repsawn someone.";
+    Function    = function(ply, victim)
 		victim:Spawn();
 		GM:Log(EVENT_EVENT, "%s respawned %s", ply:Name(), victim:Name());
-	else
-		return false, "Invalid player '"..target.."'!";
 	end
-end, "Super Admin Abuse Commands", "<player>", "respawn a player", true);
+};
 
 -- Arrest a player with optional arrest time
-cider.command.add("arrest","s",1,function(ply, target, time)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	victim:Arrest(tonumber(time));
-	GM:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
-end, "Super Admin Abuse Commands", "<player> [time]", "arrest a player", true);
+GM:RegisterCommand{
+    Command     = "arrest";
+    Access      = "s";
+    Arguments   = "<victim> [time]";
+    Types       = "Player Number";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Arrest someone. Optionally define how long they're arrested for.";
+    Function    = function(ply, victim, time)
+        victim:Arrest(time);
+        GM:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
+    end
+};
 
 -- Unarrest a player
-cider.command.add("unarrest","s",1,function(ply, target)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	victim:UnArrest();
-	GM:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
-end, "Super Admin Abuse Commands", "<player>", "unarrest a player", true);
+GM:RegisterCommand{
+    Command     = "unarrest";
+    Access      = "s";
+    Arguments   = "<victim>";
+    Types       = "Player";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Unarrest someone.";
+    Function    = function(ply, victim)
+        victim:UnArrest();
+        GM:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
+    end
+};
 
 -- Give a player an instant warrant with optional length
-cider.command.add("awarrant","s",2,function(ply, target, kind, time)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	kind = string.lower(kind);
-	if (kind ~= "arrest" and kind ~= "search") then
-		return false, "Invalid warrant type '"..kind.."'!";
-	end
-	time = tonumber(time);
-	GM:Log(EVENT_EVENT,"%s gave %s a %s warrant for %s seconds", ply:Name(), victim:Name(), kind, time or "default");
-	victim:Warrant(kind, time);
-end, "Super Admin Abuse Commands", "<player> <warrant> [time]", "warrant a player without going through the normal routes", true);
+GM:RegisterCommand{
+    Command     = "awarrant";
+    Access      = "s";
+    Arguments   = "<victim> <arrest|search> [time]";
+    Types       = "Player Phrase Number";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Instantly give a player a warrant, ignoring game mechanics. Optionally give it a length.";
+    Function    = function(ply, victim, kind, time)
+        GM:Log(EVENT_EVENT,"%s gave %s a %s warrant for %s seconds", ply:Name(), victim:Name(), kind, time or "default");
+        victim:Warrant(kind, time);
+    end
+};
 
 -- Give a player a named SWep/HL2 gun
-cider.command.add("give","s",2,function(ply, target, kind)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	if (not IsValid(victim:Give(kind))) then
-		return false, "Invalid weapon '"..kind.."'!";
-	end
-	GM:Log(EVENT_EVENT, "%s gave %s a %s", ply:Name(), victim:Name(), kind);
-end, "Super Admin Abuse Commands", "<player> <swep>", "give a player a named swep (ie cider_baton)", true);
+GM:RegisterCommand{
+    Command     = "give";
+    Access      = "s";
+    Arguments   = "<victim> <class>";
+    Types       = "Player String";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Give someone a weapon by classname, ie cider_baton";
+    Function    = function(ply, victim, kind)
+        if (not IsValid(victim:Give(kind))) then
+            return false, "Invalid weapon '"..kind.."'!";
+        end
+        GM:Log(EVENT_EVENT, "%s gave %s a %s", ply:Name(), victim:Name(), kind);
+    end
+};
 
 -- give a player some ammo
-cider.command.add("giveammo","s",2,function(ply, target, kind, amount)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	amount = tonumber(amount) or 20
-	victim:GiveAmmo(amount, kind);
-	GM:Log(EVENT_EVENT, "%s gave %s %s %s ammo", ply:Name(), victim:Name(), amount, kind);
-end, "Super Admin Abuse Commands", "<player> <ammo> [amoun]", "give a player named ammo (ie SMG1_Grenade)", true);
+GM:RegisterCommand{
+    Command     = "giveammo";
+    Access      = "s";
+    Arguments   = "<victim> <class> [amount]";
+    Types       = "Player String Number";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Give someone ammo by classname, ie smg1_grenade";
+    Function    = function(ply, victim, kind, amount)
+        amount = amount or 20
+        victim:GiveAmmo(amount, kind);
+        GM:Log(EVENT_EVENT, "%s gave %s %s %s ammo", ply:Name(), victim:Name(), amount, kind);
+    end
+};
 
 -- Give or take items away from players.
-cider.command.add("giveitem", "s", 2, function(ply, target, name, amount, force)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local item = GM:GetItem(name);
-	if (not item) then
-		return false, "Invalid item '"..name.."'!";
-	end
-	if (amount == "force") then -- Some people use the old (silly) order. They really shouldn't by now but meh. Luckily they tend to use 'force' instead of 'true'.
-		ply:Notify("YOU'RE DOING IT WRONG GODDAMNIT JOIN THE NEW WORD ORDER", 1);
-		ply:Notify("Puns are the best form of humor. Reguardless, the syntax IS /giveitem "..target.." "..name.." "..(tonumber(force) or 1).." force, not /giveitem "..target.." "..name.." force "..(tonumber(force) or 1)..".");
-		ply:Notify("Please remember the order. This warning will not always work properly.");
-		amount,force = force, amount;
-	end	
-	amount = tonumber(amount) or 1;
-	force = tobool(force);
-	if (amount == 0) then
-		return false, "What is the point of doing that?";
-	elseif (amount * item.Size > 50) then -- Something that not everyone bears in mind. (Including me occasionally.)
-		ply:Notify("Warning: You are giving "..victim:Name().." more items than players can normally fit in their inventories. Experience has shown this if often a bad idea if done to anyone not part of the cabal. Remember you can remove items with negative numbers.");
-	end
-	local s,f = cider.inventory.update(victim, item.UniqueID, amount, force);
-	if (not s) then
-		return false, f;
-	end
-	-- Do tha loggin
-	if (amount == 1) then
-		amount = "a";
-		name = item.Name;
-	else
-		name = item.Plural;
-	end
-	local person = "themselves";
-	if (ply ~= victim) then
-		person = victim:Name();
-		victim:Notify(ply:Name() .. " has given you " .. amount .. " " .. name .. ".", 0);
-	end
-	player.NotifyByAccess("s", ply:Name() .. " gave " .. person .. " " .. amount .. " " .. name .. ".", 0);
-	GM:Log(EVENT_SUPEREVENT, "%s gave %s %s %s.", ply:Name(), person, amount, name);
-end, "Super Admin Abuse Commands", "<player> <item> [number] [force]", "Give an item to a player. (Or take it away with negative numbers.)", true);
+GM:RegisterCommand{
+    Command     = "giveitem";
+    Access      = "s";
+    Arguments   = "<victim> <item> [amount] [force]";
+    Types       = "Player String Number Bool";
+    Category    = "SuperAdmin Abuse Commands";
+    Help        = "Give someone an item. Use negative numbers to remove items.";
+    Function    = function(ply, victim, name, amount, force)
+        amount = amount or 1;
+        force  = force or false;
+        local item = GM:GetItem(name);
+        if (not item) then
+            return false, "Invalid item '"..name.."'!";
+        end
+        if (amount == 0) then
+            return false, "What is the point of doing that?";
+        elseif (amount * item.Size > 50) then -- Something that not everyone bears in mind. (Including me occasionally.)
+            ply:Notify("Warning: You are giving "..victim:Name().." more items than players can normally fit in their inventories. Experience has shown this if often a bad idea if done to anyone not part of the cabal. Remember you can remove items with negative numbers.");
+        end
+        local s,f = cider.inventory.update(victim, item.UniqueID, amount, force);
+        if (not s) then
+            return false, f;
+        end
+        -- Do tha loggin
+        if (amount == 1) then
+            amount = "a";
+            name = item.Name;
+        else
+            name = item.Plural;
+        end
+        local person = "themselves";
+        if (ply ~= victim) then
+            person = victim:Name();
+            victim:Notify(ply:Name() .. " has given you " .. amount .. " " .. name .. ".", 0);
+        end
+        player.NotifyByAccess("s", ply:Name() .. " gave " .. person .. " " .. amount .. " " .. name .. ".", 0);
+        GM:Log(EVENT_PUBLICEVENT, "%s gave %s %s %s.", ply:Name(), person, amount, name);
+    end
+};
 
 --]
 --[[
-	The following abuse commands apply to all admins.
+	The following 'abuse' commands apply to all admins.
 	If you do not want them, do as above.
 --]]
 
 --[ [ <-- Space to remove.
 
 -- Set a player to a particular team (ignoring all restrictions like team size)
-cider.command.add("setteam","a",2,function(ply, target, targetteam)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local tdata = team.Get(targetteam);
-	if (not tdata) then
-		return false, "Invalid team '"..targetteam.."'!";
-	end
-	victim:JoinTeam(tdata.TeamID);
-	GM:Log(EVENT_EVENT,"%s set %s's team to %q", ply:Name(), victim:Name(), tdata.Name);
-end, "Admin Abuse Commands", "<player> <team>", "set a player's team", true);
+GM:RegisterCommand{
+    Command     = "setteam";
+    Access      = "a";
+    Arguments   = "<victim> <team>";
+    Types       = "Player String";
+    Category    = "Admin Abuse Commands";
+    Help        = "Set someone to a particular team, ignoring all restirctions.";
+    Function    = function(ply, victim, target)
+        local tdata = team.Get(target);
+        if (not tdata) then
+            return false, "Invalid team '"..targetteam.."'!";
+        end
+        victim:JoinTeam(tdata.TeamID);
+        GM:Log(EVENT_EVENT,"%s set %s's team to %q", ply:Name(), victim:Name(), tdata.Name);
+    end
+};
 
-cider.command.add("invisible","a",0,function(ply, target)
-	local victim
-	if (target) then
-		victim = player.Get(target);
-		if (not victim) then
-			return false, "Invalid player '"..target.."'!";
-		end
-	else
-		victim = ply;
-	end
-	if (victim:GetColor() == 0) then
-		victim:SetColor(255,255,255,255)
-		victim:DrawShadow(true);
-		victim:Notify("You are now visible",0);
-		if (ply ~= victim) then
-			ply:Notify(victim:Name() .. " is now visible.",0);
-		end
-	else
-		victim:SetColor(0,0,0,0)
-		victim:DrawShadow(false);
-		victim:Notify("You are now invisible",0);
-		if (ply ~= victim) then
-			ply:Notify(victim:Name() .. " is now invisible.",0);
-		end
-	end
-end, "Admin Abuse Commands","[target]","Make yourself or someone else invisible.", true)
 
-cider.command.add("setmodel","a",2,function(ply, target, model)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	elseif (not util.IsValidModel(model)) then
-		return false, "Invalid model!";
-	end
-	victim:SetModel(model);
-	GM:Log(EVENT_EVENT,"%s set %s's model to %q", ply:Name(), victim:Name(), model);
-end, "Admin Abuse Commands", "<name> <model>","Override the player's current model.", true)
+GM:RegisterCommand{
+    Command     = "invisible";
+    Access      = "a";
+    Arguments   = "[victim]";
+    Types       = "Player";
+    Category    = "Admin Abuse Commands";
+    Help        = "Toggle the invisibility status of someone";
+    Function    = function(ply, victim)
+        if (not victim) then
+            victim = ply;
+        end
+        if (victim:GetColor() == 0) then
+            victim:SetColor(255,255,255,255)
+            victim:DrawShadow(true);
+            victim:Notify("You are now visible",0);
+            if (ply ~= victim) then
+                ply:Notify(victim:Name() .. " is now visible.",0);
+            end
+        else
+            victim:SetColor(0,0,0,0)
+            victim:DrawShadow(false);
+            victim:Notify("You are now invisible",0);
+            if (ply ~= victim) then
+                ply:Notify(victim:Name() .. " is now invisible.",0);
+            end
+        end
+    end
+};
 
-cider.command.add("notify", "a", 3, function(ply, target, level, ...)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local words = string.Trim(table.concat({...}, " "));
-	--<chat|drip/0|error/1|bip/2|tic/3>
-	level = string.lower(level);
-	if (level == "drip") then
-		level = 0;
-	elseif (level == "error") then
-		level = 1;
-	elseif (level == "undo") then
-		level = 2;
-	elseif (level == "bell") then
-		level = 3;
-	end
-	level = tonumber(level);
-	victim:Notify(words, level);
-	GM:Log(EVENT_SUPEREVENT, "%s sent %s a level %s notification saying %q", ply:Name(), victim:Name(), level or "chat", words);
-end, "Admin Abuse Commands", "<player> <chat|drip/0|error/1|undo/2|bell/3> <words>", "Send a player a notification using the built in system.", true);
-cider.command.add("notifyall", "a", 2, function(ply, level, ...)
-	local words = string.Trim(table.concat({...}, " "));
-	--<chat|drip/0|error/1|bip/2|tic/3>
-	level = string.lower(level);
-	if (level == "drip") then
-		level = 0;
-	elseif (level == "error") then
-		level = 1;
-	elseif (level == "undo") then
-		level = 2;
-	elseif (level == "bell") then
-		level = 3;
-	end
-	level = tonumber(level);
-	player.NotifyAll(level, "%s", words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
-	GM:Log(EVENT_SUPEREVENT, "%s sent %s a level %s notification saying %q", ply:Name(), "everyone", level or "chat", words);
+GM:RegisterCommand{
+    Command     = "setmodel";
+    Access      = "a";
+    Arguments   = "<victim> <model>";
+    Types       = "Player String";
+    Category    = "Admin Abuse Commands";
+    Help        = "Temporarily change someone's playermodel.";
+    Function    = function(ply, victim, model)
+        if (not util.IsValidModel(model)) then
+            return false, "Invalid model!";
+        end
+        victim:SetModel(model);
+        GM:Log(EVENT_EVENT,"%s set %s's model to %q", ply:Name(), victim:Name(), model);
+    end
+};
+
+GM:RegisterCommand{
+    Command     = "notify";
+    Access      = "a";
+    Arguments   = "<victim> <chat|drip|0|error|1|undo|2|bell|3> <notification>";
+    Types       = "Player Phrase ...";
+    Category    = "Admin Abuse Commands";
+    Help        = "Send someone a notification via the in-game system";
+    Function    = function(ply, victim, level, words)
+        if (level == "drip") then
+            level = 0;
+        elseif (level == "error") then
+            level = 1;
+        elseif (level == "undo") then
+            level = 2;
+        elseif (level == "bell") then
+            level = 3;
+        else
+            level = tonumber(level);
+        end
+        victim:Notify(words, level);
+        GM:Log(EVENT_EVENT, "%s sent %s a level %s notification saying %q", ply:Name(), victim:Name(), level or "chat", words);
+    end
+};
+
+GM:RegisterCommand{
+    Command     = "notifyall";
+    Access      = "a";
+    Arguments   = "<chat|drip|0|error|1|undo|2|bell|3> <notification>";
+    Types       = "Phrase ...";
+    Category    = "Admin Abuse Commands";
+    Help        = "Send everyone a notification via the in-game system";
+    Function    = function(ply, victim, level, words)
+        if (level == "drip") then
+            level = 0;
+        elseif (level == "error") then
+            level = 1;
+        elseif (level == "undo") then
+            level = 2;
+        elseif (level == "bell") then
+            level = 3;
+        else
+            level = tonumber(level);
+        end
+        player.NotifyAll(level, "%s", words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
+        GM:Log(EVENT_PUBLICEVENT, "%s sent %s a level %s notification saying %q", ply:Name(), "everyone", level or "chat", words);
 end, "Admin Abuse Commands", "<chat|drip/0|error/1|undo/2|bell/3> <words>", "Send a player a notification using the built in system.", true);
 --]]
 --[[ END OF ADMIN ABUSE COMMANDS ]]--
 
 
 
-cider.command.add("giveaccess", "s", 2, function(ply, target, flags)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	flags:gsub("[asm%s]", "");
-	if (flags == "") then
-		return false;
-	end
-	victim:GiveAccess(flags);
-	player.NotifyAll(NOTIFY_CHAT, "%s gave %s access to the %q flag%s", ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
-end, "Super Admin Commands", "<player> <access>", "Give access to a player.", true);
+GM:RegisterCommand{
+    Command     = "giveaccess";
+    Access      = "s";
+    Arguments   = "<target> <flags>";
+    Types       = "Player String";
+    Help        = "Give someone extra access flags";
+    Function    = function(ply, victim, flags)
+        flags:gsub("[asm%s]", "");
+        if (flags == "") then
+            return false;
+        end
+        victim:GiveAccess(flags);
+        player.NotifyAll(NOTIFY_CHAT, "%s gave %s access to the %q flag" .. (flags:len() > 1 and "s" or ""), ply:Name(), victim:Name(), flags);
+    end
+};
 
--- A command to take access from a player.
-cider.command.add("takeaccess", "s", 2, function(ply, target, flags)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	flags:gsub("[asm%s]", "");
-	if (flags == "") then
-		return false;
-	end
-	victim:TakeAccess(flags);
-	player.NotifyAll(NOTIFY_CHAT, "%s took %s's access to the %q flag%s", ply:Name(), victim:Name(), flags, flags:len() > 1 and "s" or "");
-end, "Super Admin Commands", "<player> <access>", "Take access from a player.", true);
+-- A command to take access from a pla
+GM:RegisterCommand{
+    Command     = "takeaccess";
+    Access      = "s";
+    Arguments   = "<target> <flags>";
+    Types       = "Player String";
+    Help        = "Remove someone's extra access flags";
+    Function    = function(ply, victim, flags)
+        flags:gsub("[asm%s]", "");
+        if (flags == "") then
+            return false;
+        end
+        victim:TakeAccess(flags);
+        player.NotifyAll(NOTIFY_CHAT, "%s removed %s's access to the %q flag" .. (flags:len() > 1 and "s" or ""), ply:Name(), victim:Name(), flags);
+    end
+};
 
+GM:RegisterCommand{
+    Comand      = "restartmap";
+    Access      = "a";
+    Help        = "Instantly do a soft restart of the server";
+    Function    = function(ply)
+        for _, pl in pairs(player.GetAll()) do
+            pl:HolsterAll();
+            pl:SaveData();
+        end
+        player.NotifyAll(NOTIFY_CHAT, "%s restarted the map!", ply:Name());
+        game.ConsoleCommand("changelevel "..game.GetMap().."\n");
+    end
+};
 
-cider.command.add("restartmap", "a", 0, function(ply)
-	for _, pl in pairs(player.GetAll()) do
-		pl:HolsterAll();
-		pl:SaveData();
-	end
-	player.NotifyAll(NOTIFY_CHAT, "%s restarted the map!", ply:Name());
-	game.ConsoleCommand("changelevel "..game.GetMap().."\n");
-end, "Admin Commands", "", "Restart the map immediately.");
-
-local function getnamething(kind,thing)
+local function getnamething(kind, thing)
+    thing = string.lower(thing);
 	if kind == "team" then
 	-- Team blacklist
 		local team = team.Get(thing)
@@ -408,153 +455,191 @@ end
 -- team/item/cat/cmd
 --<name> <type> <thing> <time> <reason>
 --TODO: Make a vgui to handle this shit.
-cider.command.add("blacklist", "m", 5, function(ply, target, kind, thing, time, ...)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	kind, thing, time = string.lower(kind), string.lower(thing), tonumber(time);
-	if (time < 1) then
-		return false, "You cannot blacklist for less than a minute!";
-	elseif ((time > 10080 and not ply:IsSuperAdmin()) or (time > 1440 and not ply:IsAdmin())) then
-		return false, "You cannot blacklist for that long!";
-	end
-	local reason = table.concat({...}, " "):sub(1,65):Trim();
-	if (not reason or reason == "" or (reason:len() < 5 and not ply:IsSuperAdmin())) then
-		return false, "You must specify a reason!";
-	end
-	-- Get the name of what we're doing and the thing itself.
-	local name, thing = getnamething(kind, thing);
-	if (not name) then
-		return false, thing;
-	end
-	if (victim:Blacklisted(kind, thing) ~= 0) then
-		return false, victim:Name() .. " is already blacklisted from that!";
-	end
-	if (not gamemode.Call("PlayerCanBlacklist", ply, victim, kind, thing, time, reason)) then
-		return false;
-	end
-	gamemode.Call("PlayerBlacklisted", victim, kind, thing, time, reason, ply);
-	victim:Blacklist(kind, thing, time, reason, ply:Name());
-	time = getBlacklistTime(time);
-	player.NotifyAll(NOTIFY_CHAT, "%s blacklisted %s from using %s for %s for %q.", ply:Name(), victim:Name(), name, time, reason);
-end, "Moderator Commands", "<player> <team|item|cat|cmd> <thing> <time> <reason>", "Blacklist a player from something", true);
+GM:RegisterCommand{
+    Command     = "blacklist";
+    Access      = "m";
+    Arguments   = "<victim> <team|item|cat|cmd> <thing> <time> <reason>";
+    Types       = "Player Phrase String Number ...";
+    Help        = "Blacklist a player from doing something.";
+    Function    = function(ply, victim, kind, thing, time, reason)
+        if (victim:IsModerator()) then
+            if (ply:IsSuperAdmin()) then
+                -- Do nothing, just dealing with ranks.
+            elseif (ply:IsAdmin()) then
+                if (victim:IsSuperAdmin()) then
+                    return false, "Watch it, you!";
+                elseif (victim:IsAdmin()) then
+                    return false, "You can't blacklist other admins!";
+                end
+            elseif (ply:IsModerator()) then
+                if (victim:IsSuperAdmin()) then
+                    return false, "Oi, who do you think you are? :X";
+                else
+                    return false, "You cannot blacklist other members of the administration team!";
+                end
+            end
+        end
+        if (time < 1) then
+            return false, "You cannot blacklist for less than a minute!";
+        elseif ((time > 10080 and not ply:IsSuperAdmin()) or (time > 1440 and not ply:IsAdmin())) then
+            return false, "You cannot blacklist for that long!";
+        end
+        reason = string.sub(reason, 1, 65)
+        reason = string.Trim(reason);
+        if (reason:len() < 5 and not ply:IsSuperAdmin()) then
+            return false, "You must specify a longer reason!";
+        end
+        -- Get the name of what we're doing and the thing itself.
+        local name, thing = getnamething(kind, thing);
+        if (not name) then
+            return false, thing;
+        end
+        if (victim:Blacklisted(kind, thing) ~= 0) then
+            return false, victim:Name() .. " is already blacklisted from that!";
+        end
+        if (not gamemode.Call("PlayerCanBlacklist", ply, victim, kind, thing, time, reason)) then
+            return false;
+        end
+        gamemode.Call("PlayerBlacklisted", victim, kind, thing, time, reason, ply);
+        victim:Blacklist(kind, thing, time, reason, ply:Name());
+        time = getBlacklistTime(time);
+        player.NotifyAll(NOTIFY_CHAT, "%s blacklisted %s from using %s for %s for %q.", ply:Name(), victim:Name(), name, time, reason);
+    end
+};
 
-cider.command.add("unblacklist", "m", 3, function(ply, target, kind, thing)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	kind, thing = string.lower(kind), string.lower(thing);
-	-- Get the name of what we're doing and the thing itself.
-	local name, thing = getnamething(kind, thing);
-	if (not name) then
-		return false, thing;
-	end
-	if (victim:Blacklisted(kind, thing) == 0) then
-		return false, victim:Name() .. " is not blacklisted from that!";
-	end
-	if (not gamemode.Call("PlayerCanUnBlacklist", ply, victim, kind, thing)) then
-		return false;
-	end
-	gamemode.Call("PlayerUnBlacklisted", victim, kind, thing, ply);
-	victim:UnBlacklist(kind, thing);
-	player.NotifyAll(NOTIFY_CHAT, "%s unblacklisted %s from using %s.", ply:Name(), victim:Name(), name);
-end, "Moderator Commands", "<player> <team|item|cat|cmd> <thing>", "Unblacklist a player from something", true)
+GM:RegisterCommand{
+    Command     = "unblacklist";
+    Access      = "m";
+    Arguments   = "<target> <team|item|cat|cmd> <thing>";
+    Types       = "Player Phrase String";
+    Help        = "Unblacklist a player so they can do something.";
+    Function    = function(ply, victim, kind, thing)
+        -- Get the name of what we're doing and the thing itself.
+        local name, thing = getnamething(kind, thing);
+        if (not name) then
+            return false, thing;
+        end
+        if (victim:Blacklisted(kind, thing) == 0) then
+            return false, victim:Name() .. " is not blacklisted from that!";
+        end
+        if (not gamemode.Call("PlayerCanUnBlacklist", ply, victim, kind, thing)) then
+            return false;
+        end
+        gamemode.Call("PlayerUnBlacklisted", victim, kind, thing, ply);
+        victim:UnBlacklist(kind, thing);
+        player.NotifyAll(NOTIFY_CHAT, "%s unblacklisted %s from using %s.", ply:Name(), victim:Name(), name);
+    end
+};
 
-cider.command.add("blacklistlist", "m", 1, function(ply, target)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local blacklist = victim.cider._Blacklist;
-	if (table.Count(blacklist) == 0) then
-		return false, victim:Name() .. " isn't blacklisted from anything!";
-	end
-	local printtable, words = {};
-	local namelen, adminlen, timelen = 0, 0, 0;
-	local time, name, admin, reason
-	for kind, btab in pairs(blacklist) do
-		if (table.Count(btab) == 0) then
-			blacklist[kind] = nil;
-		else
-			words = {};
-			for thing in pairs(btab) do
-				time, reason, admin = victim:Blacklisted(kind, thing);
-				if (time ~= 0) then
-					name = getnamething(kind, thing);
-					time = getBlacklistTime(time);
-					if ( name:len() > namelen ) then  namelen = name:len();  end
-					if (admin:len() > adminlen) then adminlen = admin:len(); end
-					if (time:len()  > timelen ) then  timelen = time:len();  end
-					words[#words + 1] = {name, time, admin, reason};
-				end
-			end
-			if (#words ~= 0) then
-				printtable[#printtable + 1] = {kind, words};
-			end
-		end
-	end
-	if (#printtable == 0) then
-		return false, victim:Name() .. " isn't blacklisted from anything!";
-	end
-	local a,b,c = ply.PrintMessage, ply, HUD_PRINTCONSOLE;
-	-- A work of art in ASCII formatting. A shame it is soon to be swept away
-		a(b,c, "----------------------------[ Blacklist Details ]-----------------------------");
-		local w = "%-" .. namelen + 2 .. "s| %-" .. timelen + 2 .. "s| %-" .. adminlen + 2 .. "s| %s";
-		a(b,c,w:format("Thing", "Time", "Admin", "Reason"));
-		for _,t in ipairs(printtable) do
-			a(b,c, "-----------------------------------[ "..string.format("%-4s",t[1]).." ]------------------------------------");
-			for _,t in ipairs(t[2]) do
-				a(b,c,w:format(t[1], t[2], t[3], t[4]));
-			end
-		end
-	-- *sigh*
-	player:Notify("Blacklist details have been printed to your console.",0);
-end, "Moderator Commands", "<player>", "Print a player's blacklist to your console (temp)", true);
+GM:RegisterCommand{
+    Command     = "blacklistlist";
+    Access      = "m";
+    Arguments   = "<target>";
+    Types       = "Player";
+    Help        = "Find out what a player's blacklisted from (in your console)";
+    Function    = function(ply, victim)
+        local blacklist = victim.cider._Blacklist;
+        if (table.Count(blacklist) == 0) then
+            return false, victim:Name() .. " isn't blacklisted from anything!";
+        end
+        local printtable, words = {};
+        local namelen, adminlen, timelen = 0, 0, 0;
+        local time, name, admin, reason
+        for kind, btab in pairs(blacklist) do
+            if (table.Count(btab) == 0) then
+                blacklist[kind] = nil;
+            else
+                words = {};
+                for thing in pairs(btab) do
+                    time, reason, admin = victim:Blacklisted(kind, thing);
+                    if (time ~= 0) then
+                        name = getnamething(kind, thing);
+                        time = getBlacklistTime(time);
+                        if ( name:len() > namelen ) then  namelen = name:len();  end
+                        if (admin:len() > adminlen) then adminlen = admin:len(); end
+                        if (time:len()  > timelen ) then  timelen = time:len();  end
+                        words[#words + 1] = {name, time, admin, reason};
+                    end
+                end
+                if (#words ~= 0) then
+                    printtable[#printtable + 1] = {kind, words};
+                end
+            end
+        end
+        if (#printtable == 0) then
+            return false, victim:Name() .. " isn't blacklisted from anything!";
+        end
+        local a,b,c = ply.PrintMessage, ply, HUD_PRINTCONSOLE;
+        -- A work of art in ASCII formatting. A shame it is soon to be swept away
+            a(b,c, "----------------------------[ Blacklist Details ]-----------------------------");
+            local w = "%-" .. namelen + 2 .. "s| %-" .. timelen + 2 .. "s| %-" .. adminlen + 2 .. "s| %s";
+            a(b,c,w:format("Thing", "Time", "Admin", "Reason"));
+            for _,t in pairs(printtable) do
+                a(b,c, "-----------------------------------[ "..string.format("%-4s",t[1]).." ]------------------------------------");
+                for _,t in pairs(t[2]) do
+                    a(b,c,w:format(t[1], t[2], t[3], t[4]));
+                end
+            end
+        -- *sigh*
+        ply:Notify("Blacklist details have been printed to your console.",0);
+    end
+};
 
 -- A command to demote a player.
-cider.command.add("demote", "b", 2, function(ply, target, ...)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	end
-	local reason = table.concat({...}, " "):sub(1,65):Trim();
-	if (not reason or reason == "" or (reason:len() < 5 and not ply:IsSuperAdmin())) then
-		return false, "You must specify a reason!";
-	end
-	local res, msg = gamemode.Call("PlayerCanDemote", ply, victim);
-	if (not res) then
-		return false, msg;
-	end
-	local tid = victim:Team();
-	victim:Demote();
-	player.NotifyAll(NOTIFY_CHAT, "%s demoted %s from %s for %q.", ply:Name(), victim:Name(), team.GetName(tid), reason);
-end, "Commands", "<player> <reason>", "Demote a player from their current team.", true);
+GM:RegisterCommand{
+    Command     = "demote";
+    Arguments   = "<victim> <reason>";
+    Types       = "Player ...";
+    Help        = "Demote a player from their current job";
+    Function    = function(ply, victim, reason)
+        reason = string.sub(reason, 1, 65)
+        reason = string.Trim(reason);
+        if (reason:len() < 5 and not ply:IsSuperAdmin()) then
+            return false, "You must specify a longer reason!";
+        end
+        local res, msg = gamemode.Call("PlayerCanDemote", ply, victim);
+        if (not res) then
+            return false, msg;
+        end
+        local tid = victim:Team();
+        victim:Demote();
+        player.NotifyAll(NOTIFY_CHAT, "%s demoted %s from %s for %q.", ply:Name(), victim:Name(), team.GetName(tid), reason);
+    end
+};
 
-cider.command.add("save", "s", 0, function(ply)
-	player.SaveAll()
-	GM:Log(EVENT_PUBLICEVENT,"%s saved everyone's profiles.", ply:Name())
-end, "Super Admin Commands", "", "Forceably save all profiles")
+-- Save everyone's shizzle
+GM:RegisterCommand{
+    Command     = "save";
+    Access      = "a";
+    Help        = "Force an instant save of everyone's profiles.";
+    Function    = function(ply)
+        player.SaveAll(true);
+        GM:Log(EVENT_PUBLICEVENT,"%s saved everyone's profiles.", ply:Name())
+    end
+};
 
 -- A command to privately message a player.
-cider.command.add("pm", "b", 2, function(ply, target, ...)
-	local victim = player.Get(target);
-	if (not victim) then
-		return false, "Invalid player '"..target.."'!";
-	elseif (victim == ply) then
-		return false, "You can't PM yourself.";
-	end
-	local words = table.concat({...}, " "):sub(1,125):Trim();
-	if (not words or words == "") then
-		return false, "You must specify a message!";
-	end
-	GM:Log(EVENT_SUPEREVENT, "%s pmed %s: %s",ply:Name(), victim:Name(), words)
-	-- Print a message to both players participating in the private message.
-	cider.chatBox.add(victim, ply, "pm", words);
-	words = "@" ..    victim:Name() .. " " .. words;
-	cider.chatBox.add(ply,    ply, "pm", words);
-end, "Commands", "<player> <text>", "Send an OOC private messsage to a player.", true);
+GM:RegisterCommand{
+    Command     = "pm";
+    Arguments   = "<target> <message>";
+    Types       = "Player ...";
+    Help        = "Send someone a private OOC message";
+    Function    = function(ply, victim, words)
+        if (victim == ply) then
+            return false, "You can't PM yourself.";
+        end
+        words = string.sub (words, 1, 125)
+        words = string.Trim(words);
+        if (words == "") then
+            return false, "You must specify a message!";
+        end
+        GM:Log(EVENT_SUPEREVENT, "%s pmed %s: %s",ply:Name(), victim:Name(), words)
+        -- Print a message to both players participating in the private message.
+        cider.chatBox.add(victim, ply, "pm", words);
+        words = "@" ..    victim:Name() .. " " .. words;
+        cider.chatBox.add(ply,    ply, "pm", words);
+    end
+};
 
 -- A command to give a player some money.
 cider.command.add("givemoney", "b", 1, function(ply, amt)
