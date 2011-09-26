@@ -360,7 +360,8 @@ GM:RegisterCommand{
         end
         player.NotifyAll(level, "%s", words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
         GM:Log(EVENT_PUBLICEVENT, "%s sent %s a level %s notification saying %q", ply:Name(), "everyone", level or "chat", words);
-end, "Admin Abuse Commands", "<chat|drip/0|error/1|undo/2|bell/3> <words>", "Send a player a notification using the built in system.", true);
+    end
+};
 --]]
 --[[ END OF ADMIN ABUSE COMMANDS ]]--
 
