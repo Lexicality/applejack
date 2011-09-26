@@ -435,7 +435,7 @@ local function getnamething(kind, thing)
         return cat.Name, cat.UniqueID;
     elseif kind == "cmd" then
     -- Command blacklist
-        local cmd = cider.command.stored[thing]
+        local cmd = GM.Commands[thing]
         if not cmd then return false,thing.." is not a valid command!" end  
         return thing, thing;
     else
@@ -901,61 +901,75 @@ GM:RegisterCommand{
 };
 
 -- A command to perform inventory action on an item.
-cider.command.add("inventory", "b", 2, function(ply, id, action, amount)
-    id = string.lower(id);
-    action = string.lower(action);
-    local item = GM.Items[id];
-    if (not item) then
-        return false, "Invalid item specified.";
-    end
-    local holding = ply.cider._Inventory[id]
-    if (not holding or holding < 1) then
-        return false, "You do not own any " .. item.Plural .."!";
-    elseif (action == "destroy") then
-        item:Destroy(ply);
-    -- START CAR ACTIONS (TODO: find some other way of doing this?)
-    elseif (action == "pickup") then
-        item:Pickup(ply);
-    elseif (action == "sell") then
-        item:Sell(ply);
-    -- END CAR ACTIONS
-    elseif (action == "drop") then
-        if (amount == "all") then
-            amount = holding;
-        else
-            amount = math.floor(tonumber(amount) or 1);
+GM:RegisterCommand{
+    Command     = "inventory";
+    Arguments   = "<id> <action> [amount]";
+    Types       = "String String Number";
+    Hidden      = true;
+    Function    = function(ply, id, action, amount)
+        id = string.lower(id);
+        action = string.lower(action);
+        local item = GM.Items[id];
+        if (not item) then
+            return false, "Invalid item specified.";
         end
-        amount = math.min(amount, holding);
-        if (amount < 1) then
-            return false, "Invalid amount!";
+        local holding = ply.cider._Inventory[id]
+        if (not holding or holding < 1) then
+            return false, "You do not own any " .. item.Plural .."!";
         end
-        local pos = ply:GetEyeTraceNoCursor().HitPos;
-        if (ply:GetPos():Distance(pos) > 255) then
-            pos = ply:GetShootPos() + ply:GetAimVector() * 255;
-        end
-        return item:Drop(ply, pos, amount);
-    elseif (action == "use") then
-        local time = CurTime();
-        if (not ply:IsAdmin()) then -- Admins bypass the item timer
+
+        if (action == "destroy") then
+            item:Destroy(ply);
+
+        -- START CAR ACTIONS (TODO: find some other way of doing this?)
+        elseif (action == "pickup") then
+            item:Pickup(ply);
+        elseif (action == "sell") then
+            item:Sell(ply);
+        -- END CAR ACTIONS
+
+        elseif (action == "drop") then
+            -- Amount wizardry
+            if (not amount) then
+                amount = 1;
+            elseif (amount == 0) then
+                amount = holding;
+            elseif (amount < 0) then
+                return false, "Invalid amount!";
+            end
+            -- if people want to put '99999' instead of hitting 'all', let them.
+            amount = math.min(amount, holding);
+            -- Locate positions
+            local pos = ply:GetEyeTraceNoCursor().HitPos;
+            if (ply:GetPos():Distance(pos) > 255) then
+                pos = ply:GetShootPos() + ply:GetAimVector() * 255;
+            end
+            -- FIRE!
+            return item:Drop(ply, pos, amount);
+        elseif (action == "use") then
+            local time = CurTime();
+            -- TODO: When being item limited starts to piss me off (it will!), remove/nerf it.
+            -- TODO: Create a ticket about the above todo notice.
             if ((ply._NextUseItem or 0) > time) then
                 return false, "You cannot use another item for " .. math.ceil(ply._NextUseItem - time) .. " more seconds!";
             elseif ((ply._NextUse[id] or 0) > time) then
                 return false, "You cannot use another " .. item.Name .. " for " .. math.ceil(ply._NextUse[id]) .. " more seconds!";
+            end if (ply:InVehicle() and item.NoVehicles) then
+                return false, "You cannot use that item while in a vehicle!";
+            elseif (not gamemode.Call("PlayerCanUseItem", ply, id)) then
+                return false;
+            end if (item.Weapon) then
+                ply._NextHolsterWeapon = CurTime() + 5;
             end
-        end if (ply:InVehicle() and item.NoVehicles) then
-            return false, "You cannot use that item while in a vehicle!";
-        elseif (not gamemode.Call("PlayerCanUseItem", ply, id)) then
-            return false;
-        end if (item.Weapon) then
-            ply._NextHolsterWeapon = CurTime() + 5;
+            ply._NextUseItem = time + GM.Config['Item Timer'];
+            ply._NextUse[id] = time + GM.Config['Item Timer (S)'];
+            return item:Use(ply);
+            -- TODO: Make the vehicles plugin use PlayerCalledItemAction!
+        elseif (not gamemode.Call("PlayerCalledItemAction", ply, item, action, amount)) then
+            return false, "Invalid action specified!"
         end
-        ply._NextUseItem = time + GM.Config['Item Timer'];
-        ply._NextUse[id] = time + GM.Config['Item Timer (S)'];
-        return item:Use(ply);
-    else
-        return false, "Invalid action specified!"
     end
-end, "Menu Handlers", "<item> <destroy|drop|use> [amount]", "Perform an inventory action on an item.", true);
+};
 
 local function containerHandler(ply, item, action, number)
     local container = ply:GetEyeTraceNoCursor().Entity
@@ -964,16 +978,8 @@ local function containerHandler(ply, item, action, number)
     elseif not gamemode.Call("PlayerCanUseContainer",ply,container) then
         return false,"You cannot use that container!"
     end
-    item = item:lower()
-    action = action:lower()
-    if (action ~= "put" and action ~= "take") then
-        return false, "Invalid option: "..action.."!";
-    end
-    if (number == "all") then
-        number = 9999;
-    end
-    number = math.floor(tonumber(number) or 1);
-    if (number < 1) then
+    item = string.lower(item)
+    if (number < 0) then
         return false, "Invalid amount!";
     elseif not GM.Items[item]  then
         return false,"Invalid item!"
@@ -984,16 +990,22 @@ local function containerHandler(ply, item, action, number)
         local amount = (item == "money") and ply.cider._Money or pInventory[item]
         if (not amount) then
             return false, "You do not have any of this item!";
+        elseif (number == 0) then
+            number = amount;
+        elseif (number > amount) then
+            number = amount;
         end
-        number = math.min(number, amount);
     else
         local amount = cInventory[item]
         if (not amount) then
             return false, "There is none of that item in here!";
         elseif (amount < 0) then
             return false, "You cannot take that item out!";
+        elseif (number == 0) then
+            number = amount;
+        elseif (number > amount) then
+            number = amount;
         end
-        number = math.min(number, amount);
     end
     if filter and action == "put" and not filter[item] then
         return false, "You cannot put that item in!"
@@ -1009,29 +1021,34 @@ local function containerHandler(ply, item, action, number)
     return cider.container.update(container,item,number,nil,ply)
 end
 
-cider.command.add("container", "b", 2, function(ply, ...)
-    -- I use a handler because returning a value is so much neater than a pyramid of ifs.
-    local res,msg = containerHandler(ply, ...)
-    if res then
-        local entity = ply:GetEyeTraceNoCursor().Entity
-        local contents,io,filter = cider.container.getContents(entity,ply,true)
-        local tab = {
-            contents = contents,
-            meta = {
-                io = io,
-                filter = filter, -- Only these can be put in here, if nil then ignore, but empty means nothing.
-                size = cider.container.getLimit(entity), -- Max space for the container
-                entindex = entity:EntIndex(), -- You'll probably want it for something
-                name = cider.container.getName(entity) or "Container"
+GM:RegisterCommand{
+    Command     = "container";
+    Arguments   = "<Item> <Put|Take> <amount>";
+    Types       = "String Phrase Number";
+    Hidden      = true;
+    Function    = function(ply, ...)
+        -- I use a handler because returning a value is so much neater than a pyramid of ifs.
+        local res,msg = containerHandler(ply, ...)
+        if res then
+            local entity = ply:GetEyeTraceNoCursor().Entity
+            local contents,io,filter = cider.container.getContents(entity,ply,true)
+            local tab = {
+                contents = contents,
+                meta = {
+                    io = io,
+                    filter = filter, -- Only these can be put in here, if nil then ignore, but empty means nothing.
+                    size = cider.container.getLimit(entity), -- Max space for the container
+                    entindex = entity:EntIndex(), -- You'll probably want it for something
+                    name = cider.container.getName(entity) or "Container"
+                }
             }
-        }
-        datastream.StreamToClients( ply, "cider_Container_Update", tab );
-    else
-        SendUserMessage("cider_CloseContainerMenu",ply);
+            datastream.StreamToClients( ply, "cider_Container_Update", tab );
+        else
+            SendUserMessage("cider_CloseContainerMenu",ply);
+        end
+        return res,msg
     end
-    return res,msg
-end, "Menu Handlers", "<item> <put|take> <amount>", "Put or take an item from a container", true);
-
+};
 
 do --isolate vars
     local function conditional(ply,pos)
@@ -1065,44 +1082,51 @@ do --isolate vars
     end
 
     -- A command to holster your current weapon.
-    cider.command.add("holster", "b", 0, function(ply)
-        local weapon = ply:GetActiveWeapon();
-        
-        -- Check if they can holster another weapon yet.
-        if ( !ply:IsAdmin() and ply._NextHolsterWeapon and ply._NextHolsterWeapon > CurTime() ) then
-            return false, "You cannot holster this weapon for "..math.ceil( ply._NextHolsterWeapon - CurTime() ).." second(s)!";
-        else
-            ply._NextHolsterWeapon = CurTime() + 2;
-        end
-        
-        -- Check if the weapon is a valid entity.
-        if not ( ValidEntity(weapon) and GM.Items[weapon:GetClass()] ) then
-            return false, "This is not a valid weapon!";
-        end
-        local class = weapon:GetClass();
-        if not ( gamemode.Call("PlayerCanHolster", ply, class) ) then
-            return false
-        end
+    GM:RegisterCommand{
+        Command     = "holster";
+        Function    = function(ply)
+            local weapon = ply:GetActiveWeapon();
+            
+            -- Check if they can holster another weapon yet.
+            -- TODO: Again I have excersised democracy and will probs want to remove this at some point
+            if ( ply._NextHolsterWeapon and ply._NextHolsterWeapon > CurTime() ) then
+                return false, "You cannot holster this weapon for "..math.ceil( ply._NextHolsterWeapon - CurTime() ).." second(s)!";
+            else
+                ply._NextHolsterWeapon = CurTime() + 2;
+            end
+            
+            -- Check if the weapon is a valid entity.
+            if not ( ValidEntity(weapon) and GM.Items[weapon:GetClass()] ) then
+                return false, "This is not a valid weapon!";
+            end
+            local class = weapon:GetClass();
+            if not ( gamemode.Call("PlayerCanHolster", ply, class) ) then
+                return false
+            end
 
-        ply._Equipping = ply:GetPos()
-        local delay = GM.Config["Weapon Timers"]["equiptime"][GM.Items[class].WeaponType or -1] or 0
-        if not (delay and delay > 0)then
-            success(ply,_,class);
-            return true
+            ply._Equipping = ply:GetPos()
+            local delay = GM.Config["Weapon Timers"]["equiptime"][GM.Items[class].WeaponType or -1] or 0
+            if not (delay and delay > 0)then
+                success(ply,_,class);
+                return true
+            end
+            umsg.Start("MS Equippr", ply)
+            umsg.Short(delay);
+            umsg.Bool(false);
+            umsg.End();
+            timer.Conditional(ply:UniqueID().." holster", delay, conditional, success, failure, ply, ply:GetPos(), class);
+            ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]:format(ply._GenderWord));
         end
-        umsg.Start("MS Equippr", ply)
-        umsg.Short(delay);
-        umsg.Bool(false);
-        umsg.End();
-        timer.Conditional(ply:UniqueID().." holster", delay, conditional, success, failure, ply, ply:GetPos(), class);
-        ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]:format(ply._GenderWord));
-    end, "Commands", nil, "Holster your current weapon.");
+    };
 end
 
--- A command to drop your current weapon.
-cider.command.add("drop", "b", 0, function()
-    return false, "Use /holster instead.";
-end, "Commands", nil, "Put in for DarkRP players. Do not use.");
+GM:RegisterCommand{
+    Command     = "drop";
+    Help        = "Put in for people used to other gamemodes. Don't use it.";
+    Function    = function()
+        return false, "Use /holster";
+    end
+};
 
 -- A command to perform an action on a door.
 cider.command.add("door", "b", 1, function(ply, action, ...)
