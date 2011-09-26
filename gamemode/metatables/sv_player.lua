@@ -704,7 +704,7 @@ function meta:LoadData()
 	}
 	tmysql.query("SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = " .. self:UniqueID(), function(r, s, e)
 		if (e ~= 0) then
-			GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", name, tostring(err));
+			GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", name, tostring(e));
 		elseif (not IsValid(ply)) then
 			return
 		elseif (type(r) == "table" and #r > 0) then -- If we've got a result, then call the loadfunc
