@@ -56,9 +56,8 @@ function GM:RegisterCommand(tab)
     -- Catch various shit not defined
     if (not tab.Command) then
         error("Command not defined!", 2);
-    elseif (not tab.Function) then
-        error("Function not defined!", 2);
     end
+    tab.Function = tab.Function or tab[1] or error("Function not defined!", 2);
     if (not tab.Access) then
         tab.Access = self.Config["Base Access"];
     end
