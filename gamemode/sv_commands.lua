@@ -1499,147 +1499,221 @@ cider.command.add("action","b",1,function(ply,arguments)
     cider.chatBox.addInRadius(ply, "action", text, ply:GetPos(), GM.Config["Talk Radius"]);
 end, "Commands", "<text>", "Add an environmental emote")
 
-cider.command.add("globalaction","m",1,function(ply,arguments)
-    local text = table.concat(arguments, " ");
-    
-    -- Check if the there is enough text.
-    if (text == "") then
-        return false,"You did not specify enough text!"
+GM:RegisterCommand{
+    Command     = "action";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Emit a localised environmental emote";
+    Function    = function(ply, text)
+        cider.chatBox.addInRadius(ply, "action", text, ply:GetPos(), GM.Config["Talk Radius"]);
     end
-    cider.chatBox.add(nil,ply, "action", text);
-end, "Moderator Commands", "<text>","Add a global environmental emote")
+};
 
-cider.command.add("ooc","b",1,function(ply,arguments)
-    local text = table.concat(arguments," ")
-    if not text or text == "" then return false,"wat" end
-    if ( hook.Call("PlayerCanSayOOC",GAMEMODE, ply, text) ) then
-        cider.chatBox.add(nil,ply, "ooc",text);
+GM:RegisterCommand{
+    Command     = "globalaction";
+    Access      = "m";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Emit a global environmental emote";
+    Function    = function(ply, text)
+        cider.chatBox.add(nil,ply, "action", text);
+    end
+};
+GM:RegisterCommand{
+    Command     = "globalaction";
+    Access      = "m";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Emit a global environmental emote";
+    Function    = function(ply, text)
+        cider.chatBox.add(nil,ply, "action", text);
+    end
+};
+
+GM:RegisterCommand{
+    Command     = "ooc";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Say something out of character to everyone on the server. Shortcut: //<text>";
+    Function    = function(ply, text)
+        if (not gamemode.Call("PlayerCanSayOOC", ply, text)) then
+            return false;
+        end
+        cider.chatBox.addInRadius(ply, "ooc", text , ply:GetPos(), GM.Config["Talk Radius"]);
         --GM:Log(EVENT_TALKING,"(OOC) %s: %s",player:Name(),text)
-    else
-        return false
     end
-end, "Commands", "<text>", "Say something out of character to everyone. (shortcut: //<text>)")
+};
 
-cider.command.add("looc","b",1,function(ply,arguments)
-    local text = table.concat(arguments," ")
-    if not text or text == "" then return false,"wat" end
-    if ( hook.Call("PlayerCanSayLOOC",GAMEMODE, ply, text) ) then
-        cider.chatBox.addInRadius(ply, "looc",text , ply:GetPos(), GM.Config["Talk Radius"]);
+GM:RegisterCommnad{
+    Command     = "looc";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Say something out of character to the people around you. Shortcut: .//<text>";
+    Function    = function(ply, text)
+        if (not gamemode.Call("PlayerCanSayLOOC", ply, text)) then
+            return false;
+        end
+        cider.chatBox.addInRadius(ply, "looc", text, ply:GetPos(), GM.Config["Talk Radius"]);
         --GM:Log(EVENT_TALKING,"(Local OOC) %s: %s",player:Name(),text)
-    else
-        return false
     end
-end, "Commands", "<text>", "Say something out of character to the people around you. (shortcut: .//<text>)")
-
+};
 
 -- Set an ent's master
-cider.command.add("setmaster","s",1,function(ply, masterID)
-    local entity = ply:GetEyeTraceNoCursor().Entity
-    local master = Entity(masterID)
-    if not (ValidEntity(entity) and entity:IsOwnable()) then
-        return false,"That is not a valid entity!"
-    elseif not ((ValidEntity(master) and master:IsOwnable()) or masterID == 0) then
-        return false,"That is not a valid entity ID!"
+GM:RegisterCommand{
+    Command     = "setmaster";
+    Access      = "s";
+    Arguments   = "<EntityID|0>";
+    Types       = "number";
+    Help        = "Set/Unset the ownership 'master' of an entity.";
+    Function    = function(ply, masterID)
+        local entity = ply:GetEyeTraceNoCursor().Entity
+        local master = Entity(masterID)
+        if not (ValidEntity(entity) and entity:IsOwnable()) then
+            return false,"That is not a valid entity!"
+        elseif not ((ValidEntity(master) and master:IsOwnable()) or masterID == 0) then
+            return false,"That is not a valid entity ID!"
+        end
+        if masterID == 0 then
+            master = NULL
+            GM:Log(EVENT_ENTITY, "%s unset a %s's master",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
+        else
+            GM:Log(EVENT_ENTITY, "%s set a %s's master",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
+        end
+        entity:SetMaster(master)
+        hook.Call("EntityMasterSet",GAMEMODE,entity,master)
     end
-    if masterID == 0 then
-        master = NULL
-        GM:Log(EVENT_ENTITY, "%s unset a %s's master",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
-    else
-        GM:Log(EVENT_ENTITY, "%s set a %s's master",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
-    end
-    entity:SetMaster(master)
-    hook.Call("EntityMasterSet",GAMEMODE,entity,master)
-end, "Super Admin Commands", "<ID of master|0>", "Set/Unset an ent's master",true)
+};
+
 -- Seal a door
-cider.command.add("seal","s",0,function(ply,unseal)
-    local entity = ply:GetEyeTraceNoCursor().Entity
-    if not (ValidEntity(entity) and entity:IsOwnable()) then
-        return false,"That is not a valid entity!"
-    end
-    if unseal then
-        entity._Sealed = false
-        
-        if (entity:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then
-            entity:SetDTInt(3, entity:GetDTInt(3) -  OBJ_SEALED);
+GM:RegisterCommand{
+    Command     = "seal";
+    Access      = "s";
+    Arguments   = "[Unseal]";
+    Types       = "boolean";
+    Help        = "Seal or unseal a door.";
+    Function    = function(ply, unseal)
+        local entity = ply:GetEyeTraceNoCursor().Entity
+        if not (ValidEntity(entity) and entity:IsOwnable()) then
+            return false,"That is not a valid entity!"
         end
-        hook.Call("EntitySealed",GAMEMODE,entity,true)
-        GM:Log(EVENT_ENTITY, "%s unsealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
-    else
-        entity._Sealed = true
-        if (entity:GetDTInt(3) & OBJ_SEALED ~= OBJ_SEALED) then
-            entity:SetDTInt(3, entity:GetDTInt(3) +  OBJ_SEALED);
+        if unseal then
+            entity._Sealed = false
+            if (entity:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then
+                entity:SetDTInt(3, entity:GetDTInt(3) -  OBJ_SEALED);
+            end
+            hook.Call("EntitySealed",GAMEMODE,entity,true)
+            GM:Log(EVENT_ENTITY, "%s unsealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
+        else
+            entity._Sealed = true
+            if (entity:GetDTInt(3) & OBJ_SEALED ~= OBJ_SEALED) then
+                entity:SetDTInt(3, entity:GetDTInt(3) +  OBJ_SEALED);
+            end
+            hook.Call("EntitySealed",GAMEMODE,entity)
+            GM:Log(EVENT_ENTITY, "%s sealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
         end
-        hook.Call("EntitySealed",GAMEMODE,entity)
-        GM:Log(EVENT_ENTITY, "%s sealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
     end
-end, "Super Admin Commands", "[unseal]", "Seal/Unseal an entity so it cannot be used",true)
+};
 
-cider.command.add("setname","s",1,function(ply,arguments)
-    local entity = ply:GetEyeTraceNoCursor().Entity
-    if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
-        return false,"That is not a valid door!"
+GM:RegisterCommand{
+    Command     = "setname";
+    Access      = "s";
+    Arguments   = "<Name|'Clear'>";
+    Types       = "...";
+    Help        = "Set the displayed name for a door. 'Clear' with 's to set it to nothing.";
+    Function    = function(ply. words)
+        local entity = ply:GetEyeTraceNoCursor().Entity
+        if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
+            return false,"That is not a valid door!"
+        end
+        if (string.lower(words) == "'clear'") then
+            words = "";
+        end
+        entity:SetNWString("Name",words)
+        GM:Log(EVENT_ENTITY, "%s changed a door's name to %q.",ply:Name(),words)
+        hook.Call("EntityNameSet",GAMEMODE,entity,words)
     end
-    local words = table.concat(arguments," "):Trim():sub(1,25)
-    if not words or words == "" then
-        words = ""
-    end
-    entity:SetNWString("Name",words)
-    GM:Log(EVENT_ENTITY, "%s changed a door's name to %q.",ply:Name(),words)
-    hook.Call("EntityNameSet",GAMEMODE,entity,words)
-end, "Super Admin Commands", "<name>", "Set the name of a door")
+};
 
-cider.command.add("setowner","s",1,function(ply, kind, id)
-    local ent = ply:GetEyeTraceNoCursor().Entity
-    if (not (IsValid(ent) and ent:IsOwnable())) then
-        return false, "You cannot set the owner of this!";
-    end
-    kind = string.lower(kind);
-    -- Slavery
-    ent = ent:GetMaster() or ent;
-    if (kind == "none") then
+GM:RegisterCommand{
+    Command     = "clearowner";
+    Access      = "s";
+    Help        = "Remove the owner of an entity.";
+    Function    = function(ply)
+        local ent = ply:GetEyeTraceNoCursor().Entity
+        if (not (IsValid(ent) and ent:IsOwnable())) then
+            return false, "You cannot set the owner of this!";
+        end
+        -- Slavery
+        ent = ent:GetMaster() or ent;
         ent:ClearOwnershipData();
         GM:Log(EVENT_ENTITY, "%s wiped the ownership data on %s",
             ply:Name(), ent:GetNWString("Name", "an entity"));
         gamemode.Call("EntityOwnerSet", ent, nil)
-        return;
     end
-    -- Motherfucking miricles
-    local kind_ = string.upper(string.sub(kind, 1, 1)) .. string.sub(kind, 2);
-    local func = GM["Get" .. kind_];
-    if (not func) then
-        return false, "Unknown kind '" .. kind .. "'!";
-    end
-    local target = func(GM, id);
-    if (not target) then
-        return false, "Unknown " .. kind .. " '" .. id .. "'";
-    end
-    ent["GiveTo" .. kind_](ent, target);
-    local name = target.IsPlayer and target:Name() or target.Name;
-    gamemode.Call("EntityOwnerSet", ent, target)
-    GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.", 
-        ply:Name(), ent:GetNWString("Name", "an entity"), name);
-end, "Super Admin Commands", "<player|team|group|gang|none> [identifier]", "Set the owner of a door", true);
+};
 
-cider.command.add("a","a",1,function(ply,arguments)
-    local text = table.concat(arguments," ")
-    if not text or text == "" then return false,"wat" end
-    local rp = RecipientFilter()
-    for _,ply in pairs(player.GetAll()) do
-        if (ply:IsAdmin()) then
-            rp:AddPlayer(ply)
-        end
-    end
-    cider.chatBox.add(rp, ply, "achat", text);
-end, "Admin Commands", "<text>", "Say something only to the other admins")
 
-cider.command.add("m","m",1,function(ply,arguments)
-    local text = table.concat(arguments," ")
-    if not text or text == "" then return false,"wat" end
-    local rp = RecipientFilter()
-    for _,ply in pairs(player.GetAll()) do
-        if (ply:IsModerator()) then
-            rp:AddPlayer(ply)
+GM:RegisterCommand{
+    Command     = "setowner";
+    Access      = "s";
+    Arguments   = "<player|team|group|gang> <identifier>";
+    Types       = "Phrase String";
+    Help        = "Set the owner of an entity.";
+    Function    = function(ply, kind, id)
+        local ent = ply:GetEyeTraceNoCursor().Entity
+        if (not (IsValid(ent) and ent:IsOwnable())) then
+            return false, "You cannot set the owner of this!";
         end
+        -- Slavery
+        ent = ent:GetMaster() or ent;
+        -- Motherfucking miricles
+        local kind_ = string.upper(string.sub(kind, 1, 1)) .. string.sub(kind, 2);
+        local func = GM["Get" .. kind_];
+        if (not func) then
+            return false, "Unknown kind '" .. kind .. "'!";
+        end
+        local target = func(GM, id);
+        if (not target) then
+            return false, "Unknown " .. kind .. " '" .. id .. "'";
+        end
+        ent["GiveTo" .. kind_](ent, target);
+        local name = target.IsPlayer and target:Name() or target.Name;
+        gamemode.Call("EntityOwnerSet", ent, target)
+        GM:Log(EVENT_ENTITY, "%s gave ownership of %s to %s.", 
+            ply:Name(), ent:GetNWString("Name", "an entity"), name);
     end
-    cider.chatBox.add(rp, ply, "mchat", text);
-end, "Moderator Commands", "<text>", "Say something only to the other admins and moderators")
+};
+
+GM:RegisterCommand{
+    Command   = "a";
+    Access    = "a";
+    Arguments = "<Message>";
+    Types     = "...";
+    Help      = "Say send a message to all the other admins on the server";
+    Function  = function(ply, text)
+        local rp = RecipientFilter()
+        for _,ply in pairs(player.GetAll()) do
+            if (ply:IsAdmin()) then
+                rp:AddPlayer(ply)
+            end
+        end
+        cider.chatBox.add(rp, ply, "achat", text);
+    end
+};
+
+GM:RegisterCommand{
+    Command     = "m";
+    Access      = "m";
+    Arguments = "<Message>";
+    Types     = "...";
+    Help      = "Say send a message to all the other staff on the server";
+    Function  = function(ply, text)
+        local rp = RecipientFilter()
+        for _,ply in pairs(player.GetAll()) do
+            if (ply:IsModerator()) then
+                rp:AddPlayer(ply)
+            end
+        end
+        cider.chatBox.add(rp, ply, "mchat", text);
+    end
+};
