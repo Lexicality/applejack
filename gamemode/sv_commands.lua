@@ -6,7 +6,7 @@
 GM:RegisterCommand{
     Command = "fuck";
     Help = "Free gratuitous swearing";
-    Function = function(ply)
+    function(ply)
         ply:Notify("FUCK!", NOTIFY_ERROR);
     end
 }
@@ -25,7 +25,7 @@ GM:RegisterCommand{
     Types       = "Player Number";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Knock someone out. (Defaults to 5 seconds)";
-    Function    = function(ply, victim, time)
+    function(ply, victim, time)
         victim:KnockOut(time or 5);
         GM:Log(EVENT_EVENT, "%s knocked out %s", ply:Name(), victim:Name());
     end
@@ -39,7 +39,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Wake someone up";
-    Function    = function(ply, victim)
+    function(ply, victim)
         victim:WakeUp();
         GM:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
     end
@@ -60,7 +60,7 @@ GM:RegisterCommand{
     Types       = "Number";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Knock everyoneone out. (Defaults to 5 seconds)";
-    Function    = function(ply, time)
+    function(ply, time)
         local tbl = player.GetAll();
         player.NotifyAll(NOTIFY_GENERIC, "%s knocked everyone out .", ply:Name());
         timer.Create(ply:Name() .. " admin abuse knockout", 0.1, #tbl, knockoutfunct, tbl, time or 5);
@@ -79,7 +79,7 @@ GM:RegisterCommand{
     Access      = "s";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Wake everyone up";
-    Function    = function(ply)
+    function(ply)
         local tbl = player.GetAll();
         player.NotifyAll(NOTIFY_GENERIC, "%s woke everyone up.", ply:Name());
         timer.Create(ply:Name() .. " admin abuse unknockout", 0.1, #tbl, unknockoutfunct, tbl);
@@ -94,7 +94,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Tie someone up";
-    Function    = function(ply, victim)
+    function(ply, victim)
         victim:TieUp();
         GM:Log(EVENT_EVENT, "%s tied up %s", ply:Name(), victim:Name());
     end
@@ -107,7 +107,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Untie someone";
-    Function    = function(ply, victim)
+    function(ply, victim)
         victim:UnTie();
         GM:Log(EVENT_EVENT, "%s untied %s", ply:Name(), victim:Name());
     end
@@ -123,7 +123,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Instantly repsawn someone.";
-    Function    = function(ply, victim)
+    function(ply, victim)
         victim:Spawn();
         GM:Log(EVENT_EVENT, "%s respawned %s", ply:Name(), victim:Name());
     end
@@ -137,7 +137,7 @@ GM:RegisterCommand{
     Types       = "Player Number";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Arrest someone. Optionally define how long they're arrested for.";
-    Function    = function(ply, victim, time)
+    function(ply, victim, time)
         victim:Arrest(time);
         GM:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
     end
@@ -151,7 +151,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Unarrest someone.";
-    Function    = function(ply, victim)
+    function(ply, victim)
         victim:UnArrest();
         GM:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
     end
@@ -165,7 +165,7 @@ GM:RegisterCommand{
     Types       = "Player Phrase Number";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Instantly give a player a warrant, ignoring game mechanics. Optionally give it a length.";
-    Function    = function(ply, victim, kind, time)
+    function(ply, victim, kind, time)
         GM:Log(EVENT_EVENT,"%s gave %s a %s warrant for %s seconds", ply:Name(), victim:Name(), kind, time or "default");
         victim:Warrant(kind, time);
     end
@@ -179,7 +179,7 @@ GM:RegisterCommand{
     Types       = "Player String";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Give someone a weapon by classname, ie cider_baton";
-    Function    = function(ply, victim, kind)
+    function(ply, victim, kind)
         if (not IsValid(victim:Give(kind))) then
             return false, "Invalid weapon '"..kind.."'!";
         end
@@ -195,7 +195,7 @@ GM:RegisterCommand{
     Types       = "Player String Number";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Give someone ammo by classname, ie smg1_grenade";
-    Function    = function(ply, victim, kind, amount)
+    function(ply, victim, kind, amount)
         amount = amount or 20
         victim:GiveAmmo(amount, kind);
         GM:Log(EVENT_EVENT, "%s gave %s %s %s ammo", ply:Name(), victim:Name(), amount, kind);
@@ -210,7 +210,7 @@ GM:RegisterCommand{
     Types       = "Player String Number Bool";
     Category    = "SuperAdmin Abuse Commands";
     Help        = "Give someone an item. Use negative numbers to remove items.";
-    Function    = function(ply, victim, name, amount, force)
+    function(ply, victim, name, amount, force)
         amount = amount or 1;
         force  = force or false;
         local item = GM:GetItem(name);
@@ -259,7 +259,7 @@ GM:RegisterCommand{
     Types       = "Player String";
     Category    = "Admin Abuse Commands";
     Help        = "Set someone to a particular team, ignoring all restirctions.";
-    Function    = function(ply, victim, target)
+    function(ply, victim, target)
         local tdata = team.Get(target);
         if (not tdata) then
             return false, "Invalid team '"..targetteam.."'!";
@@ -277,7 +277,7 @@ GM:RegisterCommand{
     Types       = "Player";
     Category    = "Admin Abuse Commands";
     Help        = "Toggle the invisibility status of someone";
-    Function    = function(ply, victim)
+    function(ply, victim)
         if (not victim) then
             victim = ply;
         end
@@ -306,7 +306,7 @@ GM:RegisterCommand{
     Types       = "Player String";
     Category    = "Admin Abuse Commands";
     Help        = "Temporarily change someone's playermodel.";
-    Function    = function(ply, victim, model)
+    function(ply, victim, model)
         if (not util.IsValidModel(model)) then
             return false, "Invalid model!";
         end
@@ -322,7 +322,7 @@ GM:RegisterCommand{
     Types       = "Player Phrase ...";
     Category    = "Admin Abuse Commands";
     Help        = "Send someone a notification via the in-game system";
-    Function    = function(ply, victim, level, words)
+    function(ply, victim, level, words)
         if (level == "drip") then
             level = 0;
         elseif (level == "error") then
@@ -346,7 +346,7 @@ GM:RegisterCommand{
     Types       = "Phrase ...";
     Category    = "Admin Abuse Commands";
     Help        = "Send everyone a notification via the in-game system";
-    Function    = function(ply, victim, level, words)
+    function(ply, victim, level, words)
         if (level == "drip") then
             level = 0;
         elseif (level == "error") then
@@ -373,7 +373,7 @@ GM:RegisterCommand{
     Arguments   = "<target> <flags>";
     Types       = "Player String";
     Help        = "Give someone extra access flags";
-    Function    = function(ply, victim, flags)
+    function(ply, victim, flags)
         flags:gsub("[asm%s]", "");
         if (flags == "") then
             return false;
@@ -390,7 +390,7 @@ GM:RegisterCommand{
     Arguments   = "<target> <flags>";
     Types       = "Player String";
     Help        = "Remove someone's extra access flags";
-    Function    = function(ply, victim, flags)
+    function(ply, victim, flags)
         flags:gsub("[asm%s]", "");
         if (flags == "") then
             return false;
@@ -404,7 +404,7 @@ GM:RegisterCommand{
     Comand      = "restartmap";
     Access      = "a";
     Help        = "Instantly do a soft restart of the server";
-    Function    = function(ply)
+    function(ply)
         for _, pl in pairs(player.GetAll()) do
             pl:HolsterAll();
             pl:SaveData();
@@ -462,7 +462,7 @@ GM:RegisterCommand{
     Arguments   = "<victim> <team|item|cat|cmd> <thing> <time> <reason>";
     Types       = "Player Phrase String Number ...";
     Help        = "Blacklist a player from doing something.";
-    Function    = function(ply, victim, kind, thing, time, reason)
+    function(ply, victim, kind, thing, time, reason)
         if (victim:IsModerator()) then
             if (ply:IsSuperAdmin()) then
                 -- Do nothing, just dealing with ranks.
@@ -483,7 +483,7 @@ GM:RegisterCommand{
         if (time < 1) then
             return false, "You cannot blacklist for less than a minute!";
         elseif ((time > 10080 and not ply:IsSuperAdmin()) or (time > 1440 and not ply:IsAdmin())) then
-            return false, "You cannot blacklist for that long!";
+            return false, "You cannot blacklist for that long!"
         end
         reason = string.sub(reason, 1, 65)
         reason = string.Trim(reason);
@@ -514,7 +514,7 @@ GM:RegisterCommand{
     Arguments   = "<target> <team|item|cat|cmd> <thing>";
     Types       = "Player Phrase String";
     Help        = "Unblacklist a player so they can do something.";
-    Function    = function(ply, victim, kind, thing)
+    function(ply, victim, kind, thing)
         -- Get the name of what we're doing and the thing itself.
         local name, thing = getnamething(kind, thing);
         if (not name) then
@@ -538,7 +538,7 @@ GM:RegisterCommand{
     Arguments   = "<target>";
     Types       = "Player";
     Help        = "Find out what a player's blacklisted from (in your console)";
-    Function    = function(ply, victim)
+    function(ply, victim)
         local blacklist = victim.cider._Blacklist;
         if (table.Count(blacklist) == 0) then
             return false, victim:Name() .. " isn't blacklisted from anything!";
@@ -592,7 +592,7 @@ GM:RegisterCommand{
     Arguments   = "<victim> <reason>";
     Types       = "Player ...";
     Help        = "Demote a player from their current job";
-    Function    = function(ply, victim, reason)
+    function(ply, victim, reason)
         reason = string.sub(reason, 1, 65)
         reason = string.Trim(reason);
         if (reason:len() < 5 and not ply:IsSuperAdmin()) then
@@ -613,7 +613,7 @@ GM:RegisterCommand{
     Command     = "save";
     Access      = "a";
     Help        = "Force an instant save of everyone's profiles.";
-    Function    = function(ply)
+    function(ply)
         player.SaveAll(true);
         GM:Log(EVENT_PUBLICEVENT,"%s saved everyone's profiles.", ply:Name())
     end
@@ -625,7 +625,7 @@ GM:RegisterCommand{
     Arguments   = "<target> <message>";
     Types       = "Player ...";
     Help        = "Send someone a private OOC message";
-    Function    = function(ply, victim, words)
+    function(ply, victim, words)
         if (victim == ply) then
             return false, "You can't PM yourself.";
         end
@@ -647,7 +647,7 @@ GM:RegisterCommand{
     Arguments   = "<amount>";
     Types       = "Number";
     Help        = "Give money to the person in front of you";
-    Function    = function(ply, amt)
+    function(ply, amt)
         local tr = ply:GetEyeTrace();
         local victim = tr.Entity;
         if (not (IsValid(victim) and victim:IsPlayer() and tr.StartPos:Distance(tr.HitPos) < 128)) then
@@ -675,7 +675,7 @@ GM:RegisterCommand{
     Arguments   = "<amount>";
     Types       = "Number";
     Help        = "Drop money in front of you";
-    Function    = function(ply, amt)
+    function(ply, amt)
         -- Prevent fucktards spamming the dropmoney command.
         ply._NextMoneyDrop = ply._NextMoneyDrop or 0;
         if ((ply._NextMoneyDrop or 0) > CurTime()) then
@@ -709,7 +709,7 @@ GM:RegisterCommand{
     Arguments   = "<message>";
     Types       = "...";
     Help        = "Write a note (on melty paper)";
-    Function    = function(ply, words)
+    function(ply, words)
         if (ply:GetCount("notes") == GM.Config["Maximum Notes"]) then
             return false, "You've hit the notes limit!";
         end
@@ -752,7 +752,7 @@ GM:RegisterCommand{
     Arguments   = "[title]";
     Types       = "...";
     Help        = "Change your job title, or reset it to normal";
-    Function    = function(ply, words)
+    function(ply, words)
         words = words or "";
         words = string.sub (words, 1, 50)
         words = string.Trim(words);
@@ -772,7 +772,7 @@ GM:RegisterCommand{
     Arguments   = "[name]";
     Types       = "...";
     Help        = "Set the name of the clan you are in, or 'none' to set it to nothing";
-    Function    = function(ply, words)
+    function(ply, words)
         words = words or "";
         words = string.sub (words, 1, 50)
         words = string.Trim(words);
@@ -796,7 +796,7 @@ GM:RegisterCommand{
     Arguments   = "<male|female>";
     Types       = "Phrase";
     Help        = "Set your gender";
-    Function    = function(ply, gender)
+    function(ply, gender)
         if (string.lower(ply._Gender) == gender) then
             return false, "You are already " .. gender .. "!";
         elseif (gender == "male") then
@@ -817,7 +817,7 @@ GM:RegisterCommand{
     Arguments   = "<words>";
     Types       = "...";
     Help        = "Yell words twice as loud as normal speaking";
-    Function    = function(ply, words)
+    function(ply, words)
         -- Print a message to other players within a radius of the player's position.
         cider.chatBox.addInRadius(ply, "yell", words, ply:GetPos(), GM.Config["Talk Radius"] * 2);
     end
@@ -829,7 +829,7 @@ GM:RegisterCommand{
     Arguments   = "<words>";
     Types       = "...";
     Help        = "Whisper words half as loud as normal speaking";
-    Function    = function(ply, words)
+    function(ply, words)
         -- Print a message to other players within a radius of the player's position.
         cider.chatBox.addInRadius(ply, "whisper", words, ply:GetPos(), GM.Config["Talk Radius"] / 2);
     end
@@ -841,7 +841,7 @@ GM:RegisterCommand{
     Arguments   = "<words>";
     Types       = "...";
     Help        = "Describe an action in character, such as /me cries a river.";
-    Function    = function(ply, words)
+    function(ply, words)
         ply:Emote(words);
     end
 };
@@ -852,7 +852,7 @@ GM:RegisterCommand{
     Arguments   = "<words>";
     Types       = "...";
     Help        = "Send an advert to all players. (Costs $"..GM.Config["Advert Cost"]..")";
-    Function    = function(ply, words)
+    function(ply, words)
         if (ply._NextAdvert > CurTime()) then
             local timeleft = math.ceil(ply._NextAdvert - CurTime());
             if (timeleft > 60) then
@@ -882,7 +882,7 @@ GM:RegisterCommand{
     Arguments   = "<identifier>";
     Types       = "string";
     Help        = "Change your team";
-    Function    = function(ply, identifier)
+    function(ply, identifier)
         local teamdata = team.Get(identifier);
         if (not teamdata) then
             return false, "Invalid team!";
@@ -906,7 +906,7 @@ GM:RegisterCommand{
     Arguments   = "<id> <action> [amount]";
     Types       = "String String Number";
     Hidden      = true;
-    Function    = function(ply, id, action, amount)
+    function(ply, id, action, amount)
         id = string.lower(id);
         action = string.lower(action);
         local item = GM.Items[id];
@@ -1026,7 +1026,7 @@ GM:RegisterCommand{
     Arguments   = "<Item> <Put|Take> <amount>";
     Types       = "String Phrase Number";
     Hidden      = true;
-    Function    = function(ply, ...)
+    function(ply, ...)
         -- I use a handler because returning a value is so much neater than a pyramid of ifs.
         local res,msg = containerHandler(ply, ...)
         if res then
@@ -1084,7 +1084,7 @@ do --isolate vars
     -- A command to holster your current weapon.
     GM:RegisterCommand{
         Command     = "holster";
-        Function    = function(ply)
+        function(ply)
             local weapon = ply:GetActiveWeapon();
             
             -- Check if they can holster another weapon yet.
@@ -1123,7 +1123,7 @@ end
 GM:RegisterCommand{
     Command     = "drop";
     Help        = "Put in for people used to other gamemodes. Don't use it.";
-    Function    = function()
+    function()
         return false, "Use /holster";
     end
 };
@@ -1489,47 +1489,33 @@ cider.command.add("donator", "s", 1, function(ply, arguments)
         player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
 end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
 
--- A command to change your clan.
-cider.command.add("details", "b", 0, function(ply, arguments)
-    local text = table.concat(arguments, " ")
-    --[[ Check the length of the arguments.
-    if ( string.len(text) > 64 ) then
-        return false,"Your details can be a maximum of 64 characters!"
-    end--]]
-    text = text:sub(1,64):Trim()
-    if (text == "" or string.lower(text) == "none") then
-        ply._Details = "";
-        
-        -- Print a message to the player.
-        ply:Notify("You have set your details to nothing.");
-        GM:Log(EVENT_EVENT, "%s changed "..ply._GenderWord.." details to %q.",ply:Name(),"nothing")
-    else
-        ply._Details = text;
-        
-        -- Print a message to the player.
-        ply:Notify("You have changed your details to '"..text.."'.");
-        GM:Log(EVENT_EVENT, "%s changed "..ply._GenderWord.." details to %q.",ply:Name(),text)
+-- A command to change your details
+GM:RegisterCommand{
+    Command     = "details";
+    Arguments   = "<text|none>";
+    Types       = "...";
+    Help        = "Set your visible details. Use the word none to blank them out.";
+    function(ply, text)
+        text = text:sub(1,64):Trim()
+        if (string.lower(text) == "none") then
+            ply._Details = "";
+            ply:Notify("You have removed your details.");
+            GM:Log(EVENT_EVENT, "%s changed "..ply._GenderWord.." details to %q.", ply:Name(), "nothing")
+        else
+            ply._Details = text;
+            ply:Notify("You have changed your details to '" .. text .. "'.");
+            GM:Log(EVENT_EVENT, "%s changed "..ply._GenderWord.." details to %q.", ply:Name(), text)
+        end
+        ply:SetNWString("Details", ply._Details);
     end
-    ply:SetNWString("Details", ply._Details);
-end, "Commands", "<text|none>", "Change your details or make them blank.");
-
-
-cider.command.add("action","b",1,function(ply,arguments)
-    local text = table.concat(arguments, " ");
-    
-    -- Check if the there is enough text.
-    if (text == "") then
-        return false,"You did not specify enough text!"
-    end
-    cider.chatBox.addInRadius(ply, "action", text, ply:GetPos(), GM.Config["Talk Radius"]);
-end, "Commands", "<text>", "Add an environmental emote")
+};
 
 GM:RegisterCommand{
     Command     = "action";
     Arguments   = "<Message>";
     Types       = "...";
     Help        = "Emit a localised environmental emote";
-    Function    = function(ply, text)
+    function(ply, text)
         cider.chatBox.addInRadius(ply, "action", text, ply:GetPos(), GM.Config["Talk Radius"]);
     end
 };
@@ -1540,7 +1526,7 @@ GM:RegisterCommand{
     Arguments   = "<Message>";
     Types       = "...";
     Help        = "Emit a global environmental emote";
-    Function    = function(ply, text)
+    function(ply, text)
         cider.chatBox.add(nil,ply, "action", text);
     end
 };
@@ -1550,7 +1536,7 @@ GM:RegisterCommand{
     Arguments   = "<Message>";
     Types       = "...";
     Help        = "Emit a global environmental emote";
-    Function    = function(ply, text)
+    function(ply, text)
         cider.chatBox.add(nil,ply, "action", text);
     end
 };
@@ -1560,7 +1546,7 @@ GM:RegisterCommand{
     Arguments   = "<Message>";
     Types       = "...";
     Help        = "Say something out of character to everyone on the server. Shortcut: //<text>";
-    Function    = function(ply, text)
+    function(ply, text)
         if (not gamemode.Call("PlayerCanSayOOC", ply, text)) then
             return false;
         end
@@ -1574,7 +1560,7 @@ GM:RegisterCommnad{
     Arguments   = "<Message>";
     Types       = "...";
     Help        = "Say something out of character to the people around you. Shortcut: .//<text>";
-    Function    = function(ply, text)
+    function(ply, text)
         if (not gamemode.Call("PlayerCanSayLOOC", ply, text)) then
             return false;
         end
@@ -1590,7 +1576,7 @@ GM:RegisterCommand{
     Arguments   = "<EntityID|0>";
     Types       = "number";
     Help        = "Set/Unset the ownership 'master' of an entity.";
-    Function    = function(ply, masterID)
+    function(ply, masterID)
         local entity = ply:GetEyeTraceNoCursor().Entity
         local master = Entity(masterID)
         if not (ValidEntity(entity) and entity:IsOwnable()) then
@@ -1616,7 +1602,7 @@ GM:RegisterCommand{
     Arguments   = "[Unseal]";
     Types       = "boolean";
     Help        = "Seal or unseal a door.";
-    Function    = function(ply, unseal)
+    function(ply, unseal)
         local entity = ply:GetEyeTraceNoCursor().Entity
         if not (ValidEntity(entity) and entity:IsOwnable()) then
             return false,"That is not a valid entity!"
@@ -1645,7 +1631,7 @@ GM:RegisterCommand{
     Arguments   = "<Name|'Clear'>";
     Types       = "...";
     Help        = "Set the displayed name for a door. 'Clear' with 's to set it to nothing.";
-    Function    = function(ply. words)
+    function(ply. words)
         local entity = ply:GetEyeTraceNoCursor().Entity
         if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
             return false,"That is not a valid door!"
@@ -1663,7 +1649,7 @@ GM:RegisterCommand{
     Command     = "clearowner";
     Access      = "s";
     Help        = "Remove the owner of an entity.";
-    Function    = function(ply)
+    function(ply)
         local ent = ply:GetEyeTraceNoCursor().Entity
         if (not (IsValid(ent) and ent:IsOwnable())) then
             return false, "You cannot set the owner of this!";
@@ -1684,7 +1670,7 @@ GM:RegisterCommand{
     Arguments   = "<player|team|group|gang> <identifier>";
     Types       = "Phrase String";
     Help        = "Set the owner of an entity.";
-    Function    = function(ply, kind, id)
+    function(ply, kind, id)
         local ent = ply:GetEyeTraceNoCursor().Entity
         if (not (IsValid(ent) and ent:IsOwnable())) then
             return false, "You cannot set the owner of this!";
@@ -1710,12 +1696,12 @@ GM:RegisterCommand{
 };
 
 GM:RegisterCommand{
-    Command   = "a";
-    Access    = "a";
-    Arguments = "<Message>";
-    Types     = "...";
-    Help      = "Say send a message to all the other admins on the server";
-    Function  = function(ply, text)
+    Command     = "a";
+    Access      = "a";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Say send a message to all the other admins on the server";
+    function(ply, text)
         local rp = RecipientFilter()
         for _,ply in pairs(player.GetAll()) do
             if (ply:IsAdmin()) then
@@ -1729,10 +1715,10 @@ GM:RegisterCommand{
 GM:RegisterCommand{
     Command     = "m";
     Access      = "m";
-    Arguments = "<Message>";
-    Types     = "...";
-    Help      = "Say send a message to all the other staff on the server";
-    Function  = function(ply, text)
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Say send a message to all the other staff on the server";
+    function(ply, text)
         local rp = RecipientFilter()
         for _,ply in pairs(player.GetAll()) do
             if (ply:IsModerator()) then
