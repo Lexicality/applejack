@@ -1129,70 +1129,83 @@ GM:RegisterCommand{
 };
 
 -- A command to perform an action on a door.
-cider.command.add("door", "b", 1, function(ply, action, ...)
-    local tr = ply:GetEyeTraceNoCursor();
-    local ent = tr.Entity
-    action = action:lower();
-    if (not (IsValid(ent) and ent:IsDoor() and ply:GetPos():Distance(tr.HitPos) < 128)) then
-        return false, "You must be looking at a door!";
-    elseif (ent:IsOwned()) then
-        if (action == "purchase") then
-            return false, "Someone else owns this door!";
-        elseif (action == "sell") then
-            if (ent:GetOwner() ~= ply or ent._Unsellable) then
-                return false, "You cannot sell this door!";
+GM:RegisterCommand{
+    Command     = "entity";
+    Arguments   = "<rename|purchase|sell> [name]";
+    Types       = "Phrase ...";
+    Hidden      = true;
+    function(ply, action, name)
+        local tr = ply:GetEyeTraceNoCursor();
+        local ent = tr.Entity
+        -- Let's find out what we're working with
+        if (not (IsValid(ent) and ent:IsOwnable() and tr.StartPos:Distance(tr.HitPos) < 128)) then
+            return false, "You must be looking at something ownable!";
+        end
+        -- Deal with the name
+        if (name) then
+            name = name:sub(1, 24):Trim();
+            local lower = name:lower();
+            if (lower:find("for sale") or lower:find("f2") or lower == "nobody") then
+                name = ply:Name() .. "'s " .. (ent._isDoor and "door" or ent:GetNWString("Name","thingie"));
             end
-            GM:Log(EVENT_EVENT, "%s sold " .. ply._GenderWord .. " door %s.", ply:Name(), ent:GetDoorName());
-            ply:TakeDoor(ent);
-            return true;
+        else
+            name = ply:Name() .. "'s " .. (ent._isDoor and "door" or ent:GetNWString("Name","thingie"));
         end
-        return false, "Invalid action!";
-    elseif (action ~= "purchase") then
-        return false, "Invaild action specified!";
-    elseif (not (gamemode.Call("PlayerCanOwnDoor", ply, ent) and ply:CheckLimit("doors"))) then
-        return false;
+        -- Start the checks!
+        if (ent:IsOwned()) then
+            if (action == "purchase") then
+                return false, "Someone else already owns this!";
+            elseif (ent:GetOwner() ~= ply) then
+                return false, "This isn't yours!";
+            elseif (action == "rename") then
+                -- Make sure they can
+                if (not gamemode.Call("PlayerCanSetEntName", ply, ent)) then
+                    return false, "You cannot set this entity's name";
+                end
+                -- Grab the old one for loggin
+                local oldname = ent:GetDisplayName()
+                -- Doo eet
+                ent:SetDisplayName(name)
+                -- Loggin.
+                GM:Log(EVENT_ENTITY, "%s changed " .. ply._GenderWord .. " %s's name from %q to %q.", ply:Name(), ent._isDoor and "door" or ent:GetNWString("Name","entity"), oldname, name);
+            elseif (action == "sell") then
+                if (ent._Unsellable) then
+                    return false, "You can't sell this!";
+                end
+                -- Horray for verbose logging!
+                if (ent:IsDoor()) then
+                    GM:Log(EVENT_ENTITY, "%s sold " .. ply._GenderWord .. " %s %s.", ply:Name(), "door", ent:GetDoorName());
+                    ply:TakeDoor(ent);
+                else
+                    GM:Log(EVENT_ENTITY, "%s sold " .. ply._GenderWord .. " %s %s.", ply:Name(), ent:GetNWString("Name","entity"), ent:GetDisplayName());
+                    -- TODO: Maybe this should call some kind of hook so plugins that utilise this can do shizzle?
+                    ent:TakeAccessFromPlayer(ply);
+                end
+                return true;
+            end
+            return false, "Invalid action!";
+        elseif (action ~= "purchase") then
+            return false, "You can't do that to this!";
+        elseif (not ent:Isdoor()) then
+            return false, "Shit I aint done this yet sorry!"; -- TODO: Do this yet
+        elseif (not (gamemode.Call("PlayerCanOwnDoor", ply, ent) and ply:CheckLimit("doors"))) then
+            return false;
+        end
+        -- Capitalism, Ho!
+        local cost = GM.Config["Door Cost"];
+        local can, result = ply:CanAfford(cost);
+        if (not can) then
+            return false,"You need another $" .. result .. " to buy that door!";
+        end
+        ply:GiveMoney(-cost);
+        -- Do the work
+        ply:GiveDoor(ent, name);
+        ent:SetPPSpawner(NULL);
+        GM:Log(EVENT_EVENT, "%s bought a door called %q.", ply:Name(), ent:GetDoorName());
     end
-    local cost = GM.Config["Door Cost"];
-    local can, result = ply:CanAfford(cost);
-    if (not can) then
-        return false,"You need another $" .. result .. " to buy that door!";
-    end
-    ply:GiveMoney(-cost);
-    
-    local name = table.concat({...}, " "):sub(1, 24);
-    -- Get the name from the arguments.
-    local lower = name:lower();
-    if (lower:find("for sale") or lower:find("f2") or lower == "nobody") then
-        name = ply:Name();
-    end
-    ply:GiveDoor(ent, name);
-    ent:SetPPSpawner(NULL);
-    GM:Log(EVENT_EVENT, "%s bought a door called %q.",ply:Name(),ent:GetDoorName())
-end, "Menu Handlers", "<purchase|sell>", "Perform an action on the door you're looking at.", 1);
+};
 
-local function enthandle(ply, ent, action, ...)
-    action = action:lower();
-    if (action == "name") then
-        if (not gamemode.Call("PlayerCanSetEntName", ply, ent)) then
-            return false, "You cannot set this entity's name";
-        end
-        local name = table.concat({...}, " "):sub(1, 24):Trim();
-        local lower = name:lower();
-        if (lower:find("for sale") or lower:find("f2") or lower == "nobody") then
-            name = ply:Name();
-        end
-        local oldname = ent:GetDisplayName()
-        ent:SetDisplayName(name)
-        GM:Log(EVENT_ENTITY, "%s changed " .. ply._GenderWord .. " %s's name from %q to %q.", ply:Name(), ent._isDoor and "door" or ent:GetNWString("Name","entity"), oldname, name);
-        return true;
-    elseif (not (action == "give" or action == "take")) then
-        return false, "Invalid Action!";
-    end
-    local kind, id = ...;
-    id = tonumber(id);
-    if (not (kind and id)) then
-        return false, "Malformed access parameters";
-    end
+local function enthandle(ply, ent, action, kind, id)
     kind = kind:lower();
     local target, name;
     if (kind == "player") then
@@ -1237,29 +1250,36 @@ local function enthandle(ply, ent, action, ...)
     end
     GM:Log(EVENT_ENTITY, word, ply:Name(), name, ent._isDoor and "door" or ent:GetNWString("Name","entity"));
 end
+
 -- A command to perform an action on an ent
-cider.command.add("entity", "b", 2, function(ply, action, ...)
-    local tr = ply:GetEyeTraceNoCursor();
-    local ent = tr.Entity
-    action = string.lower(action);
-    if (not (IsValid(ent) and ent:IsOwnable() and ply:GetPos():Distance(tr.HitPos) < 128)) then
-        return false, "You must be looking at an entity!";
-    elseif (ent:GetOwner() ~= ply) then
-        return false, "You do not own this!";
-    end
-    local res, err = enthandle(ply, ent, action, ...);
-    local tab = {
-        title = ent:GetPossessiveName() .. " " .. (ent._isDoor and "door" or ent:GetNWString("Name","entity"));
-        access = ent._Owner.access;
-        owner = ent._Owner.owner;
-        owned = {
-            sellable = (ent._isDoor and not ent._UnSellable) or nil;
-            name = gamemode.Call("PlayerCanSetEntName", ply, ent) and ent:GetDisplayName() or nil;
+GM:RegisterCommand{
+    Command     = "entity"
+    Arguments   = "<Give|Take> <kind> <id>";
+    Types       = "Phrase String Number";
+    Hidden      = true;
+    Help        = "oh fuck I'm a badger";
+    function(ply, ...)
+        local tr = ply:GetEyeTraceNoCursor();
+        local ent = tr.Entity
+        if (not (IsValid(ent) and ent:IsOwnable() and ply:GetPos():Distance(tr.HitPos) < 128)) then
+            return false, "You must be looking at an entity!";
+        elseif (ent:GetOwner() ~= ply) then
+            return false, "You do not own this!";
+        end
+        local res, err = enthandle(ply, ent, ...);
+        local tab = {
+            title = ent:GetPossessiveName() .. " " .. (ent._isDoor and "door" or ent:GetNWString("Name","entity"));
+            access = ent._Owner.access;
+            owner = ent._Owner.owner;
+            owned = {
+                sellable = (ent._isDoor and not ent._UnSellable) or nil;
+                name = gamemode.Call("PlayerCanSetEntName", ply, ent) and ent:GetDisplayName() or nil;
+            };
         };
-    };
-    datastream.StreamToClients(ply, "Access Menu Update", tab);
-    return res, err;
-end, "Menu Handlers", "<give|take> <ID> <type> or <name> <mynamehere>", "Perform an action on the entity you're looking at", 1);
+        datastream.StreamToClients(ply, "Access Menu Update", tab);
+        return res, err;
+    end
+};
 
 -- A command to manufacture an item.
 cider.command.add("manufacture", "b", 1, function(ply, itemid)
