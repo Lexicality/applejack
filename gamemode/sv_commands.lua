@@ -1282,106 +1282,89 @@ GM:RegisterCommand{
 };
 
 -- A command to manufacture an item.
-cider.command.add("manufacture", "b", 1, function(ply, itemid)
-    local item = GM:GetItem(itemid);
-    if (not item) then
-        return false, "No such item '" .. itemid .. "'!";
-    elseif (not gamemode.Call("PlayerCanManufactureCategory", ply, item.Category)) then
-        return false, ply:GetTeam().Name .. "s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
-    elseif (not gamemode.Call("PlayerCanManufactureItem", ply, item)) then
-        return false;
-    elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
-        return false, "You cannot manufacture another item for "..math.ceil( ply._NextManufactureItem - CurTime() ).." second(s)!";     
+GM:RegisterCommand{
+    Command     = "manufacture";
+    Arguments   = "<ItemID>";
+    Types       = "String";
+    Hidden      = true;
+    function(ply, itemid)
+        local item = GM:GetItem(itemid);
+        if (not item) then
+            return false, "No such item '" .. itemid .. "'!";
+        elseif (not gamemode.Call("PlayerCanManufactureCategory", ply, item.Category)) then
+            return false, ply:GetTeam().Name .. "s cannot manufacture "..GM:GetCategory(item.Category).Name.."!";
+        elseif (not gamemode.Call("PlayerCanManufactureItem", ply, item)) then
+            return false;
+        elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
+            return false, "You cannot manufacture another item for "..math.ceil( ply._NextManufactureItem - CurTime() ).." second(s)!";     
+        end
+        local amt = item.Batch;
+        local price = item.Cost * amt;
+        local can, req = ply:CanAfford(price);
+        if (not can) then
+            return false, "You need another $" .. req .. " to afford that!";
+        end
+        ply:GiveMoney(-price);
+        ply.NextManufactureItem = CurTime() + 5 * amt;
+        
+        local tr = ply:GetEyeTraceNoCursor();
+        local ent = item:Make(tr.HitPos + Vector(0,0,16), amt);
+        if (item.onManufacture) then
+            item:onManufacture(ply, ent, amt);
+        end
+        ent:SetPPOwner(NULL);
+        local words = "";
+        if (amt > 1) then
+            words = amt .. " " .. item.Plural;
+        else
+            words = "a " .. item.Name;
+        end
+        ply:Notify("You manufactured " .. words .. ".");
+        GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), text);
     end
-    local amt = item.Batch;
-    local price = item.Cost * amt;
-    local can, req = ply:CanAfford(price);
-    if (not can) then
-        return false, "You need another $" .. req .. " to afford that!";
-    end
-    ply:GiveMoney(-price);
-    ply.NextManufactureItem = CurTime() + 5 * amt;
-    
-    local tr = ply:GetEyeTraceNoCursor();
-    local ent = item:Make(tr.HitPos + Vector(0,0,16), amt);
-    if (item.onManufacture) then
-        item:onManufacture(ply, ent, amt);
-    end
-    ent:SetPPOwner(NULL);
-    local words = "";
-    if (amt > 1) then
-        words = amt .. " " .. item.Plural;
-    else
-        words = "a " .. item.Name;
-    end
-    ply:Notify("You manufactured " .. words .. ".");
-    GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), text);
-end, "Menu Handlers", "<item>", "Manufacture an item (usually a shipment).", true);
+};
 
 -- A command to warrant a player.
-cider.command.add("warrant", "b", 1, function(ply, arguments)
-    local target = player.Get(arguments[1])
-    
-    -- Get the class of the warrant.
-    local class = string.lower(arguments[2] or "");
-    
-    -- Check if a second argument was specified.
-    if (class == "search" or class == "arrest") then
-        if (target) then
-            if ( target:Alive() ) then
-                if (target._Warranted ~= class) then
-                    if (!target.cider._Arrested) then
-                        if (CurTime() > target._CannotBeWarranted) then
-                            if ( hook.Call("PlayerCanWarrant",GAMEMODE, ply, target, class) ) then
-                                hook.Call("PlayerWarrant",GAMEMODE, ply, target, class);
-                                
-                                -- Warrant the player.
-                                target:Warrant(class);
-                            end
-                        else
-                            return false, target:Name().." has only just spawned!";
-                        end
-                    else
-                        return false, target:Name().." is already arrested!";
-                    end
-                else
-                    if (class == "search") then
-                        return false, target:Name().." is already warranted for a search!";
-                    elseif (class == "arrest") then
-                        return false, target:Name().." is already warranted for an arrest!";
-                    end
-                end
-            else
-                return false, target:Name().." is dead and cannot be warranted!";
-            end
-        else
-            return false, arguments[1].." is not a valid player!"
+GM:RegisterCommand{
+    Command     = "warrant";
+    Arguments   = "<Target> <Arrest|Search>";
+    Types       = "Player Phrase";
+    Help        = "Give someone a warrant";
+    function(ply, target, class)
+        if (not target:Alive()) then
+            return false, target:Name() .. " is dead!";
+        elseif (target._CannotBeWarranted > CurTime()) then
+            return false, target:Name() .. " can't be warranted right now!";
+        elseif (target:Arrested()) then
+            return false, target:Name() .. " is currently arrested!";
+        elseif (target._Warranted == class) then
+            return false, target:Name() .. " already has a" .. (class == "arrest" and "n " or " ") .. class .. " warrant!";
+        elseif (class == "search" and target._Warranted == "arrest") then
+            return false, target:Name() .. " already has an arrest warrant!";
+        elseif (not gamemode.Call("PlayerCanWarrant", ply, target, class)) then
+            return false;
         end
-    else
-        return false, "Invalid warrant type. Use 'search' or 'arrest'"
+        gamemode.Call("PlayerWarrant", ply, target, class);
+        target:Warrant(class);
     end
-end, "Commands", "<player> <search|arrest>", "Warrant a player.");
+};
 
 -- A command to unwarrant a player.
-cider.command.add("unwarrant", "b", 1, function(ply, arguments)
-    local target = player.Get(arguments[1])
-    
-    -- Check to see if we got a valid target.
-    if (target) then
-        if (target._Warranted) then
-            if ( hook.Call("PlayerCanUnwarrant",GAMEMODE, ply, target) ) then
-                hook.Call("PlayerUnwarrant",GAMEMODE, ply, target);
-                
-                -- Warrant the player.
-                target:UnWarrant();
-            end
-        else
-            return false, target:Name().." does not have a warrant!"
+GM:RegisterCommand{
+    Command     = "unwarrant";
+    Arguments   = "<Target>";
+    Types       = "Player";
+    Help        = "Revoke someone's warrant.";
+    function(ply, target)
+        if (not target._Warranted) then
+            return false, target:Name() .. " isn't warranted!";
+        elseif (not gamemode.Call("PlayerCanUnwarrant", ply, target)) then
+            return false;
         end
-    else
-        return false, arguments[1].." is not a valid player!"
+        gamemode.Call("PlayerUnwarrant", ply, target);
+        target:UnWarrant();
     end
-end, "Commands", "<player>", "Unwarrant a player.");
+};
 
 do -- Reduce the upvalues poluting the area.
     local function conditional(ply, pos)
@@ -1402,84 +1385,107 @@ do -- Reduce the upvalues poluting the area.
         ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", 0);
     end
     -- A command to sleep or wake up.
-    cider.command.add("sleep", "b", 0, function(ply)
-        if (ply._Sleeping and ply:KnockedOut()) then
-            return ply:WakeUp();
+    GM:RegisterCommand{
+        Command     = "sleep";
+        Help        = "Go to sleep or wake up while asleep.";
+        function(ply)
+            if (ply._Sleeping and ply:KnockedOut()) then
+                return ply:WakeUp();
+            end
+            ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", CurTime() + GM.Config["Sleep Waiting Time"]);
+            timer.Conditional(ply:UniqueID().." sleeping timer", GM.Config["Sleep Waiting Time"], conditional, success, failure, ply, ply:GetPos());
         end
-        ply:SetCSVar(CLASS_LONG, "_GoToSleepTime", CurTime() + GM.Config["Sleep Waiting Time"]);
-        timer.Conditional(ply:UniqueID().." sleeping timer", GM.Config["Sleep Waiting Time"], conditional, success, failure, ply, ply:GetPos());
-    end, "Commands", nil, "Go to sleep or wake up from sleeping.");
+    };
 end
+
 -- A command to send a message to all players on the same team.
-cider.command.add("radio", "b", 1, function(ply, arguments)
-    local text = table.concat(arguments, " ");
-    
-    -- Say a message as a radio broadcast.
-    ply:SayRadio(text);
-end, "Commands", "<text>", "Send a message to all players on your team.");
-
-cider.command.add("trip", "b", 0, function(ply,arguments)
-    if ply:GetVelocity() == Vector(0,0,0) then
-        return false,"You must be moving to trip!"
-    elseif ply:InVehicle() then
-        return false,"There is nothing to trip on in here!";
+GM:RegisterCommand{
+    Command     = "radio";
+    Arguments   = "<Text>";
+    Types       = "...";
+    Help        = "Send a radio message to all players on your team";
+    function(ply, text)
+        ply:SayRadio(text);
     end
-    ply:KnockOut(5)
-    ply._Tripped = true
-    cider.chatBox.addInRadius(ply, "me", "trips and falls heavily to the ground.", ply:GetPos(), GM.Config["Talk Radius"]);
-    GM:Log(EVENT_EVENT,"%s fell over.",ply:GetName())
-end, "Commands", "", [[Fall over while walking. (bind key "say /trip")]]);
+};
 
-cider.command.add("fallover", "b", 0, function(ply,arguments)
-    if not (ply:KnockedOut() or ply:InVehicle()) then
+-- TODO: Merge /trip and /fallover?
+GM:RegisterCommand{
+    Command     = "trip";
+    Help        = "Fall over while walking. (bind key \"say /trip\")";
+    function(ply)
+        if ply:GetVelocity() == Vector(0,0,0) then
+            return false,"You must be moving to trip!"
+        elseif ply:InVehicle() then
+            return false,"There is nothing to trip on in here!";
+        end
         ply:KnockOut(5)
         ply._Tripped = true
-        cider.chatBox.addInRadius(ply, "me", "slumps to the ground.", ply:GetPos(), GM.Config["Talk Radius"]);
+        --cider.chatBox.addInRadius(ply, "me", "trips and falls heavily to the ground.", ply:GetPos(), GM.Config["Talk Radius"]);
+        ply:Emote("trips and falls heavily to the ground.");
         GM:Log(EVENT_EVENT,"%s fell over.",ply:GetName())
     end
-end, "Commands", "", "Fall over.");
+};
+
+GM:RegisterCommand{
+    Command     = "fallover";
+    Help        = "Fall over while not walking. (bind key \"say /fallover\")";
+    function(ply)
+        if not (ply:KnockedOut() or ply:InVehicle()) then
+            ply:KnockOut(5)
+            ply._Tripped = true
+            cider.chatBox.addInRadius(ply, "me", "slumps to the ground.", ply:GetPos(), GM.Config["Talk Radius"]);
+            GM:Log(EVENT_EVENT,"%s fell over.",ply:GetName())
+        end
+    end
+};
+
+
 local function canmutiny(ply, victim)
     local pt, vt = ply:GetTeam(), victim:GetTeam();
     return pt.Group == vt.Group
     and    pt.Gang  == pt.Gang and pt.Gang
     and    vt.GroupLevel == GROUP_GANGBOSS;
 end
-cider.command.add("mutiny","b",1,function(ply, args)
-    local victim = player.Get(args[1]);
-    if (not IsPlayer(victim)) then
-        return false, "No such player '" .. args[1] .. "'!";
-    end
-    if (not canmutiny(ply, victim)) then
-        return false, "You cannot mutiny against this person!";
-    end
-    victim.depositions = victim.depositions or {};
-    if (victim.depositions[ply]) then
-        return false, "Your mutiny vote has alrady been counted!";
-    end
-    victim.depositions[ply] = true;
-    i = 0;
-    for ply in pairs(victim.depositions) do
-        if (not (IsValid(ply) and canmutiny(ply, victim))) then
-            victim.depositions[ply] = nil;
-        else
-            i = i + 1;
+GM:RegisterCommand{
+    Command     = "mutiny";
+    Arguments   = "<Target>"; -- TODO: Why doesn't mutiny know who you're rebelling against?
+    Types       = "Player";
+    Help        = "Attempt to overthrow your leader";
+    function(ply, victim)
+        if (not canmutiny(ply, victim)) then
+            return false, "You cannot mutiny against this person!";
         end
+        victim.depositions = victim.depositions or {};
+        if (victim.depositions[ply]) then
+            return false, "Your mutiny vote has alrady been counted!";
+        end
+        victim.depositions[ply] = true;
+        i = 0;
+        for ply in pairs(victim.depositions) do
+            if (not (IsValid(ply) and canmutiny(ply, victim))) then
+                victim.depositions[ply] = nil;
+            else
+                i = i + 1;
+            end
+        end
+        local gang = ply:GetTeam().Gang
+        local minimum = math.min( math.floor(
+            (#GM:GetGangMembers(gang)) * GM.Config["Mutiny Percentage"]),
+            GM.Config["Minimum to mutiny"]);
+        GM:Log(EVENT_EVENT, "%s voted to mutiny against %s. Votes: %i / %i", ply:Name(), victim:Name(), i, minimum);
+        if (i < minimum) then
+            ply:Notify("Your vote has been counted, but you are not yet in the majority...");
+            return;
+        end
+        player.NotifyAll(NOTIFY_CHAT, "%s was overthrown as leader of the %s!", victim:Name(), gang.Name);
+        victim:Notify("Your gang has overthrown you!", nil, 1);
+        victim:Demote();
     end
-    local gang = ply:GetTeam().Gang
-    local minimum = math.min( math.floor(
-        (#GM:GetGangMembers(gang)) * GM.Config["Mutiny Percentage"]),
-        GM.Config["Minimum to mutiny"]);
-    GM:Log(EVENT_EVENT, "%s voted to mutiny against %s. Votes: %i / %i", ply:Name(), victim:Name(), i, minimum);
-    if (i < minimum) then
-        ply:Notify("Your vote has been counted, but you are not yet in the majority...");
-        return;
-    end
-    player.NotifyAll(NOTIFY_CHAT, "%s was overthrown as leader of the %s!", victim:Name(), gang.Name);
-    victim:Notify("Your gang has overthrown you!", nil, 1);
-    victim:Demote();
-end, "Commands","<player>","Try to start a mutiny against your leader")
+};
 
 -- A command to give Donator status to a player.
+--[[
 cider.command.add("donator", "s", 1, function(ply, arguments)
     local target = player.Get( arguments[1] )
     
@@ -1508,7 +1514,7 @@ cider.command.add("donator", "s", 1, function(ply, arguments)
         -- Print a message to all players about this player getting Donator status.
         player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
 end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
-
+--]]
 -- A command to change your details
 GM:RegisterCommand{
     Command     = "details";
