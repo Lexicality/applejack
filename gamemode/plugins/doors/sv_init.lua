@@ -189,41 +189,59 @@ function PLUGIN:EntityOwnerSet(ent, owner)
 end
 
 local plugin = PLUGIN;
-cider.command.add("unownable", "s", 0, function(ply, action, ...)
-	local door = ply:GetEyeTraceNoCursor().Entity;
-	if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
-		return false, "You must look at a valid door!";
-	end
-	door = door:GetMaster() or door;
-	if (action == "remove") then
-		if (not door._Unownable) then
-			return false, "That door is not currently set as unownable!";
-		end
-		door._Unownable = nil;
-		door:ClearOwnershipData();
-		local data = plugin:GetDoorData(door);
-		if (data.Owner) then -- Is this door pre-owned by a team or gang?
-			door["GiveTo" .. data.Owner.Type](door, data.Owner);
-		end
-		local name = door:GetDoorName()
-		ply:Notify("'"..name.."' is no longer unownable.");
-		GM:Log(EVENT_EVENT,"%s de unownable'd %q",ply:Name(),name)
-	else
-		local name = (action or "").." "..table.concat({...}, " ");
-		name:Trim();
-		local data = plugin:GetDoorData(door, true);
-		data.Unownable = name;
-		door._Unownable = true;
-		if (not data.Owner) then
-			door:ClearOwnershipData();
-			door:GiveToTeam(TEAM_NOBODY);
-		elseif (data.Owner ~= door:GetOwner()) then -- Does someone who shouldn't own this?
-			door["GiveTo" .. data.Owner.Type](door, data.Owner);
-		end
-		door:SetDisplayName(name)
-		name = door:GetDoorName()
-		ply:Notify("'"..name.."' is now unownable.");
-		GM:Log(EVENT_EVENT,"%s unownable'd %q",ply:Name(),name)
-	end
-	plugin:SaveData();
-end, "Super Admin Commands", "<name|remove>", "Add (and optionally name) or remove an unownable door.", true);
+GM:RegisterCommand{
+    Command     = "unownable";
+    Access      = "s";
+    Category    = "Door Commands";
+    Help        = "Make it so no one can own this door and optionally give it a name.";
+    Arguments   = "[name]";
+    Types       = "...";
+    function(ply, name)
+        local door = ply:GetEyeTraceNoCursor().Entity;
+        if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
+            return false, "You must look at a valid door!";
+        end
+        door = door:GetMaster() or door;
+        name = name or "";
+        local data = plugin:GetDoorData(door, true);
+        data.Unownable = name;
+        door._Unownable = true;
+        if (not data.Owner) then
+            door:ClearOwnershipData();
+            door:GiveToTeam(TEAM_NOBODY);
+        elseif (data.Owner ~= door:GetOwner()) then -- Does someone who shouldn't own this?
+            door["GiveTo" .. data.Owner.Type](door, data.Owner);
+        end
+        door:SetDisplayName(name)
+        name = door:GetDoorName()
+        ply:Notify("'"..name.."' is now unownable.");
+        GM:Log(EVENT_EVENT,"%s unownable'd %q",ply:Name(),name)
+        plugin:SaveData();
+    end
+};
+
+GM:RegisterCommand{
+    Command     = "reownable";
+    Access      = "s";
+    Category    = "Door Commands";
+    Help        = "Make it so people can own a previously unownable door";
+    function(ply)
+        local door = ply:GetEyeTraceNoCursor().Entity;
+        if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
+            return false, "You must look at a valid door!";
+        end
+        door = door:GetMaster() or door;
+        if (not door._Unownable) then
+            return false, "That door is not currently set as unownable!";
+        end
+        door._Unownable = nil;
+        door:ClearOwnershipData();
+        local data = plugin:GetDoorData(door);
+        if (data.Owner) then -- Is this door pre-owned by a team or gang?
+            door["GiveTo" .. data.Owner.Type](door, data.Owner);
+        end
+        local name = door:GetDoorName()
+        ply:Notify("'"..name.."' is no longer unownable.");
+        GM:Log(EVENT_EVENT,"%s de unownable'd %q",ply:Name(),name)
+    end
+};

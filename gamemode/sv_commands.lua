@@ -1486,7 +1486,7 @@ GM:RegisterCommand{
 
 -- A command to give Donator status to a player.
 --[[
-cider.command.add("donator", "s", 1, function(ply, arguments)
+cider.com mand.add("donator", "s", 1, function(ply, arguments)
     local target = player.Get( arguments[1] )
     
     -- Calculate the days that the player will be given Donator status for.
