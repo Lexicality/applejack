@@ -46,9 +46,9 @@ function PANEL:Init()
 		end
 	
 		if (self.textEntry:GetValue() == "") then
-			RunConsoleCommand("cider", "door", "purchase");
+			RunConsoleCommand("cider", "entity", "purchase");
 		else
-			RunConsoleCommand( "cider", "door", "purchase", self.textEntry:GetValue() );
+			RunConsoleCommand( "cider", "entity", "purchase", self.textEntry:GetValue() );
 		end
 	end
 	

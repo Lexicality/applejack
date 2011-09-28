@@ -1253,7 +1253,7 @@ end
 
 -- A command to perform an action on an ent
 GM:RegisterCommand{
-    Command     = "entity"
+    Command     = "access"
     Arguments   = "<Give|Take> <kind> <id>";
     Types       = "Phrase String Number";
     Hidden      = true;
