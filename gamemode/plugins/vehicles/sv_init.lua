@@ -10,14 +10,19 @@ local function getnewpos(pos, ang, apos)
 end
 
 local carz = {};
-cider.command.add("cleancars","a",0,function()
-	for _,ent in pairs(carz) do
-		if (IsValid(ent)) then
-			ent:Remove();
-		end
-		carz[_] = nil;
-	end
-end, "Admin Commands", "", "Delete all cars on the server");
+GM:RegisterCommand{
+    Command     = "cleancars";
+    Access      = "a";
+    Help        = "Remove all currently spawned cars";
+    function(ply)
+        for _,ent in pairs(carz) do
+            if (IsValid(ent)) then
+                ent:Remove();
+            end
+            carz[_] = nil;
+        end
+    end
+};
 
 vu_enablehorn = CreateConVar( "vu_enablehorn", "1")
 function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
