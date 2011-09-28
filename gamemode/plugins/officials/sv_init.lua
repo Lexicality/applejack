@@ -326,73 +326,89 @@ function PLUGIN:PlayerCanDemote(ply,target)
 end
 
 
---citrus lua "cider.command.add('addbroadcast','s',1,function(ply,args) cider.chatBox.add(nil, ply, 'broadcast', table.concat(args, ' '):Trim()) end, 'Admin Abuse Commands', '<words>','Act like ur teh mayor')
 local plugin = PLUGIN;
 
 -- A command to broadcast to all players.
-cider.command.add("broadcast", "b", 1, function(ply, args)
-	local team = ply:Team();
-	if (team ~= TEAM_MAYOR and team ~= TEAM_POLICECOMMANDER) then
-		return false, "You cannot make broadcasts!";
-	end
-	local words = table.concat(args, " "):Trim();
-	if (words == "") then
-		return false, "You did not specify enough text!";
-	elseif (team == TEAM_POLICECOMMANDER) then
-		words = "(POLICE) "..words;
-	end
-	plugin:SayBroadcast(ply, words);
-end, "Police Commands", "<text>", "Broadcast a message over the offical channel.");
+GM:RegisterCommand{
+    Command     = "broadcast";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Broadcast a message to the city";
+    function(ply, words)
+        local team = ply:Team();
+        if (team ~= TEAM_MAYOR and team ~= TEAM_POLICECOMMANDER) then
+            return false, "You cannot make broadcasts!";
+        end
+        local words = table.concat(args, " "):Trim();
+        if (team == TEAM_POLICECOMMANDER) then
+            words = "(POLICE) "..words;
+        end
+        plugin:SayBroadcast(ply, words);
+    end
+};
 
 -- A command to request assistance from the Police and Mayor.
-cider.command.add("request", "b", 1, function(ply, args)
-	local words = table.concat(args, " "):Trim();
-	if (words == "") then
-		return false, "You did not specify enough text!";
-	end
-	if (plugin:IsAuthorised(ply)) then
-		ply:SayRadio(words);
-	else
-		plugin:SayRequest(ply, words);
-	end
-end, "Commands", "<text>", "Request assistance from the Police and Mayor.");
+GM:RegisterCommand{
+    Command     = "request";
+    Arguments   = "<Message>";
+    Types       = "...";
+    Help        = "Send a message to the police and mayor";
+    function(ply, words)
+        if (plugin:IsAuthorised(ply)) then
+            ply:SayRadio(words);
+        else
+            plugin:SayRequest(ply, words);
+        end
+    end
+};
 
 -- A command to initiate lockdown.
-cider.command.add("lockdown", "b", 0, function(ply)
-	if (plugin.Lockdown) then
-		return false, "There is already a lockdown active!";
-	elseif (ply:Team() == TEAM_MAYOR) then
-		plugin:SayBroadcast(ply, "A lockdown is in progress. Please return to your homes.");
-		plugin.Lockdown = true;
-		SetGlobalBool("lockdown", true);
-		return true;
-	elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
-		if (plugin:IsAuthorised(ply)) then
-			ply:SayRadio("Mayor, could you initiate a lockdown please?");
-		else
-			plugin:SayRequest(ply,"Mayor, I suggest you initiate a lockdown.");
-		end
-		return false; -- Only the mayor can fufil our wish.
-	end
-	return false, "Only the Mayor can initiate a lockdown!";
-end, "Commands", nil, "Requset or initiate a lockdown.");
+GM:RegisterCommand{
+    Command     = "lockdown";
+    Help        = "Annoucne a city-wide lockdown";
+    function(ply)
+        if (plugin.Lockdown) then
+            return false, "There is already a lockdown active!";
+        elseif (ply:Team() == TEAM_MAYOR) then
+            plugin:SayBroadcast(ply, "A lockdown is in progress. Please return to your homes.");
+            plugin.Lockdown = true;
+            SetGlobalBool("lockdown", true);
+            return true;
+        elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
+            if (plugin:IsAuthorised(ply)) then
+                ply:SayRadio("Mayor, could you initiate a lockdown please?");
+            else
+                plugin:SayRequest(ply,"Mayor, I suggest you initiate a lockdown.");
+            end
+            return false; -- Only the mayor can fufil our wish.
+        end
+        return false, "Only the Mayor can initiate a lockdown!";
+    end
+};
 
 -- A command to cancel lockdown.
-cider.command.add("unlockdown", "b", 0, function(ply)
-	if (not plugin.Lockdown) then
-		return false, "There isn't an active lockdown!";
-	elseif (ply:Team() == TEAM_MAYOR) then
-		plugin:SayBroadcast(ply, "The lockdown has been cancelled.");
-		plugin.Lockdown = false;
-		SetGlobalBool("lockdown", false);
-		return true;
-	elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
-		if (plugin:IsAuthorised(ply)) then
-			ply:SayRadio("Mayor, could you end the lockdown please?");
-		else
-			plugin:SayRequest(ply,"Mayor, I suggest you end the lockdown.");
-		end
-		return false; -- Only the mayor can fufil our wish.
-	end
-	return false, "Critical error 2194"; -- Lockdown without a mayor? This is not possible.
-end, "Commands", nil, "Requset the end of or end the current lockdown.");
+GM:RegisterCommand{
+    Command     = "unlockdown";
+    Help        = "Announce the end of the current lockdown.";
+    function(ply)
+        if (not plugin.Lockdown) then
+            return false, "There isn't an active lockdown!";
+        elseif (ply:Team() == TEAM_MAYOR) then
+            plugin:SayBroadcast(ply, "The lockdown has been cancelled.");
+            plugin.Lockdown = false;
+            SetGlobalBool("lockdown", false);
+            return true;
+        elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
+            if (plugin:IsAuthorised(ply)) then
+                ply:SayRadio("Mayor, could you end the lockdown please?");
+            else
+                plugin:SayRequest(ply,"Mayor, I suggest you end the lockdown.");
+            end
+            return false; -- Only the mayor can fufil our wish.
+        end
+        -- There should never be a lockdown without a mayor. If there is, turn it off.
+        player.NotifyAll(NOTIFY_CHAT, "The lockdown has been cancelled");
+        plugin.Lockdown = false;
+        SetGlobalBool("lockdown", false);
+    end
+};
