@@ -58,7 +58,7 @@ function PANEL:Think()
 	self.job.label:SizeToContents();
 	self.job.button:SetText("Change");
 	self.job.button.DoClick = function()
-		RunConsoleCommand( "cider", "job", self.job.textEntry:GetValue() );
+		RunConsoleCommand( "mshine", "job", self.job.textEntry:GetValue() );
 	end
 	
 	-- Create the clan control.
@@ -67,7 +67,7 @@ function PANEL:Think()
 	self.clan.label:SizeToContents();
 	self.clan.button:SetText("Change");
 	self.clan.button.DoClick = function()
-		RunConsoleCommand( "cider", "clan", self.clan.textEntry:GetValue() );
+		RunConsoleCommand( "mshine", "clan", self.clan.textEntry:GetValue() );
 	end
 	
 	-- Create the details control.
@@ -76,7 +76,7 @@ function PANEL:Think()
 	self.details.label:SizeToContents();
 	self.details.button:SetText("Change");
 	self.details.button.DoClick = function()
-		RunConsoleCommand( "cider", "details", self.details.textEntry:GetValue() );
+		RunConsoleCommand( "mshine", "details", self.details.textEntry:GetValue() );
 	end
 	local details = lpl:GetNWString("Details") or ""
 	self.details.textEntry:SetValue(details)
@@ -181,8 +181,8 @@ function PANEL:Init()
 		local menu = DermaMenu();
 		
 		-- Add male and female options to the menu.
-		menu:AddOption("Male", function() RunConsoleCommand("cider", "gender", "male"); end);
-		menu:AddOption("Female", function() RunConsoleCommand("cider", "gender", "female"); end);
+		menu:AddOption("Male", function() RunConsoleCommand("mshine", "gender", "male"); end);
+		menu:AddOption("Female", function() RunConsoleCommand("mshine", "gender", "female"); end);
 		
 		-- Open the menu and set it's position.
 		menu:Open();
@@ -228,7 +228,7 @@ function PANEL:Init()
 	-- Create the button and the spawn icon.
 	self.button = vgui.Create("DButton", self);
 	function self.button:DoClick()
-		RunConsoleCommand("cider", "team", self.tid);
+		RunConsoleCommand("mshine", "team", self.tid);
 	end
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 	self.spawnIcon:SetToolTip();

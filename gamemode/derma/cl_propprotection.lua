@@ -81,13 +81,13 @@ local function adminPanel(panel)
     for _, ply in pairs(player.GetAll()) do
         if (IsValid(ply)) then
             -- Ick
-            panel:Button(ply:Name(), "cider", "ppclearprops", ply:UniqueID());
+            panel:Button(ply:Name(), "mshine", "ppclearprops", ply:UniqueID());
         end
     end
     panel:Help(" ");
-    panel:Button("All Disconnected Players", "cider", "ppcleardisconnected");
+    panel:Button("All Disconnected Players", "mshine", "ppcleardisconnected");
     -- TODO: Make this exist
-    --panel:Button("Everyone", "cider", "ppcleareveryone");
+    --panel:Button("Everyone", "mshine", "ppcleareveryone");
 end
 
 local lView;
@@ -102,7 +102,7 @@ do -- Add
         for _, ply in pairs(player.GetAll()) do
             if (ply ~= lpl) then
                 menu:AddOption(ply:Name(), function()
-                    RunConsoleCommand("cider", "ppfriends", "add", ply:UniqueID());
+                    RunConsoleCommand("mshine", "ppfriends", "add", ply:UniqueID());
                 end)
             end
         end
@@ -116,7 +116,7 @@ do -- Remove
         if (not line) then
             return;
         end
-        RunConsoleCommand("cider", "ppfriends", "remove", line:GetColumnText(2));
+        RunConsoleCommand("mshine", "ppfriends", "remove", line:GetColumnText(2));
     end
     function delButton()
         if (not lView:GetSelectedLine()) then
@@ -131,7 +131,7 @@ end
 
 do -- Clear
     local function si()
-        RunConsoleCommand("cider", "ppfriends", "clear");
+        RunConsoleCommand("mshine", "ppfriends", "clear");
     end
     function clrButton()
         local m = DermaMenu();
@@ -148,7 +148,7 @@ local function clientPanel(panel)
 
     panel:Help("Applejack - Prop Protection");
     panel:Help(" ");
-    panel:Button("Delete my props", "cider", "ppcleanprops");
+    panel:Button("Delete my props", "mshine", "ppcleanprops");
     panel:Help(" ");
     panel:Help("Friends");
     panel:Button("Add Friend").DoClick = addButton;

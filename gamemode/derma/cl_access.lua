@@ -260,7 +260,7 @@ local function btn(self)
 	end
 	CurTab = accessmenu.sheets:GetActiveTab()
 	accessmenu.Buttoned = true
-	RunConsoleCommand("cider", "access", self.action, self.me.idkind, self.me.id);
+	RunConsoleCommand("mshine", "access", self.action, self.me.idkind, self.me.id);
 end
 function PANEL:SetButton(bool)
 	if (not bool) then return; end
@@ -378,7 +378,7 @@ function PANEL:Init()
 	local function setName()
 		val = self.texbox:GetValue()
 		if not val or val == "" then return end
-		RunConsoleCommand("cider", "entity", "rename", val:sub(1,32));
+		RunConsoleCommand("mshine", "entity", "rename", val:sub(1,32));
 		self.texbox:SetText("")
 		self.texbox:KillFocus()
 	end
@@ -392,7 +392,7 @@ function PANEL:Init()
 		-- Add an option for yes and no.
 		menu:AddOption("No", function() end);
 		menu:AddOption("Yes", function()
-			RunConsoleCommand("cider", "entity", "sell");
+			RunConsoleCommand("mshine", "entity", "sell");
 			accessmenu:Close();
 			accessmenu:Remove();
 			gui.EnableScreenClicker(false);
