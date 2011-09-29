@@ -186,19 +186,19 @@ Container props like filing cabinets spawned by the detail system [b]are[/b] aut
 		if not CheckPos() then return end
 		if containermenu.Buttoned then return end -- If a button has been pressed, we can't do anything until sent an update.
 		if amount < 2 then
-			RunConsoleCommand("cider", "container", item.UniqueID, string.lower(self:GetValue()), 1);
+			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1);
 			containermenu.Buttoned = true
 			return
 		end
 		local menu = DermaMenu();
 		-- Add an option for yes and no.
 		menu:AddOption("1", function()
-			RunConsoleCommand("cider", "container", item.UniqueID, string.lower(self:GetValue()), 1);
+			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1);
 			-- Close the main menu.
 			containermenu.Buttoned = true
 		end);
 		menu:AddOption("All", function()
-			RunConsoleCommand("cider", "container", item.UniqueID, string.lower(self:GetValue()), "all");
+			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), "all");
 			-- Close the main menu.
 			containermenu.Buttoned = true
 		end);
@@ -219,7 +219,7 @@ Container props like filing cabinets spawned by the detail system [b]are[/b] aut
 				local func = function()
 					val = tonumber(box:GetValue())
 					if (not val) or string.sub(val,1,1) == "-" then return end
-					RunConsoleCommand("cider", "container", item.UniqueID, string.lower(self:GetValue()), math.floor(val));
+					RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), math.floor(val));
 					EditPanel:Close()
 					-- Close the main menu.
 					containermenu.Buttoned = true

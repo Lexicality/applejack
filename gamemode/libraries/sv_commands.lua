@@ -1,78 +1,291 @@
 --[[
-Name: "sv_commands.lua".
+    ~ Serverside Commands Library ~
 	~ Applejack ~
 --]]
 
-cider.command = {};
-cider.command.stored = {};
+GM.Commands = {};
 
--- Add a new command.
-function cider.command.add(command, access, arguments, callback, category, help, tip, unpack)
-	cider.command.stored[command] = {access = access, arguments = arguments, callback = callback, unpack = tobool(unpack)};
-	
-	-- Check to see if a category was specified.
-	if (category) then
-		if (!help or help == "") then
-			cider.help.add(category, GM.Config["Command Prefix"]..command.." <none>.", tip);
-		else
-			cider.help.add(category, GM.Config["Command Prefix"]..command.." "..help..".", tip);
-		end
-	end
+--[[
+GM:RegisterCommand{
+    Command   = "whatever";
+    Access    = "a";
+    Arguments = "<thing> <bees|what|dix> [meh]";
+    Types     = "Player Phrase ...";
+    Category  = "Stuff";
+    Help      = "I don't really care tbh";
+    Hidden    = false;
+    Function  = function(ply, thing, otherthing, words)
+        return false, "GO AWAY!";
+    end
+};
+--]]
+local Types = {
+    ["string"] = true; -- Do nothing
+    ["number"] = true; -- tonumber(arg) or error
+    ["bool"]   = true; -- tobool(arg);
+    ["player"] = true; -- player.Get(arg) or error
+    ["phrase"] = true; -- phrases[arg] or error
+    ["..."]    = true; -- Every remaining argument is combined into a string seperated by spaces.
+};
+
+---
+-- Registers a new command. <br />
+-- Usage:
+-- <pre>
+-- GM:RegisterCommand{
+--    Command   = "whatever";
+--    Access    = "a";
+--    Arguments = "<thing> <bees|what|dix> [meh]";
+--    Types     = "Player Phrase ...";
+--    Category  = "Stuff";
+--    Help      = "I don't really care tbh";
+--    Hidden    = false;
+--    Function  = function(ply, thing, otherthing, words)
+--        return false, "GO AWAY!";
+--    end
+-- };
+-- </pre>
+-- If a command is hidden, it won't show up in the help and it won't be runnable from chat. <br />
+-- Note that arguments must be surrounded by <>s or []s. <> arguments are required while [] arguments may be left blank if so desired. <br />
+-- Types can be String, Bool, Number, Player, Phrase or ... <br />
+-- Arguments will be converted to the specified types before being passed to your callback. <br />
+-- Phrase arguments require that the user enter one of the words given in the argument string. Seperate phrases with |s as so: <one|two|three>. Do not put spaces in the phrases unless you intend the user to enter them. <br />
+-- Try to keep your commands as simple as possible. The average person is unlikely to remember more than two arguments at best. Consider using menus for anything even remotely complicated.
+-- @param tab The command table. See above
+function GM:RegisterCommand(tab)
+    -- Catch various shit not defined
+    if (not tab.Command) then
+        error("Command not defined!", 2);
+    end
+    tab.Function = tab.Function or tab[1] or error("Function not defined!", 2);
+    if (not tab.Access) then
+        tab.Access = self.Config["Base Access"];
+    end
+    if (not tab.Hidden) then
+        if (not tab.Category) then
+            if (tab.Access == "s") then
+                tab.Category = "Superadmin Commands";
+            elseif (tab.Access == "a") then
+                tab.Category = "Admin commands";
+            elseif (tab.Access == "m") then
+                tab.Category = "Moderator Commands";
+            else
+                tab.Category = "Commands";
+            end
+        end
+        if (not tab.Help) then
+            tab.Help = "No help specified.";
+        end
+    end
+    if (not tab.Arguments or tab.Arguments == "") then
+        tab.targs    = 0;
+    else
+        -- First, explode the types
+        local types = {};
+        for kind in string.gmatch(tab.Types, "[^%s]+") do
+            types[#types+1] = string.lower(kind);
+        end
+        -- Now explode the argument strings
+        local req, opt, tot = 0, 0, 0;
+        local args = {};
+        local kind;
+        for mode, name in string.gmatch(tab.Arguments, "([[<])(.-)[%]>]") do
+            if (mode == "<") then
+                req = req + 1;
+                -- Catch a potential fuckup
+                if (opt ~= 0) then
+                    error("Malformed argument string! You can only have optional arguments at the end of the call.", 2);
+                    -- If you've come here wondering what this means, you have put a required argument after an optional argument
+                    --  This is a logical error and while I could potentially automatically fix it, that might cause probelms with
+                    --  your internal logic. Better to design right in the first place, no? :o)
+                end
+            elseif (mode == "[") then
+                opt = opt + 1;
+            end
+            args[tot] = name;
+            tot = tot + 1;
+            kind = types[tot];
+            if (not kind) then
+                error("There are more Arguments than Types!", 2);
+            end
+            if (kind == "...") then
+                -- Vararg endings overrule anything else
+                tab.VarArg = tot;
+                break;
+            elseif (kind == "phrase") then
+                tab.Phrases = tab.Phrases or {};
+                local ps = {};
+                for match in string.gmatch(name .. "|", "%s*(.-)%s*|") do
+                    ps[string.lower(match)] = true;
+                end
+                tab.Phrases[tot] = ps;
+            elseif (not Types[kind]) then
+                error("Unknown Type '" .. kind .. "'!", 2);
+            end
+        end
+        tab.Types = types;
+        tab.aargs = args;
+        tab.rargs = req;
+        tab.oargs = opt;
+        tab.targs = tot;
+    end
+    self.Commands[tab.Command] = tab;
+    if (tab.Hidden) then
+        return;
+    end
+    -- TODO: Setup help files and send to client.
 end
 
--- This is called when a player runs a command from the console.
-function cider.command.consoleCommand(player, _, arguments)
-	if not (player._Initialized) then return end
-	if (arguments and arguments[1]) then
-		command = string.lower(table.remove(arguments, 1));
-		-- Check to see if the command exists.
-		if (cider.command.stored[command]) then
-			-- Loop through the arguments and fix Valve's errors.
-			for k, v in pairs(arguments) do
-				arguments[k] = string.Replace(arguments[k], " ' ", "'");
-				arguments[k] = string.Replace(arguments[k], " : ", ":");
-			end
-			
-			-- Check if the player can use this command.
-			if ( hook.Call("PlayerCanUseCommand", GAMEMODE, player, command, arguments) ) then
-				if (#arguments >= cider.command.stored[command].arguments) then
-					if (player:HasAccess(cider.command.stored[command].access) ) then
-						-- Some callbacks remove arguments from the table, and we don't want to lose them ;)
-						local success, fail,msg
-						if cider.command.stored[command].unpack then
-							success, fail,msg = pcall(cider.command.stored[command].callback, player, unpack(arguments));
-						else
-							success, fail,msg = pcall(cider.command.stored[command].callback, player, table.Copy(arguments));
-						end
-						if success then
-							if fail ~= false then
-								local text = ""
-								if (table.concat(arguments, " ") ~= "") then
-									text = text.." "..table.concat(arguments, " ")
-								end
-								GM:Log(EVENT_COMMAND,"%s used 'cider %s%s'.",player:Name(),command,text);
-							else
-								if msg and msg ~= "" then
-									player:Notify(msg,1)
-								end
-							end
-						else
-							ErrorNoHalt(os.date().." callback for 'cider "..command.." "..table.concat(arguments," ").."' failed: "..fail.."\n")
-						end
-					else
-						player:Notify("You do not have access to this command, "..player:Name()..".", 1);
-					end
-				else
-					player:Notify("This command requires "..cider.command.stored[command].arguments.." arguments!", 1);
-				end
-			end
-		else
-			player:Notify("This is not a valid command!", 1);
+function GM:PlayerSay(ply, text, public)
+	-- The OOC commands have shortcuts.
+	if (string.sub(text, 1, 2) == "//") then
+		text = string.Trim(string.sub(text, 3));
+		if (text == "") then
+			return "";
 		end
-	else
-		player:Notify("This is not a valid command!", 1);
+		text = self.Config['Command Prefix'] .. "ooc " .. text;
+	elseif (string.sub(text, 1, 3) == ".//") then
+		text = string.Trim(string.sub(text, 4));
+		if (text == "") then
+			return "";
+		end
+		text = self.Config['Command Prefix'] .. "looc " .. text;
 	end
+
+    -- Commands
+    if (string.sub(text, 1, 1) == self.Config["Command Prefix"]) then
+        local args = {};
+        -- Get rid of the prefix
+        text = string.sub(text, 2);
+        -- TODO: Create a sequential parser for vararg commands. Ref ticket #129.
+        -- Determine if we start off in a quote;
+        local quote = string.sub(text, 1, 1) == '"';
+        -- Loop thru chunks bordered by "s (not quite as refined as Valve's algo, but hey)
+        for chunk in string.gmatch(text, '[^"]+') do
+            -- If we's in quote mode, treat the entire chunk as an argument
+            if (quote) then
+                table.insert(args, chunk);
+            else
+                -- Otherwise break the chunk into smaller chunks bordered by whitespace.
+                for chunk in string.gmatch(chunk, "[^%s]+") do
+                    table.insert(args, chunk);
+                end
+            end
+            -- Flip our 'is in a quote' state.
+            quote = not quote;
+        end
+        self:DoCommand(ply, args);
+    elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
+        if (ply:Arrested()) then
+            cider.chatBox.addInRadius(ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"])
+        elseif ply:Tied() then
+            cider.chatBox.addInRadius(ply, "tied", text, ply:GetPos(), self.Config["Talk Radius"])
+        else
+            cider.chatBox.addInRadius(ply, "ic", text, ply:GetPos(), self.Config["Talk Radius"])
+        end
+        GM:Log(EVENT_TALKING,"%s: %s",ply:Name(),text)
+    end
+    return "";
 end
 
--- Add a new console command.
-concommand.Add("cider", cider.command.consoleCommand);
+function GM:DoCommand(ply, args)
+    if (not ply._Initialized) then
+        return;
+    end
+    if (not args[1]) then
+        ply:Notify("You're doing it wrong!", NOTIFY_ERROR);
+        return;
+    end
+    local str = string.lower(table.remove(args, 1));
+    local cmd = self.Commands[str];
+    -- Existence test
+    if (not cmd) then
+        ply:Notify("Unknown command '" .. str .. "'!", NOTIFY_ERROR);
+        return;
+    end
+    -- Hook test
+    if (not gamemode.Call("PlayerCanUseCommand", ply, str, args, cmd)) then
+        return;
+    end
+    -- Access test
+    if (not ply:HasAccess(cmd.Access)) then
+        ply:Notify("You do not have the required access to use that command!", NOTIFY_ERROR);
+        return;
+    end
+    -- Numargs test
+    local nargs = #args;
+    if (nargs < cmd.rargs) then
+        ply:Notify("Not enough arguments specified!", NOTIFY_ERROR);
+        ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+        return;
+    end
+    --Parse t' args
+    local pargs = {};
+    if (cmd.targs > 0) then
+        local t, arg;
+        for i = 1, cmd.targs do
+            arg = args[i];
+            if (not arg) then
+                -- I'm assuming all the required args are done by here. Something's gone wrong if they're not.
+                break;
+            end
+            arg = string.Trim(arg);
+            if (arg == "") then
+                ply:Notify("Don't force blank arguments please.", NOTIFY_ERROR);
+                return;
+            end
+            t = cmd.Types[i];
+            if (t == "string") then
+                pargs[i] = arg;
+            elseif (t == "bool") then
+                pargs[i] = tobool(arg);
+            elseif (t == "number") then
+                local n = tonumber(arg);
+                if (not n) then
+                    ply:Notify("Invalid number for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
+                    ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+                    return;
+                end
+                pargs[i] = n;
+            elseif (t == "player") then
+                local ply = player.Get(arg);
+                if (not ply) then
+                    ply:Notify("Cannot find player '" .. arg .. "' for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
+                    ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+                    return;
+                end
+                pargs[i] = ply;
+            elseif (t == "phrase") then
+                local w = string.lower(arg);
+                if (not cmd.Phrases[i][w]) then
+                    ply:Notify("'" .. w .. "' is not a valid choice for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
+                    ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+                    return;
+                end
+                pargs[i] = w;
+            elseif (t == "...") then
+                -- There is no way that this should be able to be *all* whitespace, so I won't check if it's empty.
+                pargs[i] = string.Trim(table.concat(args, " ", i));
+                break;
+            end
+        end
+    end
+    local stat, res, err = pcall(cmd.Function, ply, unpack(pargs));
+    if (not stat) then
+        Error("[", os.date(), "] Moonshine: Command '", cmd.Command, ' "', table.Concat(pargs, '" "'), "\" 's callback failed: ", res, "\n");
+    elseif (res == false) then
+        if (err and err ~= "") then
+            ply:Notify(err, NOTIFY_ERROR);
+        end
+        return;
+    end
+    local words = table.concat(pargs, '" "');
+    if (words ~= "") then
+        words = ' "' .. words .. '"';
+    end
+    GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
+end
+
+concommand.Add("mshine", function(ply, _, args)
+    GM:DoCommand(ply, args);
+end);

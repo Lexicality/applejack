@@ -130,7 +130,7 @@ function PANEL:Init()
 	self.button:SetText("Manufacture");
 	self.button:SetSize(80, 22);
 	self.button.DoClick = function()
-		RunConsoleCommand("cider", "manufacture", self.item);
+		RunConsoleCommand("mshine", "manufacture", self.item);
 	end
 	
 	-- Set the model of the spawn icon to the one of the item.

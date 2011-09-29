@@ -154,7 +154,7 @@ function PANEL:Init()
 			-- Check what type of button it is.
 			if (self.itemFunctions[i] == "Use") then
 				self.itemButton[i].DoClick = function()
-					RunConsoleCommand("cider", "inventory", self.item, "use");
+					RunConsoleCommand("mshine", "inventory", self.item, "use");
 					if item.AutoClose then
 						cider.menu.toggle()
 					end
@@ -163,7 +163,7 @@ function PANEL:Init()
 				self.itemButton[i].DoClick = function()
 				
 					if cider.inventory.stored[self.item] < 2 then
-						RunConsoleCommand("cider", "inventory", self.item, "drop", 1);
+						RunConsoleCommand("mshine", "inventory", self.item, "drop", 1);
 						-- Close the main menu.
 						cider.menu.toggle();
 						return
@@ -172,12 +172,12 @@ function PANEL:Init()
 					
 					-- Add an option for yes and no.
 					menu:AddOption("1", function()
-						RunConsoleCommand("cider", "inventory", self.item, "drop", 1);
+						RunConsoleCommand("mshine", "inventory", self.item, "drop", 1);
 						-- Close the main menu.
 						cider.menu.toggle();
 					end);
 					menu:AddOption("All", function()
-						RunConsoleCommand("cider", "inventory", self.item, "drop", "all");
+						RunConsoleCommand("mshine", "inventory", self.item, "drop", "all");
 						-- Close the main menu.
 						cider.menu.toggle();
 					end);
@@ -198,7 +198,7 @@ function PANEL:Init()
 							box.OnEnter = function()
 								val = tonumber(box:GetValue())
 								if not val or string.sub(val,1,1) == "-" then return end
-								RunConsoleCommand("cider", "inventory", self.item, "drop", math.floor(val));
+								RunConsoleCommand("mshine", "inventory", self.item, "drop", math.floor(val));
 								EditPanel:Close()
 								-- Close the main menu.
 								cider.menu.toggle();
@@ -208,7 +208,7 @@ function PANEL:Init()
 							button.DoClick = function()
 								val = tonumber(box:GetValue())
 								if not val then return end
-								RunConsoleCommand("cider", "inventory", self.item, "drop", val);
+								RunConsoleCommand("mshine", "inventory", self.item, "drop", val);
 								EditPanel:Close()
 								-- Close the main menu.
 								cider.menu.toggle();
@@ -222,7 +222,7 @@ function PANEL:Init()
 				end
 			elseif (self.itemFunctions[i] == "Pick up") then
 				self.itemButton[i].DoClick = function()
-					RunConsoleCommand("cider", "inventory", self.item, "pickup");
+					RunConsoleCommand("mshine", "inventory", self.item, "pickup");
 				end
 			elseif (self.itemFunctions[i] == "Sell") then
 				self.itemButton[i].DoClick = function()
@@ -231,7 +231,7 @@ function PANEL:Init()
 					-- Add an option for yes and no.
 					menu:AddOption("No", function() end);
 					menu:AddOption("Yes", function()
-						RunConsoleCommand("cider", "inventory", self.item, "sell");
+						RunConsoleCommand("mshine", "inventory", self.item, "sell");
 					end);
 					
 					-- Open the menu.
@@ -244,7 +244,7 @@ function PANEL:Init()
 					-- Add an option for yes and no.
 					menu:AddOption("No", function() end);
 					menu:AddOption("Yes", function()
-						RunConsoleCommand("cider", "inventory", self.item, "destroy");
+						RunConsoleCommand("mshine", "inventory", self.item, "destroy");
 					end);
 					
 					-- Open the menu.

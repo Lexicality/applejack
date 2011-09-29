@@ -9,9 +9,10 @@ config["Default Money"]				= 0; -- The money that each player starts with.
 config["Default Job"]				= "Citizen"; -- The job that each player starts with.
 config["Default Clan"]				= ""; -- The clan that each player belongs to by default.
 config["Inventory Size"]			= 40; -- The default inventory size.
-config["Default Access"]			= "b"; -- The access that each player begins with.
+config["Default Access"]			= ""; -- The access flags that each player begins with.
 
 -- Command 
+config["Base Access"]               = "b"; -- The access flags that EVERYONE has.
 config["Command Prefix"]			= "/"; -- The prefix that is used for chat commands.
 config["Maximum Notes"]				= 2; -- The maximum amount of notes a player can write.
 config["Advert Cost"]				= 60; -- The money that it costs to advertise.

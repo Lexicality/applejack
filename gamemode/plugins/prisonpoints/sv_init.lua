@@ -53,32 +53,36 @@ end
 local plugin = PLUGIN;
 local points = plugin.Prisonpoints;
 -- A command to add a player prison point.
-cider.command.add("prisonpoint", "a", 1, function(ply,action)
-	local pos,count;
-	action = action:lower();	
-	if (action == "add") then
-		local pos = ply:GetPos();
-		table.insert(points,{pos = pos, ang = ply:GetAngles()});
-		ply:Notify("You have added a prisonpoint where you are standing.");
-	elseif (action == "remove") then
-		if (not table.Count(points)) then
-			return false, "there are no prisonpoints!";
-		end
-		pos = ply:GetEyeTraceNoCursor().HitPos;
-		count = 0;
-		for k,data in pairs(points) do
-			if ((pos - data.pos):LengthSqr() <= 65536) then
-				points[k] = nil;
-				count = count + 1;
-			end
-		end
-		if (count > 0) then
-			ply:Notify("You removed "..count.." prisonpoints from where you were looking, leaving "..table.Count(points).." left.");
-		else
-			ply:Notify("There are no prisonpoints where you are looking!");
-		end
-	else
-		return false,"Invalid action specified!";
-	end
-	plugin:SaveData();
-end, "Admin Commands", "<add|remove>", "Add a prisonpoint where you are standing or remove prisonpoints where you look.",true);
+GM:RegisterCommand{
+    Command     = "prisonpoint";
+    Access      = "a";
+    Arguments   = "<Add|Remove>";
+    Types       = "Phrase";
+    Help        = "Add a prisonpoint where you're standing, or remove any near where you are looking";
+    function(ply, action)
+        local pos,count;
+        if (action == "add") then
+            local pos = ply:GetPos();
+            table.insert(points,{pos = pos, ang = ply:GetAngles()});
+            ply:Notify("You have added a prisonpoint where you are standing.");
+        else
+            if (not table.Count(points)) then
+                return false, "there are no prisonpoints!";
+            end
+            pos = ply:GetEyeTraceNoCursor().HitPos;
+            count = 0;
+            for k,data in pairs(points) do
+                if ((pos - data.pos):LengthSqr() <= 65536) then
+                    points[k] = nil;
+                    count = count + 1;
+                end
+            end
+            if (count > 0) then
+                ply:Notify("You removed "..count.." prisonpoints from where you were looking, leaving "..table.Count(points).." left.");
+            else
+                ply:Notify("There are no prisonpoints where you are looking!");
+            end
+        end
+        plugin:SaveData();
+    end
+};

@@ -280,9 +280,9 @@ do
             ply._ppInsert = true;
             return
         end
-        local res, err = pcall(glon.decode, str);
-        if (not res) then
-            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", err, "\n");
+        local stat, res = pcall(glon.decode, str);
+        if (not stat) then
+            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", res, "\n");
             res = {};
         end
         ply._ppFriends = res;
@@ -420,79 +420,89 @@ do
 end
 
 --[[ Commands ]]--
-cider.command.add("ppfriends", "b", 1, function(ply, action, target)
-    action = string.lower(action);
-    -- Check if we've got a valid action
-    if (action == "clear") then
-        ply:ClearPPFriends();
-        return true;
-    elseif (not (action == "add" or action == "remove")) then
-        return false, "Invalid action '" .. action .. "'!";
-    end
-    -- Get our victim
-    local victim = player.Get(target);
-    if (not IsValid(victim)) then
-        -- Make it so people can remove offline friends
-        if (action == "remove") then
-            -- But only using their UIDs
-            --  (They shouldn't be using anything else but meh)
-            target = tonumber[target];
-            -- Verify they've used a valid UID
-            if (target and ply._ppFriends[target]) then
-                -- Make a fake player object to keep everyone happy
-                --  (Unless someone tries to actually do something with it :D)
-                victim = fakeplayer(target, ply._ppFriends[target]);
+GM:RegisterCommand{
+    Command     = "ppfriends";
+    Arguments   = "<Clear|Add|Remove> [Target]";
+    Types       = "Phrase String";
+    Hidden      = true;
+    function(ply, action, target)
+        -- Check if we've got a valid action
+        if (action == "clear") then
+            ply:ClearPPFriends();
+            return true;
+        end
+        -- Get our victim
+        if (not target) then
+            return false, "No target specified!";
+        end
+        local victim = player.Get(target);
+        if (not IsValid(victim)) then
+            -- Make it so people can remove offline friends
+            if (action == "remove") then
+                -- But only using their UIDs
+                --  (They shouldn't be using anything else but meh)
+                target = tonumber[target];
+                -- Verify they've used a valid UID
+                if (target and ply._ppFriends[target]) then
+                    -- Make a fake player object to keep everyone happy
+                    --  (Unless someone tries to actually do something with it :D)
+                    victim = fakeplayer(target, ply._ppFriends[target]);
+                else
+                    -- (Damn, exceptions would come in handy here.)
+                    return false, "Unable to find target '" .. target .. "'!";
+                end
             else
-                -- (Damn, exceptions would come in handy here.)
+                -- (Mainly to avoid this duplication.)
                 return false, "Unable to find target '" .. target .. "'!";
             end
+        end
+        -- See what we're up to
+        if (action == "add") then
+            ply:AddPPFriend(victim);
+            ply:Notify(victim:Name() .. " is now on your PP Friends list!", NOTIFY_GENERIC);
         else
-            -- (Mainly to avoid this duplication.)
-            return false, "Unable to find target '" .. target .. "'!";
+            ply:RemovePPFriend(victim);
+            ply:Notify(victim:Name() .. " is no longer on your PP Friends list!", NOTIFY_GENERIC);
         end
     end
-    -- See what we're up to
-    if (action == "add") then
-        ply:AddPPFriend(victim);
-        ply:Notify(victim:Name() .. " is now on your PP Friends list!", NOTIFY_GENERIC);
-    else
-        ply:RemovePPFriend(victim);
-        ply:Notify(victim:Name() .. " is no longer on your PP Friends list!", NOTIFY_GENERIC);
-    end
-    return true;
-end, "Prop Protection", "<Add|Remove|Clear> [Target]", "Mess with your PP Friends list", true);
+};
 
-cider.command.add("ppcleardisconnected", "a", 0, function()
-    local _, uid;
-    for _, ent in pairs(ents.GetAll()) do
-        if (not IsValid(ent)) then
-            continue;
-        end
-        _, _, uid = ent:GetPPOwner();
-        if (not (uid and disconnected[uid])) then
-            continue;
-        elseif (GM.Entities[ent]) then
-            ent:SetPPOwner(NULL);
-        else
-            ent:Remove();
+GM:RegisterCommand{
+    Command     = "ppcleardisconnected";
+    Access      = "a";
+    Hidden      = true;
+    function()
+        local _, uid;
+        for _, ent in pairs(ents.GetAll()) do
+            if (not IsValid(ent)) then
+                continue;
+            end
+            _, _, uid = ent:GetPPOwner();
+            if (not (uid and disconnected[uid])) then
+                continue;
+            elseif (GM.Entities[ent]) then
+                ent:SetPPOwner(NULL);
+            else
+                ent:Remove();
+            end
         end
     end
-end, "Prop Protection", "", "Clean up all disconncted player's props", true);
+};
 
-cider.command.add("ppclearprops", "b", 0, function(ply, target)
-    local victim;
-    if (not target) then
-        victim = ply;
-    elseif (not ply:HasAccess("a")) then
-        return false, "You do not have access to delete other people's props!";
-    else
-        victim = player.Get(target);
+GM:RegisterCommand{
+    Command     = "ppclearprops";
+    Arguments   = "[Target]";
+    Types       = "Player";
+    Hidden      = true;
+    function(ply, victim)
         if (not victim) then
-            return false, "Unknown target '" .. target .. "'!";
+            victim = ply;
+        elseif (victim ~= ply and not ply:HasAccess("a")) then
+            return false, "You do not have access to delete other people's props!";
         end
+        deletePropsByUID(victim:UniqueID(), victim:Name());
     end
-    deletePropsByUID(victim:UniqueID(), victim:Name());
-end, "Prop Protection", "[Target]", "Clean up your (or someone else's) props.", true);
+};
 
 local function ppconfig(ply, _, _, _, upload)
     -- This really shouldn't be an issue but I don't trust datastream.

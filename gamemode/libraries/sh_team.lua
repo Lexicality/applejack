@@ -140,7 +140,7 @@ function newteam()
 	TEAM.SizeLimit = 0; -- Any number of players can join this team.
 	TEAM.TimeLimit = 0; -- Players can stay on this job as long as they want
 	TEAM.Cooldown = 300; -- Players have to wait 5 minutes (300 seconds) befrore rejoining this team
-	TEAM.Access = GM.Config['Default Access']; -- You only need the default access to join this team.
+	TEAM.Access = GM.Config['Base Access']; -- You only need the default access to join this team.
 	TEAM.Whitelist = false; -- This team does not require a whitelist to join
 	TEAM.Blacklist = true; -- Players can be blacklisted from this team
 	TEAM.Valid = true; -- This is a valid team

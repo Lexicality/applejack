@@ -92,7 +92,7 @@ function PANEL:DoCommand( ply )
 			val = string.sub(val,1,80)
 		end
 		if val == "" then return end
-		RunConsoleCommand("cider", "demote",ply:UserID(),val);
+		RunConsoleCommand("mshine", "demote",ply:UserID(),val);
 		EditPanel:Close()
 	end
 	button = vgui.Create("DButton",EditPanel)
@@ -103,7 +103,7 @@ function PANEL:DoCommand( ply )
 			val = string.sub(val,1,80)
 		end
 		if val == "" then return end
-		RunConsoleCommand("cider", "demote",ply:UserID(),val.."\n");
+		RunConsoleCommand("mshine", "demote",ply:UserID(),val.."\n");
 		EditPanel:Close()
 	end
 	button:SetPos(EditPanel:GetWide()-button:GetWide()-10,46)
