@@ -280,9 +280,9 @@ do
             ply._ppInsert = true;
             return
         end
-        local res, err = pcall(glon.decode, str);
-        if (not res) then
-            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", err, "\n");
+        local stat, res = pcall(glon.decode, str);
+        if (not stat) then
+            ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", res, "\n");
             res = {};
         end
         ply._ppFriends = res;
