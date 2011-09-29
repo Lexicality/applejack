@@ -58,7 +58,7 @@ GM:RegisterCommand{
     Access      = "a";
     Arguments   = "<Add|Remove>";
     Types       = "Phrase";
-    Help        = "Add a prisonpoint where you're standing, or remove any near where you are looking"
+    Help        = "Add a prisonpoint where you're standing, or remove any near where you are looking";
     function(ply, action)
         local pos,count;
         if (action == "add") then

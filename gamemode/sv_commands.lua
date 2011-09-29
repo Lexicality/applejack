@@ -401,7 +401,7 @@ GM:RegisterCommand{
 };
 
 GM:RegisterCommand{
-    Comand      = "restartmap";
+    Command      = "restartmap";
     Access      = "a";
     Help        = "Instantly do a soft restart of the server";
     function(ply)
@@ -864,10 +864,6 @@ GM:RegisterCommand{
         elseif (not ply:CanAfford(GM.Config['Advert Cost'])) then
             return false, "You need another $" .. (GM.Config['Advert Cost'] - ply.cider._Money) .. "!";
         end
-        local words = table.concat({...}, " "):Trim();
-        if (words == "") then
-            return false, "You must specify a message!";
-        end
         ply._NextAdvert = CurTime() + GM.Config["Advert Timeout"]
         -- Print a message to all players.
         cider.chatBox.add(nil, ply, "advert", words);
@@ -1253,7 +1249,7 @@ end
 
 -- A command to perform an action on an ent
 GM:RegisterCommand{
-    Command     = "access"
+    Command     = "access";
     Arguments   = "<Give|Take> <kind> <id>";
     Types       = "Phrase String Number";
     Hidden      = true;
@@ -1581,7 +1577,7 @@ GM:RegisterCommand{
     end
 };
 
-GM:RegisterCommnad{
+GM:RegisterCommand{
     Command     = "looc";
     Arguments   = "<Message>";
     Types       = "...";
@@ -1626,7 +1622,7 @@ GM:RegisterCommand{
     Command     = "seal";
     Access      = "s";
     Arguments   = "[Unseal]";
-    Types       = "boolean";
+    Types       = "bool";
     Help        = "Seal or unseal a door.";
     function(ply, unseal)
         local entity = ply:GetEyeTraceNoCursor().Entity
@@ -1657,7 +1653,7 @@ GM:RegisterCommand{
     Arguments   = "<Name|'Clear'>";
     Types       = "...";
     Help        = "Set the displayed name for a door. 'Clear' with 's to set it to nothing.";
-    function(ply. words)
+    function(ply, words)
         local entity = ply:GetEyeTraceNoCursor().Entity
         if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
             return false,"That is not a valid door!"

@@ -82,7 +82,7 @@ function GM:RegisterCommand(tab)
     else
         -- First, explode the types
         local types = {};
-        for kind in pairs(tab.Types) do
+        for kind in string.gmatch(tab.Types, "[^%s]+") do
             types[#types+1] = string.lower(kind);
         end
         -- Now explode the argument strings
@@ -98,6 +98,7 @@ function GM:RegisterCommand(tab)
                     -- If you've come here wondering what this means, you have put a required argument after an optional argument
                     --  This is a logical error and while I could potentially automatically fix it, that might cause probelms with
                     --  your internal logic. Better to design right in the first place, no? :o)
+                end
             elseif (mode == "[") then
                 opt = opt + 1;
             end
@@ -282,7 +283,7 @@ function GM:DoCommand(ply, args)
     if (words ~= "") then
         words = ' "' .. words .. '"';
     end
-    GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);`
+    GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
 end
 
 concommand.Add("mshine", function(ply, _, args)
