@@ -1,9 +1,8 @@
 --[[
-Name: "cl_init.lua".
+    ~ Breach Serverside Entity ~
 	~ Applejack ~
 --]]
 
--- TODO: This will error if a player disconnects after planting.
 include("sh_init.lua");
 
 -- Add the files that need to be sent to the client.
@@ -33,28 +32,12 @@ end
 -- A function to set the door for the entity to breach.
 local function dobreach(self)
 	if not (ValidEntity(self) and ValidEntity(self._Door)) then return end
-	local event = ""
-	local addon = self._Door:GetDoorName()
-	if addon ~= "" then
-		addon = ": "..addon
-	end
-	if self._Door:IsOwned() then
-		event = self._Door:GetPossessiveName()
-	else
-		event = "an unowned"
-	end
-	GM:Log(EVENT_EVENT,"%s breached %s door%s.",self._Planter:GetName(),event,addon)
-	GM:OpenDoor(self._Door, 0, true, gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door));
-	if self._Door:GetClass() == "prop_door_rotating" then
-		self:BlowDoorOffItsHinges()
-	end
-	self:Remove();
-	self:Explode();
 end
-function ENT:SetDoor(door, trace,owner)
+function ENT:SetDoor(door, trace, owner)
 	self._Door = door;
 	self._Door:DeleteOnRemove(self);
 	self._Planter = owner
+    self._PlanterName = owner:Name();
 	
 	-- Set the position and angles of the entity.
 	self:SetPos(trace.HitPos);
@@ -79,18 +62,59 @@ function ENT:SetDoor(door, trace,owner)
 		constraint.Weld(door, self, 0, 0);
 	end
 	
-	-- Set the health of the entity.
-	self:Beep()
-	local i = 1
-	timer.Create(self:EntIndex().."Beep1",1,5,function()
-		if not (ValidEntity(self) and ValidEntity(self._Door)) then return end
-		if i == 5 then
-			timer.Create(self:EntIndex().."Beep2",0.2,5,self.Beep,self)
-		end
-		self:Beep()
-		i = i + 1
-	end)
-	timer.Simple(6.1,dobreach,self)
+    -- Trigger teh b33ps
+    self.Beeping = true;
+end
+
+ENT.Beeping = false;
+ENT.NextBeep = 0;
+ENT.NumBeeps = 0;
+ENT.FastBeeping = false;
+function ENT:Think()
+    if (not self.Beeping) then return; end
+    if (not IsValid(self._Door)) then
+        self.Beeping = false;
+        self:Remove();
+        return;
+    end
+    local ctime = CurTime();
+    if (self.NextBeep > ctime) then return; end
+    self:Beep();
+    self.NumBeeps = self.NumBeeps + 1;
+    if (self.NumBeeps == 5) then
+        self.FastBeeping = true;
+    elseif (self.NumBeeps == 10) then
+        self.Beeping = false;
+        -- BOOM
+        self:Breach();
+        return;
+    end
+    if (self.FastBeeping) then
+        self.NextBeep = ctime + 0.2;
+    else
+        self.NextBeep = ctime + 1;
+    end
+end
+
+
+function ENT:Breach()
+    local event = ""
+    local addon = self._Door:GetDoorName()
+    if addon ~= "" then
+        addon = ": "..addon
+    end
+    if self._Door:IsOwned() then
+        event = self._Door:GetPossessiveName()
+    else
+        event = "an unowned"
+    end
+    GM:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
+    GM:OpenDoor(self._Door, 0, true, self._Planter ~= NULL and gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door));
+    if self._Door:GetClass() == "prop_door_rotating" then
+        self:BlowDoorOffItsHinges()
+    end
+    self:Explode();
+    self:Remove();
 end
 
 local function dothrow(ent,backwards)
@@ -125,7 +149,7 @@ function ENT:BlowDoorOffItsHinges()
 	end
 	ent:Spawn()
 	ent:Activate()
-	cider.propprotection.GiveToWorld(ent)
+    ent:SetPPOwner(NULL);
 	local door = self._Door
 	timer.Simple(0.1,dothrow,ent,backwards);
 	timer.Simple(GM.Config["Jam Time"],doremove,ent,door)
@@ -146,5 +170,5 @@ function ENT:Explode()
 	
 	-- Create the effect from the data.
 	util.Effect("Explosion", effectData);
-	util.BlastDamage(self._Planter,self,self:GetPos(),256,100) -- Ouch!
+	util.BlastDamage(self._Planter ~= NULL and self._Planter or GetWorldEntity(), self, self:GetPos(), 256, 100) -- Ouch!
 end
