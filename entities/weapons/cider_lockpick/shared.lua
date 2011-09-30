@@ -98,8 +98,9 @@ local thumpsounds = {
 -- Called when the SWEP is initialized.
 function SWEP:Initialize()
 	self:SetWeaponHoldType("melee");
+    --[[
 	if (SERVER) then
-		 -- TODO: Remove this is sounds are not precached.
+		 -- TODO: Find out if sounds are actually precached.
 		for _,sound in pairs(fiddlesounds) do
 			Sound(sound);
 		end
@@ -113,6 +114,7 @@ function SWEP:Initialize()
 			Sound(sound);
 		end
 	end
+    --]]
 end
 
 -- Allows me to send the client sounds
