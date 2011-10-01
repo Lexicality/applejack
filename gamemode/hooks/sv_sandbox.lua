@@ -6,15 +6,6 @@
 	This file is for the base gamemodes' hooks.
 	As such, there is no need to document them as they are all standard.
 --]]
-local function vt(p)
-	if (IsValid(p)) then
-		p:SetCollisionGroup(COLLISION_GROUP_PLAYER);
-	end
-end
--- TODO: Is this strictly necessary?
-function GM:PlayerEnteredVehicle(ply, vehicle, role)
-	timer.Simple(FrameTime() * 2, vt, ply);
-end
 
 function GM:PlayerSwitchFlashlight(ply, on)
 	-- Do not let the player use their flashlight while arrested, unconsious or tied.
