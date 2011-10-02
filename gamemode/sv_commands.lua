@@ -1182,7 +1182,7 @@ GM:RegisterCommand{
             return false, "Invalid action!";
         elseif (action ~= "purchase") then
             return false, "You can't do that to this!";
-        elseif (not ent:Isdoor()) then
+        elseif (not ent:IsDoor()) then
             return false, "Shit I aint done this yet sorry!"; -- TODO: Do this yet
         elseif (not (gamemode.Call("PlayerCanOwnDoor", ply, ent) and ply:CheckLimit("doors"))) then
             return false;
