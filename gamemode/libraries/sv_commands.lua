@@ -78,7 +78,9 @@ function GM:RegisterCommand(tab)
         end
     end
     if (not tab.Arguments or tab.Arguments == "") then
-        tab.targs    = 0;
+        tab.targs = 0;
+        tab.rargs = 0;
+        tab.oargs = 0;
     else
         -- First, explode the types
         local types = {};

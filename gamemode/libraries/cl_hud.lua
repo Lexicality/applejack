@@ -286,7 +286,7 @@ GM:AddDynamicHUDBox(function(box)
 	if (text == "") then
 		return -1;
 	end
-	return "You have a " .. text .. " warrant!";
+	return "You have " .. (text == "arrest" and "an" or "a") .. " " .. text .. " warrant!";
 end,"gui/silkicons/page_white_text")
 
 -- Kevlar
