@@ -16,7 +16,7 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_BBOX);
 	self:SetUseType(SIMPLE_USE);
 	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-	cider.propprotection.GiveToWorld(self)
+    self:SetPPOwner(NULL);
 	
 	-- Get the physics object of the entity.
 	local physicsObject = self:GetPhysicsObject();
