@@ -250,13 +250,13 @@ function GM:DoCommand(ply, args)
                 end
                 pargs[i] = n;
             elseif (t == "player") then
-                local ply = player.Get(arg);
-                if (not ply) then
+                local pl = player.Get(arg);
+                if (not pl) then
                     ply:Notify("Cannot find player '" .. arg .. "' for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
                     ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
                     return;
                 end
-                pargs[i] = ply;
+                pargs[i] = pl;
             elseif (t == "phrase") then
                 local w = string.lower(arg);
                 if (not cmd.Phrases[i][w]) then
@@ -273,8 +273,11 @@ function GM:DoCommand(ply, args)
         end
     end
     local stat, res, err = pcall(cmd.Function, ply, unpack(pargs));
+    for k, v in pairs(pargs) do
+        pargs[k] = tostring(v);
+    end
     if (not stat) then
-        Error("[", os.date(), "] Moonshine: Command '", cmd.Command, ' "', table.Concat(pargs, '" "'), "\" 's callback failed: ", res, "\n");
+        Error("[", os.date(), "] Moonshine: Command '", cmd.Command, ' "', table.concat(pargs, '" "'), "\" 's callback failed: ", res, "\n");
     elseif (res == false) then
         if (err and err ~= "") then
             ply:Notify(err, NOTIFY_ERROR);
