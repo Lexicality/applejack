@@ -244,6 +244,10 @@ function GM:DoCommand(ply, args)
             elseif (t == "number") then
                 local n = tonumber(arg);
                 if (not n) then
+                    if (not cmd.aargs[i]) then
+                        PrintTable(cmd.aargs);
+                        return;
+                    end
                     ply:Notify("Invalid number for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
                     ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
                     return;
