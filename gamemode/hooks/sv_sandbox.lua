@@ -56,6 +56,9 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 		return false
 	elseif (not gamemode.Call("PlayerCanDoSomething", ply, true)) then
 		return false;
+    elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
+        ply:Notify("That team is full!", NOTIFY_ERROR);
+        return false;
 	end
 	-- Ask the shared hook which handles the complex gang related tings.
 	local res, msg = self:PlayerCanJoinTeamShared(ply, teamid);
