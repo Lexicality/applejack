@@ -279,7 +279,7 @@ function PANEL:Think()
 	if (not self.nolimit and self.LastNump ~= nump) then
 		self.LastNump = nump;
 		self.label:SetText(self.Team.Name .. " (" .. nump .. "/" .. self.Team.SizeLimit .. ")");
-		if (not self.NoButton and nump > self.Team.SizeLimit) then
+		if (not self.NoButton and nump >= self.Team.SizeLimit) then
 			self.button:SetDisabled(true);
 			self.button:SetText("Full");
 		end

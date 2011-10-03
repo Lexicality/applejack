@@ -56,7 +56,7 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 		return false
 	elseif (not gamemode.Call("PlayerCanDoSomething", ply, true)) then
 		return false;
-    elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
+    elseif (team.NumPlayers(tdata.TeamID) >= teamdata.SizeLimit) then
         ply:Notify("That team is full!", NOTIFY_ERROR);
         return false;
 	end
