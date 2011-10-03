@@ -153,7 +153,7 @@ function GM:PlayerCanArrest(ply, target)
 end
 
 -- Called when a player attempts to unarrest a player.
-function GM:PlayerCanUnarrest(ply, target)
+function GM:PlayerCanUnArrest(ply, target)
 	return true
 end
 

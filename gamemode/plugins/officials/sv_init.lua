@@ -112,7 +112,7 @@ function PLUGIN:PlayerCanWakeUp(ply, target)
 end
 
 -- Called when a player attempts to unarrest another player.
-function PLUGIN:PlayerCanUnarrest(ply, target)
+function PLUGIN:PlayerCanUnArrest(ply, target)
 	if (ply:IsAdmin()) then return true; end -- Light abuse
 	if (not self:IsAuthorised(ply,true)) then
 		player:Notify("You do not have access to unarrest this player!", 1);
