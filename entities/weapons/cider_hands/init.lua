@@ -116,15 +116,7 @@ function SWEP:SecondaryAttack()
     end
     -- Implicitly valid.
     local ent = tr.Entity;
-    if (ent:IsDoor()) then
-        -- Knock
-        self:SendWeaponAnim(ACT_VM_HITCENTER);
-        self:EmitSound("physics/wood/wood_crate_impact_hard2.wav")
-        -- Cheats!
-        if (self:GetDTBool(0) and ply:IsSuperAdmin()) then
-            GM:OpenDoor(ent, 0);
-        end
-    elseif (ply:KeyDown(IN_SPEED)) then
+    if (ply:KeyDown(IN_SPEED)) then
         -- Attempted to unlock
         self:SetNextPrimaryFire(CurTime() + 0.75);
         self:SetNextSecondaryFire(CurTime() + 0.75);
@@ -138,6 +130,14 @@ function SWEP:SecondaryAttack()
         -- Lock
         ent:UnLock();
         ent:EmitSound("doors/door_latch3.wav");
+    elseif (ent:IsDoor()) then
+        -- Knock
+        self:SendWeaponAnim(ACT_VM_HITCENTER);
+        self:EmitSound("physics/wood/wood_crate_impact_hard2.wav")
+        -- Cheats!
+        if (self:GetDTBool(0) and ply:IsSuperAdmin()) then
+            GM:OpenDoor(ent, 0);
+        end
     else
         self:PickUp(ent, tr);
     end
