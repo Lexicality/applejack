@@ -104,8 +104,8 @@ function GM:RegisterCommand(tab)
             elseif (mode == "[") then
                 opt = opt + 1;
             end
-            args[tot] = name;
             tot = tot + 1;
+            args[tot] = name;
             kind = types[tot];
             if (not kind) then
                 error("There are more Arguments than Types!", 2);
