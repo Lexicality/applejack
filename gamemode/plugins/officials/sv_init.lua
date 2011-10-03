@@ -339,7 +339,6 @@ GM:RegisterCommand{
         if (team ~= TEAM_MAYOR and team ~= TEAM_POLICECOMMANDER) then
             return false, "You cannot make broadcasts!";
         end
-        local words = table.concat(args, " "):Trim();
         if (team == TEAM_POLICECOMMANDER) then
             words = "(POLICE) "..words;
         end
