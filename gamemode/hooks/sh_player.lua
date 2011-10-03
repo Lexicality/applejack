@@ -12,7 +12,7 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
 	if (not tdata or tdata.Invisible) then
 		return false, "Invalid team!";
-    elseif (team.GetPlayers(tdata.TeamID) >= tdata.SizeLimit) then
+    elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
         return false, "That team is full!";
 	end
 	
