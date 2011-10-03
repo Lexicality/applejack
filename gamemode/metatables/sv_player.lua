@@ -80,7 +80,7 @@ end
 -- @param name The AddCount name
 -- @param ent The entity to remove
 function meta:TakeCount(name, ent)
-	local tab = SBoxObjects[self:UniqueID()];
+	local tab = g_SBoxObjects[self:UniqueID()];
 	if (not ( tab and tab[name])) then return end
 	for k, e in pairs(tab[name]) do
 		if (e == ent) then
