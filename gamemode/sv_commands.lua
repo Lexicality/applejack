@@ -1292,7 +1292,7 @@ GM:RegisterCommand{
         elseif (not gamemode.Call("PlayerCanManufactureItem", ply, item)) then
             return false;
         elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
-            return false, "You cannot manufacture another item for "..math.ceil( ply._NextManufactureItem - CurTime() ).." second(s)!";     
+            return false, "You cannot manufacture another item for "..math.ceil( ply.NextManufactureItem - CurTime() ).." second(s)!";     
         end
         local amt = item.Batch;
         local price = item.Cost * amt;
