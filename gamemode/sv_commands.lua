@@ -1572,7 +1572,7 @@ GM:RegisterCommand{
         if (not gamemode.Call("PlayerCanSayOOC", ply, text)) then
             return false;
         end
-        cider.chatBox.addInRadius(ply, "ooc", text , ply:GetPos(), GM.Config["Talk Radius"]);
+        cider.chatBox.add(nil, ply, "ooc", text);
         --GM:Log(EVENT_TALKING,"(OOC) %s: %s",player:Name(),text)
     end
 };
