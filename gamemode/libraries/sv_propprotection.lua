@@ -124,7 +124,7 @@ function GM:PlayerCanTouch(ply, ent)
 	end
 	local owner = ent:GetPPOwner()
 	if (not owner) then
-		ent:GiveToPlayer(ply);
+		ent:SetPPOwner(ply);
 		ply:Notify("You now own this prop.", NOTIFY_GENERIC);
 		return true
 	elseif (owner == GetWorldEntity()) then
@@ -209,7 +209,7 @@ function GM:PhysgunPickup(ply, ent)
         return true;
 	elseif (ent:IsVehicle()) then
 		local model = ent:GetModel();
-		if (not (player:IsAdmin() or model:find("chair") or model:find("seat"))) then
+		if (not (ply:IsAdmin() or model:find("chair") or model:find("seat"))) then
 			return false;
 		end
 	elseif (ent:IsDoor()) then
@@ -258,7 +258,7 @@ function GM:OnPhysgunReload(_, ply)
 end;
 
 function GM:GravGunPickupAllowed(ply, ent)
-	if (not physhandler(ply, ent)) then
+	if (not physhandle(ply, ent)) then
 		return false;
 	elseif (ent.GravGunPickupAllowed) then
 		return ent:GravGunPickupAllowed(ply);
@@ -374,7 +374,7 @@ do
         disconnected[ply:UniqueID()] = true;
     end
     local function spawnHandler(ply, ent)
-        ent:SetPPPlayer(ply)
+        ent:SetPPOwner(ply)
         ent:SetPPSpawner(ply)
     end
     local function AcceptStream(ply, handler, id)
