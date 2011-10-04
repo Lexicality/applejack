@@ -721,28 +721,35 @@ function meta:LoadData()
 end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
+local format = '"%s"';
 local function getKVs(ply)
 	local keys, values = {}, {};
-	local value;
+	local value, kind;
 	for k,v in pairs(ply.cider) do
 		value = nil;
+        kind  = type(v);
 		if (player.saveIgnoreKeys[k]) then
 			value = false;
 		elseif (player.saveFunctions[k]) then
 			value = player.saveFunctions[k](ply, v);
-		elseif (type(v) == "table") then
+		elseif (kind == "table") then
 			local s, r = pcall(glon.encode, v);
 			if (not s) then
 				ErrorNoHalt("["..os.date().."] Error encoding "..ply:Name().."'s '"..k.."' table: "..r.."\n");
 			else
 				value = r;
 			end
+        elseif (kind == "number") then
+            value = v;
 		elseif (player.saveEscapeKeys[k]) then
 			value = tmysql.escape(tostring(v));
 		else
 			value = tostring(v);
 		end
 		if (value) then
+            if (kind ~= "number") then
+                value = string.format(format, value);
+            end
 			table.insert(keys, k);
 			table.insert(values, value);
 		end
@@ -751,27 +758,23 @@ local function getKVs(ply)
 end
 
 -- Creates a CREATE query to make a new entry in the SQL DB and returns it
+local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
 local function createCreateQuery(ply)
-	local keys,values = getKVs(ply);
-	local query = "INSERT INTO "..GM.Config["MySQL Table"].." (";
-	for _, key in pairs(keys) do
-		query = query .. key .. ", ";
-	end
-	query = query:sub(1, -3) .. ") VALUES (";
-	for _, value in pairs(values) do
-		query = query .. '"' .. value .. '", ';
-	end
-	return query:sub(1, -3) .. ")";
+	local keys, vals = getKVs(ply);
+    keys = table.concat(keys, ", "):Sub(1, -3);
+    vals = table.concat(vals, ", "):Sub(1, -3);
+    return string.format(createqueryformat, keys, vals);
 end
 
 -- Creates an UPDATE query and returns it
+local updatequeryformat = "UPDATE "..GM.Config["MySQL Table"].." SET %s WHERE _UniqueID = %i";
 local function createUpdateQuery(ply)
 	local keys,values = getKVs(ply);
-	local query = "UPDATE "..GM.Config["MySQL Table"].." SET ";
+    local q = "";
 	for i = 1, #keys do
-		query = query .. keys[i] .. ' = "' .. values[i] .. '", ';
+        q = q .. string.format("%s = %s, ", keys[i], values[i]);
 	end
-	return query:sub(1, -3) .. " WHERE _UniqueID = "..ply:UniqueID();
+    return string.format(updatequeryformat, q:sub(1, -3), ply:UniqueID());
 end
 
 ---
