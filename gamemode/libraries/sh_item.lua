@@ -109,7 +109,7 @@ function GM:LoadItems()
                     end
                 end
                 if (reg) then
-                    registerCategory(CAT);
+                    _E['CATEGORY_'..string.upper(filename)] = registerCategory(CAT);
                     verb = "Created"
                 end
             else
