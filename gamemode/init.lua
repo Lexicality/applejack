@@ -3,8 +3,8 @@ Name: "init.lua".
 	~ Applejack ~
 --]]
 
---
-require"tmysql"
+-- Database module
+require"mysqloo"
 
 -- Include the shared gamemode file.
 include("sh_init.lua")
@@ -87,22 +87,49 @@ end
 -- A table that will hold entities that were there when the map started.
 GM.Entities = {}
 
+local function onConnected()
+    GM:Log(EVENT_SQLDEBUG,"Connected to the MySQL server!");
+    for _, ply in pairs(player.GetAll()) do
+        ply:SaveData();
+    end
+end
+local function onFailure(q, err)
+    GM:Log(EVENT_ERROR,"Error connecting to the MySQL server: %s", err);
+    timer.Simple(60, GM.Database.connect, GM.Database);
+end
+
+
 -- Called when the server initializes.
 function GM:Initialize()
 	GM = self; -- ¬_¬ garru
 	ErrorNoHalt"----------------------\n"
 	ErrorNoHalt(os.date().." - Server starting up\n")
 	ErrorNoHalt"----------------------\n"
-	local host = self.Config["MySQL Host"]
+	local hostname = self.Config["MySQL Host"]
 	local username = self.Config["MySQL Username"]
 	local password = self.Config["MySQL Password"]
 	local database = self.Config["MySQL Database"]
 	
 	-- Initialize a connection to the MySQL database.
-	tmysql.initialize(self.Config["MySQL Host"], self.Config["MySQL Username"], self.Config["MySQL Password"], self.Config["MySQL Database"], 3306, 5, 5)
-	GM = self;
+    self.Database = mysqloo.Connect(hostname, username, password, database);
+    self.Database:Connect();
+
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
+end
+
+---
+-- Checks to see if the database is in a queryable state, and re-connects if it's not.
+-- TODO: This URGENTLY needs a query queue system.
+-- @return True if a query can be executed right now
+function GM:CanQueryDB()
+    local stat = self.Database:status();
+    if (stat == mysqloo.DATABASE_CONNETED) then
+        return true;
+    elseif (stat ~= mysqloo.DATABASE_CONNECTING) then
+        self.Database:Connect();
+    end
+    return false;
 end
 
 --WELL DONE MR DA DECO MAN. - Adding this as GM:AcceptStream DOES NOT WORK

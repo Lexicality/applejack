@@ -682,42 +682,73 @@ local function timerfunc(ply)
 		ply:LoadData();
 	end
 end
+
+local getloaddataquery
+do
+    local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %i"
+    local function onFailure(query, err)
+        GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
+        timer.Simple(30, timerfunc, query.ply);
+    end
+    local function onData(query, data)
+        query.hasData = true;
+        local ply = query.ply;
+        if (not IsValid(ply)) then
+            return;
+        end
+        -- Load datas
+        loadCallback(ply, data);
+    end
+    local function onSuccess(query)
+        if (query.hasData) then
+            return;
+        end
+        local ply = query.ply;
+        if (not IsValid(ply)) then
+            return;
+        end
+        -- New player
+        ply.cider._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
+        GM:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
+        gamemode.Call("PlayerDataLoaded", ply, false);
+        ply:SaveData(true);
+    end
+    function getloaddataquery(ply)
+        local query = GM.Database:query(string.format(query, ply:UniqueID()));
+        query.name = ply:Name();
+        query.ply  = ply;
+        query.onSuccess = onSuccess;
+        query.onFailure = onFailure;
+        query.onData    = onData;
+        query:start();
+        return query;
+    end
+end
+    
 ---
 -- Load a player's data from the SQL database, overwriting any data already loaded on the player. Performs it's actions in a threaded query.
 -- If the player's data has not been loaded after 30 seconds, it will call itself again
 function meta:LoadData()
-	local ply = self; -- Keywords do not work well as upvalues.
-	local name = ply:Name(); -- In case they leave and then cause an error.
+    if (not GM:CanQueryDB()) then
+        GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
+        timer.Simple(30, timerfunc, self);
+        return;
+    end
 	-- Set up the default cider table. 
-	ply.cider = {
-		_Name = ply:Name(),
+	self.cider = {
+		_Name = self:Name(),
 		_Misc = {},
 		_Clan = GM.Config["Default Clan"],
 		_Money = GM.Config["Default Money"],
 		_Access = GM.Config["Default Access"],
 		_Donator = 0,
-		_SteamID = ply:SteamID();
-		_UniqueID = ply:UniqueID();
+		_SteamID = self:SteamID();
+		_UniqueID = self:UniqueID();
 		_Arrested = false,
 		_Inventory = {},
 		_Blacklist = {},
 	}
-	tmysql.query("SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = " .. self:UniqueID(), function(r, s, e)
-		if (e ~= 0) then
-			GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", name, tostring(e));
-		elseif (not IsValid(ply)) then
-			return
-		elseif (type(r) == "table" and #r > 0) then -- If we've got a result, then call the loadfunc
-			loadCallback(ply, r[1]);
-		else -- Otherwise we gotta init the player as new.
-			ply.cider._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
-			GM:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
-			gamemode.Call("PlayerDataLoaded", ply, false);
-			ply:SaveData(true);
-		end
-	end, 1);
 	-- Try loading again in 30 seconds if the loading hasn't worked by then.
-	timer.Simple(30, timerfunc, self);
 end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
@@ -742,7 +773,7 @@ local function getKVs(ply)
         elseif (kind == "number") then
             value = v;
 		elseif (player.saveEscapeKeys[k]) then
-			value = tmysql.escape(tostring(v));
+			value = GM.Database:escape(tostring(v));
 		else
 			value = tostring(v);
 		end
@@ -777,21 +808,33 @@ local function createUpdateQuery(ply)
     return string.format(updatequeryformat, q:sub(1, -3), ply:UniqueID());
 end
 
+local getsavedataquery
+do
+    local function onFailure(query, err)
+        GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", query.name, err);
+    end
+    local function onSuccess(query)
+        GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
+    end
+    function getsavedataquery(q, n)
+        local query = GM.Database:Query(q);
+        query.onFailure = onFailure;
+        query.onSuccess = onSuccess;
+        query.name = n;
+        query:Start();
+        return query;
+    end
+end
+
 ---
 -- Save a player's data to the SQL server in a threaded query.
 -- @param create Whether to create a new entry or do a normal update.
 function meta:SaveData(create)
-	if (not self._Initialized) then return end
+	if (not self._Initialized) then return; end
+    if (not GM:CanQueryDB()) then return; end
     gamemode.Call("PlayerSaveData", self);
 	local query = create and createCreateQuery(self) or createUpdateQuery(self);
-	local name = self:Name(); -- In case they leave and then cause an error.
-	tmysql.query(query, function(r, s, e)
-		if (e ~= 0) then
-			GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", name, tostring(e));
-		else
-			GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", name);
-		end
-	end);
+    self._SaveQuery = getsavedataquery(query, self:Name());
 end
 
 ----------------------------
