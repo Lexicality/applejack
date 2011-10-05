@@ -111,8 +111,8 @@ function GM:Initialize()
 	local database = self.Config["MySQL Database"]
 	
 	-- Initialize a connection to the MySQL database.
-    self.Database = mysqloo.Connect(hostname, username, password, database);
-    self.Database:Connect();
+    self.Database = mysqloo.connect(hostname, username, password, database);
+    self.Database:connect();
 
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
@@ -124,10 +124,10 @@ end
 -- @return True if a query can be executed right now
 function GM:CanQueryDB()
     local stat = self.Database:status();
-    if (stat == mysqloo.DATABASE_CONNETED) then
+    if (stat == mysqloo.DATABASE_CONNECTED) then
         return true;
     elseif (stat ~= mysqloo.DATABASE_CONNECTING) then
-        self.Database:Connect();
+        self.Database:connect();
     end
     return false;
 end

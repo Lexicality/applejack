@@ -729,11 +729,6 @@ end
 -- Load a player's data from the SQL database, overwriting any data already loaded on the player. Performs it's actions in a threaded query.
 -- If the player's data has not been loaded after 30 seconds, it will call itself again
 function meta:LoadData()
-    if (not GM:CanQueryDB()) then
-        GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
-        timer.Simple(30, timerfunc, self);
-        return;
-    end
 	-- Set up the default cider table. 
 	self.cider = {
 		_Name = self:Name(),
@@ -748,7 +743,12 @@ function meta:LoadData()
 		_Inventory = {},
 		_Blacklist = {},
 	}
-	-- Try loading again in 30 seconds if the loading hasn't worked by then.
+    if (not GM:CanQueryDB()) then
+        GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
+        timer.Simple(30, timerfunc, self);
+        return;
+    end
+    self._LoadQuery = getloaddataquery(self);
 end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
@@ -792,8 +792,8 @@ end
 local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
 local function createCreateQuery(ply)
 	local keys, vals = getKVs(ply);
-    keys = table.concat(keys, ", "):Sub(1, -3);
-    vals = table.concat(vals, ", "):Sub(1, -3);
+    keys = table.concat(keys, ", "):sub(1, -3);
+    vals = table.concat(vals, ", "):sub(1, -3);
     return string.format(createqueryformat, keys, vals);
 end
 
@@ -817,11 +817,11 @@ do
         GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
     end
     function getsavedataquery(q, n)
-        local query = GM.Database:Query(q);
+        local query = GM.Database:query(q);
         query.onFailure = onFailure;
         query.onSuccess = onSuccess;
         query.name = n;
-        query:Start();
+        query:start();
         return query;
     end
 end
@@ -831,7 +831,10 @@ end
 -- @param create Whether to create a new entry or do a normal update.
 function meta:SaveData(create)
 	if (not self._Initialized) then return; end
-    if (not GM:CanQueryDB()) then return; end
+    if (not GM:CanQueryDB()) then
+        GM:Log(EVENT_ERROR,"Can't save %q's data as the DB is offline!", self:Name());
+        return;
+    end
     gamemode.Call("PlayerSaveData", self);
 	local query = create and createCreateQuery(self) or createUpdateQuery(self);
     self._SaveQuery = getsavedataquery(query, self:Name());
