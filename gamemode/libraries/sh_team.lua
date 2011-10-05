@@ -171,7 +171,7 @@ function newgroup()
 	GROUP = {}
 	GROUP.Name = "Example Group"
 	GROUP.Description = "An example group to demonstrate the new team system."
-	GROUP.CanMake = {CATEGORY_VEHICLES, CATEGORY_CONTRABAND}; -- Members of this group can make cars and contraband
+	GROUP.CanMake = {CATEGORY_CONTRABAND}; -- Members of this group can make cars and contraband
 	GROUP.CantUse = {} -- There's nothing special for members of this group not to use
 	GROUP.StartingEquipment = {
 		Ammo = {}; -- This group has no ammo granted (Syntax {type,amount}; eg {"smg1", 200})

@@ -9,6 +9,11 @@ if (table.HasValue(nocarmaps,game.GetMap():lower())) then
 	return;
 end
 PLUGIN.Name = "Vehicles";
+function PLUGIN:PlayerCanManufactureCategory(ply, category)
+    if (category == CATEGORY_VEHICLES) then
+        return true;
+    end
+end
 --[[
 	Credit goes to NoVa for VU-Mod, which I have sliced and diced and rewritten and prodded into this.
 --]]
