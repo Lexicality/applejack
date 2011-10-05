@@ -776,7 +776,7 @@ GM:RegisterCommand{
         words = words or "";
         words = string.sub (words, 1, 50)
         words = string.Trim(words);
-        if (words == "none" or "quit") then
+        if (words == "none" or words == "quit") then
             words = "";
         end
         ply.cider._Clan = words;
