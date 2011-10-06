@@ -127,6 +127,7 @@ function SWEP:SecondaryAttack()
         end
         GM:Log(EVENT_POLICEEVENT, "%s unarrested %s.", self.Owner:Name(), ply:Name());
         gamemode.Call("PlayerUnarrest", self.Owner, ply);
+        ply:UnArrest();
     elseif (gamemode.Call("PlayerCanArrest", self.Owner, ply)) then
         if (ply:KnockedOut()) then
             ply:WakeUp();
