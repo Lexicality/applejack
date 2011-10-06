@@ -27,33 +27,39 @@ function GM:LoadTeams()
     local cpath;
 	for _, group in pairs(file.FindInLua(path.."*")) do
         cpath = path .. group .. "/"
-		if (validfile(group) and not group:find('.',1,true) and
-           file.ExistsInLua(cpath .. "init.lua")) then
-			newgroup();
-			includecs(cpath .. "init.lua");
-			if (GROUP.Valid) then
-				MsgN(" Loaded group " .. GROUP.Name .. ".");
-				GROUP.UniqueID = group:gsub(a,b);
-				reggroup();
-				for _, gang in pairs(file.FindInLua(cpath .. "*")) do
-                    local cpath = cpath .. gang .. "/";
-					if (validfile(gang) and not gang:find('.',1,true) and
-                       file.ExistsInLua(cpath .. "init.lua")) then
-						newgang();
-						includecs(cpath .. "init.lua");
-						if (GANG.Valid) then
-							MsgN("  Loaded gang " .. GANG.Name .. ".");
-							GANG.UniqueID = gang:gsub(a,b);
-							reggang();
-							loadteams(cpath);
-						end
-						GANG = nil;
-					end
-				end
-				loadteams(cpath);
-			end
-			GROUP = nil;
-		end
+		if (not (validfile(group) and not group:find('.',1,true) and
+           file.ExistsInLua(cpath .. "init.lua"))) then
+            continue;
+        end
+        newgroup();
+        includecs(cpath .. "init.lua");
+        if (not GROUP.Valid) then
+            GROUP = nil;
+            continue;
+        end
+        MsgN(" Loaded group ", GROUP.Name, ".");
+        GROUP.UniqueID = group:gsub(a,b);
+        reggroup();
+        for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+            local cpath = cpath .. gang .. "/";
+            if (not (validfile(gang) and not gang:find('.',1,true) and
+               file.ExistsInLua(cpath .. "init.lua"))) then
+                continue;
+            end
+            newgang();
+            includecs(cpath .. "init.lua");
+            if (not GANG.Valid) then
+                GANG = nil;
+                continue;
+            end
+            MsgN("  Loaded gang ", GANG.Name, ".");
+            GANG.UniqueID = gang:gsub(a,b);
+            reggang();
+            loadteams(cpath);
+            GANG = nil;
+        end
+        loadteams(cpath);
+        GROUP = nil;
 	end
     MsgN("Applejack: Loading teams from plugins:");
     local plugins = {};
@@ -62,7 +68,47 @@ function GM:LoadTeams()
             plugins[plugin] = plugin.FullPath .. "/teams/";
         end
     end
-	MsgN("Applejack: Loaded " .. GROUPCOUNT .. " groups, " .. GANGCOUNT .. " gangs and " .. TEAMCOUNT .. " teams.\n");
+    local gdata, init;
+    for plugin, path in pairs(plugins) do
+        MsgN(" Looking in", plugin.Name);
+        for _, group in pairs(file.FindInLua(path .. "*")) do
+            cpath = path .. group .. "/";
+            if (not validfile(group) or group.find('.', 1, true)) then
+                continue;
+            end
+            group = group:gsub(a, b);
+            gdata = "GROUP_" string.upper(group);
+            gdata = _G[gdata];
+            if (gdata) then
+                GROUP = self.Groups[gdata] or Error("oh god what? group:", group, " gdata:", gdata, " res:", tostring(self.Groups[gdata]));
+            end
+            init = file.ExistsInLua(cpath .. "init.lua");
+            if (init) then
+                if (not gdata) then
+                    newgroup();
+                end
+                -- Load any modifications.
+                includecs(cpath .. "init.lua");
+                if (not GROUP.Valid) then
+                    GROUP = nil;
+                    continue;
+                end
+                if (not gdata) then
+                    MsgN("  Loaded group ", GROUP.Name, ".");
+                    GROUP.UniqueID = group;
+                    reggroup();
+                else
+                    MsgN("  Modified group ", GROUP.Name, ".");
+                end
+            elseif (not gdata) then
+                ErrorNoHalt("  Warning! Unknown group ", group, " with no init.lua!");
+                continue;
+            else
+                MsgN("  Loaded group ", Group.Name, ".");
+            end
+        end
+    end
+	MsgN("Applejack: Loaded ", GROUPCOUNT, " groups, ", GANGCOUNT, " gangs and ", TEAMCOUNT, " teams.\n");
 	GROUPCOUNT, GANGCOUNT, TEAMCOUNT = nil;
 end
 
