@@ -24,36 +24,44 @@ function GM:LoadTeams()
 	GROUPCOUNT = 0;
 	GANGCOUNT = 0;
 	TEAMCOUNT = 0;
+    local cpath;
 	for _, group in pairs(file.FindInLua(path.."*")) do
+        cpath = path .. group .. "/"
 		if (validfile(group) and not group:find('.',1,true) and
-		   (file.Exists("../gamemodes/"..path..group.."/init.lua")
-		or file.Exists("../lua_temp/"  ..path..group.."/init.lua"))) then
+           file.ExistsInLua(cpath .. "init.lua")) then
 			newgroup();
-			includecs(path..group.."/init.lua");
+			includecs(cpath .. "init.lua");
 			if (GROUP.Valid) then
 				MsgN(" Loaded group " .. GROUP.Name .. ".");
 				GROUP.UniqueID = group:gsub(a,b);
 				reggroup();
-				for _, gang in pairs(file.FindInLua(path..group.."/*")) do
+				for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+                    local cpath = cpath .. gang .. "/";
 					if (validfile(gang) and not gang:find('.',1,true) and
-					   (file.Exists("../gamemodes/"..path..group.."/"..gang.."/init.lua")
-					or file.Exists("../lua_temp/"  ..path..group.."/"..gang.."/init.lua"))) then
+                       file.ExistsInLua(cpath .. "init.lua")) then
 						newgang();
-						includecs(path..group.."/"..gang.."/init.lua");
+						includecs(cpath .. "init.lua");
 						if (GANG.Valid) then
 							MsgN("  Loaded gang " .. GANG.Name .. ".");
 							GANG.UniqueID = gang:gsub(a,b);
 							reggang();
-							loadteams(path..group.."/"..gang.."/");
+							loadteams(cpath);
 						end
 						GANG = nil;
 					end
 				end
-				loadteams(path..group.."/");
+				loadteams(cpath);
 			end
 			GROUP = nil;
 		end
 	end
+    MsgN("Applejack: Loading teams from plugins:");
+    local plugins = {};
+    for _, plugin in pairs(GM.Plugins) do
+        if (plugin._HasTeams) then
+            plugins[plugin] = plugin.FullPath .. "/teams/";
+        end
+    end
 	MsgN("Applejack: Loaded " .. GROUPCOUNT .. " groups, " .. GANGCOUNT .. " gangs and " .. TEAMCOUNT .. " teams.\n");
 	GROUPCOUNT, GANGCOUNT, TEAMCOUNT = nil;
 end
