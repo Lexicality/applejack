@@ -79,7 +79,7 @@ function PANEL:Think()
 		self.team = job
 		for k,v in pairs(self.headers) do
 			v:Toggle()
-			v:SetExpanded( table.HasValue(team.Query(self.team,"CanMake",{}), k))
+			v:SetExpanded(gamemode.Call("PlayerCanManufactureCategory", lpl, k)) -- Expanded when popped up
 		end
 	end
 end
