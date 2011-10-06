@@ -1316,7 +1316,7 @@ GM:RegisterCommand{
             words = "a " .. item.Name;
         end
         ply:Notify("You manufactured " .. words .. ".");
-        GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), text);
+        GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), words);
     end
 };
 
