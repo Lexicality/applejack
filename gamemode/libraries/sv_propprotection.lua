@@ -123,12 +123,13 @@ function GM:PlayerCanTouch(ply, ent)
 		return true;
 	end
 	local owner = ent:GetPPOwner()
-	if (not owner) then
+	if (not owner and ent:GetClass() == "prop_physics") then
 		ent:SetPPOwner(ply);
 		ply:Notify("You now own this prop.", NOTIFY_GENERIC);
 		return true
-	elseif (owner == GetWorldEntity()) then
-		return ply:IsAdmin() and tobool(config["adminabuse"]);
+    elseif (ply:IsAdmin()) then
+        -- Admins can pick up anything
+        return true;
 	elseif (owner == ply or (IsPlayer(ply) and owner:IsPPFriendsWith(ply))) then
 		return true;
 	else

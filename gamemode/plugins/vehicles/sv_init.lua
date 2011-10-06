@@ -104,7 +104,8 @@ function PLUGIN:SpawnCar(ply, item)
 	if (not IsValid(ent)) then
 		return;
 	end
-    ent:SetPPOwner(ply);
+    --ent:SetPPOwner(ply);
+    ent:SetPPOwner(NULL);
 	ent.CanTool = toolfunc;
 	ent._LockpickHits = GM.Config["Maximum Lockpick Hits"] * 2 + 5; -- Thus making cars a hell of a lot harder to pick. ;D
 	ent:Lock();
