@@ -1293,6 +1293,8 @@ GM:RegisterCommand{
             return false;
         elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
             return false, "You cannot manufacture another item for "..math.ceil( ply.NextManufactureItem - CurTime() ).." second(s)!";     
+        elseif (item.canManufacture and not item:canManufacture(ply)) then
+            return false;
         end
         local amt = item.Batch;
         local price = item.Cost * amt;
@@ -1301,7 +1303,7 @@ GM:RegisterCommand{
             return false, "You need another $" .. req .. " to afford that!";
         end
         ply:GiveMoney(-price);
-        ply.NextManufactureItem = CurTime() + 5 * amt;
+        ply.NextManufactureItem = CurTime() + 5;
         
         local tr = ply:GetEyeTraceNoCursor();
         local ent = item:Make(tr.HitPos + Vector(0,0,16), amt);
