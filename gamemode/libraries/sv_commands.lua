@@ -158,23 +158,56 @@ function GM:PlayerSay(ply, text, public)
     if (string.sub(text, 1, 1) == self.Config["Command Prefix"]) then
         local args = {};
         -- Get rid of the prefix
-        text = string.sub(text, 2);
-        -- TODO: Create a sequential parser for vararg commands. Ref ticket #129.
-        -- Determine if we start off in a quote;
-        local quote = string.sub(text, 1, 1) == '"';
-        -- Loop thru chunks bordered by "s (not quite as refined as Valve's algo, but hey)
-        for chunk in string.gmatch(text, '[^"]+') do
-            -- If we's in quote mode, treat the entire chunk as an argument
-            if (quote) then
-                table.insert(args, chunk);
+        text = string.Trim(string.sub(text, 2));
+        local varg      = 0;
+        local j         = 1;
+        local leng      = text:len();
+        local lastc     = '';
+        local quoting   = false;
+        local c         = 1;
+        local i         = 1;
+        local ctext     = "";
+        while (i <= leng) do
+            ctext = text:sub(i, i);
+            if (i == leng) then
+                args[#args+1] = text:sub(j);
+                break;
+            elseif (quoting) then
+                if (ctext == ' ' and lastc == '"') then
+                    quoting = false;
+                    args[#args+1] = text:sub(j, i-2);
+                    c = c + 1;
+                    j = i + 1;
+                end
             else
-                -- Otherwise break the chunk into smaller chunks bordered by whitespace.
-                for chunk in string.gmatch(chunk, "[^%s]+") do
-                    table.insert(args, chunk);
+                if (ctext == ' ') then
+                    args[#args+1] = text:sub(j, i-1);
+                    -- This is the first argument, and thus is the command.
+                    if (c == 1) then
+                        local cmd = self.Commands[args[1]];
+                        -- Make sure it exists so we don't do evreything for nothing
+                        if (not cmd) then
+                            -- Skip everything else, so the command handler can yell at them.
+                            break;
+                        end
+                        --  Apply vargocity
+                        if (cmd.VarArg) then
+                            varg = cmd.VarArg + 1;
+                        end
+                    end
+                    c = c + 1;
+                    j = i + 1
+                elseif (ctext == '"' and lastc == ' ') then
+                    quoting = true;
+                    j = i + 1;
                 end
             end
-            -- Flip our 'is in a quote' state.
-            quote = not quote;
+            lastc = ctext;
+            i = i + 1;
+            if (c == varg) then
+                args[#args+1] = text:sub(i);
+                break;
+            end
         end
         self:DoCommand(ply, args);
     elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
@@ -244,10 +277,6 @@ function GM:DoCommand(ply, args)
             elseif (t == "number") then
                 local n = tonumber(arg);
                 if (not n) then
-                    if (not cmd.aargs[i]) then
-                        PrintTable(cmd.aargs);
-                        return;
-                    end
                     ply:Notify("Invalid number for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
                     ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
                     return;
