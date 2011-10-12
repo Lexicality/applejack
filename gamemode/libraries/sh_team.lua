@@ -141,7 +141,6 @@ function GM:LoadTeams()
                 else
                     MsgN("   Loaded gang ", GANG.Name, ".");
                 end
-                -- VVVVV UNMODIFIED VVVVV
                 loadteamsplugin(cpath);
                 GANG = nil;
             end
@@ -195,7 +194,7 @@ function regteam()
 	team.SetUp(teamid, TEAM.Name, TEAM.Color);
 	TEAMCOUNT = TEAMCOUNT + 1;
 end
-
+local a, b = "(.*)%.lua", "%1"
 function loadteams(path)
 	local str = "";
 	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
@@ -203,7 +202,7 @@ function loadteams(path)
 			newteam();
 			includecs(path..filename);
 			if (TEAM.Valid) then
-				TEAM.UniqueID = string.lower(filename);
+				TEAM.UniqueID = string.lower(filename:gsub(a, b));
 				str = str .. TEAM.Name .. ", ";
 				regteam();
             else
@@ -212,26 +211,43 @@ function loadteams(path)
 			TEAM = nil;
 		end
 	end
-	MsgN((GROUP and " " or ""), "  Loaded teams: ", str:sub(1,-3), ".");
+	MsgN((GANG and " " or ""), "  Loaded teams: ", str:sub(1,-3), ".");
 end
 function loadteamsplugin(path)
     local new     = "";
     local changed = "";
-	if (GANG) then Msg(" "); end
-	local str = "  Loaded teams: ";
+    local tuid, tdata;
 	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
-		if (validfile(filename) and filename ~= "init.lua") then
-			newteam();
-			includecs(path..filename);
-			if (TEAM.Valid) then
-				TEAM.UniqueID = string.lower(filename);
-				str = str .. TEAM.Name .. ", ";
-				regteam();
-			end
-			TEAM = nil;
-		end
+        if (not validfile(filename) or filename == "init.lua") then
+            continue;
+        end
+        tuid = filename:gsub(a, b);
+        tdata = _G["TEAM_" .. string.upper(tuid)];
+        if (tdata) then
+            TEAM = GM.Teams[tdata] or Error(">:/ fn:", filename, " tu:", tuid, " tdata:", tdata, " r:", tostring(GM.Teams[tdata]));
+        else
+            newteam();
+        end
+        includecs(path .. filename);
+        if (not TEAM.Valid) then
+            TEAM = nil;
+            MsgN("Canceled team ", filename, ".");
+            continue;
+        elseif (not tdata) then
+            TEAM.UniqueID = tuid;
+            new = new .. TEAM.Name .. ", ";
+            regteam();
+        else
+            changed = changed .. TEAM.Name .. ", ";
+        end
+        TEAM = nil;
 	end
-	MsgN(str:sub(1,-3) .. ".");
+    if (new ~= "") then
+        MsgN((GANG and " " or ""), "  Created teams: ", new:sub(1, -3), ".");
+    end
+    if (changed ~= "") then
+        MsgN((GANG and " " or ""), "  Modified teams: ", changed:sub(1, -3), ".");
+    end
 end
 
 function newteam()
