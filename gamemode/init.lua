@@ -38,13 +38,13 @@ end
 CreateConVar("cider_ooc", 1)
 
 -- Conetents
-local path = "../"..GM.Folder.."/content"
+local path = GM.Folder.."/content"
 local folders = {""}
 while true do
 	local curdir = table.remove(folders,1)
 	if not curdir then break end
 	local searchdir = path..curdir
-	for _, filename in ipairs(file.Find(searchdir.."/*")) do
+	for _, filename in ipairs(file.Find(searchdir.."/*", true)) do
 		if filename ~= ".svn" then
 			if file.IsDir(searchdir.."/"..filename) then
 				table.insert(folders,curdir.."/"..filename)

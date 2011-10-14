@@ -106,11 +106,6 @@ end
 -- Get the spacing between messages.
 function cider.chatBox.getSpacing() return 20; end
 
--- Kill lua spammers
-if file.Exists("../lua/vgui/pleaseremoveme.lua") then
-	timer.Create("failcommand", 1, 20, function() RunConsoleCommand("lolkick") end)
-end
-
 -- Return a table of wrapped text (thanks to SamuraiMushroom for this function).
 function cider.chatBox.wrapText(text, font, width, overhead, base)
 	surface.SetFont(font);

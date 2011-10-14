@@ -154,7 +154,7 @@ if (SERVER) then
 		umsg.End();
 	end
 else
-	if (file.Find("..\lua\includes\modules\gm_console.dll")) then
+	if (#file.Find("lua/includes/modules/gm_console.dll", true) > 0) then
 		require("console");
 	else
 		ErrorNoHalt("If you had installed nevec's gm_console dll, you would have pretty text!\n");
