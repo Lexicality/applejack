@@ -20,18 +20,52 @@ function PANEL:Init()
     self:EnableVerticalScrollbar();
 end
 
-function PANEL:UpdateList()
+---
+-- Recursively loads headers so you can have a multi-level list
+-- @usage tab should be either a table of numerically indexed 'items' (AKA anything),
+--         or a string indexed table of tables which have the same format as the parent.
+--        This allows you to have potentially unlimited levels of DCollapsableCategories,
+--         though for sanity's sake I suggest no more than 3.
+--        This does not support mixed headers and entries. A DCollapsableCategory can have
+--         either headers or items in it. Using both will result in undefined behaviour.
+-- @param list The DListPanel to add entries to
+-- @param tab  The table with the entries to add
+function PANEL:RecursiveTable(list, tab)
+    -- If this is a list of categories instead of a list of items
+    if (#tab == 0) then
+        for name, tab in pairs(tab) do
+            local header = vuil.Create("DCollapsableCategory", list);
+            header:SetText(name);
+            header:SetSize(list:GetWide(), 50) -- 'parrently this has to be 50.
+            list:AddItem(header);
+            -- Yay for scope
+            local list = vgui.Create("DPanelList", header);
+            list:SetPadding(2);
+            list:SetSpacing(3);
+            list:SetAutoSize(2);
+            header:SetContents(list);
+            recursiveTable(list, tab);
+        end
+    else
+        for _, item in pairs(tab) do
+            local entry = vgui.Create("MSItemList_Item", list);
+            entry:SetItemFunction(self.m_fItemFunc);
+            entry:SetItem(item);
+            list:AddItem(entry);
+        end
+    end
+end
+
+---
+-- Wipes the current contents of the panel and rebuilds it from the list function.
+-- Calling this manually resets the AutoUpdate timer if it is enabled, so the next automatic
+--  update will be in UpdateInterval seconds, reguardless of the previous amount left on the timer.
+function PANEL:UpdateContents()
     local list = self:m_fGetList();
     -- Wipe existing items
     self:Clear(true);
-    -- Grab the new ones
-    local panel;
-    for _, item in pairs(list) do
-        panel = vgui.Create("MSItemList_Item", self);
-        panel:SetItemFunction(self.m_fItemFunc);
-        panel:SetItem(item);
-        self:AddItem(panel);
-    end
+    -- Apply the new items
+    self:RecursiveTabel(self, list);
     -- Update erryting
     self:PerformLayout();
     self.m_iLastUpdated = RealTime();
@@ -39,7 +73,7 @@ end
 
 function PANEL:Think()
     if (self.m_bAutoUpdate and self.m_iLastUpdated < RealTime() - self.m_iUpdateInterval) then
-        self:UpdateList();
+        self:UpdateContents();
     end
 end
 
@@ -70,7 +104,10 @@ function PANEL:SetName(str)
 end
 
 local function dbuttonpress(btn)
+    --[[ Does this actually need error protection? Nothing will break if it does error.
     PCallError(btn.m_fCallback, btn.m_tItem);
+    --]]
+    btn.m_fCallback(btn.m_tItem);
 end
 function PANEL:AddButton(str, func)
     local btn = vgui.Create("DButton", self);
