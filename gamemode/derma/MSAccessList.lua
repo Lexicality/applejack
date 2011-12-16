@@ -19,7 +19,8 @@ local function verifyPos()
     return false;
 end
 
-local itemfunction;
+local giveitemfunction;
+local takeitemfunction;
 -- Button functions
 do
     local function btn(what, how)
@@ -41,7 +42,7 @@ do
     local function takeAccess(what)
         btn(what, "take");
     end
-    function itemfunction(panel, item)
+    local function itemfunction(panel, item)
         local name, desc, mdl
         if (item.IsPlayer) then
             name = item:GetName();
@@ -55,7 +56,13 @@ do
         panel:SetName(name);
         panel:SetDescription(desc);
         panel:SetPortrait(mdl);
+    end
+    function giveitemfunction(panel, item)
+        itemfunction(panel, item);
         panel:AddButton("Give Access", giveAccess);
+    end
+    function takeitemfunction(panel, item)
+        itemfunction(panel, item);
         panel:AddButton("Take Access", takeAccess);
     end
 end
@@ -80,6 +87,12 @@ local function formatPlayerList(list)
         table.insert(res[id], ply);
     end
 
+    for name, data in pairs(res) do
+        if (#data == 0) then
+            res[name] = nil;
+        end
+    end
+
     return res;
 end
 
@@ -101,9 +114,17 @@ local function formatTeams(list)
             continue;
         end
         if (data.Gang) then
-            res[data.Group.Name][data.Gang.Name] = data;
+            table.insert(res[data.Group.Name][data.Gang.Name], data);
         else
-            res[data.Group.Name]["Unaffiliated"] = data;
+            table.insert(res[data.Group.Name]["Unaffiliated"], data);
+        end
+    end
+    
+    for _, gdata in pairs(res) do
+        for name, data in pairs(gdata) do
+            if (#data == 0) then
+                gdata[name] = nil;
+            end
         end
     end
 
@@ -112,4 +133,29 @@ end
 
 local function formatGroups(list)
     local res = {};
+    -- hnnng
+    local gangs = {};
+    local groups = {};
+    for _, id in pairs(list) do
+        if (id < 0) then
+            id = -id;
+            groups[id] = true;
+        else
+            gangs[id] = true;
+        end
+    end
+    -- This setup made far more sense when the gangs system was shit.
+    for id, group in pairs(GM.Groups) do
+        for id, gang in pairs(group.Gangs) do
+            if (gangs[id]) then
+                table.insert(res, gang);
+            end
+        end
+        if (groups[id]) then
+            table.insert(res, group);
+        end
+    end
+    return res;
+end
+
 
