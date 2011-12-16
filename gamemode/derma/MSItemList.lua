@@ -47,7 +47,7 @@ function PANEL:RecursiveTable(list, tab)
             recursiveTable(list, tab);
         end
     else
-        for _, item in pairs(tab) do
+        for _, item in ipairs(tab) do
             local entry = vgui.Create("MSItemList_Item", list);
             entry:SetItemFunction(self.m_fItemFunc);
             entry:SetItem(item);
@@ -78,6 +78,12 @@ function PANEL:Think()
 end
 
 derma.DefineControl("MSItemList", "Container for Moonshine object lists", PANEL, "DPanelList");
+
+--
+--
+-- Item
+--
+--
 
 local PANEL = {};
 

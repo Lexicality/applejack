@@ -65,10 +65,51 @@ local function getList(panel)
 end
 
 local function formatPlayerList(list)
+    local res = {};
+    local trans = {};
+    for id, data in pairs(GM.Teams) do
+        res[data.Name] = {};
+        trans[id] = data.Name;
+    end
+    
+    for _, ply in pairs(list) do
+        local id = trans[ply:Team()];
+        if (not id and res[id]) then
+            continue;
+        end
+        table.insert(res[id], ply);
+    end
 
-
-
-
-
+    return res;
 end
+
+local function formatTeams(list)
+    local res = {};
+    
+    for _, data in pairs(GM.Groups) do
+        local gangs = {};
+        for _, data in (data.Gangs) do
+            gangs[data.Name] = {};
+        end
+        gangs["Unaffiliated"] = {};
+        res[data.Name] = gangs;
+    end
+
+    for _, id in pairs(list) do
+        local data = GM.Teams[id];
+        if (not data and data.Group) then
+            continue;
+        end
+        if (data.Gang) then
+            res[data.Group.Name][data.Gang.Name] = data;
+        else
+            res[data.Group.Name]["Unaffiliated"] = data;
+        end
+    end
+
+    return res;
+end
+
+local function formatGroups(list)
+    local res = {};
 
