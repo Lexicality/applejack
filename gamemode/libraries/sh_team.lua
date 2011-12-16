@@ -13,10 +13,8 @@ GROUP_GANGBOSS = 3;		-- The boss of a gang, able to demote his subordinates.
 do
 local newgroup, newgang, newteam;
 local reggroup, reggang, regteam;
-local loadteams;
+local loadteams, loadteamsplugin;
 local GROUPCOUNT, GANGCOUNT, TEAMCOUNT
-local a,b = "^%d*_?(.*)$", "%1"; -- This allows all the folder names to be optionally prefixed with a number and a _, to choose the order they're loaded in .
-local t = "^%d*_?(.-)\.lua$"; -- Same as a but actually works on files. -_-
 -- Loads all the teams, gangs and groups. If you are not sh_init.lua during the initial startup phase, do not call this.
 function GM:LoadTeams()
 	local path = self.LuaFolder.."/gamemode/teams/";
@@ -24,37 +22,133 @@ function GM:LoadTeams()
 	GROUPCOUNT = 0;
 	GANGCOUNT = 0;
 	TEAMCOUNT = 0;
+    local cpath;
 	for _, group in pairs(file.FindInLua(path.."*")) do
-		if (validfile(group) and not group:find('.',1,true) and
-		   (file.Exists("../gamemodes/"..path..group.."/init.lua")
-		or file.Exists("../lua_temp/"  ..path..group.."/init.lua"))) then
-			newgroup();
-			includecs(path..group.."/init.lua");
-			if (GROUP.Valid) then
-				MsgN(" Loaded group " .. GROUP.Name .. ".");
-				GROUP.UniqueID = group:gsub(a,b);
-				reggroup();
-				for _, gang in pairs(file.FindInLua(path..group.."/*")) do
-					if (validfile(gang) and not gang:find('.',1,true) and
-					   (file.Exists("../gamemodes/"..path..group.."/"..gang.."/init.lua")
-					or file.Exists("../lua_temp/"  ..path..group.."/"..gang.."/init.lua"))) then
-						newgang();
-						includecs(path..group.."/"..gang.."/init.lua");
-						if (GANG.Valid) then
-							MsgN("  Loaded gang " .. GANG.Name .. ".");
-							GANG.UniqueID = gang:gsub(a,b);
-							reggang();
-							loadteams(path..group.."/"..gang.."/");
-						end
-						GANG = nil;
-					end
-				end
-				loadteams(path..group.."/");
-			end
-			GROUP = nil;
-		end
+        cpath = path .. group .. "/"
+		if (not (validfile(group) and not group:find('.',1,true) and
+           file.ExistsInLua(cpath .. "init.lua"))) then
+            continue;
+        end
+        newgroup();
+        includecs(cpath .. "init.lua");
+        if (not GROUP.Valid) then
+            GROUP = nil;
+            MsgN(" Canceled the load of group ", group, ".");
+            continue;
+        end
+        MsgN(" Loaded group ", GROUP.Name, ".");
+        GROUP.UniqueID = string.lower(group);
+        reggroup();
+        for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+            local cpath = cpath .. gang .. "/";
+            if (not (validfile(gang) and not gang:find('.',1,true) and
+               file.ExistsInLua(cpath .. "init.lua"))) then
+                continue;
+            end
+            newgang();
+            includecs(cpath .. "init.lua");
+            if (not GANG.Valid) then
+                GANG = nil;
+                MsgN("  Canceled the load of gang ", gang, ".")
+                continue;
+            end
+            MsgN("  Loaded gang ", GANG.Name, ".");
+            GANG.UniqueID = string.lower(gang);
+            reggang();
+            loadteams(cpath);
+            GANG = nil;
+        end
+        loadteams(cpath);
+        GROUP = nil;
 	end
-	MsgN("Applejack: Loaded " .. GROUPCOUNT .. " groups, " .. GANGCOUNT .. " gangs and " .. TEAMCOUNT .. " teams.\n");
+    MsgN("Applejack: Loading teams from plugins:");
+    local plugins = {};
+    for _, plugin in pairs(GM.Plugins) do
+        if (plugin._HasTeams) then
+            plugins[plugin] = plugin.FullPath .. "/teams/";
+        end
+    end
+    local gdata, init;
+    for plugin, path in pairs(plugins) do
+        MsgN(" Looking in", plugin.Name);
+        for _, group in pairs(file.FindInLua(path .. "*")) do
+            cpath = path .. group .. "/";
+            if (not validfile(group) or group.find('.', 1, true)) then
+                continue;
+            end
+            gdata = "GROUP_" string.upper(group);
+            gdata = _G[gdata];
+            if (gdata) then
+                GROUP = self.Groups[gdata] or Error("oh god what? group:", group, " gdata:", gdata, " res:", tostring(self.Groups[gdata]));
+            end
+            init = file.ExistsInLua(cpath .. "init.lua");
+            if (init) then
+                if (not gdata) then
+                    newgroup();
+                end
+                -- Load any modifications.
+                includecs(cpath .. "init.lua");
+                if (not GROUP.Valid) then
+                    GROUP = nil;
+                    MsgN("  Canceled the load of group ", group, ".");
+                    continue;
+                end
+                if (not gdata) then
+                    MsgN("  Loaded group ", GROUP.Name, ".");
+                    GROUP.UniqueID = string.lower(group);
+                    reggroup();
+                else
+                    MsgN("  Modified group ", GROUP.Name, ".");
+                end
+            elseif (not gdata) then
+                ErrorNoHalt("  Warning! Unknown group ", group, " with no init.lua!");
+                continue;
+            else
+                MsgN("  Loaded group ", GROUP.Name, ".");
+            end
+            for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+                local cpath = cpath .. gang .. "/";
+                if (not validfile(gang) or gang:find('.',1,true)) then
+                    continue;
+                end
+                gdata = "GANG_" string.upper(gang);
+                gdata = _G[gdata];
+                if (gdata) then
+                    GANG = self.Gangs[gdata] or Error("oh god what? gang:", gang, " gdata:", gdata, " res:", tostring(self.Gangs[gdata]));
+                end
+                init = file.ExistsInLua(cpath .. "init.lua");
+                if (init) then
+                    if (not gdata) then
+                        newgang();
+                    end
+                    -- Load any modifications.
+                    includecs(cpath .. "init.lua");
+                    if (not GANG.Valid) then
+                        GANG = nil;
+                        MsgN("   Canceled the load of gang ", gang, ".")
+                        continue;
+                    end
+                    if (not gdata) then
+                        MsgN("   Loaded gang ", GANG.Name, ".");
+                        GANG.UniqueID = string.lower(gang);
+                        reggang();
+                    else
+                        MsgN("   Modified gang ", GANG.Name, ".");
+                    end
+                elseif (not gdata) then
+                    ErrorNoHalt("   Warning! Unknown gang ", gang, " with no init.lua!");
+                    continue;
+                else
+                    MsgN("   Loaded gang ", GANG.Name, ".");
+                end
+                loadteamsplugin(cpath);
+                GANG = nil;
+            end
+            loadteamsplugin(cpath);
+            GROUP = nil;
+        end
+    end
+	MsgN("Applejack: Loaded ", GROUPCOUNT, " groups, ", GANGCOUNT, " gangs and ", TEAMCOUNT, " teams.\n");
 	GROUPCOUNT, GANGCOUNT, TEAMCOUNT = nil;
 end
 
@@ -100,23 +194,60 @@ function regteam()
 	team.SetUp(teamid, TEAM.Name, TEAM.Color);
 	TEAMCOUNT = TEAMCOUNT + 1;
 end
-	
+local a, b = "(.*)%.lua", "%1"
 function loadteams(path)
-	if (GANG) then Msg(" "); end
-	local str = "  Loaded teams: ";
+	local str = "";
 	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
 		if (validfile(filename) and filename ~= "init.lua") then
 			newteam();
 			includecs(path..filename);
 			if (TEAM.Valid) then
-				TEAM.UniqueID = string.lower(filename:gsub(t,b));
+				TEAM.UniqueID = string.lower(filename:gsub(a, b));
 				str = str .. TEAM.Name .. ", ";
 				regteam();
+            else
+                MsgN("Canceled team ", filename, ".");
 			end
 			TEAM = nil;
 		end
 	end
-	MsgN(str:sub(1,-3) .. ".");
+	MsgN((GANG and " " or ""), "  Loaded teams: ", str:sub(1,-3), ".");
+end
+function loadteamsplugin(path)
+    local new     = "";
+    local changed = "";
+    local tuid, tdata;
+	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
+        if (not validfile(filename) or filename == "init.lua") then
+            continue;
+        end
+        tuid = filename:gsub(a, b);
+        tdata = _G["TEAM_" .. string.upper(tuid)];
+        if (tdata) then
+            TEAM = GM.Teams[tdata] or Error(">:/ fn:", filename, " tu:", tuid, " tdata:", tdata, " r:", tostring(GM.Teams[tdata]));
+        else
+            newteam();
+        end
+        includecs(path .. filename);
+        if (not TEAM.Valid) then
+            TEAM = nil;
+            MsgN("Canceled team ", filename, ".");
+            continue;
+        elseif (not tdata) then
+            TEAM.UniqueID = tuid;
+            new = new .. TEAM.Name .. ", ";
+            regteam();
+        else
+            changed = changed .. TEAM.Name .. ", ";
+        end
+        TEAM = nil;
+	end
+    if (new ~= "") then
+        MsgN((GANG and " " or ""), "  Created teams: ", new:sub(1, -3), ".");
+    end
+    if (changed ~= "") then
+        MsgN((GANG and " " or ""), "  Modified teams: ", changed:sub(1, -3), ".");
+    end
 end
 
 function newteam()
@@ -148,6 +279,7 @@ function newteam()
 	TEAM.Invisible = false; -- This team is not hidden from the client's dermas
 	TEAM.IsTeam = true;
 	TEAM.Type = "Team";
+    TEAM.SortWeight = 0;
 end
 function newgang()
 	GANG = {}
@@ -166,6 +298,7 @@ function newgang()
 	GANG.Invisible = false -- This gang is not hidden from the client's dermas
 	GANG.IsGang = true;
 	GANG.Type = "Gang";
+    GANG.SortWeight = 0;
 end
 function newgroup()
 	GROUP = {}
@@ -184,6 +317,7 @@ function newgroup()
 	GROUP.Invisible = false; -- This group is not hidden from the client's dermas
 	GROUP.IsGroup = true;
 	GROUP.Type = "Group";
+    GROUP.SortWeight = 0;
 end
 end
 do
