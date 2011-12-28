@@ -20,6 +20,9 @@ function PANEL:Init()
     self:EnableVerticalScrollbar();
 end
 
+local function dosort(a, b)
+    return a.SortWeight < b.SortWeight;
+end
 ---
 -- Recursively loads headers so you can have a multi-level list
 -- @usage tab should be either a table of numerically indexed 'items' (AKA anything),
@@ -33,9 +36,21 @@ end
 function PANEL:RecursiveTable(list, tab)
     -- If this is a list of categories instead of a list of items
     if (#tab == 0) then
+        local ordered = {};
         for name, tab in pairs(tab) do
+            local info = {
+                Name   = name;
+                Weight = tab.SortWeight or 0;
+                Data   = tab;
+            }
+            tab.SortWeight = nil;
+            table.insert(ordered, info);
+        end
+        table.sort(ordered, dosort);
+
+        for _, data in ipairs(ordered) do
             local header = vuil.Create("DCollapsableCategory", list);
-            header:SetText(name);
+            header:SetText(data.Name);
             header:SetSize(list:GetWide(), 50) -- 'parrently this has to be 50.
             list:AddItem(header);
             -- Yay for scope
@@ -44,7 +59,7 @@ function PANEL:RecursiveTable(list, tab)
             list:SetSpacing(3);
             list:SetAutoSize(2);
             header:SetContents(list);
-            recursiveTable(list, tab);
+            recursiveTable(list, data.Data);
         end
     else
         for _, item in ipairs(tab) do

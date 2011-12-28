@@ -8,8 +8,11 @@ local menu;
 
 -- Util
 local function verifyPos()
+    if (not IsValid(menu)) then
+        return false;
+    end
     -- Ensure they're where they were when they opened the menu.
-    if (lpl:GetPos() == lpl._AccessMenuOpenPos) then
+    if (lpl:GetPos() == menu.openPos) then
         return true;
     end
     -- They've moved. This probably breaks everything so give up
@@ -19,9 +22,9 @@ local function verifyPos()
     return false;
 end
 
-local giveitemfunction;
-local takeitemfunction;
 -- Button functions
+local takeFunction;
+local giveFunction;
 do
     local function btn(what, how)
         local uid;
@@ -57,11 +60,11 @@ do
         panel:SetDescription(desc);
         panel:SetPortrait(mdl);
     end
-    function giveitemfunction(panel, item)
+    function giveFunction(panel, item)
         itemfunction(panel, item);
         panel:AddButton("Give Access", giveAccess);
     end
-    function takeitemfunction(panel, item)
+    function takeFunction(panel, item)
         itemfunction(panel, item);
         panel:AddButton("Take Access", takeAccess);
     end
@@ -74,21 +77,35 @@ end
 local function formatPlayerList(list)
     local res = {};
     local trans = {};
-    for id, data in pairs(GM.Teams) do
-        res[data.Name] = {};
-        trans[id] = data.Name;
-    end
-    
-    for _, ply in pairs(list) do
-        local id = trans[ply:Team()];
-        if (not id and res[id]) then
-            continue;
+    for _, group in pairs(GM.Groups) do
+        local data = {
+            SortWeight = group.SortWeight;
+        };
+        for _, team in pairs(group.Teams) do
+            local arf = {
+                SortWeight = team.SortWeight;
+            };
+            data[team.Name] = arf;
+            trans[team.TeamID] = arf;
         end
-        table.insert(res[id], ply);
+        res[group.Name] = data;
     end
 
-    for name, data in pairs(res) do
-        if (#data == 0) then
+    for _, ply in pairs(list) do
+        local data = trans[ply:Team()];
+        if (not data) then
+            continue;
+        end
+        table.insert(data, ply);
+    end
+
+    for name, gdata in pairs(res) do
+        for name, tdata in pairs(gdata) do
+            if (#tdata == 0) then
+                gdata[name] = nil;
+            end
+        end
+        if (#gdata == 0) then
             res[name] = nil;
         end
     end
@@ -98,64 +115,103 @@ end
 
 local function formatTeams(list)
     local res = {};
+    local trans = {};
     
-    for _, data in pairs(GM.Groups) do
-        local gangs = {};
-        for _, data in (data.Gangs) do
-            gangs[data.Name] = {};
+    for _, group in pairs(GM.Groups) do
+        local gangs = {
+            SortWeight = group.SortWeight;
+        };
+        for _, gang in (data.Gangs) do
+            local teams = {
+                SortWeight = gang.SortWeight;
+            };
+            for _, team in pairs(gang.Teams) do
+                trans[team.TeamID] = teams;
+            end
+            gangs[gang.Name] = teams;
         end
-        gangs["Unaffiliated"] = {};
+        teams = {
+            SortWeight = 10;
+        }
+        for _, team in pairs(group.Teams) do
+            if (not trans[team.TeamID]) then
+                trans[team.TeamID] = teams;
+            end
+        end
+        gangs["Unaffiliated"] = teams;
         res[data.Name] = gangs;
     end
 
     for _, id in pairs(list) do
-        local data = GM.Teams[id];
-        if (not data and data.Group) then
+        local team = GM.Teams[id];
+        if (not team) then
             continue;
         end
-        if (data.Gang) then
-            table.insert(res[data.Group.Name][data.Gang.Name], data);
-        else
-            table.insert(res[data.Group.Name]["Unaffiliated"], data);
+        local data = trans[team.TeamID];
+        if (not data) then
+            continue;
         end
+        table.insert(data, team);
     end
-    
-    for _, gdata in pairs(res) do
-        for name, data in pairs(gdata) do
-            if (#data == 0) then
-                gdata[name] = nil;
-            end
-        end
-    end
+
+    -- TODO: DELETE EXCESS TABLE THINGS
+    -- TODO: SORT THE TEAMS WITHIN LISTS
 
     return res;
 end
 
-local function formatGroups(list)
-    local res = {};
-    -- hnnng
-    local gangs = {};
+local function formatGangs(list)
     local groups = {};
+    local gangs = {};
     for _, id in pairs(list) do
         if (id < 0) then
-            id = -id;
-            groups[id] = true;
+            groups[-id] = true;
         else
             gangs[id] = true;
         end
     end
-    -- This setup made far more sense when the gangs system was shit.
-    for id, group in pairs(GM.Groups) do
-        for id, gang in pairs(group.Gangs) do
-            if (gangs[id]) then
-                table.insert(res, gang);
+    local res = {};
+    for _, group in pairs(GM.Groups) do
+        local data = {};
+        for _, gang in pairs(group.Gangs) do
+            if (gangs[gang.GangID]) then
+                table.insert(data, gang);
             end
         end
-        if (groups[id]) then
-            table.insert(res, group);
+        if (groups[group.GroupID]) then
+            table.insert(data, group);
         end
+        res[group.Name] = data;
     end
-    return res;
+    return ret;
 end
 
+local function CreateMenu(data)
+    if (IsValid(menu)) then
+        menu:Close();
+        menu:Remove();
+        menu = nil;
+    end
+    -- TODO: CREATE MENU
+end
 
+local function UpdateMenu(data)
+    if (not IsValid(menu)) then
+        MsgN("Sent an access menu update with no access menu open!");
+        return;
+    end
+    -- TODO: UPDATE MENU
+end
+
+if (net) then
+    -- TODO: LOOK UP CORRECT SYNTAX
+    net.Receive("MS Access List", CreateMenu);
+    net.Receive("MS Access List update", UpdateMenu);
+else
+    datastream.Hook("MS Access List", function(_,_,_, data)
+        CreateMenu(data);
+    end);
+    datastream.Hook("MS Access List update", function(_,_,_, data)
+        UpdateMenu(data);
+    end);
+end
