@@ -21,7 +21,7 @@ function PANEL:Init()
 end
 
 local function dosort(a, b)
-    return a.SortWeight < b.SortWeight;
+    return a.SortWeight < b.SortWeight or a.Name < b.Name;
 end
 ---
 -- Recursively loads headers so you can have a multi-level list

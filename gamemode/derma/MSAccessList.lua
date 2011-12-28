@@ -73,6 +73,13 @@ end
 local function getList(panel)
     return panel._AccessList
 end
+local function sortfunc(a, b)
+    return a.SortWeight < b.SortWeight or a.Name < b.Name;
+end
+
+local function sortname(a, b)
+    return a:Name() < b:Name();
+end
 
 local function formatPlayerList(list)
     local res = {};
@@ -100,12 +107,19 @@ local function formatPlayerList(list)
     end
 
     for name, gdata in pairs(res) do
+        local hasdata = false;
         for name, tdata in pairs(gdata) do
-            if (#tdata == 0) then
+            if (name == "SortWeight") then
+                continue;
+            end
+            if (#tdata > 0) then
+                hasdata = true;
+                table.sort(tdata, sortname);
+            else
                 gdata[name] = nil;
             end
         end
-        if (#gdata == 0) then
+        if (not hasdata) then
             res[name] = nil;
         end
     end
@@ -154,8 +168,23 @@ local function formatTeams(list)
         table.insert(data, team);
     end
 
-    -- TODO: DELETE EXCESS TABLE THINGS
-    -- TODO: SORT THE TEAMS WITHIN LISTS
+    for name, gdata in pairs(res) do
+        local hasdata = false;
+        for name, tdata in pairs(gdata) do
+            if (name == "SortWeight") then
+                continue;
+            end
+            if (#tdata > 0) then
+                hasdata = true;
+                table.sort(tdata, sortfunc);
+            else
+                gdata[name] = nil;
+            end
+        end
+        if (not hasdata) then
+            res[name] = nil;
+        end
+    end
 
     return res;
 end
@@ -172,7 +201,9 @@ local function formatGangs(list)
     end
     local res = {};
     for _, group in pairs(GM.Groups) do
-        local data = {};
+        local data = {
+            SortWeight = group.SortWeight;
+        };
         for _, gang in pairs(group.Gangs) do
             if (gangs[gang.GangID]) then
                 table.insert(data, gang);
@@ -181,7 +212,9 @@ local function formatGangs(list)
         if (groups[group.GroupID]) then
             table.insert(data, group);
         end
-        res[group.Name] = data;
+        if (#data > 0) then
+            res[group.Name] = data;
+        end
     end
     return ret;
 end
