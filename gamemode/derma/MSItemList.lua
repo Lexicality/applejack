@@ -3,6 +3,7 @@
     ~ Moonshine ~
 --]]
 
+local itempanel;
 local PANEL = {};
 AccessorFunc(PANEL, "m_fGetList",           "ListFunction"                  );
 AccessorFunc(PNAEL, "m_fItemFunc",          "Itemfunction"                  );
@@ -63,7 +64,7 @@ function PANEL:RecursiveTable(list, tab)
         end
     else
         for _, item in ipairs(tab) do
-            local entry = vgui.Create("MSItemList_Item", list);
+            local entry = vgui.CreateFromTable(itempanel, list);
             entry:SetItemFunction(self.m_fItemFunc);
             entry:SetItem(item);
             list:AddItem(entry);
@@ -165,4 +166,4 @@ function PANEL:SetItem(item)
     self:m_fItemFunc(item);
 end
 
-derma.DefineControl("MSItemList_Item", "Object for Moonshine object lists", PANEL, "DPanel");
+itempanel = vgui.RegisterTable(PANEL, "DPanel");
