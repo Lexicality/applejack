@@ -6,6 +6,45 @@
 -- Vars
 local menu;
 
+-- Usage
+local function CreateMenu(data)
+    if (IsValid(menu)) then
+        menu:Close();
+        menu:Remove();
+        menu = nil;
+    end
+    local width = 800;
+    local height = ScrH() * 0.75;
+    menu = vgui.Create("MSAccessList");
+    menu:SetSize(width, height);
+    menu:SetData(data);
+    menu:MakePopup();
+end
+
+local function UpdateMenu(data)
+    if (not IsValid(menu)) then
+        MsgN("Sent an access menu update with no access menu open!");
+        return;
+    end
+    menu:SetData(data);
+end
+
+if (net) then
+    net.Receive("MS Access List", function()
+        CreateMenu(net.ReadTable());
+    end);
+    net.Receive("MS Access List update", function()
+        UpdateMenu(net.ReadTable());
+    end);
+else
+    datastream.Hook("MS Access List", function(_,_,_, data)
+        CreateMenu(data);
+    end);
+    datastream.Hook("MS Access List update", function(_,_,_, data)
+        UpdateMenu(data);
+    end);
+end
+
 -- Util
 local function verifyPos()
     if (not IsValid(menu)) then
@@ -70,9 +109,6 @@ do
     end
 end
 
-local function getList(panel)
-    return panel._AccessList
-end
 local function sortfunc(a, b)
     return a.SortWeight < b.SortWeight or a.Name < b.Name;
 end
@@ -219,32 +255,3 @@ local function formatGangs(list)
     return ret;
 end
 
-local function CreateMenu(data)
-    if (IsValid(menu)) then
-        menu:Close();
-        menu:Remove();
-        menu = nil;
-    end
-    -- TODO: CREATE MENU
-end
-
-local function UpdateMenu(data)
-    if (not IsValid(menu)) then
-        MsgN("Sent an access menu update with no access menu open!");
-        return;
-    end
-    -- TODO: UPDATE MENU
-end
-
-if (net) then
-    -- TODO: LOOK UP CORRECT SYNTAX
-    net.Receive("MS Access List", CreateMenu);
-    net.Receive("MS Access List update", UpdateMenu);
-else
-    datastream.Hook("MS Access List", function(_,_,_, data)
-        CreateMenu(data);
-    end);
-    datastream.Hook("MS Access List update", function(_,_,_, data)
-        UpdateMenu(data);
-    end);
-end
