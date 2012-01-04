@@ -45,8 +45,17 @@ else
     end);
 end
 
+----------------------------------------
+----------------------------------------
+----                                ----
+----       Utility Functions        ----
+----                                ----
+----------------------------------------
+----------------------------------------
+
 -- Util
 local function verifyPos()
+    -- TODO: Put this in the think hook. Why is it out here??
     if (not IsValid(menu)) then
         return false;
     end
@@ -108,6 +117,14 @@ do
         panel:AddButton("Take Access", takeAccess);
     end
 end
+
+----------------------------------------
+----------------------------------------
+----                                ----
+----      List Formatting           ----
+----                                ----
+----------------------------------------
+----------------------------------------
 
 local function sortfunc(a, b)
     return a.SortWeight < b.SortWeight or a.Name < b.Name;
@@ -255,3 +272,31 @@ local function formatGangs(list)
     return ret;
 end
 
+----------------------------------------
+----------------------------------------
+----                                ----
+----     Main Access List Derma     ----
+----                                ----
+----------------------------------------
+----------------------------------------
+local tabPane;
+
+PANEL = {};
+
+function PANEL:Initialize()
+end
+
+function PANEL:SetData(data)
+end
+
+vgui.Register("MSAccessList", PANEL, "DFrame");
+
+PANEL = {};
+
+function PANEL:Initialize()
+end
+
+function PANEL:SetData(data)
+end
+
+tabPane = vgui.RegisterTable(PANEL, "DPanel");
