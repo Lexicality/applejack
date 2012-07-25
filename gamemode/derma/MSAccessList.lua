@@ -294,9 +294,28 @@ vgui.Register("MSAccessList", PANEL, "DFrame");
 PANEL = {};
 
 function PANEL:Initialize()
+    local peerlist = vgui.Create("MSItemList", self);
+    local peonlist = vgui.Create("MSItemList", self);
+
+    -- Layout
+    peerlist:Dock(LEFT);
+    peonlist:Dock(RIGHT);
+    -- Save the lists for later
+    self.Peers = peerlist;
+    self.Peons = peonlist;
+end
+
+function PANEL:PerformLayout()
+    local width = (self:GetWide() / 2) - 8
+    self.Peers:SetWide(width);
+    self.Peons:SetWide(width);
+    self.Peers:InvalidateLayout();
+    self.Peons:InvalidateLayout();
 end
 
 function PANEL:SetData(data)
+    self.Peers:SetItems(data.Peers);
+    self.Peons:SetItems(data.Peons);
 end
 
 tabPane = vgui.RegisterTable(PANEL, "DPanel");

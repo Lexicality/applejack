@@ -34,7 +34,7 @@ end
 --         either headers or items in it. Using both will result in undefined behaviour.
 -- @param list The DListPanel to add entries to
 -- @param tab  The table with the entries to add
-function PANEL:RecursiveTable(list, tab)
+function PANEL:SetItems(list, tab)
     -- If this is a list of categories instead of a list of items
     if (#tab == 0) then
         local ordered = {};
