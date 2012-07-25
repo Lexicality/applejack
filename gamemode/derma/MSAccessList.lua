@@ -60,7 +60,7 @@ local function verifyPos()
         return false;
     end
     -- Ensure they're where they were when they opened the menu.
-    if (lpl:GetPos() == menu.openPos) then
+    if (lpl:GetPos() == menu.OpenPos) then
         return true;
     end
     -- They've moved. This probably breaks everything so give up
@@ -180,7 +180,7 @@ local function formatPlayerList(list)
     return res;
 end
 
-local function formatTeams(list)
+local function formatTeamList(list)
     local res = {};
     local trans = {};
     
@@ -242,7 +242,7 @@ local function formatTeams(list)
     return res;
 end
 
-local function formatGangs(list)
+local function formatGangList(list)
     local groups = {};
     local gangs = {};
     for _, id in pairs(list) do
@@ -272,6 +272,26 @@ local function formatGangs(list)
     return ret;
 end
 
+local function prepPlayers(data)
+    local ret = {};
+    ret.Peons = formatPlayerList(data.Players.Peons);
+    ret.Peers = formatPlayerList(data.Players.Peers);
+    return ret;
+end
+
+local function prepTeams(data)
+    local ret = {};
+    ret.Peons = formatTeamList(data.Teams.Peons);
+    ret.Peers = formatTeamList(data.Teams.Peers);
+    return ret;
+end
+
+local function prepGangs(data)
+    local ret = {};
+    ret.Peons = formatGangList(data.Gangs.Peons);
+    ret.Peers = formatGangList(data.Gangs.Peers);
+    return ret;
+end
 ----------------------------------------
 ----------------------------------------
 ----                                ----
@@ -284,9 +304,82 @@ local tabPane;
 PANEL = {};
 
 function PANEL:Initialize()
+    -- To detect if the player gets knocked out of the way
+    -- TODO: Far better thing to do would be to check if they're still looking at the right entity.
+    self.OpenPos = lpl:GetPos();
+    -- Master DFrame stuffs
+    self:SetTitle("Access Menu");
+    self:SetBackgroundBlur(true);
+    self:SetDeleteOnClose(true);
+    -- We're replacing the tiny X with a bigger CLOSE button
+    self:ShowCloseButton(false);
+    -- Creation
+    self.Players = vgui.CreateFromTable(tabPane, self);
+    self.Panes = vgui.Create("DPropertySheet", self);
+    self.Teams = vgui.CreateFromTable(tabPane, self);
+    self.Gangs = vgui.CreateFromTable(tabPane, self);
+    -- Strip above the tabs etc.
+    self.TopBackground = vgui.Create("DPanel", self);
+    local bkgrnd = self.TopBackground;
+    bkgrnd.CloseButton = vgui.Create("DButton", bkgrnd);
+    bkgrnd.SellButton = vgui.Create("DButton", bkgrnd);
+    bkgrnd.SetNameButton = vgui.Create("DButton", bkgrnd);
+    bkgrnd.SetNameBox = vgui.Create("DTextEntry", bkgrnd);
+
+    -- Initialization
+    self.Panes:AddSheet("Players", self.Players);
+    self.Panes:AddSheet("Teams", self.Teams);
+    self.Panes:AddSheet("Gangs", self.Gangs);
+    bkgrnd.CloseButton:SetText("Close");
+    bkgrnd.SellButton:SetText("Sell");
+    bkgrnd.SetNameButton:SetText("Set Name");
+
+    -- Carlbocks
+    do
+        local this = self;
+        local function doclose()
+            this:Close();
+            gui.EnableScreenClicker(false);
+        end
+        local function finishsell()
+            RunConsoleCommand("mshine", "entity", "sell");
+            doclose();
+        end
+        local function dosell()
+            local menu = DermaMenu();
+            menu:AddOption("No");
+            menu:AddOption("yes", finishsell);
+            menu:Open();
+        end
+        local function doname()
+            local text = bkgrnd.SetNameBox:GetValue();
+            if (text == "") then
+                return;
+            end
+            text = string.sub(text, 1, 32);
+            RunConsoleCommand("mshine", "entity", "rename", text);
+            bkgrnd.SetNameBox:SetValue("");
+            bkgrnd.SetNameBox:KillFocus();
+        end
+        bkgrnd.CloseButton.DoClick = doclose;
+        bkgrnd.SellButton.DoClick = dosell;
+        bkgrnd.SetNameBox.OnEnter = doname;
+        bkgrnd.SetNameButton.DoClick = doname;
+    end
+
+    -- Positioning
+    self.TopBackground:Dock(TOP);
+    self.Panes:Dock(FILL);
 end
 
 function PANEL:SetData(data)
+    self.Players:SetData(prepPlayers(data));
+    self.Teams:SetData(prepTeams(data));
+    self.Gangs:SetData(prepGangs(data));
+end
+
+function PANEL:PerformLayout()
+    -- TODO
 end
 
 vgui.Register("MSAccessList", PANEL, "DFrame");
