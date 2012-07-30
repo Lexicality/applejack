@@ -3,27 +3,253 @@
     ~ Moonshine ~
 --]]
 
-local itempanel;
+local vguiItemPanel;
 local PANEL = {};
-AccessorFunc(PANEL, "m_fGetList",           "ListFunction"                  );
-AccessorFunc(PNAEL, "m_fItemFunc",          "Itemfunction"                  );
-AccessorFunc(PANEL, "m_bAutoUpdate",        "AutoUpdate",       FORCE_BOOL  );
-AccessorFunc(PANEL, "m_iUpdateInterval",    "UpdateInterval",   FORCE_NUMBER);
 
-PANEL.m_bAutoUpdate     = false;
-PANEL.m_iUpdateInterval = 30 -- every 30 seconds
-PANEL.m_iLastUpdated    = 0;
+AccessorFunc(PANEL, "m_fItemFunc", "Itemfunction");
+AccessorFunc(PANEL, "m_fSortFunc", "SortFunction");
+AccessorFunc(PANEL, "m_fCompareFunc", "CompareFunction");
+
+PANEL.m_fItemFunc = nil; -- Cause an error if this function isn't set
+PANEL.m_fSortFunc = nil; -- Don't sort if this function isn't set
+PANEL.m_fCompareFunc = function(a, b) return a == b; end; -- Basic equality.
 
 function PANEL:Init()
     self.BaseClass.Init(self);
+    self:Clear();
     self:SetPadding(2);
     self:SetSpacing(3);
     self:EnableVerticalScrollbar();
 end
 
-local function dosort(a, b)
-    return a.SortWeight < b.SortWeight or a.Name < b.Name;
+local function categorySortFunc(a, b)
+    a,b = a.CategoryData, b.CategoryData;
+    return a.Weight < b.Weight or a.Name < b.Name;
 end
+local itemSortFunc;
+
+-- Override the automatic AccessorFunc
+function PANEL:SetSortFunction(func)
+    self.m_fSortFunc = func;
+    if (not self.m_fSortFunc) then
+        itemSortFunc = nil;
+    else
+        local f = self.m_fSortFunc;
+        itemSortFunc = function(a, b)
+            if (not (a and b) and (a.Item and b.Item)) then
+                return false;
+            else
+                return f(a.Item, b.Item);
+            end
+        end
+    end
+end
+
+PANEL._CategoryData = {
+    Name = "/";
+    Path = "";
+    SortWeight = -math.huge;
+}
+
+function PANEL:Clear(...)
+    self._Categories = {};
+    self._Items = {};
+    self.BaseClass.Clear(self, ...);
+end
+
+
+do
+local function doError(PanelList, ItemList, iscategory)
+    -- Error spamming time!
+    local msg = Msg
+    Msg = ErrorNoHalt;
+    local what, into;
+    if (iscategory) then
+        what = "categories";
+        into = "item category";
+    else
+        what = "items";
+        into = "category set";
+    end
+    Msg("Attempted to load ", what, " into an existing ", into, "!\n");
+    Msg("We're in category '", tostring(PanelList._CategoryData.Path), "', ");
+    Msg("which currently has ");
+    if (iscategory) then
+        Msg(table.Count(PanelList._Items), " items");
+    else
+        Msg(table.Count(PanelList._Categories), " categories");
+    end
+    Msg(" in it.\n");
+    Msg("The offending insert table is: \n");
+    PrintTable(ItemList);
+    Msg = msg;
+end
+
+local function loadCategories(self, PanelList, ItemList)
+    -- Make sure there actually is something in the list
+    if (not next(ItemList)) then
+        return;
+    end
+    -- Make sure we're not about to bugger everything up
+    if (PanelList._ItemContainer) then
+        doError(PanelList, ItemList, true);
+        return;
+    end
+    PanelList._CategoryContainer = true;
+    local CategoryList = {};
+    for CategoryName, SubItemList in pairs(ItemList) do
+        local Info = {
+            Name     = CategoryName;
+            Weight   = SubItemList.SortWeight or 0;
+            ItemList = SubItemList;
+            Path     = PanelList._CategoryData.Path .. '/' .. CategoryName;
+            Parent   = PanelList;
+        }
+        SubItemList.SortWeight = nil;
+        table.insert(CategoryList, Info);
+    end
+
+    for _, CategoryData in pairs(CategoryList) do
+        local SubPanelList = PanelList._Categories[CategoryData.Name];
+        if (not SubPanelList) then
+            local SubHeader = vuil.Create("DCollapsableCategory", PanelList);
+            SubPanelList = vgui.Create("MSDPanelList", SubHeader);
+            SubPanelList:SetPadding(2);
+            SubPanelList:SetSpacing(3);
+            SubPanelList:SetAutoSize(true);
+            SubPanelList._CategoryData = CategoryData;
+            SubPanelList._Categories = {};
+            SubPanelList._Items = {};
+
+            SubHeader:SetText(CategoryData.Name);
+            SubHeader:SetSize(PanelList:GetWide(), 50) -- 'parrently this has to be 50.
+            SubHeader:SetContents(SubPanelList);
+            SubHeader._CategoryData = CategoryData;
+
+            PanelList:AddItem(SubHeader);
+            PanelList._Categories[CategoryData.Name] = SubPanelList;
+        end
+        self:RecursiveLoad(SubPanelList, CategoryData.ItemList);
+    end
+    PanelList:SortByFunction(categorySortFunc);
+end
+
+local function loadItems(self, PanelList, ItemList)
+    -- Make sure we're not about to bugger everything up
+    if (PanelList._CategoryContainer) then
+        doError(PanelList, ItemList, false);
+        return;
+    end
+    PanelList._ItemContainer = true;
+    for _, Item in ipairs(ItemList) do
+        local ItemPanel = vgui.CreateFromTable(vguiItemPanel, PanelList);
+        ItemPanel:SetItemFunction(self.m_fItemFunc);
+        ItemPanel:SetItem(Item);
+        PanelList:AddItem(ItemPanel);
+        PanelList._Items[Item] = ItemPanel;
+    end
+    if (itemSortFunc) then
+        PanelList:SortByFunction(itemSortFunc);
+    end
+end
+
+function PANEL:RecursiveLoad(PanelList, ItemList)
+    if (#ItemList == 0) then
+        loadCategories(self, PanelList, ItemList);
+    else
+        loadItems(self, PanelList, ItemList);
+    end
+end
+end
+
+do
+local catset = "category set";
+local itemcat = "item category";
+local function doError(PanelList, ItemList, iscategory)
+    -- Error spamming time!
+    local msg = Msg
+    Msg = ErrorNoHalt;
+    local is, isnt;
+    if (iscategory) then
+        is = itemcat;
+        isnt = catset;
+    else
+        isnt = itemcat;
+        is = catset;
+    end
+    Msg("Attempted to treat a " .. is .. " as a " .. isnt .. " in the recurisve remover!\n");
+    Msg("We're in category '", tostring(PanelList._CategoryData.Path), "', ");
+    Msg("which currently has ");
+    if (iscategory) then
+        Msg(table.Count(PanelList._Items), " items");
+    else
+        Msg(table.Count(PanelList._Categories), " categories");
+    end
+    Msg(" in it.\n");
+    Msg("The offending remove table is: \n");
+    PrintTable(ItemList);
+    Msg = msg;
+end
+
+local function compitem(self, list, item)
+    for key, value in pairs(list) do
+        if (self.m_fCompareFunc(item, key)) then
+            return value;
+        end
+    end
+end
+
+local function delCategories(self, PanelList, ItemList)
+    -- Make sure there actually is something in the list
+    if (not next(ItemList)) then
+        return;
+    end
+    -- Make sure we're not about to bugger everything up
+    if (PanelList._ItemContainer) then
+        doError(PanelList, ItemList, true);
+        return;
+    end
+    for CategoryName, SubItemList in pairs(ItemList) do
+        local SubPanelList = PanelList._Categories[CategoryData.Name];
+        if (SubPanelList) then
+            self:RecursiveDelete(SubPanelList, SubItemList);
+        end
+    end
+end
+
+local function delItems(self, PanelList, ItemList)
+    -- Make sure we're not about to bugger everything up
+    if (PanelList._CategoryContainer) then
+        doError(PanelList, ItemList, false);
+        return;
+    end
+    for _, item in ipairs(ItemList) do
+        local panel = compitem(self, PanelList._Items, item);
+        if (panel) then
+            PanelList:Remove(panel);
+        end
+    end
+    if (itemSortFunc) then
+        PanelList:SortByFunction(itemSortFunc);
+    end
+    if (#PanelList:GetItems() == 0) then
+        local parent = PanelList._CategoryData;
+        if (IsValid(parent)) then
+            parent:RemoveItem(PanelList:GetParent());
+        end
+    end
+end
+
+function PANEL:RecursiveDelete(PanelList, ItemList)
+    assert(PanelList._CategoryData, "No category data in " .. tostring(PanelList) .. "!");
+    if (#ItemList == 0) then
+        delCategories(self, PanelList, ItemList);
+    else
+        delItems(self, PanelList, ItemList);
+    end
+end
+end
+
 ---
 -- Recursively loads headers so you can have a multi-level list
 -- @usage tab should be either a table of numerically indexed 'items' (AKA anything),
@@ -32,68 +258,34 @@ end
 --         though for sanity's sake I suggest no more than 3.
 --        This does not support mixed headers and entries. A DCollapsableCategory can have
 --         either headers or items in it. Using both will result in undefined behaviour.
--- @param list The DListPanel to add entries to
--- @param tab  The table with the entries to add
-function PANEL:SetItems(list, tab)
-    -- If this is a list of categories instead of a list of items
-    if (#tab == 0) then
-        local ordered = {};
-        for name, tab in pairs(tab) do
-            local info = {
-                Name   = name;
-                Weight = tab.SortWeight or 0;
-                Data   = tab;
-            }
-            tab.SortWeight = nil;
-            table.insert(ordered, info);
-        end
-        table.sort(ordered, dosort);
-
-        for _, data in ipairs(ordered) do
-            local header = vuil.Create("DCollapsableCategory", list);
-            header:SetText(data.Name);
-            header:SetSize(list:GetWide(), 50) -- 'parrently this has to be 50.
-            list:AddItem(header);
-            -- Yay for scope
-            local list = vgui.Create("DPanelList", header);
-            list:SetPadding(2);
-            list:SetSpacing(3);
-            list:SetAutoSize(2);
-            header:SetContents(list);
-            recursiveTable(list, data.Data);
-        end
-    else
-        for _, item in ipairs(tab) do
-            local entry = vgui.CreateFromTable(itempanel, list);
-            entry:SetItemFunction(self.m_fItemFunc);
-            entry:SetItem(item);
-            list:AddItem(entry);
-        end
+-- @param list The table with the entries to add
+function PANEL:SetItems(list)
+    if (not self.m_fItemFunc) then
+        error("Tried to set items without an item function!", 2);
     end
+    -- Wipe any existing items to make way for the new
+    self:Clear(true);
+    self:RecursiveLoad(self, list);
+    self:InvalidateLayout(true);
 end
 
 ---
--- Wipes the current contents of the panel and rebuilds it from the list function.
--- Calling this manually resets the AutoUpdate timer if it is enabled, so the next automatic
---  update will be in UpdateInterval seconds, reguardless of the previous amount left on the timer.
-function PANEL:UpdateContents()
-    local list = self:m_fGetList();
-    -- Wipe existing items
-    self:Clear(true);
-    -- Apply the new items
-    self:RecursiveTabel(self, list);
-    -- Update erryting
-    self:PerformLayout();
-    self.m_iLastUpdated = RealTime();
-end
-
-function PANEL:Think()
-    if (self.m_bAutoUpdate and self.m_iLastUpdated < RealTime() - self.m_iUpdateInterval) then
-        self:UpdateContents();
+-- Adds or removes individual items without resetting the list.
+-- Items must be in the same structure as they were added in or it won't work
+-- You probably need to set a compare function prior to trying to remove anything
+-- @param delta A table containing two entries: Add and Remove, both of which are tables of the same strucutre as SetItems accepts.
+function PANEL:DeltaUpdate(delta)
+    if (delta.Add) then
+        -- RecursiveLoad is robust enough to deal with this no trouble
+        self:RecursiveLoad(self, delta.Add);
     end
+    if (delta.Remove) then
+        self:RecursiveDelete(self, delta.Remove);
+    end
+    self:InvalidateLayout(true);
 end
 
-derma.DefineControl("MSItemList", "Container for Moonshine object lists", PANEL, "DPanelList");
+derma.DefineControl("MSItemList", "Container for Moonshine object lists", PANEL, "MSDPanelList");
 
 --
 --
@@ -166,4 +358,4 @@ function PANEL:SetItem(item)
     self:m_fItemFunc(item);
 end
 
-itempanel = vgui.RegisterTable(PANEL, "DPanel");
+vguiItemPanel = vgui.RegisterTable(PANEL, "DPanel");
