@@ -126,12 +126,34 @@ end
 ----------------------------------------
 ----------------------------------------
 
-local function sortfunc(a, b)
+local function sortPlayerFunc(a, b)
+    return a:Name() < b:Name();
+end
+
+local function sortTeamFunc(a, b)
     return a.SortWeight < b.SortWeight or a.Name < b.Name;
 end
 
-local function playerSort(a, b)
-    return a:Name() < b:Name();
+local function sortGangFunc(a, b)
+    --[[
+    -- Make sure groups are always above gangs
+    if (a.IsGroup) then
+        if (b.IsGroup) then
+            -- If they're both groups, sort normally.
+            return sortTeamFunc(a, b);
+        else
+            -- Otherwise, bump A above B.
+            return true;
+        end
+    elseif (b.IsGroup) then
+        -- Reverse situation: B is a group but A isn't. Knock A below B
+        return false;
+    else
+        -- Neither is a group, sort normally.
+        return sortTeamFunc(a, b);
+    end
+    --]]
+    return a.IsGroup and (not b.IsGroup or sortTeamFunc(a, b)) or (not b.IsGroup and sortTeamFunc(a, b));
 end
 
 local function formatPlayerList(list)
@@ -311,7 +333,56 @@ local function formatTeamList(list)
     return res;
 end
 
-
+function prepareTeamData(TeamList)
+    -- Pillaged from preparePlayerData
+    local TeamIDs = {};
+    local ItemData = {};
+    -- Make sure we only do the paperwork for teams we need
+    for _, TeamID in pairs(TeamList) do
+        TeamIDs[TeamID] = true;
+    end
+    -- Generate the category headings for all the players.
+    for TeamID in pairs(TeamIDs) do
+        local Team = GM.Teams[TeamID];
+        -- Make sure it's not one of the metateams like Connecting or something
+        if (not Team or Team.Invisible) then
+            TeamIDs[TeamID] = nil;
+            continue;
+        end
+        -- Group stuffs
+        local Group = Team.Group;
+        local GroupData = ItemData[Group.Name];
+        -- Generate the group category if it doesn't exist
+        if (not GroupData) then
+            GroupData = {
+                SortWeight = Group.SortWeight;
+                Unaffiliated = {
+                    -- Plunge to the bottom
+                    SortWeight = 10;
+                };
+            };
+            ItemData[Group.Name] = GroupData;
+        end
+        -- Gang stuff
+        local Gang = TeamData.Gang;
+        local GangData;
+        if (Gang) then
+            GangData = GroupData[Gang.Name];
+            if (not GangData) then
+                -- Generate the gang subcategory
+                GangData = {
+                    SortWeight = Gang.SortWeight;
+                };
+                GroupData[Gang.Name] = GangData;
+            end
+        else
+            GangData = Group.Unaffiliated;
+        end
+        -- Aaand we're done. Just drop the team information into the relevent gang slot
+        table.insert(GangData, TeamData);
+    end
+    return ItemData;
+end
 
 local function formatGangList(list)
     local groups = {};
@@ -343,24 +414,55 @@ local function formatGangList(list)
     return ret;
 end
 
+function pepareGangData(GangList)
+    local ItemData = {};
+    local GroupIDs = {};
+    local GangIDs = {};
+    for _, ID in pairs(GangList) do
+        if (ID < 0) then
+            -- IDs < 0 indicate entire groups
+            GroupIDs[-ID] = true; -- Invert ID for normal ID
+        else
+            GangIDs[ID] = true;
+        end
+    end
+    -- Have a category for every group, even if nothing's in it
+    for _, GroupData in pairs(GM.Groups) do
+        local Group = { SortWeight = GroupData.SortWeight; }
+        if (GroupIDs[GroupData.ID]) then
+            table.insert(Group, GroupData);
+        end
+        for _, GangData in pairs(GroupData.Gangs) do
+            if (GangIDs[GangData.ID]) then
+                table.insert(Group, GangData);
+            end
+        end
+        ItemData[GroupData.Name] = Group;
+    end
+    return ItemData;
+end
+
 local function prepPlayers(data)
     local ret = {};
-    ret.Peons = formatPlayerList(data.Players.Peons);
-    ret.Peers = formatPlayerList(data.Players.Peers);
+    ret.Peons = preparePlayerData(data.Players.Peons);
+    ret.Peers = preparePlayerData(data.Players.Peers);
+    ret.SortFunction = sortPlayerFunc;
     return ret;
 end
 
 local function prepTeams(data)
     local ret = {};
-    ret.Peons = formatTeamList(data.Teams.Peons);
-    ret.Peers = formatTeamList(data.Teams.Peers);
+    ret.Peons = prepareTeamData(data.Teams.Peons);
+    ret.Peers = prepareTeamData(data.Teams.Peers);
+    ret.SortFunction = sortTeamFunc;
     return ret;
 end
 
 local function prepGangs(data)
     local ret = {};
-    ret.Peons = formatGangList(data.Gangs.Peons);
-    ret.Peers = formatGangList(data.Gangs.Peers);
+    ret.Peons = prepareGangData(data.Gangs.Peons);
+    ret.Peers = prepareGangData(data.Gangs.Peers);
+    ret.SortFunction = sortGangFunc;
     return ret;
 end
 ----------------------------------------
@@ -405,7 +507,7 @@ function PANEL:Initialize()
     bkgrnd.SellButton:SetText("Sell");
     bkgrnd.SetNameButton:SetText("Set Name");
 
-    -- Carlbocks
+    -- Button callbacks
     do
         local this = self;
         local function doclose()
