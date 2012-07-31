@@ -130,7 +130,7 @@ local function sortfunc(a, b)
     return a.SortWeight < b.SortWeight or a.Name < b.Name;
 end
 
-local function sortname(a, b)
+local function playerSort(a, b)
     return a:Name() < b:Name();
 end
 
@@ -180,6 +180,75 @@ local function formatPlayerList(list)
     return res;
 end
 
+---
+-- Turns a list of players into a suitable category list
+--  for use in a MSItemList panel
+local function preparePlayerData(PlayerList)
+    local TeamIDs = {};
+    local ItemData = {};
+    -- Make sure we only do the paperwork for teams we need
+    for _, Player in pairs(PlayerList) do
+        TeamIDs[Player:Team()] = true;
+    end
+    -- Generate the category headings for all the players.
+    for TeamID in pairs(TeamIDs) do
+        local Team = GM.Teams[TeamID];
+        -- Make sure it's not one of the metateams like Connecting or something
+        if (not Team or Team.Invisible) then
+            TeamIDs[TeamID] = nil;
+            continue;
+        end
+        -- Group stuffs
+        local Group = Team.Group;
+        local GroupData = ItemData[Group.Name];
+        -- Generate the group category if it doesn't exist
+        if (not GroupData) then
+            GroupData = {
+                SortWeight = Group.SortWeight;
+                Unaffiliated = {
+                    -- Plunge to the bottom
+                    SortWeight = 10;
+                };
+            };
+            ItemData[Group.Name] = GroupData;
+        end
+        -- Gang stuff
+        local Gang = TeamData.Gang;
+        local GangData;
+        if (Gang) then
+            GangData = GroupData[Gang.Name];
+            if (not GangData) then
+                -- Generate the gang subcategory
+                GangData = {
+                    SortWeight = Gang.SortWeight;
+                };
+                GroupData[Gang.Name] = GangData;
+            end
+        else
+            GangData = Group.Unaffiliated;
+        end
+        -- Finally get around to making the team subcategory
+        local TeamData = {
+            SortWeight = Team.SortWeight;
+        };
+        GangData[Team.Name] = TeamData;
+        -- And for the porpoises of actually getting the players in,
+        --  alias the category table as a TeamID Subtable
+        TeamIDs[TeamID] = TeamData;
+    end
+    -- Finally, the simple task of just adding the players to the relevent team tables
+    for _, Player in pairs(PlayerList) do
+        local TeamData = TeamIDs[Player:Team()];
+        if (not TeamData) then
+            -- We don't want this player in here
+            continue;
+        end
+        table.insert(TeamData, Player);
+    end
+    -- All the tables are now populated! (But not sorted)
+    return ItemData;
+end
+
 local function formatTeamList(list)
     local res = {};
     local trans = {};
@@ -199,7 +268,7 @@ local function formatTeamList(list)
         end
         teams = {
             SortWeight = 10;
-        }
+    }
         for _, team in pairs(group.Teams) do
             if (not trans[team.TeamID]) then
                 trans[team.TeamID] = teams;
@@ -241,6 +310,8 @@ local function formatTeamList(list)
 
     return res;
 end
+
+
 
 local function formatGangList(list)
     local groups = {};
