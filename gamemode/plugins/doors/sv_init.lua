@@ -15,11 +15,11 @@ PLUGIN.Doors = {};
 function PLUGIN:LoadDoors()
 	self.Doors = {};
 	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
-	if (not file.Exists(path)) then
+	if (not file.Exists(path, "DATA")) then
 		ErrorNoHalt("[",os.date(),"] Doors Plugin: cannot find the file " .. path .. "!\n");
 		return;
 	end
-	local stat, res = pcall(glon.decode, file.Read(path));
+	local stat, res = pcall(glon.decode, file.Read(path, "DATA"));
 	if (not stat) then
 		error("["..os.date().."] Doors Plugin: Error GLON decoding '"..path.."': "..res);
 	elseif (not res) then

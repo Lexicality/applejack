@@ -11,10 +11,10 @@ function PLUGIN:LoadData()
 	local path, data, status, results;
 	
 	path = GM.LuaFolder.."/prisonpoints/"..game.GetMap()..".txt";
-	if (not file.Exists(path)) then
+	if (not file.Exists(path, "DATA")) then
 		return
 	end
-	data = file.Read(path);
+	data = file.Read(path, "DATA");
 	status, results = pcall(glon.decode,data);
 	if (status == false) then
 		error("Error GLON decoding '"..path.."': "..results);
@@ -32,8 +32,8 @@ function PLUGIN:SaveData()
 	end
 	path = GM.LuaFolder.."/prisonpoints/"..game.GetMap()..".txt";
 	if (not result or result == "") then
-		if (file.Exists(path)) then
-			file.Delete(path);
+		if (file.Exists(path, "DATA")) then
+			file.Delete(path, "DATA");
 		end
 		return;
 	end

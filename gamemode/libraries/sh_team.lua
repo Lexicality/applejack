@@ -23,7 +23,8 @@ function GM:LoadTeams()
 	GANGCOUNT = 0;
 	TEAMCOUNT = 0;
     local cpath;
-	for _, group in pairs(file.FindInLua(path.."*")) do
+    local files, folders = file.Find(path.."*", "LUA")
+	for _, group in pairs(folders) do
         cpath = path .. group .. "/"
 		if (not (validfile(group) and not group:find('.',1,true) and
            file.ExistsInLua(cpath .. "init.lua"))) then
@@ -39,7 +40,8 @@ function GM:LoadTeams()
         MsgN(" Loaded group ", GROUP.Name, ".");
         GROUP.UniqueID = string.lower(group);
         reggroup();
-        for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+        files, folders = file.Find(cpath .. "*", "LUA")
+        for _, gang in pairs(folders) do
             local cpath = cpath .. gang .. "/";
             if (not (validfile(gang) and not gang:find('.',1,true) and
                file.ExistsInLua(cpath .. "init.lua"))) then
@@ -71,7 +73,8 @@ function GM:LoadTeams()
     local gdata, init;
     for plugin, path in pairs(plugins) do
         MsgN(" Looking in", plugin.Name);
-        for _, group in pairs(file.FindInLua(path .. "*")) do
+        files, folders = file.Find(path .. "*", "LUA");
+        for _, group in pairs(folders) do
             cpath = path .. group .. "/";
             if (not validfile(group) or group.find('.', 1, true)) then
                 continue;
@@ -106,7 +109,8 @@ function GM:LoadTeams()
             else
                 MsgN("  Loaded group ", GROUP.Name, ".");
             end
-            for _, gang in pairs(file.FindInLua(cpath .. "*")) do
+            local files, folders = file.Find(cpath .. "*", "LUA");
+            for _, gang in pairs(folders) do
                 local cpath = cpath .. gang .. "/";
                 if (not validfile(gang) or gang:find('.',1,true)) then
                     continue;
@@ -197,7 +201,7 @@ end
 local a, b = "(.*)%.lua", "%1"
 function loadteams(path)
 	local str = "";
-	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
+	for _, filename in pairs(file.Find(path.."*.lua", "LUA")) do
 		if (validfile(filename) and filename ~= "init.lua") then
 			newteam();
 			includecs(path..filename);
@@ -217,7 +221,7 @@ function loadteamsplugin(path)
     local new     = "";
     local changed = "";
     local tuid, tdata;
-	for _, filename in pairs(file.FindInLua(path.."*.lua")) do
+	for _, filename in pairs(file.Find(path.."*.lua", "LUA")) do
         if (not validfile(filename) or filename == "init.lua") then
             continue;
         end

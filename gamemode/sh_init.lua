@@ -35,7 +35,7 @@ end
 
 --[[ Loop through the libraries and include them.
 local subd
-for k, v in pairs( file.FindInLua(GM.LuaFolder.."/gamemode/libraries/*.lua") ) do
+for k, v in pairs( file.Find(GM.LuaFolder.."/gamemode/libraries/*.lua", "LUA") ) do
 	if (validfile(v)) then
 		subd = string.sub(v, 1, 3);
 		if (SERVER) then
@@ -63,7 +63,7 @@ local function doload(path, name, plural) -- path must be the relative path from
 	MsgN("Applejack: Loading "..plural);
 	local count = 0;
 	local subd, fname;
-	for k, v in pairs( file.FindInLua(GM.LuaFolder.."/gamemode/"..path.."*.lua") ) do
+	for k, v in pairs( file.Find(GM.LuaFolder.."/gamemode/"..path.."*.lua", "LUA") ) do
 		if (validfile(v)) then
 			subd = v:sub(1, 3);
 			fname = v:sub(4,-5);
@@ -111,7 +111,7 @@ GM:LoadTeams();
 
 
 -- Loop through derma panels and include them.
-for k, v in pairs( file.FindInLua(GM.LuaFolder.."/gamemode/derma/*.lua") ) do
+for k, v in pairs( file.Find(GM.LuaFolder.."/gamemode/derma/*.lua", "LUA") ) do
 	if (validfile(v)) then
 		if (CLIENT) then
 			include("derma/"..v);

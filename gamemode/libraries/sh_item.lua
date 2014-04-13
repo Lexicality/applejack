@@ -21,7 +21,7 @@ local newcat,str,count,path,total;
 function GM:LoadItems()
     path = self.LuaFolder.."/gamemode/items/";
     MsgN("Applejack: Loading Item Bases:")
-    for _, filename in pairs(file.FindInLua(path.."base/*.lua")) do
+    for _, filename in pairs(file.Find(path.."base/*.lua", "LUA")) do
         if (validfile(filename)) then
             ITEM = meta();
             ITEM.Name = "NULL"; -- For the search
@@ -33,7 +33,8 @@ function GM:LoadItems()
     end
     total = 0;
     MsgN("Applejack: Loading Categories:");
-    for _, filename in pairs(file.FindInLua(path.."*")) do
+    local files, folders = file.Find(path.."*", "LUA");
+    for _, filename in pairs(folders) do
         if (validfile(filename) and not filename:find('.',1,true) and
                  file.ExistsInLua(path..filename.."/init.lua")) then
             str,count = "",0;
@@ -42,7 +43,7 @@ function GM:LoadItems()
             includecs(path..filename.."/init.lua");
             newcat = registerCategory(CAT);
             _E['CATEGORY_'..string.upper(filename)] = newcat;
-            for _, item in pairs(file.FindInLua(path..filename.."/*.lua")) do
+            for _, item in pairs(file.Find(path..filename.."/*.lua", "LUA")) do
                 if (validfile(item) and item ~= "init.lua") then
                     ITEM = meta();
                     ITEM.UniqueID = item:sub(1,-5):lower();
@@ -71,7 +72,7 @@ function GM:LoadItems()
             continue;
         end
         MsgN("  Found bases in " .. plugin.Name .. "!");
-        for _, filename in pairs(file.FindInLua(path.."base/*.lua")) do
+        for _, filename in pairs(file.Find(path.."base/*.lua", "LUA")) do
             if (not validfile(filename)) then
                 continue;
             end
@@ -88,7 +89,8 @@ function GM:LoadItems()
     local spath, uid, verb;
     for plugin, path in pairs(plugins) do
         MsgN("  Looking in " .. plugin.Name);
-        for _, filename in pairs(file.FindInLua(path.."*")) do
+        files, folders = file.Find(path.."*", "LUA");
+        for _, filename in pairs(folders) do
             if (not (validfile(filename) and not filename:find('.',1,true)) or filename == "base") then
                 continue;
             end
@@ -121,7 +123,7 @@ function GM:LoadItems()
                 verb = "Enlivened"
             end
             str, count = "", 0;
-            for _, item in pairs(file.FindInLua(spath .. "/*.lua")) do
+            for _, item in pairs(file.Find(spath .. "/*.lua", "LUA")) do
                 if (item == "init.lua" or not validfile(item)) then
                     continue;
                 end

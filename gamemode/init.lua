@@ -44,13 +44,14 @@ while true do
 	local curdir = table.remove(folders,1)
 	if not curdir then break end
 	local searchdir = path..curdir
-	for _, filename in ipairs(file.Find(searchdir.."/*", true)) do
+	local files, folders = file.Find(searchdir.."/*", "MOD")
+	for _, filename in ipairs(files) do
+		resource.AddSingleFile(string.sub(curdir.."/"..filename, 2))
+	end
+
+	for _, filename in ipairs(folders) do
 		if filename ~= ".svn" then
-			if file.IsDir(searchdir.."/"..filename) then
-				table.insert(folders,curdir.."/"..filename)
-			else
-				resource.AddSingleFile(string.sub(curdir.."/"..filename,2))
-			end
+			table.insert(folders,curdir.."/"..filename)
 		end
 	end
 end

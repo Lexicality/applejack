@@ -35,7 +35,8 @@ function GM:LoadPlugins()
 	MsgN("Applejack: Loading Plugins:");
 	local path = self.LuaFolder.."/gamemode/plugins/";
 	local cpath;
-	for _,id in pairs(file.FindInLua(path.."*")) do
+	local files, folders = file.Find(path.."*", "LUA");
+	for _,id in pairs(folders) do
 		if (not id:find(".",1,true)) then
 			cpath = path..id;
 			PLUGIN = {};

@@ -100,8 +100,9 @@ end
 -- @param filename The file to check
 -- @return True if the file exists, false otherwise
 function file.ExistsInLua(filename)
-    return  file.Exists("lua/"       .. filename, true) or
-            file.Exists("gamemodes/" .. filename, true) or
-            file.Exists("lua_temp/"  .. filename, true);
+	-- TODO: Does "LUA" let you do this more easily?
+    return  file.Exists("lua/"       .. filename, "MOD") or
+            file.Exists("gamemodes/" .. filename, "MOD") or
+            file.Exists("lua_temp/"  .. filename, "MOD");
 end
     
