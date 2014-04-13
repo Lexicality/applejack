@@ -763,7 +763,7 @@ function SWEP:CalculateModifiers(run,crouch,jump,iron)
 
 	local modifier = 1
 
-	if self.Owner:KeyDown(IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT) then
+	if self.Owner:KeyDown(IN_FORWARD + IN_BACK + IN_MOVELEFT + IN_MOVERIGHT) then
 		modifier = modifier*run
 	end
 	
