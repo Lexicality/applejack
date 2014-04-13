@@ -22,7 +22,7 @@ end
 -- Checks to see if an entity is ownable.
 -- @return True if it is, false if it isn't.
 function meta:IsOwnable()
-	return self:GetDTInt(3) & OBJ_OWNABLE == OBJ_OWNABLE;
+	return bit.band(self:GetDTInt(3), OBJ_OWNABLE) == OBJ_OWNABLE;
 end
 
 ---
@@ -43,7 +43,7 @@ end
 -- Checks to see if an entity is locked.
 -- @return True if it is, false if it isn't.
 function meta:Locked()
-    return self:GetDTInt(3) & OBJ_LOCKED == OBJ_LOCKED;
+    return bit.band(self:GetDTInt(3), OBJ_LOCKED) == OBJ_LOCKED;
 end
 
 --[[ 'Get' functions ]]--
@@ -69,7 +69,7 @@ function meta:GetStatus()
 	end
 	local dt = self:GetDTInt(3);
 	--[[
-	if dt) & OBJ_INUSE == OBJ_INUSE then
+	if bit.band(dt), OBJ_INUSE) == OBJ_INUSE then
 		if p then
 			if status == "" then
 				status = "This is in use"
@@ -80,7 +80,7 @@ function meta:GetStatus()
 			status = status.."(In Use)"
 		end
 	end
-	if dt & OBJ_RAMMABLE == OBJ_RAMMABLE then
+	if bit.band(dt, OBJ_RAMMABLE) == OBJ_RAMMABLE then
 		if p then
 			if status == "" then
 				status = "You may ram this"
@@ -92,7 +92,7 @@ function meta:GetStatus()
 		end
 	end
 	--]]
-	if dt & OBJ_LOCKED == OBJ_LOCKED then
+	if bit.band(dt, OBJ_LOCKED) == OBJ_LOCKED then
 		if p then
 			if status == "" then
 				status = "This is locked"
@@ -103,7 +103,7 @@ function meta:GetStatus()
 			status = status.."(Locked)"
 		end
 	end
-	if dt & OBJ_SEALED == OBJ_SEALED then
+	if bit.band(dt, OBJ_SEALED) == OBJ_SEALED then
 		if p then
 			if status == "" then
 				status = "This is sealed shut"
@@ -142,7 +142,7 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 		local owner = self:GetDisplayName()
 		if (owner == "Nobody") then -- Door is for sale
 			owner = "For Sale - Press F2"
-			if (self:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then	
+			if bit.band((self:GetDTInt(3), OBJ_SEALED) == OBJ_SEALED) then	
 				owner = ""
 			end
 		end

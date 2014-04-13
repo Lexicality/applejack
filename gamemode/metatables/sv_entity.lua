@@ -331,7 +331,7 @@ function meta:Lock(delay, force, done)
 		self:Fire("lock");
 	end
 	self._Locked = true;
-	self:SetDTInt(3, self:GetDTInt(3) | OBJ_LOCKED);
+	self:SetDTInt(3, bit.bor(self:GetDTInt(3), OBJ_LOCKED));
 	for _, ent in pairs(self._Owner.lockbuddies) do
 		ent:Lock(0, force);
 	end
@@ -353,8 +353,7 @@ function meta:UnLock(delay, force)
 		self:Fire("unlock");
 	end
 	self._Locked = false;
-	local status = self:GetDTInt(3);
-	self:SetDTInt(3, status - (status & OBJ_LOCKED));
+	self:SetDTInt(3, bit.band(self:GetDTInt(3), bit.bnot(OBJ_LOCKED)));
 	for _, ent in pairs(self._Owner.lockbuddies) do
 		ent:UnLock(0, force);
 	end
@@ -365,7 +364,7 @@ end
 function meta:Seal()
 	cm(self);
 	self._Sealed = true;
-	self:SetDTInt(3,self:GetDTInt(3) | OBJ_SEALED);
+	self:SetDTInt(3, bit.bor(self:GetDTInt(3), OBJ_SEALED));
 end
 
 ---
@@ -373,8 +372,7 @@ end
 function meta:UnSeal()
 	cm(self);
 	self._Sealed = false;
-	local d = self:GetDTInt(3);
-	self:SetDTInt(3, d - (d & OBJ_SEALED));
+	self:SetDTInt(3, bit.band(self:GetDTInt(3), bit.bnot(OBJ_SEALED)));
 end
 
 ---
@@ -399,7 +397,7 @@ function meta:MakeOwnable()
 	self:UnLock();
 	GM.OwnableEntities[self] = true;
 	self:SetNWString("DisplayName", "Nobody");
-	self:SetDTInt(3, self:GetDTInt(3) | OBJ_OWNABLE);
+	self:SetDTInt(3, bit.bor(self:GetDTInt(3), OBJ_OWNABLE));
 end
 
 ---

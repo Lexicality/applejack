@@ -1008,7 +1008,7 @@ local function containerHandler(ply, item, action, number)
     end
     do
         local action = action == "put" and CAN_PUT or CAN_TAKE
-        if not( action & io == action) then
+        if not( bit.band(action, io) == action) then
             return false,"You cannot do that!"
         end
     end
@@ -1632,17 +1632,11 @@ GM:RegisterCommand{
             return false,"That is not a valid entity!"
         end
         if unseal then
-            entity._Sealed = false
-            if (entity:GetDTInt(3) & OBJ_SEALED == OBJ_SEALED) then
-                entity:SetDTInt(3, entity:GetDTInt(3) -  OBJ_SEALED);
-            end
+            entity:UnSeal();
             hook.Call("EntitySealed",GAMEMODE,entity,true)
             GM:Log(EVENT_ENTITY, "%s unsealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
         else
-            entity._Sealed = true
-            if (entity:GetDTInt(3) & OBJ_SEALED ~= OBJ_SEALED) then
-                entity:SetDTInt(3, entity:GetDTInt(3) +  OBJ_SEALED);
-            end
+            entity:Seal();
             hook.Call("EntitySealed",GAMEMODE,entity)
             GM:Log(EVENT_ENTITY, "%s sealed a %s,",ply:Name(),entity._isDoor and "door" or entity:GetNWString("Name","entity"))
         end

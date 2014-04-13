@@ -161,7 +161,7 @@ function PANEL:Init()
 	self.itemFunctions = {};
 	
 	-- Check to see if the item has an on use callback.
-	if not notake and self.action & containermenu.meta.io == self.action then
+	if not notake and bit.band(self.action, containermenu.meta.io) == self.action then
 		if self.action == CAN_PUT then
 			if not containermenu.meta.filter or containermenu.meta.filter[self.item] then
 				table.insert(self.itemFunctions, "Put" )
@@ -397,8 +397,8 @@ local function NewContainer( handle, id, encoded, decoded )
 	}
 	--]]
 	--[[
-	decoded.meta.cantake = CAN_TAKE & decoded.meta.io == CAN_TAKE
-	decoded.meta.canput  = CAN_PUT  & decoded.meta.io == CAN_PUT
+	decoded.meta.cantake = bit.band(CAN_TAKE, decoded.meta.io) == CAN_TAKE
+	decoded.meta.canput  = bit.band(CAN_PUT,  decoded.meta.io) == CAN_PUT
 	--]]
 	if containermenu then containermenu:Remove() end
 	containermenu = vgui.Create"cider_Container"
