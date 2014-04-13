@@ -41,7 +41,7 @@ function IsValid( object )
 	--]]
 	return object and object.IsValid and object:IsValid();
 end
-ValidEntity = IsValid
+IsValid = IsValid
 
 ---
 -- Checks if an entity is both valid and a player

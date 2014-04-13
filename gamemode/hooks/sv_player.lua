@@ -331,7 +331,7 @@ function GM:PlayerCanRamDoor(ply, door)
 			end
 		end
 		local owner = door:GetOwner()
-		if (type(owner) == "Player" and ValidEntity(owner) and owner:Arrested()) then
+		if (type(owner) == "Player" and IsValid(owner) and owner:Arrested()) then
 			return true
 		end
 		ply:Notify("You do not have the authority to ram this door.", 1);

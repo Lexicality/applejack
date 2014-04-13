@@ -355,12 +355,12 @@ end
 --Stick shit on my back
 function SWEP:StickAGunToMyBack	()
 	local player,model = self.Owner,self.WorldModel
-	if ValidEntity				(player._BackGun) then
+	if IsValid				(player._BackGun) then
 		return false
 	end
 	local pos, ang, up, forward = player:GetPos(), player:GetAngles(), player:GetUp(), player:GetForward()
 	local ent = ents.Create		("cider_weaponback")
-	if not ValidEntity			(ent) then
+	if not IsValid			(ent) then
 		error					("Failed to create back weapon "..model.." for "..player:Name())
 	end
 	ent:SetPos					(pos + up*40+forward*-7)--+right*4)
@@ -384,7 +384,7 @@ end
 
 function SWEP:OhGodGetItOff()
 	--MsgN"RemovingGun"
-	if ValidEntity(self.Owner._BackGun) then
+	if IsValid(self.Owner._BackGun) then
 		--MsgN"Valid"
 		if  self.Owner._BackGun:GetModel() == self.WorldModel then
 			--MsgN"Same"
@@ -399,7 +399,7 @@ end
 -- Adjusted and recommented because it was a fucking mess before
 local function ammostuff(owner, classname)
 	-- Make sure there's still a person and the have that weapon
-	if ValidEntity(owner) and owner:HasWeapon(classname)
+	if IsValid(owner) and owner:HasWeapon(classname)
 		-- Ensure they can holster it
 	and	hook.Call("PlayerCanHolster", GAMEMODE, owner, classname, true)
 		-- Doo eet
@@ -410,7 +410,7 @@ end
 
 function SWEP:DoAmmoStuff()
 	-- Get rid of pointles runs
-	if CLIENT or not ValidEntity(self.previousOwner) then return end
+	if CLIENT or not IsValid(self.previousOwner) then return end
 	self.previousOwner:CrosshairEnable()
 	-- Grab the ammo counts
 	self.previousOwner._Ammo = self.previousOwner._Ammo or {}
@@ -448,7 +448,7 @@ function SWEP:Holster(wep)
 		return false
 	end
 	--]]
-	if SERVER and ValidEntity(self.Owner) and self.Owner:Alive() and not self.Owner._Deaded then
+	if SERVER and IsValid(self.Owner) and self.Owner:Alive() and not self.Owner._Deaded then
 		timer.Violate(self.Owner:UniqueID().." holster");
 		if not self.Owner:KnockedOut() then
 			if GM.Config["Back Weapons"][self.Size] then
@@ -568,9 +568,9 @@ local function carshoot(self,tr,dmg)
 	if tr.Entity:IsValid() and tr.Entity:GetClass() == "prop_vehicle_jeep" and SERVER then
 		local trace = { start = tr.HitPos, endpos = tr.HitPos + tr.Normal * 64, filter = tr.Entity}
 		trace = util.TraceLine(trace)
-		if trace.Hit and ValidEntity(trace.Entity) then
+		if trace.Hit and IsValid(trace.Entity) then
 			local ent = trace.Entity
-			if ent:IsVehicle() and ValidEntity(ent:GetDriver()) and ent:GetClass() == "prop_vehicle_prisoner_pod" then
+			if ent:IsVehicle() and IsValid(ent:GetDriver()) and ent:GetClass() == "prop_vehicle_prisoner_pod" then
 				ent:TakeDamage(dmg,self.Owner)
 			elseif ent:IsPlayer() and ent:InVehicle() then
 				ent:GetVehicle():TakeDamage(dmg,self.Owner)
@@ -726,7 +726,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 			[MAT_WOOD] = {"Impact.Wood", "MetalSpark"},
 			[MAT_GLASS] = {"Impact.Glass", "GlassImpact"}
 		}
-		if ( !ValidEntity(_trace.Entity) or ( !_trace.Entity:IsPlayer() and !_trace.Entity:IsNPC() ) ) then
+		if ( !IsValid(_trace.Entity) or ( !_trace.Entity:IsPlayer() and !_trace.Entity:IsNPC() ) ) then
 			if (_trace.Entity == trace.Entity) then
 				if (matTypes[_trace.MatType]) then
 					util.Decal(matTypes[_trace.MatType][1], _trace.HitPos + _trace.HitNormal, _trace.HitPos - _trace.HitNormal)
@@ -793,7 +793,7 @@ function SWEP:ShootEffects()
 		self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
 		if (self.AnimationFix) then
 			timer.Create("Animation Fix: "..tostring(self.Weapon), self.AnimationFix, 1, function()
-				if ( ValidEntity(self.Weapon) ) then
+				if ( IsValid(self.Weapon) ) then
 					self.Weapon:SendWeaponAnim(ACT_VM_IDLE_SILENCED)
 				end
 			end);
@@ -802,7 +802,7 @@ function SWEP:ShootEffects()
 		self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		if (self.AnimationFix) then
 			timer.Create("Animation Fix: "..tostring(self.Weapon), self.AnimationFix, 1, function()
-				if ( ValidEntity(self.Weapon) ) then
+				if ( IsValid(self.Weapon) ) then
 					self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
 				end
 			end);
@@ -959,7 +959,7 @@ function SWEP:Think()
 			self.LaserLastRespawn = CurTime()
 		end
 	end
-	if ( ValidEntity(self.Owner) ) then self.previousOwner = self.Owner; end
+	if ( IsValid(self.Owner) ) then self.previousOwner = self.Owner; end
 end
 
 -- Secondary attack is used to set ironsights/change firemodes

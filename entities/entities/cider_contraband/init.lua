@@ -24,7 +24,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 	
 	-- Check if the physics object is a valid entity.
-	if ( ValidEntity(physicsObject) ) then
+	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
@@ -54,13 +54,13 @@ function ENT:OnTakeDamage(damageInfo)
 	local killer = damageInfo:GetInflictor();
 	
 	-- Check if the player can destroy the contraband.
-	if ( ValidEntity(killer) and killer:IsPlayer()
+	if ( IsValid(killer) and killer:IsPlayer()
 	and hook.Call("PlayerCanDestroyContraband", GAMEMODE, killer, self) ) then
 		self:SetHealth( math.max(self:Health() - damageInfo:GetDamage(), 0) );
 		
 		-- Check if the entity has run out of health.
 		if (self:Health() <= 0) then
-			if ( ValidEntity(killer) and killer:IsPlayer() )then
+			if ( IsValid(killer) and killer:IsPlayer() )then
 				hook.Call("PlayerDestroyedContraband",GAMEMODE, killer, self)
 			end
 			

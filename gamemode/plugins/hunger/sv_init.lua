@@ -65,7 +65,7 @@ function PLUGIN:PlayerSecond(player)
 	local world = GetWorldEntity();
 	
 	-- Check if the player is knocked out.
-	if (player:KnockedOut() and ValidEntity(player.ragdoll.entity)) then
+	if (player:KnockedOut() and IsValid(player.ragdoll.entity)) then
 		player.ragdoll.entity:TakeDamage(damage,world,player);
 	elseif (player:InVehicle()) then
 		player:TakeDamage(damage*2,world, player); --cars are dicks

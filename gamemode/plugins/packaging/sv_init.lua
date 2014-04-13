@@ -7,7 +7,7 @@
 	(Does not work every time in actual application on the server =/)
 --]]
 function PLUGIN:PlayerClosedContainerWindow(player)
-	if ValidEntity(player._UsingCrate) and cider.container.isContainer(player._UsingCrate) then -- If the player is using a crate then we want to seal it!
+	if IsValid(player._UsingCrate) and cider.container.isContainer(player._UsingCrate) then -- If the player is using a crate then we want to seal it!
 		local crate = player._UsingCrate
 		crate._Sealed = true
 	--	crate:SetNWBool("cider_Sealed",true)

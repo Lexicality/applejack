@@ -16,7 +16,7 @@ local function closeMenu()
 end
 usermessage.Hook("cider_CloseContainerMenu",closeMenu)
 local function CheckPos()
-	if not ValidEntity(lpl) then lpl = LocalPlayer() end
+	if not IsValid(lpl) then lpl = LocalPlayer() end
 	if not (lpl:Alive() and lpl:GetEyeTraceNoCursor().Entity == targetEntity) then
 		closeMenu()
 		return false
@@ -348,7 +348,7 @@ local function UpdateContainer(decoded)
 	if not containermenu then return end
 	containermenu.meta = decoded.meta
 	targetEntity = Entity(decoded.meta.entindex)
-	if not ValidEntity(targetEntity) then
+	if not IsValid(targetEntity) then
 		ErrorNoHalt("Invalid entity passed to the container menu!")
 		closeMenu()
 		return

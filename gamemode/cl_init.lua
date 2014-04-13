@@ -238,7 +238,7 @@ function GM:PostProcessPermitted() return LocalPlayer():IsAdmin() end
 --[[ Shit but required for now (ick) ]]--
 
 local function iHasInitializedyay()
-	if ValidEntity(LocalPlayer()) then
+	if IsValid(LocalPlayer()) then
 		GAMEMODE.playerInitialized = true
 		if startupmenu:GetBool() then
 			cider.menu.toggle()
@@ -273,7 +273,7 @@ usermessage.Hook("cider.player.initialized", iHasInitializedyay);
 			ErrorNoHalt("LocalPlayer(): "..tostring(LocalPlayer()).."\n")
 			ErrorNoHalt("---------------------------\n")
 		end
-		if !ValidEntity(LocalPlayer()) then
+		if !IsValid(LocalPlayer()) then
 			errors = errors + 1
 		--	ErrorNoHalt("LocalPlayer is invalid! ("..errors.."/"..maxerrors..")\n")
 			return timer.Simple(1,CheckForInitalised,tab)

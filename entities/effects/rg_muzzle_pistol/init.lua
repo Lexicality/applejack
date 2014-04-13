@@ -11,7 +11,7 @@ function EFFECT:Init(data)
 	self.Right = self.Angle:Right()
 	self.Up = self.Angle:Up()
 
-	if not ValidEntity(self.WeaponEnt) or not self.WeaponEnt:GetOwner() or self.WeaponEnt == NULL or self.WeaponEnt:GetOwner() == NULL then return end
+	if not IsValid(self.WeaponEnt) or not self.WeaponEnt:GetOwner() or self.WeaponEnt == NULL or self.WeaponEnt:GetOwner() == NULL then return end
 	
 	local AddVel = self.WeaponEnt:GetOwner():GetVelocity()
 	

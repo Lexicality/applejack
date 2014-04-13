@@ -3,7 +3,7 @@
 	~ Applejack ~
 --]]
 
-local player,umsg,pairs,ipairs,string,timer,ValidEntity,table = player,umsg,pairs,ipairs,string,timer,ValidEntity,table
+local player,umsg,pairs,ipairs,string,timer,IsValid,table = player,umsg,pairs,ipairs,string,timer,IsValid,table
 
 ---
 -- Allows plugins to add their own flags and functions to HasAccess without resorting to dirty hacks.

@@ -90,7 +90,7 @@ function cider.inventory.canFit(player, size, inventory)
 end
 
 local function playerInitInventory(player)
-	if not ValidEntity(player) then
+	if not IsValid(player) then
 		return false
 	elseif player.cider then
 		for k, v in pairs(player.cider._Inventory) do cider.inventory.update(player, k, 0, true); end

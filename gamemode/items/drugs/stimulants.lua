@@ -21,8 +21,8 @@ end
 function ITEM:onUse(ply)
 	local trace	= ply:GetEyeTraceNoCursor( );
 	local target	= trace.Entity
-	if ( ValidEntity(target._Player) ) then target	= target._Player; end
-	if (not (ValidEntity(target) and target:IsPlayer() and ply:GetPos():Distance(trace.HitPos) <= 128 and target:Alive())) then
+	if ( IsValid(target._Player) ) then target	= target._Player; end
+	if (not (IsValid(target) and target:IsPlayer() and ply:GetPos():Distance(trace.HitPos) <= 128 and target:Alive())) then
 		ply:Notify("You must look at a player to stimulate them!",1)
 		return false;
 	end

@@ -969,7 +969,7 @@ GM:RegisterCommand{
 
 local function containerHandler(ply, item, action, number)
     local container = ply:GetEyeTraceNoCursor().Entity
-    if not (ValidEntity(container) and cider.container.isContainer(container) and ply:GetPos():Distance( ply:GetEyeTraceNoCursor().HitPos ) <= 128) then
+    if not (IsValid(container) and cider.container.isContainer(container) and ply:GetPos():Distance( ply:GetEyeTraceNoCursor().HitPos ) <= 128) then
         return false,"That is not a valid container!"
     elseif not gamemode.Call("PlayerCanUseContainer",ply,container) then
         return false,"You cannot use that container!"
@@ -1092,7 +1092,7 @@ do --isolate vars
             end
             
             -- Check if the weapon is a valid entity.
-            if not ( ValidEntity(weapon) and GM.Items[weapon:GetClass()] ) then
+            if not ( IsValid(weapon) and GM.Items[weapon:GetClass()] ) then
                 return false, "This is not a valid weapon!";
             end
             local class = weapon:GetClass();
@@ -1603,9 +1603,9 @@ GM:RegisterCommand{
     function(ply, masterID)
         local entity = ply:GetEyeTraceNoCursor().Entity
         local master = Entity(masterID)
-        if not (ValidEntity(entity) and entity:IsOwnable()) then
+        if not (IsValid(entity) and entity:IsOwnable()) then
             return false,"That is not a valid entity!"
-        elseif not ((ValidEntity(master) and master:IsOwnable()) or masterID == 0) then
+        elseif not ((IsValid(master) and master:IsOwnable()) or masterID == 0) then
             return false,"That is not a valid entity ID!"
         end
         if masterID == 0 then
@@ -1628,7 +1628,7 @@ GM:RegisterCommand{
     Help        = "Seal or unseal a door.";
     function(ply, unseal)
         local entity = ply:GetEyeTraceNoCursor().Entity
-        if not (ValidEntity(entity) and entity:IsOwnable()) then
+        if not (IsValid(entity) and entity:IsOwnable()) then
             return false,"That is not a valid entity!"
         end
         if unseal then
@@ -1657,7 +1657,7 @@ GM:RegisterCommand{
     Help        = "Set the displayed name for a door. 'Clear' with 's to set it to nothing.";
     function(ply, words)
         local entity = ply:GetEyeTraceNoCursor().Entity
-        if not (ValidEntity(entity) and entity:IsOwnable() and entity._isDoor) then
+        if not (IsValid(entity) and entity:IsOwnable() and entity._isDoor) then
             return false,"That is not a valid door!"
         end
         if (string.lower(words) == "'clear'") then

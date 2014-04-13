@@ -841,7 +841,7 @@ function cider.chatBox.chatText(index, name, text, filter)
 	text = string.Replace(text, " ' ", "'");
 	
 	-- Check if the player is a valid entity.
-	if ( ValidEntity(player) ) then
+	if ( IsValid(player) ) then
 		local teamIndex = player:Team();
 		local teamColor = team.GetColor(teamIndex);
 		local icon = nil;

@@ -47,7 +47,7 @@ end
 ---------------------------------------------------------*/
 function PANEL:Paint()
 
-	if ( !ValidEntity( self.Player ) ) then return end
+	if ( !IsValid( self.Player ) ) then return end
 	
 	local color = team.GetColor(self.Player:Team())
 	-- Check if we're sliding
@@ -243,8 +243,8 @@ end
    Name: PerformLayout
 ---------------------------------------------------------*/
 function PANEL:HigherOrLower( row )
-	if not ValidEntity(self.Player) then return false end
-	if not ValidEntity( row.Player) then return true  end
+	if not IsValid(self.Player) then return false end
+	if not IsValid( row.Player) then return true  end
 	return self.Player:Team() < row.Player:Team()
 
 end

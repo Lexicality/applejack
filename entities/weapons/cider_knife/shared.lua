@@ -109,7 +109,7 @@ function SWEP:PrimaryAttack()
 		shoot = true;
 		
 		-- Check if we hit a valid entity.
-		if ( ValidEntity(trace.Entity) ) then
+		if ( IsValid(trace.Entity) ) then
 			if (trace.Entity:IsPlayer() or trace.Entity:IsNPC() or trace.Entity:GetClass() == "prop_ragdoll") then
 				self.Owner:EmitSound( self.fleshSounds[ math.random(1, #self.fleshSounds) ] );
 				self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
@@ -183,8 +183,8 @@ function SWEP:PrimaryAttack()
 			
 			-- Fire a bullet from the owner.
 			self.Owner:FireBullets(bullet);
-		elseif ( ValidEntity(trace.Entity) ) then
-			if ( ValidEntity( trace.Entity:GetPhysicsObject() ) ) then
+		elseif ( IsValid(trace.Entity) ) then
+			if ( IsValid( trace.Entity:GetPhysicsObject() ) ) then
 				trace.Entity:GetPhysicsObject():ApplyForceOffset(self.Owner:GetAimVector() * 500, trace.HitPos);
 			end
 		end

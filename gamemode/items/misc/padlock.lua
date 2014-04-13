@@ -17,7 +17,7 @@ ITEM.Base			= "item"
 function ITEM:onUse(ply)
 	local trace	= ply:GetEyeTraceNoCursor();
 	local door	= trace.Entity;
-	if (not (ValidEntity(door) and cider.entity.isOwnable(door))) then
+	if (not (IsValid(door) and cider.entity.isOwnable(door))) then
 		ply:Notify("You can't put a padlock on that!", 1);
 	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then	
 		ply:Notify("You are not close enough to the door!", 1);

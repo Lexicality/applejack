@@ -22,7 +22,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 	
 	-- Check if the physics object is a valid entity.
-	if ( ValidEntity(physicsObject) ) then
+	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end

@@ -24,7 +24,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 	
 	-- Check if the physics object is a valid entity.
-	if ( ValidEntity(physicsObject) ) then
+	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
@@ -52,7 +52,7 @@ function ENT:SetDoor(door, trace,owner)
 			self:SetLocalAngles(Angle(0,-180,0))
 		end
 	elseif door:GetClass() == "prop_dynamic" then
-		if ( ValidEntity( self:GetPhysicsObject() ) ) then
+		if ( IsValid( self:GetPhysicsObject() ) ) then
 			self:GetPhysicsObject():EnableMotion(false);
 		end
 	else
@@ -68,8 +68,8 @@ function ENT:OnTakeDamage(damageInfo)
 	self:SetHealth( math.max(self:Health() - damageInfo:GetDamage(), 0) );
 	-- Check if the entity has run out of health.
 	if (self:Health() <= 0) then
-		if ValidEntity(self._Door) then
-			if ValidEntity(damageInfo:GetAttacker()) and damageInfo:GetAttacker():IsPlayer() then
+		if IsValid(self._Door) then
+			if IsValid(damageInfo:GetAttacker()) and damageInfo:GetAttacker():IsPlayer() then
 				local event = ""
 				local addon = ""
 				local entname = self._Door._eName or "entity"
@@ -110,7 +110,7 @@ function ENT:FallOff()
 	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	self:SetModel("models/props_wasteland/prison_padlock001b.mdl")
 	self.broken = true
-	timer.Simple(20,function() if ValidEntity(self) then self:Remove() end end)
+	timer.Simple(20,function() if IsValid(self) then self:Remove() end end)
 end
 hook.Add("PenetrationDamage","PadlockUnpenetrator",function(_trace,di,weaponentity,atk)
 	if _trace.Entity:GetClass() == "cider_padlock" then

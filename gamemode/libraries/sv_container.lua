@@ -161,7 +161,7 @@ function cider.container.dumpContents(entity,pos)
 	-- Ensure our items don't go flying
 	for _, v in ipairs(items) do
 		for _, v2 in ipairs(items) do
-			if (v ~= v2 and ValidEntity(v) and ValidEntity(v2) ) then
+			if (v ~= v2 and IsValid(v) and IsValid(v2) ) then
 				constraint.NoCollide(v, v2, 0, 0)
 			end
 		end

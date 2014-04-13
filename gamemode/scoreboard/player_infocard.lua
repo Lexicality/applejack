@@ -185,7 +185,7 @@ function PANEL:PerformLayout()
 		self.btnPBan:SetPos( self:GetWide() - 52 * 1, 80 )
 		self.btnPBan:SetSize( 48, 20 )
 	end
-	if !ValidEntity(self.Player) || self.Player == LocalPlayer() || !hook.Call("PlayerCanDemote",GAMEMODE,LocalPlayer(),self.Player) then
+	if !IsValid(self.Player) || self.Player == LocalPlayer() || !hook.Call("PlayerCanDemote",GAMEMODE,LocalPlayer(),self.Player) then
 		self.btnDem:SetVisible( false )
 	else
 		self.btnDem:SetVisible( true )

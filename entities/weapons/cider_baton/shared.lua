@@ -46,11 +46,11 @@ function SWEP:DoHitEffects(sound)
 	local trace = self.Owner:GetEyeTrace();
 	-- Check if the trace hit or it hit the world.
 	if ( ( (trace.Hit or trace.HitWorld) and self.Owner:GetPos():Distance(trace.HitPos) <= 96 ) ) then
-		if ( ValidEntity(trace.Entity) and ( trace.Entity:IsPlayer() or trace.Entity:IsNPC() ) ) then
+		if ( IsValid(trace.Entity) and ( trace.Entity:IsPlayer() or trace.Entity:IsNPC() ) ) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_fleshhit"..math.random(1, 2)..".wav");
-		elseif ( ValidEntity(trace.Entity)
-		and ValidEntity( trace.Entity:GetNetworkedEntity("player") ) ) then
+		elseif ( IsValid(trace.Entity)
+		and IsValid( trace.Entity:GetNetworkedEntity("player") ) ) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_fleshhit"..math.random(1, 2)..".wav");
 		else

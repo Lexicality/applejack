@@ -146,7 +146,7 @@ function SWEP:Think()
 	end
 
 	-- Check if the owner is a valid entity.
-	if ( ValidEntity(self.Owner) ) then self.previousOwner = self.Owner; end
+	if ( IsValid(self.Owner) ) then self.previousOwner = self.Owner; end
 end
 
 -- Define the shotgun fire mode.

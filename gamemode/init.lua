@@ -55,8 +55,8 @@ while true do
 	end
 end
 
-local hook,player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math =
-      hook,player,umsg,pairs,ipairs,string,timer,ValidEntity,table,math
+local hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math =
+      hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math
 
 do
 	-- Store the old hook.Call function.
@@ -316,7 +316,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 end
 
 --[[function GM:PlayerSpawnedVehicle(player, entity)
-	if (!ValidEntity(player._Vehicle)) then player._Vehicle = entity end
+	if (!IsValid(player._Vehicle)) then player._Vehicle = entity end
 end]]
 
 ---
@@ -444,7 +444,7 @@ function GM:PlayerDataLoaded(ply, success)
 	-- Unfreeze them in a few seconds from now.
 	-- TODO: WHY?
 	timer.Simple(2, function()
-		if ( ValidEntity(ply) ) then
+		if ( IsValid(ply) ) then
 			-- Check if the player is arrested.
 			if (ply.cider._Arrested) then
 				ply:Arrest();
@@ -470,7 +470,7 @@ local function inittimer(ply)
 	end
 end
 local function modeltimer(ply)
-	if ValidEntity(ply) then
+	if IsValid(ply) then
 		umsg.Start("cider_ModelChoices",ply)
 		umsg.Short(table.Count(ply._ModelChoices))
 		for name,gender in pairs(ply._ModelChoices) do
@@ -637,7 +637,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	if (ply:GetNWBool("Typing") and IsValid(attacker) and attacker:IsPlayer()) then
 		player.NotifyAll(NOTIFY_CHAT, "%s (%s) killed %s while " .. (ply._GenderWord == "his" and "he" or "she") .. " was typing!", attacker:Name(), attacker:SteamID(), ply:Name());
 	end
-	if ValidEntity(ply._BackGun) then
+	if IsValid(ply._BackGun) then
 		ply._BackGun:Remove()
 	end
 	for k, v in pairs( ply:GetWeapons() ) do
@@ -681,7 +681,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	ply:AddDeaths(1)
 	
 	-- Check it the attacker is a valid entity and is a ply.
-	if ( ValidEntity(attacker) and attacker:IsPlayer() ) then
+	if ( IsValid(attacker) and attacker:IsPlayer() ) then
 		if (ply ~= attacker) then
 			if ( hook.Call("PlayerCanGainFrag",GAMEMODE, attacker, ply) ) then
 				attacker:AddFrags(1)
@@ -711,7 +711,7 @@ function GM:PlayerDeath(ply, inflictor, attacker, ragdoll,fall)
 	local formattext,text1,text2,text3,pvp = "",ply:GetName(),"",""
 	if ( attacker:IsPlayer() ) then
 		pvp,text1,text2,formattext = true,attacker:Name(),ply:Name(),"%s killed %s"
-		if ( ValidEntity( attacker:GetActiveWeapon() ) ) then
+		if ( IsValid( attacker:GetActiveWeapon() ) ) then
 			formattext,text3 = formattext.." with a %s.",attacker:GetActiveWeapon():GetClass()
 		else
 			formattext = formattext.."."
@@ -723,7 +723,7 @@ function GM:PlayerDeath(ply, inflictor, attacker, ragdoll,fall)
 		elseif attacker.VehicleName then
 			text2 = attacker.VehicleName
 		end
-		if ( ValidEntity( attacker:GetDriver()) and attacker:GetDriver():IsPlayer()) then
+		if ( IsValid( attacker:GetDriver()) and attacker:GetDriver():IsPlayer()) then
 			pvp = true
 			formattext,text3 = formattext.." driven by %s",attacker:GetDriver():Name()
 		end
@@ -755,7 +755,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	end
     --]]
 	local logme = false
-	if (attacker:IsPlayer() and ValidEntity( attacker:GetActiveWeapon() )) then
+	if (attacker:IsPlayer() and IsValid( attacker:GetActiveWeapon() )) then
 		if attacker:GetActiveWeapon():GetClass() == "weapon_stunstick" then
 			damageInfo:SetDamage(10)
 		elseif attacker:GetActiveWeapon():GetClass() == "weapon_crowbar" then
@@ -775,12 +775,12 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	end
 	local asplode = false
 	local asplodeent = nil
-	if inflictor:GetClass() == "npc_tripmine" and ValidEntity(inflictor._planter) then
+	if inflictor:GetClass() == "npc_tripmine" and IsValid(inflictor._planter) then
 		damageInfo:SetAttacker(inflictor._planter)
 		attacker = inflictor._planter
 		asplode = true
 		asplodeent = "tripmine"
-	elseif attacker:GetClass() == "cider_breach" and ValidEntity(attacker._Planter) then
+	elseif attacker:GetClass() == "cider_breach" and IsValid(attacker._Planter) then
 		damageInfo:SetAttacker(attacker._Planter) 
 		attacker = attacker._Planter
 		asplode = true
@@ -791,7 +791,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	end
 	if ( entity:IsPlayer() ) then
 		if (entity:KnockedOut()) then
-			if ( ValidEntity(entity.ragdoll.entity) ) then
+			if ( IsValid(entity.ragdoll.entity) ) then
 				hook.Call("EntityTakeDamage",GAMEMODE, entity.ragdoll.entity, inflictor, attacker, damageInfo:GetDamage(), damageInfo)
 			end
 		else
@@ -840,7 +840,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			end
 			
 			-- Check if the player has a last hit group defined.
-			if entity._LastHitGroup and ( not attacker:IsPlayer() or (ValidEntity(attacker:GetActiveWeapon()) and attacker:GetActiveWeapon():GetClass() ~= "cider_hands")) then
+			if entity._LastHitGroup and ( not attacker:IsPlayer() or (IsValid(attacker:GetActiveWeapon()) and attacker:GetActiveWeapon():GetClass() ~= "cider_hands")) then
 				if (entity._LastHitGroup == HITGROUP_HEAD) then
 					damageInfo:ScaleDamage( self.Config["Scale Head Damage"] )
 				elseif (entity._LastHitGroup == HITGROUP_CHEST or entity._LastHitGroup == HITGROUP_GENERIC) then
@@ -877,7 +877,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			entity:Bleed(self.Config["Bleed Time"])
 		end
 	elseif ( entity:IsNPC() ) then
-		if (attacker:IsPlayer() and ValidEntity( attacker:GetActiveWeapon() )
+		if (attacker:IsPlayer() and IsValid( attacker:GetActiveWeapon() )
 		and attacker:GetActiveWeapon():GetClass() == "weapon_crowbar") then
 			damageInfo:SetDamage(25)
 		end
@@ -888,7 +888,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		local text = "%s damaged a %s for %G damage%s"
 		if attacker:IsPlayer() then
 			smiter = attacker:GetName()
-			if ValidEntity( attacker:GetActiveWeapon() ) then
+			if IsValid( attacker:GetActiveWeapon() ) then
 				weapon = " with a "..attacker:GetActiveWeapon():GetClass()
 			end
 		end
@@ -903,7 +903,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		local text = "%s damaged a %s for %G damage%s"
 		if attacker:IsPlayer() then
 			smiter = attacker:GetName()
-			if ValidEntity( attacker:GetActiveWeapon() ) then
+			if IsValid( attacker:GetActiveWeapon() ) then
 				weapon = " with a "..attacker:GetActiveWeapon():GetClass()
 			end
 		end
@@ -915,7 +915,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		end
 		GM:Log(EVENT_DAMAGE,text,smiter,smitee,damage,weapon)
 	-- Check if the entity is a knocked out player.
-	elseif ( ValidEntity(entity._Player) and not entity._Corpse) then
+	elseif ( IsValid(entity._Player) and not entity._Corpse) then
 		local ply = entity._Player
 		-- If they were just ragdolled, give them 2 seconds of damage immunity 
 		if ply.ragdoll.time and ply.ragdoll.time > CurTime() then
@@ -1003,7 +1003,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			smiter = attacker:GetName()
 			if asplode then
 				weapon = " with a "..asplodeent
-			elseif ValidEntity( attacker:GetActiveWeapon() ) then
+			elseif IsValid( attacker:GetActiveWeapon() ) then
 				weapon = " with "..attacker:GetActiveWeapon():GetClass()
 			end
 		elseif attacker:IsVehicle() then
@@ -1098,7 +1098,7 @@ function GM:ShowHelp(ply) umsg.Start("cider_Menu", ply) umsg.End() end
 function GM:ShowTeam(ply)
 	local ent = ply:GetEyeTraceNoCursor().Entity	
 	-- Check if the player is aiming at a ent.
-	if not(ValidEntity(ent)
+	if not(IsValid(ent)
 	   and ent:IsOwnable()
 	   and ply:GetPos():Distance( ply:GetEyeTraceNoCursor().HitPos ) <= 128
 	 ) then
@@ -1201,7 +1201,7 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 		if contratypes[ent:GetClass()] then
 			local ply = ent:GetPlayer();
 			-- Check if the ply is a valid entity,
-			if ( ValidEntity(ply) ) then
+			if ( IsValid(ply) ) then
 				cplayers[ply] = cplayers[ply] or {refill = 0, money = 0}
 				
 				-- Decrease the energy of the contraband.
@@ -1216,7 +1216,7 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 			end
 		elseif ent:IsDoor() and ent:IsOwned() then
 			local o = ent:GetOwner()
-			if type(o) == "Player" and ValidEntity(o) then
+			if type(o) == "Player" and IsValid(o) then
 				dplayers[o] = dplayers[o] or { 0, {} }
 				-- Increase the amount of tax this player must pay.
 				dplayers[o][1] = dplayers[o][1] + GM.Config["Door Tax Amount"]

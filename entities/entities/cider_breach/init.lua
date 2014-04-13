@@ -23,7 +23,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 	
 	-- Check if the physics object is a valid entity.
-	if ( ValidEntity(physicsObject) ) then
+	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
@@ -31,7 +31,7 @@ end
 
 -- A function to set the door for the entity to breach.
 local function dobreach(self)
-	if not (ValidEntity(self) and ValidEntity(self._Door)) then return end
+	if not (IsValid(self) and IsValid(self._Door)) then return end
 end
 function ENT:SetDoor(door, trace, owner)
 	self._Door = door;
@@ -55,7 +55,7 @@ function ENT:SetDoor(door, trace, owner)
 			self:SetLocalAngles(Angle(-90,-180,0))
 		end
 	elseif door:GetClass() == "prop_dynamic" then
-		if ( ValidEntity( self:GetPhysicsObject() ) ) then
+		if ( IsValid( self:GetPhysicsObject() ) ) then
 			self:GetPhysicsObject():EnableMotion(false);
 		end
 	else
@@ -118,16 +118,16 @@ function ENT:Breach()
 end
 
 local function dothrow(ent,backwards)
-	if not ValidEntity(ent) then return end
+	if not IsValid(ent) then return end
 	local pent = ent:GetPhysicsObject()
-	if not ValidEntity(pent) then return end
+	if not IsValid(pent) then return end
 	pent:ApplyForceCenter(backwards * 10000)
 end
 local function doremove(ent,door)
-	if ValidEntity(ent) then
+	if IsValid(ent) then
 		ent:Remove()
 	end
-	if ValidEntity(door) then
+	if IsValid(door) then
 		door:SetNotSolid(false)
 		door:SetNoDraw(false)
 	end
