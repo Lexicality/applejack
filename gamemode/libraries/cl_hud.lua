@@ -7,7 +7,13 @@
 
 -- Setup the basics
 local font = "mshine_hudtxt"
-surface.CreateFont("Tahoma", 12, 400, true, false, font);
+surface.CreateFont(font, {
+	font		= "Tahoma";
+	size		= 12;
+	weight		= 400;
+	antialias	= true;
+	additive	= false;
+});
 surface.SetFont(font);
 local sidewidth,textheight = surface.GetTextSize("100%");
 local scrw, scrh = ScrW(), ScrH();

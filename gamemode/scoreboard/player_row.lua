@@ -1,8 +1,20 @@
 
 include( "player_infocard.lua" )
 
-surface.CreateFont( "coolvetica", 19, 500, true, false, "ScoreboardPlayerName" )
-surface.CreateFont( "coolvetica", 22, 500, true, false, "ScoreboardPlayerNameBig" )
+surface.CreateFont("ScoreboardPlayerName" , {
+	font		= "coolvetica";
+	size		= 19;
+	weight		= 500;
+	antialias	= true;
+	additive	= false;
+})
+surface.CreateFont("ScoreboardPlayerNameBig" , {
+	font		= "coolvetica";
+	size		= 22;
+	weight		= 500;
+	antialias	= true;
+	additive	= false;
+})
 
 local texGradient = surface.GetTextureID( "gui/center_gradient" )
 

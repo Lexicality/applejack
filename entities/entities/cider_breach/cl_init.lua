@@ -5,7 +5,13 @@ Name: "cl_init.lua".
 
 include("sh_init.lua")
 
-surface.CreateFont("Lucida Console",15,400,true,false,"breachtxt")
+surface.CreateFont("breachtxt", {
+	font		= "Lucida Console";
+	size		= 15;
+	weight		= 400;
+	antialias	= true;
+	additive	= false;
+})
 function ENT:Draw()
 	self.Entity:DrawModel()
 	local ang = self.Entity:GetAngles()

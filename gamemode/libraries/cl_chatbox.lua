@@ -41,7 +41,13 @@ CreateClientConVar("cider_chatbox_ic", "0", true, true);
 CreateClientConVar("cider_chatbox_joinleave", "0", true, true);
 
 -- Create the font used for all text.
-surface.CreateFont("Tahoma", 14, 600, true, false, "cider_chatBox_MainText");
+surface.CreateFont("cider_chatBox_MainText", {
+	font		= "Tahoma";
+	size		= 14;
+	weight		= 600;
+	antialias	= true;
+	additive	= false;
+});
 
 -- Create a table to store the messages, derma, and join spam attempts.
 cider.chatBox.maximumLines = 8;

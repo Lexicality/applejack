@@ -9,10 +9,28 @@ SWEP.DrawWeaponInfoBox  = true
 SWEP.CustomCrosshair = false --		= false
 
 --This is the font that's used to draw the death icons
-surface.CreateFont("csd", ScreenScale(30), 500, true, true, "CSKillIcons")
-surface.CreateFont("csd", ScreenScale(60), 500, true, true, "CSSelectIcons")
+surface.CreateFont("CSKillIcons", {
+	font		= "csd";
+	size		= ScreenScale(30);
+	weight		= 500;
+	antialias	= true;
+	additive	= true;
+})
+surface.CreateFont("CSSelectIcons", {
+	font		= "csd";
+	size		= ScreenScale(60);
+	weight		= 500;
+	antialias	= true;
+	additive	= true;
+})
 -- This is the font that's used to draw the sexy firemode HUD display
-surface.CreateFont("HalfLife2", 24, 500, true, false, "rg_firemode")
+surface.CreateFont("rg_firemode", {
+	font		= "HalfLife2";
+	size		= 24;
+	weight		= 500;
+	antialias	= true;
+	additive	= false;
+})
 
 -- We need to get these so we can scale everything to the player's current resolution.
 local iScreenWidth = surface.ScreenWidth()

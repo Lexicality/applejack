@@ -11,8 +11,20 @@ local alphablack =		Color(0, 0, 0, 200)
 local color_purple = 	Color(150, 075, 200, 255)
 local color_orange =	Color(255, 125, 000, 255)
 local color_yellow =	Color(250, 230, 070, 255)
-surface.CreateFont("DIN Light", 16, 2, 0, 0, "textsmall" )
-surface.CreateFont("DIN Medium", 24, 2, 0, 0, "compasscard" )
+surface.CreateFont("textsmall" , {
+	font		= "DIN Light";
+	size		= 16;
+	weight		= 2;
+	antialias	= 0;
+	additive	= 0;
+})
+surface.CreateFont("compasscard" , {
+	font		= "DIN Medium";
+	size		= 24;
+	weight		= 2;
+	antialias	= 0;
+	additive	= 0;
+})
 local gpspoints = {
 	[90] = "^",
 	[135] = "<",
