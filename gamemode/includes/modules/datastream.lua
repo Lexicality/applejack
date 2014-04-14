@@ -23,9 +23,6 @@
     SOFTWARE.
 ]]
 
-pcall(require, "netx") -- remove this when Garry gets net.*Table working properly (or if I never release netx)
-pcall(require, "glon") -- only needed if your code uses the "encdata" argument of its callbacks (and there's no reason it should)
-
 module("datastream", package.seeall)
 
 local hackyglon_meta = {
