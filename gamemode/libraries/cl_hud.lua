@@ -14,6 +14,13 @@ surface.CreateFont(font, {
 	antialias	= true;
 	additive	= false;
 });
+-- http://facepunch.com/showthread.php?t=1220579
+surface.CreateFont("TabLarge", {
+	font = "Tahoma",
+	size = 13,
+	weight = 700,
+	shadow = true,
+});
 surface.SetFont(font);
 local sidewidth,textheight = surface.GetTextSize("100%");
 local scrw, scrh = ScrW(), ScrH();
