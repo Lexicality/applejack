@@ -681,7 +681,7 @@ function meta:SetPPOwner(target)
         self._pp.OwnerUID  = target:UniqueID();
         self._pp.OwnerName = target:Name();
     else
-        self._pp.Owner     = GetWorldEntity();
+        self._pp.Owner     = game.GetWorld();
         self._pp.OwnerUID  = "WORLD";
         self._pp.OwnerName = "The World";
     end
