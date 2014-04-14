@@ -72,7 +72,7 @@ function GM:LoadTeams()
     end
     local gdata, init;
     for plugin, path in pairs(plugins) do
-        MsgN(" Looking in", plugin.Name);
+        MsgN(" Looking in ", plugin.Name);
         files, folders = file.Find(path .. "*", "LUA");
         for _, group in pairs(folders) do
             cpath = path .. group .. "/";
@@ -104,7 +104,7 @@ function GM:LoadTeams()
                     MsgN("  Modified group ", GROUP.Name, ".");
                 end
             elseif (not gdata) then
-                ErrorNoHalt("  Warning! Unknown group ", group, " with no init.lua!");
+                ErrorNoHalt("  Warning! Unknown group ", group, " with no init.lua!\n");
                 continue;
             else
                 MsgN("  Loaded group ", GROUP.Name, ".");
@@ -140,7 +140,7 @@ function GM:LoadTeams()
                         MsgN("   Modified gang ", GANG.Name, ".");
                     end
                 elseif (not gdata) then
-                    ErrorNoHalt("   Warning! Unknown gang ", gang, " with no init.lua!");
+                    ErrorNoHalt("   Warning! Unknown gang ", gang, " with no init.lua!\n");
                     continue;
                 else
                     MsgN("   Loaded gang ", GANG.Name, ".");
