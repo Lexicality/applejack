@@ -3,8 +3,6 @@
 	~ Applejack ~
 --]]
 
-require("csvars");
-
 -- Setup the basics
 local font = "mshine_hudtxt"
 surface.CreateFont(font, {

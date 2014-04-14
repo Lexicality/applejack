@@ -2,7 +2,7 @@
 	~ Serverside Player metatable ~
 	~ Applejack ~
 --]]
-require("CSVars");
+
 ---
 -- The serverside player metatable
 -- @name meta
