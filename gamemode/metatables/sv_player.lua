@@ -1078,7 +1078,7 @@ local angle_zero = Angle(0,0,0);
 -- @param key The name of the variable to set on the client
 -- @param value The value to set
 function meta:SetCSVar(class, key, value)
-	CSVars.SetPlayer(self, class, key, value)
+	csvars.SetPlayer(self, class, key, value)
 end
 
 ---

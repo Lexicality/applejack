@@ -43,16 +43,17 @@ local c_ang = CLASS_ANGLE;
 local c_chr = CLASS_CHAR;
 local c_flt = CLASS_FLOAT;
 
+AddCSLuaFile();
 if (CLIENT) then
     hook.Add("LocalPlayerCreated", "CSVars Startup", function(ply)
-        CSVars.PlayerInitialized(ply)
+        csvars.PlayerInitialized(ply)
     end);
 end
 
 ---
 -- Provides a method of automagically setting variables on a client's player object.
 -- @version 0.1 Pre-release beta
-module("CSVars")
+module("csvars")
 
 local inverted = {
     [c_str] = "String";

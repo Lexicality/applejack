@@ -3,7 +3,7 @@
 	~ Applejack ~
 --]]
 
---require("CSVars");
+require("csvars");
 
 -- Setup the basics
 local font = "mshine_hudtxt"
@@ -124,7 +124,7 @@ end);
 local num
 do -- Job Timer
 local ends, length;
---CSVars.Hook(
+--csvars.Hook(
 GM:AddHUDBar("Job Timer: 00:00", color_orange, function(bar)
 	num = (lpl._JobTimeExpire or 0) - ctime
 	if (num <= 0) then
@@ -678,7 +678,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			return (left/length) * 100, false;
 		end
 		local sleepcolor = Color(34,66,205);
-		CSVars.Hook("_GoToSleepTime","CentreBar",function(ends)
+		csvars.Hook("_GoToSleepTime","CentreBar",function(ends)
 			if (ends == 0) then
 				return;
 			end
@@ -771,7 +771,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			return active and 100;
 		end
 		local barcolor = Color(255,0,0);
-		CSVars.Hook("_StuckInWorld", "Centrebar", function(stuck)
+		csvars.Hook("_StuckInWorld", "Centrebar", function(stuck)
 			active = stuck;
 			if (active) then
 				GM:SetCenterBar("Jump to respawn.", barcolor, callback);
@@ -818,7 +818,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			return (left/length) * 100;
 		end
 		local barcolor = Color(150,210,20);
-		CSVars.Hook("_WakeUpTime","CentreBar",function(ends)
+		csvars.Hook("_WakeUpTime","CentreBar",function(ends)
 			length = ends - CurTime();
 			GM:SetCenterBar("Waking Up . . .", barcolor, callback);
 		end);
