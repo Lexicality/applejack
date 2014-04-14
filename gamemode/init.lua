@@ -12,7 +12,7 @@ include("sh_init.lua")
 -- Add the Lua files that we need to send to the client.
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("sh_init.lua")
-AddCSLuaFile("sh_configuration.lua")
+AddCSLuaFile("sh_config.lua")
 AddCSLuaFile("sh_enumerations.lua")
 AddCSLuaFile("scoreboard/admin_buttons.lua")
 AddCSLuaFile("scoreboard/player_frame.lua")
