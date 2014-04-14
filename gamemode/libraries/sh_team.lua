@@ -76,7 +76,7 @@ function GM:LoadTeams()
         files, folders = file.Find(path .. "*", "LUA");
         for _, group in pairs(folders) do
             cpath = path .. group .. "/";
-            if (not validfile(group) or group.find('.', 1, true)) then
+            if (not validfile(group) or group:find('.', 1, true)) then
                 continue;
             end
             gdata = "GROUP_" string.upper(group);
