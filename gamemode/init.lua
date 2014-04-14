@@ -297,17 +297,17 @@ function GM:PlayerCanDoSomething(ply,ignorealive,spawning)
 end
 -- Called when a player attempts to spawn a vehicle.
 function GM:PlayerSpawnVehicle(ply, model, name, vtable)
-	if !hook.Call("PlayerCanDoSomething",GAMEMODE,ply,nil,true) then return false
+	if not hook.Call("PlayerCanDoSomething",GAMEMODE,ply,nil,true) then return false
 	elseif ply:IsSuperAdmin() then
 		GM:Log(EVENT_SUPEREVENT,"%s spawned a %s with model %q",ply:Name(),name,model)
 		return true
 	end
 	-- Check if the model is a chair.
-	if ( !string.find(model, "chair") and !string.find(model, "seat") ) then
+	if ( not string.find(model, "chair") and not string.find(model, "seat") ) then
 		ply:Notify("You must buy your car from the store!", 1)
 		return false
 	end
-	if ( !ply:HasAccess("e") ) then return false end
+	if ( not ply:HasAccess("e") ) then return false end
 	GM:Log(EVENT_BUILD,"%s spawned a %s with model %q",ply:Name(),name,model)
 	-- Check if the player is an administrator.
 	if ( ply:IsAdmin() ) then return true end
@@ -525,7 +525,7 @@ end
 
 -- Called every frame that a player is dead.
 function GM:PlayerDeathThink(ply)
-	if (!ply._Initialized) then return true end
+	if (not ply._Initialized) then return true end
 	
 	-- Check if the player is a bot.
 	if (ply:SteamID() == "BOT") then
@@ -585,7 +585,7 @@ function GM:PlayerSpawn(ply)
 		ply:ShouldDropWeapon(false)
 		
 		-- Check if we're not doing a light spawn.
-		if (!ply._LightSpawn) then
+		if (not ply._LightSpawn) then
 			ply:Recapacitate();
 			
 			-- Set some of the ply's variables.
@@ -827,7 +827,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 				return
 			end
 			if entity:InVehicle() then
-				if damageInfo:IsExplosionDamage() and (!damageInfo:GetDamage() or damageInfo:GetDamage() == 0) then
+				if damageInfo:IsExplosionDamage() and (not damageInfo:GetDamage() or damageInfo:GetDamage() == 0) then
 					damageInfo:SetDamage(100)
 				end
 				if damageInfo:GetDamage()< 1 then
@@ -927,7 +927,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		damageInfo:SetDamage(amount)
 		
 		-- Check if the attacker is not a player.
-		if ( !attacker:IsPlayer() ) then
+		if ( not attacker:IsPlayer() ) then
 			if attacker ==GetWorldEntity() and inflictor == player then --hunger
 --				player:SetHealth( math.max(player:Health() - damageInfo:GetDamage()	, 0) )
 --				player.ragdoll.health = player:Health()
@@ -1241,7 +1241,7 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 		end
 	end
 	for _,ply in ipairs(player.GetAll()) do
-		if (ply:Alive() and !ply.cider._Arrested) then
+		if (ply:Alive() and not ply.cider._Arrested) then
 			ply:GiveMoney(ply._Salary)
 			
 			-- Print a message to the player letting them know they received their salary.
