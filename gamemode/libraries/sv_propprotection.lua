@@ -46,7 +46,7 @@ if (cleanup) then
 		cleanup.oAdd = cleanup.Add;
 	end
 	function cleanup.Add(ply, _, ent)
-        if (IsValid(ent) and IsPlayer(ply)) then
+        if (IsValid(ent) and IsPlayer(ply) and ent.SetPPOwner) then
             ent:SetPPOwner(ply);
             ent:SetPPSpawner(ply);
         end
