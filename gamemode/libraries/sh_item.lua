@@ -16,6 +16,9 @@ end})
 _R.Item = meta;
 local registerCategory;
 local newcat,str,count,path,total;
+
+-- No idea what happened to the old enum table but it never really did anything anyway
+local _E = _G;
 ---
 -- Loads all the items and categories into GM.Items
 function GM:LoadItems()
