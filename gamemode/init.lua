@@ -38,6 +38,7 @@ end
 CreateConVar("cider_ooc", 1)
 
 -- Conetents
+--[[
 local path = GM.Folder.."/content"
 local folders = {""}
 while true do
@@ -55,6 +56,7 @@ while true do
 		end
 	end
 end
+--]]
 
 local hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math =
       hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math
