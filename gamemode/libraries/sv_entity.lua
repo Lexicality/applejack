@@ -42,7 +42,7 @@ function GM:OpenDoor(ent, delay, unlock, jam)
 		ent:UnLock();
 		delay = 0.025;
 	end
-	if (ent:GetClass() == "prop_dynamic") then	
+	if (ent:GetClass() == "prop_dynamic") then
 		ent:Fire("setanimation", "open", delay);
 		ent._DoorState = "open";
 		ent._Autoclose = ent._Autoclose or GM.Config["Door Autoclose Time"];

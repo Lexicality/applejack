@@ -56,7 +56,7 @@ PLUGIN.EntitiesToSpawn = {
 	rp_evocity_v2d = {																		     --	14157.5742,
 		{"prop_physics","models/props_buildings/building_002a.mdl",		Angle(00,  00, -90), Vector(-6020.0000, 14502.7637,  437.4147)},
 		{"prop_physics","models/props_buildings/building_002a.mdl",		Angle(00,  00,  90), Vector(-6020.0000, 11693.2842,  443.3592)},
-		
+
 		{"prop_physics","models/props_wasteland/interior_fence002c.mdl",Angle(00,  90,  90), Vector(-7810.2871, -8611.6387, -312.6482)},
 		{"prop_physics","models/props_wasteland/interior_fence002d.mdl",Angle(90, 180, 180), Vector(-672.8117, 5315.9014, 391.4228)},
 		{"prop_physics","models/props_wasteland/interior_fence002d.mdl",Angle(90, 180, 180), Vector(-672.8117, 5058.7207, 391.4228)},
@@ -81,7 +81,7 @@ PLUGIN.KillBoxes = {
 			top = Vector(-7887.8901,-8729.5391,-945.4652),
 			bottom = Vector(-7751.4458,-8618.6855,-1121.1049)
 		},
-		{		
+		{
 			top = Vector(-7675.9687,-8429.2139,-184.214),
 			bottom = Vector(-7484.3008,-8745.4541,-375.9687)
 		}
@@ -148,10 +148,10 @@ function PLUGIN:InitPostEntity()
 	filtr:Spawn();
 	for _, data in pairs(self.EntitiesToSpawn[mapname]) do
 		ent = ents.Create(data[1]);
-		if (not IsValid(ent)) then	
+		if (not IsValid(ent)) then
 			ErrorNoHalt("["..os.date().."] Applejack Cleanmap Plugin: "..data[1].." is not a valid entity!\n");
 		else
-			ent:SetModel (data[2]); 
+			ent:SetModel (data[2]);
 			ent:SetAngles(data[3]);
 			ent:SetPos   (data[4]);
 			ent.PhysgunDisabled = true;
@@ -165,7 +165,7 @@ function PLUGIN:InitPostEntity()
 			end
 			ent:Fire("setdamagefilter", "aj_cm", 0);
 			hook.Call("PropSpawned", GAMEMODE, data[2], ent);
-            ent:SetPPOwner(NULL);
+			ent:SetPPOwner(NULL);
 			GAMEMODE.Entities[ent] = ent;
 		end
 	end

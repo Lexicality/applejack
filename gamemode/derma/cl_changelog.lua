@@ -60,7 +60,7 @@ PANEL.changelog = [[
 [Changed] Halved the minimum money drop amount, doubled the wait.
 [Fixed] Any Official could unwarrant people. Now only the commander / mayor can.
 [28/03/2010]
-[Changed] Lowered movement speed by 100 inches/s for added realism 
+[Changed] Lowered movement speed by 100 inches/s for added realism
 [Changed] Halved stamina drain to reduce complaints, increased stamina restore time for balance.
 [23/03/2010]
 [Added] /notify and /notifyall commands.
@@ -71,7 +71,7 @@ PANEL.changelog = [[
 [13/03/2010]
 [Remvoed] Unarrest SWep
 [Changed] Arrested players can now be lockpicked to be unarrested
-[Changed] Rewrote lockpick SWep, it now makes lockpicky noises, emotes text and works better. 
+[Changed] Rewrote lockpick SWep, it now makes lockpicky noises, emotes text and works better.
 [13/02/2010]
 [Added] A 'cleancars' command to remove all spawned cars on the server.
 [09/02/2010]
@@ -131,7 +131,7 @@ PANEL.changelog = [[
 [Rewrote] Help system's back-end
 [06/12/2009]
 [Changed] Rewrote item and contraband sents to use dtvars instead of nwvars
-[Changed] Rewrote Vehicles plugin 
+[Changed] Rewrote Vehicles plugin
 [15/11/2009]
 [Changed] Fixed the prop protection menu not showing up
 [Changed] How emotes are handled slightly
@@ -289,7 +289,7 @@ PANEL.changelog = [[
 [31/05/2009]
 [Fixed] /demote and /mutiny by fixing ciderteamhasAccessGroup
 [29/05/2009]
-[Fixed] Cops could jam any door with thier baton 
+[Fixed] Cops could jam any door with thier baton
 [28/05/2009]
 [Added] /action, allowing you to specify an environmental emote
 [Added] /globalaction, allowing moderators+ to create an environmental emote for the whole map
@@ -305,7 +305,7 @@ PANEL.changelog = [[
 [Added] Colours to console logs whooo~
 [Added] support for logfiles (sv_logecho 0 is a good plan)
 [Added] A function that will notify you within 3 seconds of timers all failing on the server
-[Changed] Logging system about a lot 
+[Changed] Logging system about a lot
 [Fixed] Vehicle blacklist bug
 [Fixed] Entire blacklist system Whoops!
 [21/05/2009]
@@ -323,7 +323,7 @@ PANEL.changelog = [[
 [Fixed] Laws not letting you set long laws
 [17/05/2009]
 [Added] New ESP-like vision
-[Added] /details 
+[Added] /details
 [Added] Custom flavour to easy-use items
 [Added] Loads of new trafic calming props to mainstreet
 [Fixed] If someone died while in a chair they were trapped
@@ -340,7 +340,7 @@ PANEL.changelog = [[
 [Fixed] Officials not getting radio
 [Fixed] Corpses not working properly
 [Fixed] Big office chairs always putting you in the floor
-[Fixed] Plugins not working with the filesystem 
+[Fixed] Plugins not working with the filesystem
 [08/05/2009]
 [Added] AFK kicker
 [Added] Anti-Prop-DM measures
@@ -550,7 +550,7 @@ PANEL.changelog = [[
 [Fixed] Some events had not been switched to the new log system
 [Fixed] Forgot to format rules correctly
 [Fixed] Messed up a bit in super hands re various ents
-[Fixed] If an admin was killed while holding someone with their physgun, that person would get noclip Now noclipping players cannot damage anything, and you cannot be damaged while holding another player 
+[Fixed] If an admin was killed while holding someone with their physgun, that person would get noclip Now noclipping players cannot damage anything, and you cannot be damaged while holding another player
 [Fixed] Logging events were not being sent to clients
 [Fixed] Hacky fix to force new players to rejoin to prevent pickup bug
 [14/02/2009]
@@ -597,52 +597,52 @@ PANEL.changelog = [[
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetSize(cider.menu.width, cider.menu.height - 8);
-	
+
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
- 	self.itemsList:SizeToContents();
- 	self.itemsList:SetPadding(2);
- 	self.itemsList:SetSpacing(3);
+	self.itemsList:SizeToContents();
+	self.itemsList:SetPadding(2);
+	self.itemsList:SetSpacing(3);
 	self.itemsList:StretchToParent(4, 4, 12, 44);
 	self.itemsList:EnableVerticalScrollbar();
-	
+
 	-- Get the exploded text.
 	local exploded = string.Explode("\n", self.changelog);
 	local changes = {};
 	local key = 0;
-	
+
 	-- Loop through our changes.
 	for k, v in pairs(exploded) do
 		if (k < #exploded or v ~= "") then
 			if (string.sub(v, 1, 1) == "[" and string.sub(v, -1) == "]") then
 				key = key + 1;
-				
+
 				-- Insert a new changelog date.
 				changes[key] = { date = string.sub(v, 2, -2), changes = {} };
 			else
 				if ( changes[key] ) then
 					local wrapped = {};
-					
+
 					-- Wrap the text to the width of the menu.
 					cider.chatBox.wrapText(v, "Default", cider.menu.width - 48, 0, wrapped);
-					
+
 					-- Loop through the wrapped text.
 					for k2, v2 in pairs(wrapped) do table.insert(changes[key].changes, v2); end
 				end
 			end
 		end
 	end
-	
+
 	-- Loop through our changes.
 	for k, v in pairs(changes) do
 		local header = vgui.Create("cider_Changelog_Header", self);
-		
+
 		-- Set the text of the header label and add it to the item list.
 		header.label:SetText(v.date); self.itemsList:AddItem(header);
-		
+
 		-- Create the text for this date.
 		local text = vgui.Create("cider_Changelog_Text", self);
-		
+
 		-- Set the changes for this date and add it to the item list.
 		text:SetText(v.changes); self.itemsList:AddItem(text);
 	end
@@ -666,27 +666,27 @@ function PANEL:Init() self.labels = {}; end
 -- Set Text.
 function PANEL:SetText(text)
 	for k, v in pairs(self.labels) do v:Remove(); end
-	
+
 	-- Define our x and y positions.
 	local y = 5;
-	
+
 	-- Loop through the text we're given.
 	for k, v in pairs(text) do
 		local label = vgui.Create("DLabel", self);
-		
+
 		-- Set the text of the label.
 		label:SetText( v );
 		label:SetTextColor( Color(255, 255, 255, 255) );
 		label:SizeToContents();
-		
-		
+
+
 		-- Insert the label into our labels table.
 		table.insert(self.labels, label);
-		
+
 		-- Increase the y position.
 		y = y + label:GetTall() + 8
 	end
-	
+
 	-- Set the size of the panel.
 	self:SetSize(cider.menu.width, y);
 end
@@ -694,17 +694,17 @@ end
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
 	local y = 5;
-	
+
 	-- Loop through all of our labels.
 	for k, v in pairs(self.labels) do
 		-- self.labels[k]:SetPos(self:GetWide() / 2 - self.labels[k]:GetWide() / 2, y);
 		self.labels[k]:SetPos(8, y);
-		
+
 		-- Increase the y position.
 		y = y + self.labels[k]:GetTall() + 8
 	end
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Changelog_Text", PANEL, "DPanel");
 
@@ -725,6 +725,6 @@ function PANEL:PerformLayout()
 	self.label:SetPos(self:GetWide() / 2 - self.label:GetWide() / 2, self:GetTall() / 2 - self.label:GetTall() / 2);
 	self.label:SizeToContents();
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Changelog_Header", PANEL, "DPanel");

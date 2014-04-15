@@ -12,10 +12,10 @@ function cider.inventory.update(player, id, amount, force)
 	local item = GM.Items[id];
 	if (not item) then
 		return false, "That is not a valid item!";
-    elseif (not item.Size) then
-        ErrorNoHalt("Uh, something broke here with item ", id, ".\n");
-        PrintTable(item);
-        return false, "shits broke cap'tan";
+	elseif (not item.Size) then
+		ErrorNoHalt("Uh, something broke here with item ", id, ".\n");
+		PrintTable(item);
+		return false, "shits broke cap'tan";
 	elseif ( not(amount < 1 or cider.inventory.canFit(player, item.Size * amount) or force)) then
 		return false, "You do not have enough inventory space!";
 	end--
@@ -47,7 +47,7 @@ function cider.inventory.update(player, id, amount, force)
 		umsg.Long(player.cider._Inventory[id] or 0);
 	umsg.End();
 	--]]
-	
+
 	-- Return true because we updated the inventory successfully.
 	return true;
 end
@@ -55,7 +55,7 @@ end
 -- Get the maximum amount of space a player has.
 function cider.inventory.getMaximumSpace(player, inventory)
 	local size = GM.Config["Inventory Size"];
-	
+
 	-- Loop through the player's inventory.
 	for k, v in pairs(inventory or player.cider._Inventory) do
 		item = GM.Items[k];
@@ -63,7 +63,7 @@ function cider.inventory.getMaximumSpace(player, inventory)
 			size = size + (item.Size * -v);
 		end
 	end
-	
+
 	-- Return the size.
 	return size;
 end
@@ -71,7 +71,7 @@ end
 -- Get the size of a player's inventory.
 function cider.inventory.getSize(player, inventory)
 	local size = 0;
-	
+
 	-- Loop through the player's inventory.
 	for k, v in pairs(inventory or player.cider._Inventory) do
 		item = GM.Items[k];
@@ -79,7 +79,7 @@ function cider.inventory.getSize(player, inventory)
 			size = size + (item.Size * v);
 		end
 	end
-	
+
 	-- Return the size.
 	return size;
 end

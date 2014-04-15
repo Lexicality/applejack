@@ -10,23 +10,23 @@ if (table.HasValue(nocarmaps,game.GetMap():lower())) then
 end
 PLUGIN.Name = "Vehicles";
 function PLUGIN:PlayerCanManufactureCategory(ply, category)
-    if (category == CATEGORY_VEHICLES) then
-        return true;
-    end
+	if (category == CATEGORY_VEHICLES) then
+		return true;
+	end
 end
 --[[
 	Credit goes to NoVa for VU-Mod, which I have sliced and diced and rewritten and prodded into this.
 --]]
 local function HandleRollercoasterAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
+	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER )
 end
 
 local cat = "Applejack Vehicles";
 local class = "prop_vehicle_jeep";
 
 --[[ ORDINARY CARS ]]--
-list.Set( "Vehicles", "Jeep", { 	
-	Name = "2 Seater Jeep", 
+list.Set( "Vehicles", "Jeep", {
+	Name = "2 Seater Jeep",
 	Class = "prop_vehicle_jeep_old",
 	Category = cat,
 	Author = "Nova[X]",
@@ -44,9 +44,9 @@ list.Set( "Vehicles", "Jeep", {
 					vehiclescript	=	"scripts/vehicles/jeep_test.txt"
 				}
 } );
-list.Set( "Vehicles", "trabbi", { 	
+list.Set( "Vehicles", "trabbi", {
 	-- Required information
-	Name = "Trabbi", 
+	Name = "Trabbi",
 	Class = class,
 	Category = cat,
 	Ownable = true,
@@ -67,7 +67,7 @@ list.Set( "Vehicles", "trabbi", {
 		ThirdPerson = {Out = 120 , Up = 30},
 		RearView = Vector(0,-65,52);
 	},
-	
+
 	KeyValues = {
 					vehiclescript	=	"scripts/vehicles/trabbi.txt"
 				},
@@ -77,9 +77,9 @@ list.Set( "Vehicles", "trabbi", {
 	}
 } );
 
-list.Set( "Vehicles", "tideslkw", { 	
+list.Set( "Vehicles", "tideslkw", {
 	-- Required information
-	Name = "Truck", 
+	Name = "Truck",
 	Class = class,
 	Category = cat,
 	Ownable = true,
@@ -99,7 +99,7 @@ list.Set( "Vehicles", "tideslkw", {
 		ThirdPerson = {Out = 120 , Up = 30},
 		RearView = Vector(0,0,120);
 		},
-	
+
 	Horn = {Sound = "vu_horn_old.wav", Pitch = 90},
 	KeyValues = {
 					vehiclescript	=	"scripts/vehicles/tideslkw.txt"
@@ -110,9 +110,9 @@ list.Set( "Vehicles", "tideslkw", {
 	}
 } );
 
-list.Set( "Vehicles", "citron7cv", { 	
+list.Set( "Vehicles", "citron7cv", {
 	-- Required information
-	Name = "Citroen 7CV", 
+	Name = "Citroen 7CV",
 	Class = class,
 	Category = cat,
 	Ownable = true,
@@ -135,7 +135,7 @@ list.Set( "Vehicles", "citron7cv", {
 		--RearView = Vector(48,-15,7)
 		RearView = Vector(0,-65,60);
 	},
-	
+
 	KeyValues = {
 					vehiclescript	=	"scripts/vehicles/citron7cv.txt"
 				},
@@ -147,9 +147,9 @@ list.Set( "Vehicles", "citron7cv", {
 	}
 } );
 
-list.Set( "Vehicles", "copcar", { 	
+list.Set( "Vehicles", "copcar", {
 	-- Required information
-	Name = "Police Car", 
+	Name = "Police Car",
 	Class = class,
 	Category = cat,
 	Ownable = true,
@@ -163,7 +163,7 @@ list.Set( "Vehicles", "copcar", {
 		{ Pos = Vector( -2,65,5), Ang = Angle(0,0,0) },
 		{ Pos = Vector(-24,65,5), Ang = Angle(0,0,0) },
 		{ Pos = Vector(-46,65,5), Ang = Angle(0,0,0) },
-	}, 
+	},
 	Customexits = {Vector(-80,5,10), Vector(80,5,10), Vector(0,0,90) },
 	CustomViews = {
 		FirstPerson = Vector(0,0,12),
@@ -177,9 +177,9 @@ list.Set( "Vehicles", "copcar", {
 				}
 } );
 
-if 	util.IsValidModel( "models/vehicle.mdl" ) then	
-	list.Set( "Vehicles", "Jalopy", { 	
-		Name = "Jalopy", 
+if 	util.IsValidModel( "models/vehicle.mdl" ) then
+	list.Set( "Vehicles", "Jalopy", {
+		Name = "Jalopy",
 		Class = class,
 		Category = cat,
 		Ownable = true,
@@ -201,9 +201,9 @@ end
 
 --[[ Varient vehicles - IE Those with skins ]]--
 local v;
-v = { 	
+v = {
 	-- Required information
-	Name = "Corvette C6 (Blue)", 
+	Name = "Corvette C6 (Blue)",
 	Class = class,
 	Category = cat,
 	-- Optional information
@@ -247,9 +247,9 @@ v.Information = "A Silver Corvette C6";
 v.KeyValues.vehiclescript	=	"scripts/vehicles/corvette_silver.txt";
 list.Set( "Vehicles", "Corvette_Silver", v );
 
-v = { 	
+v = {
 	-- Required information
-	Name = "Golf GTI (White)", 
+	Name = "Golf GTI (White)",
 	Class = class,
 	Category = cat,
 	Ownable = true,
@@ -267,11 +267,11 @@ v = {
 		{ Pos = Vector(19,5,10), Ang = Angle(0,0,0) },
 		{ Pos = Vector(18,58,15), Ang = Angle(0,0,0) },
 		{ Pos = Vector(-18,58,15), Ang = Angle(0,0,0) }
-	}, 
+	},
 	Customexits = {Vector(-80,5,10), Vector(80,5,10), Vector(0,0,160) },
 	Horn = {Sound = "vu_horn_simple.wav", Pitch = 90},
 	SeatType = "Seat_Jeep",
-	HideSeats = true, 
+	HideSeats = true,
 	KeyValues = {
 					vehiclescript	=	"scripts/vehicles/golf_white.txt"
 				},
@@ -308,8 +308,8 @@ local seatexit = { Vector(0,-50,10),Vector(50,0,10),Vector(-50,0,10),Vector(0,50
 local seathand = { HandleAnimation = HandleRollercoasterAnimation }
 class = "prop_vehicle_prisoner_pod";
 
-list.Set( "Vehicles", "Seat_Jeep", { 	
-	Name = "Jeep Seat", 
+list.Set( "Vehicles", "Seat_Jeep", {
+	Name = "Jeep Seat",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",
@@ -321,8 +321,8 @@ list.Set( "Vehicles", "Seat_Jeep", {
 	Members = seathand
 });
 
-list.Set( "Vehicles", "Seat_Airboat", { 	
-	Name = "Airboat Seat", 
+list.Set( "Vehicles", "Seat_Airboat", {
+	Name = "Airboat Seat",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",
@@ -335,7 +335,7 @@ list.Set( "Vehicles", "Seat_Airboat", {
 });
 
 list.Set( "Vehicles", "Chair_Wood", {
- 	Name = "Wood Chair", 
+	Name = "Wood Chair",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",
@@ -347,8 +347,8 @@ list.Set( "Vehicles", "Chair_Wood", {
 	Members = seathand
 });
 
-list.Set( "Vehicles", "Chair_Office2", { 	
-	Name = "Office Chair big", 
+list.Set( "Vehicles", "Chair_Office2", {
+	Name = "Office Chair big",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",
@@ -360,8 +360,8 @@ list.Set( "Vehicles", "Chair_Office2", {
 	Members = seathand
 } );
 
-list.Set( "Vehicles", "Chair_Office1", { 	
-	Name = "Office Chair small", 
+list.Set( "Vehicles", "Chair_Office1", {
+	Name = "Office Chair small",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",
@@ -373,8 +373,8 @@ list.Set( "Vehicles", "Chair_Office1", {
 	Members = seathand
 });
 
-list.Set( "Vehicles", "Chair_Plastic", { 	
-	Name = "Plastic Chair", 
+list.Set( "Vehicles", "Chair_Plastic", {
+	Name = "Plastic Chair",
 	Class = class,
 	Category = cat,
 	Author = "Nova[X]",

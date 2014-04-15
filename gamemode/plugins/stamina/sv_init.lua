@@ -39,7 +39,7 @@ function PLUGIN:PlayerTenthSecond(ply)
 			ply._Stamina = math.min(ply._Stamina + GM.Config["Stamina Restore"], 100);
 		end
 	end
-	
+
 	-- Check the player's stamina to see if it's at it's maximum.
 	if (ply._Stamina <= 1) then
 		ply:Incapacitate();
@@ -55,7 +55,7 @@ function PLUGIN:PlayerTenthSecond(ply)
 		ply:SetRunSpeed((GM.Config["Run Speed"] - GM.Config["Walk Speed"]) * r + GM.Config["Walk Speed"]);
 		ply:SetWalkSpeed((GM.Config["Walk Speed"] - GM.Config["Incapacitated Speed"]) * r + GM.Config["Incapacitated Speed"]);
 	end
-	
+
 	-- Set it so that we can get the player's stamina client side.
 	ply:SetCSVar(CLASS_LONG, "_Stamina", math.Round(ply._Stamina) );
 end

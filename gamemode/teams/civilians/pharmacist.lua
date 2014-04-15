@@ -1,9 +1,9 @@
-TEAM.Name = "Pharmacist";
-TEAM.Description = "Sells medicial supplies and drugs";
-TEAM.Salary = 150
-TEAM.Color = Color(255, 125, 200);
-TEAM.CanMake = {CATEGORY_DRUGS};
-TEAM.SizeLimit = 6
-TEAM.Models.Male = {"models/player/Group02/male_08.mdl"};
+TEAM.Name          = "Pharmacist";
+TEAM.Description   = "Sells medicial supplies and drugs";
+TEAM.Salary        = 150
+TEAM.Color         = Color(255, 125, 200);
+TEAM.CanMake       = {CATEGORY_DRUGS};
+TEAM.SizeLimit     = 6
+TEAM.Models.Male   = {"models/player/Group02/male_08.mdl"};
 TEAM.Models.Female = {"models/player/Group02/Female_02.mdl"};
-TEAM.GroupLevel = GROUP_MERCHANT;
+TEAM.GroupLevel    = GROUP_MERCHANT;

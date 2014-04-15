@@ -5,11 +5,11 @@
 	"maps"	"^rp_"
 	"menusystem"	"1"
 
-	"author_name"   "Conna Wiles, Lex Robinson"
-	"author_email"  "connawiles@gmail.com, lexi@lexi.org.uk"
-	"author_url"    "http://kurozael.com/, http://lex.me.uk"
+	"author_name"	"Conna Wiles, Lex Robinson"
+	"author_email"	"connawiles@gmail.com, lexi@lexi.org.uk"
+	"author_url"	"http://kurozael.com/, http://lex.me.uk"
 
-	"icon"  ""
-	"info"  ""
-	"hide"  "0"
+	"icon"	""
+	"info"	""
+	"hide"	"0"
 }

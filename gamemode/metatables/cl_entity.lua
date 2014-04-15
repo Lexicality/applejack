@@ -43,7 +43,7 @@ end
 -- Checks to see if an entity is locked.
 -- @return True if it is, false if it isn't.
 function meta:Locked()
-    return bit.band(self:GetDTInt(3), OBJ_LOCKED) == OBJ_LOCKED;
+	return bit.band(self:GetDTInt(3), OBJ_LOCKED) == OBJ_LOCKED;
 end
 
 --[[ 'Get' functions ]]--
@@ -142,7 +142,7 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 		local owner = self:GetDisplayName()
 		if (owner == "Nobody") then -- Door is for sale
 			owner = "For Sale - Press F2"
-			if (bit.band(self:GetDTInt(3), OBJ_SEALED) == OBJ_SEALED) then	
+			if (bit.band(self:GetDTInt(3), OBJ_SEALED) == OBJ_SEALED) then
 				owner = ""
 			end
 		end

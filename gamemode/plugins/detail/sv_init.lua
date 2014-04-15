@@ -136,7 +136,7 @@ PLUGIN.ToSpawn = {
 			--used cars area
 			{"models/props_rooftop/scaffolding01a.mdl",Angle(0, 90, 0), Vector(-915.4747, -6450.6147, 272.2731)},
 			{"models/props/cs_assault/billboard.mdl",Angle(0, 89, 0), Vector(-909.5449, -6407.1562, 352.6676)},
-			
+
 
 --Traffic calming
 
@@ -209,7 +209,7 @@ PLUGIN.ToSpawn = {
 		{"models/props_wasteland/barricade002a.mdl",Angle(0,-90,0),Vector(4731.6465, 13003.1875,  96.5053)},
 		{"models/props_wasteland/barricade002a.mdl",Angle(0,-90,0),Vector(4733.3862, 12928.7822,  96.4969)},
 		{"models/props_wasteland/barricade001a.mdl",Angle(0,-90,0),Vector(4712.5156, 12820.7959,  79.4768)},
-			
+
 		--[[
 		{"models/props_c17/concrete_barrier001a.mdl",Angle(0, 0, 0), Vector(-6003.8213, -7651.5469, 64.5261)},
 		{"models/props_c17/concrete_barrier001a.mdl",Angle(0, 0, 0), Vector(-6001.3301, -7378.6631, 64.5402)},
@@ -387,7 +387,7 @@ PLUGIN.ToSpawn = {
 		{"models/props/cs_militia/militiarock05.mdl", Angle(9.7646207809448, 35.529644012451, -1.9374694824219), Vector(-3825.5551757813, 44.718559265137, 55.847961425781)};
 		{"models/props/cs_militia/militiarock05.mdl", Angle(9.729115486145, 54.870113372803, -2.384765625), Vector(-3897.3969726563, 68.288063049316, 56.041778564453)};
 		{"models/props/cs_militia/militiarock05.mdl", Angle(-5.8722548484802, 89.926658630371, -1.8267517089844), Vector(-3856.2766113281, 89.911033630371, 62.75651550293)};
-		{"models/props/cs_militia/militiarock05.mdl", Angle(14.433557510376, -5.0326538085938, -16.514007568359), Vector(-3818.4658203125, -11.792179107666, 60.457202911377)};	
+		{"models/props/cs_militia/militiarock05.mdl", Angle(14.433557510376, -5.0326538085938, -16.514007568359), Vector(-3818.4658203125, -11.792179107666, 60.457202911377)};
 		--[[ Fences round the industrial district ]]--
 		{"models/props_wasteland/exterior_fence002e.mdl",Angle(0, -90, 0), Vector(1827.6575, 5370.8389, 241.1559)},
 		{"models/props_wasteland/exterior_fence002e.mdl",Angle(0, -90, 0), Vector(1314.8015, 5371.7397, 241.1559)},
@@ -486,7 +486,7 @@ PLUGIN.ToSpawn = {
 		{"models/props/cs_office/computer_monitor.mdl",Angle(0, 90, 0), Vector(1124.71, -2341.28, 38.3031)},
 		{"models/props/cs_office/chair_office.mdl",Angle(0, -90, 0), Vector(1126.0028, -2315.0217, 6.3339)},
 		{"models/props_c17/door01_left.mdl",Angle(0, 90, 0), Vector(-292, 282, 61)},
-		
+
 	}
 }
 PLUGIN.Vehicles = {
@@ -651,7 +651,7 @@ function PLUGIN:FrameOne()
 		for _,tab in pairs(self.ToSpawn[mapname]) do
 			ent = ents.Create("prop_physics");
 			if (IsValid(ent)) then
-				ent:SetModel (tab[1]); 
+				ent:SetModel (tab[1]);
 				ent:SetAngles(tab[2]);
 				ent:SetPos   (tab[3]);
 				if(tab[4])then
@@ -668,7 +668,7 @@ function PLUGIN:FrameOne()
 				end
 				ent:Fire ( "setdamagefilter", "aj_details", 0 );
 				hook.Call("PropSpawned", GM, tab[1], ent);
-                ent:SetPPOwner(NULL);
+				ent:SetPPOwner(NULL);
 				GM.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
@@ -682,7 +682,7 @@ function PLUGIN:FrameTwo(mapname)
 		for _,tab in pairs(self.Effects[mapname]) do
 			ent = ents.Create("prop_effect");
 			if (IsValid(ent)) then
-				ent:SetModel (tab[1]); 
+				ent:SetModel (tab[1]);
 				ent:SetAngles(tab[2]);
 				ent:SetPos   (tab[3]);
 				ent.PhysgunDisabled = true;
@@ -690,7 +690,7 @@ function PLUGIN:FrameTwo(mapname)
 				ent:Spawn();
 				ent:Activate();
 				ent:SetDTBool(3,true);
-                ent:SetPPOwner(NULL);
+				ent:SetPPOwner(NULL);
 				GM.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model "..tab[1].."!");
@@ -717,14 +717,14 @@ function PLUGIN:FrameThree(mapname)
 					if (vehicle.KeyValues ) then
 						for k, v in pairs( vehicle.KeyValues ) do
 							ent:SetKeyValue( k, v );
-						end		
+						end
 					end
 					ent:SetAngles(tab[2]);
 					ent:SetPos   (tab[3]);
 					ent:Spawn    ();
 					ent:Activate ();
 					ent.PhysgunDisabled = true;
-					ent.m_tblToolsAllowed = {};	
+					ent.m_tblToolsAllowed = {};
 					ent.VehicleName 	= tab[1];
 					ent.DisplayName		= vehicle.Name;
 					ent.VehicleTable 	= vehicle;
@@ -738,7 +738,7 @@ function PLUGIN:FrameThree(mapname)
 						ErrorNoHalt("Applejack (Details): Vehicle model has no physics! "..tab[1]);
 					end
 					ent:Fire("setdamagefilter", "aj_details", 0);
-                    ent:SetPPOwner(NULL);
+					ent:SetPPOwner(NULL);
 					GM.Entities[ent] = ent;
 				end
 			end
@@ -775,7 +775,7 @@ function PLUGIN:FrameFour(mapname)
 				ent._DoorState = "closed";
 				ent._Autoclose = 30;
 				ent:MakeOwnable();
-                ent:SetPPOwner(NULL);
+				ent:SetPPOwner(NULL);
 				ent:SetNWString("Name",tab[5]);
 			end
 		end

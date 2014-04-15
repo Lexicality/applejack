@@ -19,7 +19,7 @@ local function updatefunc(ply)
 	ply._TMPMoneyUpdate	= nil;
 end
 
-function ITEM:onUpdate(ply,amount)
+function ITEM:onUpdate(ply, amount)
 	if amount > 0 then
 		if ply._TMPMoneyUpdate then
 			ply._TMPMoneyUpdate	= ply._TMPMoneyUpdate + amount;

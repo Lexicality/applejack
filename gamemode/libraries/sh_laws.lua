@@ -33,7 +33,7 @@ if SERVER then
 		end
 	end
 	--Updates the city laws
-	local function getLaws( ply, handler, id, encoded, decoded ) 
+	local function getLaws( ply, handler, id, encoded, decoded )
 		ply._NextLawUpdate = ply._NextLawUpdate or CurTime()
 		if ply._NextLawUpdate > CurTime() then
 			ply:Notify("You must wait another "..string.ToMinutesSeconds(ply._NextLawUpdate - CurTime()).." minute(s) to update the laws!",1)
@@ -49,11 +49,11 @@ if SERVER then
 	end datastream.Hook( "cider_Laws",  getLaws );
 else
 	cider.laws.update = true
-	local function getLaws( handler, id, encoded, decoded ) 
+	local function getLaws( handler, id, encoded, decoded )
 		cider.laws.stored = decoded
 		cider.laws.update = true
 	end datastream.Hook( "cider_Laws",  getLaws );
-    usermessage.Hook("cider.laws.update",function(msg)
+	usermessage.Hook("cider.laws.update",function(msg)
 		cider.laws.stored = {}
 		length = msg:ReadLong()
 		for i=1, length do

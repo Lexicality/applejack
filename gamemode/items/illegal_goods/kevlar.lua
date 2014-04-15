@@ -20,7 +20,7 @@ ITEM.Base	= "item"
 function ITEM:onUse(player)
 	if (player._ScaleDamage ~= 1) then
 		player:Notify("You are already wearing Kevlar!", 1);
-		
+
 		-- Return false because we cannot use the item.
 		return false;
 	else

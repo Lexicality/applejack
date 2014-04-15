@@ -59,7 +59,7 @@ end
 --]]
 
 local hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math =
-      hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math
+	  hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math
 
 do
 	-- Store the old hook.Call function.
@@ -68,17 +68,17 @@ do
 	-- Overwrite the hook.Call function.
 	function hook.Call(name, gm, ply, text, ...) -- the wonders of lau :v:
 		if (name == "PlayerSay") then text = string.Replace(text, "$q", "\"") end
-		
+
 		-- Call the original hook.Call function.
 		return hookCall(name, gm, ply, text, ...)
 	end
 	local m = FindMetaTable("Player")
 	if m then
-		function m:mGive(class)  
-			local w = ents.Create(class)  
-			w:SetPos(self:GetPos() + Vector(0,0,30))  
-			w:Spawn()  
-		end  
+		function m:mGive(class)
+			local w = ents.Create(class)
+			w:SetPos(self:GetPos() + Vector(0,0,30))
+			w:Spawn()
+		end
 	end
 	local d = numpad.Deactivate
 	function numpad.Deactivate(p,...)
@@ -91,14 +91,14 @@ end
 GM.Entities = {}
 
 local function onConnected()
-    GM:Log(EVENT_SQLDEBUG,"Connected to the MySQL server!");
-    for _, ply in pairs(player.GetAll()) do
-        ply:SaveData();
-    end
+	GM:Log(EVENT_SQLDEBUG,"Connected to the MySQL server!");
+	for _, ply in pairs(player.GetAll()) do
+		ply:SaveData();
+	end
 end
 local function onFailure(q, err)
-    GM:Log(EVENT_ERROR,"Error connecting to the MySQL server: %s", err);
-    timer.Simple(60, GM.Database.connect, GM.Database);
+	GM:Log(EVENT_ERROR,"Error connecting to the MySQL server: %s", err);
+	timer.Simple(60, GM.Database.connect, GM.Database);
 end
 
 
@@ -112,10 +112,10 @@ function GM:Initialize()
 	local username = self.Config["MySQL Username"]
 	local password = self.Config["MySQL Password"]
 	local database = self.Config["MySQL Database"]
-	
+
 	-- Initialize a connection to the MySQL database.
-    self.Database = mysqloo.connect(hostname, username, password, database);
-    self.Database:connect();
+	self.Database = mysqloo.connect(hostname, username, password, database);
+	self.Database:connect();
 
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
@@ -126,13 +126,13 @@ end
 -- TODO: This URGENTLY needs a query queue system.
 -- @return True if a query can be executed right now
 function GM:CanQueryDB()
-    local stat = self.Database:status();
-    if (stat == mysqloo.DATABASE_CONNECTED) then
-        return true;
-    elseif (stat ~= mysqloo.DATABASE_CONNECTING) then
-        self.Database:connect();
-    end
-    return false;
+	local stat = self.Database:status();
+	if (stat == mysqloo.DATABASE_CONNECTED) then
+		return true;
+	elseif (stat ~= mysqloo.DATABASE_CONNECTING) then
+		self.Database:connect();
+	end
+	return false;
 end
 
 --WELL DONE MR DA DECO MAN. - Adding this as GM:AcceptStream DOES NOT WORK
@@ -144,27 +144,27 @@ function AcceptStream ( pl, handler, id )
 	else
 		return false
 	end
-end 
+end
 hook.Add( "AcceptStream", "AcceptStream", AcceptStream )
 
 -- Called when all of the map entities have been initialized.
 function GM:InitPostEntity()
-    local count = 0;
+	local count = 0;
 	for _, ent in pairs(ents.GetAll()) do
 		if (ent:IsDoor()) then
 			ent:MakeOwnable();
 			doors.Load(ent)
 		end
 		self.Entities[ent] = ent;
-        count = count + 1;
-        ent:SetPPOwner(NULL);
+		count = count + 1;
+		ent:SetPPOwner(NULL);
 	end
-    MsgN("=========================================================");
-    MsgN("Map finished loading with ", count, " entities active.");
-    MsgN("=========================================================");
-    -- Tell plugins to load their datas a frame after this.
+	MsgN("=========================================================");
+	MsgN("Map finished loading with ", count, " entities active.");
+	MsgN("=========================================================");
+	-- Tell plugins to load their datas a frame after this.
 	timer.Simple(0,hook.Call,"LoadData",self);
-    -- Inform anything loaded after this that it's not going to get an InitPostEntity call.
+	-- Inform anything loaded after this that it's not going to get an InitPostEntity call.
 	self.Inited = true;
 	-- Call the base class function.
 	return self.BaseClass:InitPostEntity()
@@ -176,7 +176,7 @@ function GM:PlayerCanArrest(ply, target)
 	if (target._Warranted == "arrest") then
 		return true
 	else
-		ply:Notify(target:Name().." does not have an arrest warrant!", 1)	
+		ply:Notify(target:Name().." does not have an arrest warrant!", 1)
 		-- Return false because the target does not have a warrant.
 		return false
 	end
@@ -313,7 +313,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	GM:Log(EVENT_BUILD,"%s spawned a %s with model %q",ply:Name(),name,model)
 	-- Check if the player is an administrator.
 	if ( ply:IsAdmin() ) then return true end
-	
+
 	-- Call the base class function.
 	return self.BaseClass:PlayerSpawnVehicle(ply, model)
 end
@@ -326,19 +326,19 @@ end]]
 -- A function to check whether we're running on a listen server.
 -- @return The listen server host if we are, false if we're not.
 function GM:IsListenServer()
-    if (self.ListenServer ~= nil) then
-        return self.ListenServer;
-    end
+	if (self.ListenServer ~= nil) then
+		return self.ListenServer;
+	end
 	self.ListenServer = false;
 	for k, v in pairs( player.GetAll() ) do
 		if (v:IsListenServerHost()) then
-            self.ListenServer = v;
-        end
+			self.ListenServer = v;
+		end
 	end
 	if ( SinglePlayer() ) then
-        self.ListenServer = Entity(1);
-    end
-    return self.ListenServer
+		self.ListenServer = Entity(1);
+	end
+	return self.ListenServer
 end
 
 
@@ -351,34 +351,34 @@ end
 function GM:PlayerInitialized(ply)
 	if (ply.cider._Donator and ply.cider._Donator > 0) then
 		local expire = math.max(ply.cider._Donator - os.time(), 0)
-		
+
 		-- Check if the expire time is greater than 0.
 		if (expire > 0) then
 			local days = math.floor( ( (expire / 60) / 60 ) / 24 )
 			local hours = string.format("%02.f", math.floor(expire / 3600))
 			local minutes = string.format("%02.f", math.floor(expire / 60 - (hours * 60)))
 			local seconds = string.format("%02.f", math.floor(expire - hours * 3600 - minutes * 60))
-			
+
 			-- Give them their access.
 			ply:GiveAccess("tpew")
-			
+
 			-- Check if we still have at least 1 day.
 			if (days > 0) then
 				ply:Notify("Your Donator status expires in "..days.." day(s).")
 			else
 				ply:Notify("Your Donator status expires in "..hours.." hour(s) "..minutes.." minute(s) and "..seconds.." second(s).")
 			end
-			
+
 			-- Set some Donator only player variables.
 			ply._SpawnTime = self.Config["Spawn Time"] / 2
 			ply._KnockOutTime = self.Config["Knock Out Time"] / 2
 		else
 			ply.cider._Donator = 0
-			
+
 			-- Take away their access and save their data.
 			ply:TakeAccess("tpew")
 			ply:SaveData();
-			
+
 			-- Notify the player about how their Donator status has expired.
 			ply:Notify("Your Donator status has expired!", 1)
 		end
@@ -433,14 +433,14 @@ function GM:PlayerDataLoaded(ply, success)
 
 	-- Call a hook for the gamemode.
 	hook.Call("PlayerInitialized",GAMEMODE, ply)
-	
+
 	ply:SetNWString("Job", ply._Job);
 	ply:SetNWString("Clan", ply.cider._Clan);
 	ply:SetNWString("Details",ply._Details);
 	ply:SetNWBool("Donator",ply.cider._Donator > 0);
 	ply:SetNWBool("Moderator", ply:IsUserGroup("operator") or ply:IsUserGroup("moderator") or (evolve and ply:EV_GetRank() == "moderator") or (citrus and citrus.Player.GetGroup(ply).Name == "Moderators"));
 
-	
+
 	-- Respawn them now that they have initialized and then freeze them.
 	ply:Spawn()
 	ply:Freeze(true)
@@ -455,7 +455,7 @@ function GM:PlayerDataLoaded(ply, success)
 			ply:Freeze(false)
 			-- We can now start updating the player's data.
 			ply._UpdateData = true
-			
+
 			-- Send a user message to remove the loading screen.
 			umsg.Start("cider.player.initialized", ply) umsg.End()
 		end
@@ -495,7 +495,7 @@ function GM:PlayerInitialSpawn(ply)
 		return;
 	end
 	ply:LoadData();
-	
+
 	ply._ModelChoices = {}
 	for _,team in pairs(self.Teams) do
 		for gender,models in pairs(team.Models) do
@@ -510,17 +510,17 @@ function GM:PlayerInitialSpawn(ply)
 	timer.Simple(0.2,modeltimer,ply)
 	-- A table to store every contraband entity.
 	local contraband = {}
-	
+
 	-- Loop through each contraband class.
 	for k, v in pairs( self.Config["Contraband"] ) do
 		table.Add( contraband, ents.FindByClass(k) )
 	end
-	
+
 	-- Loop through all of the contraband.
 	for k, v in pairs(contraband) do
 		if (ply:UniqueID() == v._UniqueID) then v:SetPlayer(ply) end
 	end
-	
+
 	-- Kill them silently until we've loaded the data.
 	ply:KillSilent()
 end
@@ -528,12 +528,12 @@ end
 -- Called every frame that a player is dead.
 function GM:PlayerDeathThink(ply)
 	if (not ply._Initialized) then return true end
-	
+
 	-- Check if the player is a bot.
 	if (ply:SteamID() == "BOT") then
 		if (ply.NextSpawnTime and CurTime() >= ply.NextSpawnTime) then ply:Spawn() end
 	end
-	
+
 	-- Return the base class function.
 	return self.BaseClass:PlayerDeathThink(ply)
 end
@@ -562,11 +562,11 @@ function GM:PlayerSetModel(ply)
 		return true
 	end
 	local models = ply:GetTeam().Models;--team.Query(ply:Team(), "Models")
-	
+
 	-- Check if the models table exists.
 	if (models) then
 		models = models[ply._Gender]
-		
+
 		-- Check if the models table exists for this gender.
 		if (models) then
 			local model = models[ ply._ModelChoices[ply._Gender][ply:Team()] ];
@@ -582,14 +582,14 @@ function GM:PlayerSpawn(ply)
 			ply._Gender = ply._NextSpawnGender ply._NextSpawnGender = ""
 			ply._GenderWord = ply._NextSpawnGenderWord ply._NextSpawnGenderWord = ""
 		end
-		
+
 		-- Set it so that the ply does not drop weapons.
 		ply:ShouldDropWeapon(false)
-		
+
 		-- Check if we're not doing a light spawn.
 		if (not ply._LightSpawn) then
 			ply:Recapacitate();
-			
+
 			-- Set some of the ply's variables.
 			-- ply._Ammo = {}
 			ply._Sleeping = false
@@ -600,7 +600,7 @@ function GM:PlayerSpawn(ply)
 			ply._CannotBeWarranted = CurTime() + 15
 			ply._Deaded = nil
 			SendUserMessage("PlayerSpawned", ply);
-			
+
 			-- Make the ply become conscious again.
 			ply:WakeUp(true);
 			--ply:UnSpectate()
@@ -608,10 +608,10 @@ function GM:PlayerSpawn(ply)
 			self:PlayerSetModel(ply)
 			self:PlayerLoadout(ply)
 		end
-		
+
 		-- Call a gamemode hook for when the ply has finished spawning.
 		hook.Call("PostPlayerSpawn",GAMEMODE, ply, ply._LightSpawn, ply._ChangeTeam)
-		
+
 		-- Set some of the ply's variables.
 		ply._LightSpawn = false
 		ply._ChangeTeam = false
@@ -626,7 +626,7 @@ function GM:PlayerShouldTakeDamage(ply, attacker) return true end
 -- Called when a ply is attacked by a trace.
 function GM:PlayerTraceAttack(ply, damageInfo, direction, trace)
 	ply._LastHitGroup = trace.HitGroup
-	
+
 	-- Return false so that we don't override internals.
 	return false
 end
@@ -645,7 +645,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	end
 	for k, v in pairs( ply:GetWeapons() ) do
 		local class = v:GetClass()
-		
+
 		-- Check if this is a valid item.
 		if (self.Items[class]) then
 			if ( hook.Call("PlayerCanDrop",GAMEMODE, ply, class, true, attacker) ) then
@@ -658,7 +658,7 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	if #ply._StoredWeapons >= 1 then
 		for _, v in pairs(ply._StoredWeapons) do
 			local class = v
-			
+
 			-- Check if this is a valid item.
 			if (self.Items[class]) then
 				if ( hook.Call("PlayerCanDrop",GAMEMODE, ply, class, true, attacker) ) then
@@ -669,20 +669,20 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	end
 	--]]
 	ply._StoredWeapons = {}
-	
+
 	-- Unwarrant them, unarrest them and stop them from bleeding.
 	ply:UnWarrant();
 	ply:UnArrest(true);
 	ply:UnTie(true);
 	ply:StopBleeding()
-	
+
 	-- Strip the ply's weapons and ammo.
 	ply:StripWeapons()
 	ply:StripAmmo()
-	
+
 	-- Add a death to the ply's death count.
 	ply:AddDeaths(1)
-	
+
 	-- Check it the attacker is a valid entity and is a ply.
 	if ( IsValid(attacker) and attacker:IsPlayer() ) then
 		if (ply ~= attacker) then
@@ -695,21 +695,21 @@ end
 
 -- Called when a ply dies.
 function GM:PlayerDeath(ply, inflictor, attacker, ragdoll,fall)
-	
+
 	if (ply:KnockedOut()) then
-        ply:GetRagdollEntity():SetCollisionGroup(COLLISION_GROUP_WORLD);
-    else
-        ply:KnockOut();
-    end
-	
+		ply:GetRagdollEntity():SetCollisionGroup(COLLISION_GROUP_WORLD);
+	else
+		ply:KnockOut();
+	end
+
 	-- Set their next spawn time.
 	ply.NextSpawnTime = CurTime() + ply._SpawnTime;
-	
+
 	-- Set it so that we can the next spawn time client side.
 	umsg.Start("MS Respawn Time", ply);
 	umsg.Short(ply._SpawnTime);
 	umsg.End();
-	
+
 	-- Check if the attacker is a ply.
 	local formattext,text1,text2,text3,pvp = "",ply:GetName(),"",""
 	if ( attacker:IsPlayer() ) then
@@ -751,12 +751,12 @@ end
 -- Called when an entity takes damage.
 local vector0 = Vector(5,0,0)
 function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
-    --[[
+	--[[
 	if !entity or !inflictor or !attacker or entity == NULL or inflictor == NULL or attacker == NULL then
 		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
 		return
 	end
-    --]]
+	--]]
 	local logme = false
 	if (attacker:IsPlayer() and IsValid( attacker:GetActiveWeapon() )) then
 		if attacker:GetActiveWeapon():GetClass() == "weapon_stunstick" then
@@ -784,13 +784,13 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 		asplode = true
 		asplodeent = "tripmine"
 	elseif attacker:GetClass() == "cider_breach" and IsValid(attacker._Planter) then
-		damageInfo:SetAttacker(attacker._Planter) 
+		damageInfo:SetAttacker(attacker._Planter)
 		attacker = attacker._Planter
 		asplode = true
 		asplodeent = "breach"
-    elseif (inflictor:GetClass() == "cider_hands" and amount == 0) then
-        -- Because of the dual damage system, ignore this.
-        return;
+	elseif (inflictor:GetClass() == "cider_hands" and amount == 0) then
+		-- Because of the dual damage system, ignore this.
+		return;
 	end
 	if ( entity:IsPlayer() ) then
 		if (entity:KnockedOut()) then
@@ -841,7 +841,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 				damageInfo:SetDamage(0)
 				return
 			end
-			
+
 			-- Check if the player has a last hit group defined.
 			if entity._LastHitGroup and ( not attacker:IsPlayer() or (IsValid(attacker:GetActiveWeapon()) and attacker:GetActiveWeapon():GetClass() ~= "cider_hands")) then
 				if (entity._LastHitGroup == HITGROUP_HEAD) then
@@ -850,17 +850,17 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 					damageInfo:ScaleDamage( self.Config["Scale Chest Damage"] )
 				elseif (
 				entity._LastHitGroup == HITGROUP_LEFTARM or
-				entity._LastHitGroup == HITGROUP_RIGHTARM or 
+				entity._LastHitGroup == HITGROUP_RIGHTARM or
 				entity._LastHitGroup == HITGROUP_LEFTLEG or
 				entity._LastHitGroup == HITGROUP_RIGHTLEG or
 				entity._LastHitGroup == HITGROUP_GEAR) then
 					damageInfo:ScaleDamage( self.Config["Scale Limb Damage"] )
 				end
-				
+
 				-- Set the last hit group to nil so that we don't use it again.
 				entity._LastHitGroup = nil
 			end
-			
+
 			-- Check if the player is supposed to scale damage.
 			if (entity._ScaleDamage) then damageInfo:ScaleDamage(entity._ScaleDamage) end
 			logme = true
@@ -870,7 +870,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 				-- Check to see if the player's health is less than 0 and that the player is alive.
 				if ( entity:Health() <= 0 and entity:Alive() ) then
 					entity:KillSilent()
-					
+
 					-- Call some gamemode hooks to fake the player's death.
 					hook.Call("DoPlayerDeath",GAMEMODE, entity, attacker, damageInfo)
 					hook.Call("PlayerDeath",GAMEMODE, entity, inflictor, attacker, damageInfo:IsFallDamage())
@@ -920,14 +920,14 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	-- Check if the entity is a knocked out player.
 	elseif ( IsValid(entity._Player) and not entity._Corpse) then
 		local ply = entity._Player
-		-- If they were just ragdolled, give them 2 seconds of damage immunity 
+		-- If they were just ragdolled, give them 2 seconds of damage immunity
 		if ply.ragdoll.time and ply.ragdoll.time > CurTime() then
 			damageInfo:SetDamage(0)
 			return false
 		end
 		-- Set the damage to the amount we're given.
 		damageInfo:SetDamage(amount)
-		
+
 		-- Check if the attacker is not a player.
 		if ( not attacker:IsPlayer() ) then
 			if attacker ==GetWorldEntity() and inflictor == player then --hunger
@@ -937,7 +937,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			elseif ( attacker == GetWorldEntity() ) then
 				if ( ( entity._NextWorldDamage and entity._NextWorldDamage > CurTime() )
 				or damageInfo:GetDamage() <= 10 ) then return end
-				
+
 				-- Set the next world damage to be 1 second from now.
 				entity._NextWorldDamage = CurTime() + 1
 			elseif attacker:GetClass():find"cider" or attacker:GetClass():find("prop") then
@@ -953,41 +953,41 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			end
 			damageInfo:ScaleDamage( self.Config["Scale Ragdoll Damage"] )
 		end
-		
+
 		-- Check if the player is supposed to scale damage.
 		if (entity._Player._ScaleDamage and attacker ~= GetWorldEntity()) then damageInfo:ScaleDamage(entity._Player._ScaleDamage) end
-		
+
 		-- Take the damage from the player's health.
 		ply:SetHealth( math.max(ply:Health() - damageInfo:GetDamage(), 0) )
-		
+
 		-- Set the player's conscious health.
 		ply.ragdoll.health = ply:Health()
-		
+
 		-- Create new effect data so that we can create a blood impact at the damage position.
 		local effectData = EffectData()
 			effectData:SetOrigin( damageInfo:GetDamagePosition() )
 		util.Effect("BloodImpact", effectData)
-		
+
 		-- Loop from 1 to 4 so that we can draw some blood decals around the ragdoll.
 		for i = 1, 2 do
 			local trace = {}
-			
+
 			-- Set some settings and information for the trace.
 			trace.start = damageInfo:GetDamagePosition()
 			trace.endpos = trace.start + (damageInfo:GetDamageForce() + (VectorRand() * 16) * 128)
 			trace.filter = entity
-			
+
 			-- Create the trace line from the set information.
 			trace = util.TraceLine(trace)
-			
+
 			-- Draw a blood decal at the hit position.
 			util.Decal("Blood", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal)
 		end
-		
+
 		-- Check to see if the player's health is less than 0 and that the player is alive.
 		if ( ply:Health() <= 0 and ply:Alive() ) then
 			ply:KillSilent()
-			
+
 			-- Call some gamemode hooks to fake the player's death.
 			hook.Call("DoPlayerDeath",GAMEMODE, ply, attacker, damageInfo)
 			hook.Call("PlayerDeath",GAMEMODE, ply, inflictor, attacker, damageInfo:IsFallDamage())
@@ -1033,18 +1033,18 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 			smiter = "a prop ("..attacker:GetModel()..")"
 		end
 		local text = "%s damaged %s for %G damage%s"
-		
+
 		if isplayer then
 			GM:Log(EVENT_PLAYERDAMAGE,text,smiter,smitee,damage,weapon)
 		else
 			GM:Log(EVENT_DAMAGE,text,smiter,smitee,damage,weapon)
 		end
 	end
-end 
+end
 -- Return the damage done by a fall
 function GM:GetFallDamage( ply, vel )
 	local val = 580  --No idea. This was taken from the C++ source though, aparently
-	return (vel-val)*(100/(1024-val)) 
+	return (vel-val)*(100/(1024-val))
 end
 
 local function dogive(ply, data)
@@ -1065,7 +1065,7 @@ end
 function GM:PlayerLoadout(ply)
 	if ( ply:HasAccess("t") ) then ply:Give("gmod_tool") end
 	if ( ply:HasAccess("p") ) then ply:Give("weapon_physgun") end
-	
+
 	-- Give the player the camera, the hands and the physics cannon.
 	ply:Give("gmod_camera")
 	ply:Give("cider_hands")
@@ -1099,7 +1099,7 @@ function GM:ShowHelp(ply) umsg.Start("cider_Menu", ply) umsg.End() end
 -- Called when a player presses F2.
 -- TODO: Rewrite
 function GM:ShowTeam(ply)
-	local ent = ply:GetEyeTraceNoCursor().Entity	
+	local ent = ply:GetEyeTraceNoCursor().Entity
 	-- Check if the player is aiming at a ent.
 	if not(IsValid(ent)
 	   and ent:IsOwnable()
@@ -1191,14 +1191,14 @@ end)
 
 -- Create a timer to give players money for their contraband.
 timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
-    -- FIXME: Christ on a bike this is a shithole redo the entire thing jesus
+	-- FIXME: Christ on a bike this is a shithole redo the entire thing jesus
 	local contratypes = {}
 	for key in pairs(GM.Config["Contraband"]) do
 		contratypes[key] = true
-	end		
+	end
 	local cplayers = {}
 	local dplayers = {}
-		
+
 
 	for _, ent in ipairs(ents.GetAll()) do
 		if contratypes[ent:GetClass()] then
@@ -1206,10 +1206,10 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 			-- Check if the ply is a valid entity,
 			if ( IsValid(ply) ) then
 				cplayers[ply] = cplayers[ply] or {refill = 0, money = 0}
-				
+
 				-- Decrease the energy of the contraband.
 				ent.dt.energy = math.Clamp(ent.dt.energy - 1, 0, 5)
-				
+
 				-- Check the energy of the contraband.
 				if (ent.dt.energy == 0) then
 					cplayers[ply].refill = cplayers[ply].refill + 1
@@ -1236,7 +1236,7 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 			end
 			if (v.money > 0) then
 				k:Notify("You earned $"..v.money.." from contraband.", 0)
-				
+
 				-- Give the player their money.
 				k:GiveMoney(v.money)
 			end
@@ -1245,7 +1245,7 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 	for _,ply in ipairs(player.GetAll()) do
 		if (ply:Alive() and not ply.cider._Arrested) then
 			ply:GiveMoney(ply._Salary)
-			
+
 			-- Print a message to the player letting them know they received their salary.
 			ply:Notify("You received $"..ply._Salary.." salary.", 0)
 		end
@@ -1257,18 +1257,18 @@ timer.Create("Earning", GM.Config["Earning Interval"], 0, function()
 				k:Notify("You have been taxed $"..v[1].." for your doors.", 0)
 			else
 				k:Notify("You can't pay your taxes. Your doors were removed.", 1)
-				
+
 				-- Loop through the doors.
 				for k2, v2 in pairs( v[2] ) do
 					if GM.Entities[v2] then
 						k:TakeDoor(v2, true)
 					else
-                        v2:RemoveCallOnRemove("refund");
+						v2:RemoveCallOnRemove("refund");
 						v2:Remove()
 					end
 				end
 			end
-			
+
 			-- Take the money from the player.
 			k:GiveMoney(-v[1] )
 		end

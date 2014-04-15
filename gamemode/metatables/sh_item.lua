@@ -20,12 +20,12 @@ end
 --  bases, since they can't just include the files like gamemode root ones do.
 -- @param id The UniqueID of the item to derive from.
 function meta:Derive(id)
-    for k,v in pairs(GM.Items[id] or {}) do
-        if (self[k] == nil) then
-            self[k] = v;
-        else
-        end
-    end
+	for k,v in pairs(GM.Items[id] or {}) do
+		if (self[k] == nil) then
+			self[k] = v;
+		else
+		end
+	end
 end
 
 ---
@@ -44,7 +44,7 @@ function meta:Register()
 	if (self.Base) then
 		if (type(self.Base) == "table") then
 			for _,id in ipairs(self.base) do
-                self:Derive(id);
+				self:Derive(id);
 			end
 		else
 			self:Derive(self.Base);

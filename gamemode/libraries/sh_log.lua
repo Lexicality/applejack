@@ -141,7 +141,7 @@ if (SERVER) then
 		if (i == 0) then
 			return;
 		end
-		-- Send the event to 
+		-- Send the event to
 		umsg.Start("LogEvent", filtr)
 			umsg.Short(category);
 			umsg.String( event );
@@ -169,7 +169,7 @@ else
 	concommand.Add("cider_dumplog", function()
 		file.Write("cider_logdump_"..os.date()..".txt", util.TableToKeyValues(GM.LogEntries)); --Very ugly dump, consider making it prettier in the future
 	end)
-    usermessage.Hook("LogEvent",function(msg)
+	usermessage.Hook("LogEvent",function(msg)
 		local category = msg:ReadShort();
 		local event = msg:ReadString();
 		local length = msg:ReadShort();

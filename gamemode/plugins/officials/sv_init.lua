@@ -9,7 +9,7 @@ function PLUGIN:LoadData()
 	self.gang = GM:GetGang("Police");
 end
 
---Check if they're the right group/gang
+-- Check if they're the right group/gang
 function PLUGIN:IsAuthorised(ply, gang)
 	local data = ply:GetTeam();
 	return (data.Group == self.group or gang and data.Gang == self.gang);
@@ -51,7 +51,7 @@ function PLUGIN:PlayerDestroyedContraband(ply, ent)
 		return;
 	end
 	ply:SayRadio("I have destroyed a "..data.name..".");
-end	
+end
 
 -- Called when a player dies.
 function PLUGIN:PlayerDeath(ply, inflictor, killer)
@@ -64,7 +64,7 @@ function PLUGIN:PlayerDeath(ply, inflictor, killer)
 		end
 		self.Lockdown = false; -- Disable the lockdown
 		SetGlobalBool("lockdown",false);
-        GM:ClearProps(ply);
+		GM:ClearProps(ply);
 		ply:Demote(); -- Drop dem to da bttom
 	end
 end
@@ -122,9 +122,9 @@ function PLUGIN:PlayerCanUnArrest(ply, target)
 end
 
 local function tmr(ply)
-    if (IsValid(ply)) then
-        ply:GodDisable();
-    end
+	if (IsValid(ply)) then
+		ply:GodDisable();
+	end
 end
 -- Called when a player spawns.
 function PLUGIN:PostPlayerSpawn(ply, light, teamchange)
@@ -154,16 +154,16 @@ function PLUGIN:PlayerCanWarrant(ply, target, class)
 	elseif (class == "arrest") then
 		words = "an arrest";
 	end
-	
+
 	if (self:IsAuthorised(target) and class ~= "search") then -- You can't arrest police, so don't let them try.
 		ply:Notify("You cannot arrest city officials!", 1);
 		return false;
 	end
-	
+
 	if (ply:Team() == TEAM_MAYOR) then -- The mayor can always warrant.
 		return true;
 	end
-	
+
 	if (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
 		if (self:IsAuthorised(ply)) then
 			ply:SayRadio("Mayor, could you warrant "..target:Name().." for "..words.." please?");
@@ -172,11 +172,11 @@ function PLUGIN:PlayerCanWarrant(ply, target, class)
 		end
 		return false; -- Only the mayor can fufil our wish.
 	end
-	
+
 	if (ply:Team() == TEAM_POLICECOMMANDER) then -- If there's no mayor then the police commander handles warrants.
 		return true;
 	end
-	
+
 	if (team.NumPlayers(TEAM_POLICECOMMANDER) > 0) then -- If there's no mayor and we're not the commander, then we gotta pester the commander about it.
 			if (self:IsAuthorised(ply)) then
 				ply:SayRadio("Commander, could you warrant "..target:Name().." for "..words.." please?");
@@ -185,11 +185,11 @@ function PLUGIN:PlayerCanWarrant(ply, target, class)
 			end
 			return false; -- We still can't do it ourself.
 	end
-	
+
 	if (ply:Team() == TEAM_POLICEOFFICER) then -- The cat is away so the mice do play.
 		return true;
 	end
-	
+
 	if (team.NumPlayers(TEAM_POLICEOFFICER) > 0) then -- I guess there might be police officers for us to pester?
 		if (self:IsAuthorised(ply)) then
 			ply:SayRadio("Could an offier warrant "..target:Name().." for "..words.." please?");
@@ -330,84 +330,84 @@ local plugin = PLUGIN;
 
 -- A command to broadcast to all players.
 GM:RegisterCommand{
-    Command     = "broadcast";
-    Arguments   = "<Message>";
-    Types       = "...";
-    Help        = "Broadcast a message to the city";
-    function(ply, words)
-        local team = ply:Team();
-        if (team ~= TEAM_MAYOR and team ~= TEAM_POLICECOMMANDER) then
-            return false, "You cannot make broadcasts!";
-        end
-        if (team == TEAM_POLICECOMMANDER) then
-            words = "(POLICE) "..words;
-        end
-        plugin:SayBroadcast(ply, words);
-    end
+	Command     = "broadcast";
+	Arguments   = "<Message>";
+	Types       = "...";
+	Help        = "Broadcast a message to the city";
+	function(ply, words)
+		local team = ply:Team();
+		if (team ~= TEAM_MAYOR and team ~= TEAM_POLICECOMMANDER) then
+			return false, "You cannot make broadcasts!";
+		end
+		if (team == TEAM_POLICECOMMANDER) then
+			words = "(POLICE) "..words;
+		end
+		plugin:SayBroadcast(ply, words);
+	end
 };
 
 -- A command to request assistance from the Police and Mayor.
 GM:RegisterCommand{
-    Command     = "request";
-    Arguments   = "<Message>";
-    Types       = "...";
-    Help        = "Send a message to the police and mayor";
-    function(ply, words)
-        if (plugin:IsAuthorised(ply)) then
-            ply:SayRadio(words);
-        else
-            plugin:SayRequest(ply, words);
-        end
-    end
+	Command     = "request";
+	Arguments   = "<Message>";
+	Types       = "...";
+	Help        = "Send a message to the police and mayor";
+	function(ply, words)
+		if (plugin:IsAuthorised(ply)) then
+			ply:SayRadio(words);
+		else
+			plugin:SayRequest(ply, words);
+		end
+	end
 };
 
 -- A command to initiate lockdown.
 GM:RegisterCommand{
-    Command     = "lockdown";
-    Help        = "Annoucne a city-wide lockdown";
-    function(ply)
-        if (plugin.Lockdown) then
-            return false, "There is already a lockdown active!";
-        elseif (ply:Team() == TEAM_MAYOR) then
-            plugin:SayBroadcast(ply, "A lockdown is in progress. Please return to your homes.");
-            plugin.Lockdown = true;
-            SetGlobalBool("lockdown", true);
-            return true;
-        elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
-            if (plugin:IsAuthorised(ply)) then
-                ply:SayRadio("Mayor, could you initiate a lockdown please?");
-            else
-                plugin:SayRequest(ply,"Mayor, I suggest you initiate a lockdown.");
-            end
-            return false; -- Only the mayor can fufil our wish.
-        end
-        return false, "Only the Mayor can initiate a lockdown!";
-    end
+	Command     = "lockdown";
+	Help        = "Annoucne a city-wide lockdown";
+	function(ply)
+		if (plugin.Lockdown) then
+			return false, "There is already a lockdown active!";
+		elseif (ply:Team() == TEAM_MAYOR) then
+			plugin:SayBroadcast(ply, "A lockdown is in progress. Please return to your homes.");
+			plugin.Lockdown = true;
+			SetGlobalBool("lockdown", true);
+			return true;
+		elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
+			if (plugin:IsAuthorised(ply)) then
+				ply:SayRadio("Mayor, could you initiate a lockdown please?");
+			else
+				plugin:SayRequest(ply,"Mayor, I suggest you initiate a lockdown.");
+			end
+			return false; -- Only the mayor can fufil our wish.
+		end
+		return false, "Only the Mayor can initiate a lockdown!";
+	end
 };
 
 -- A command to cancel lockdown.
 GM:RegisterCommand{
-    Command     = "unlockdown";
-    Help        = "Announce the end of the current lockdown.";
-    function(ply)
-        if (not plugin.Lockdown) then
-            return false, "There isn't an active lockdown!";
-        elseif (ply:Team() == TEAM_MAYOR) then
-            plugin:SayBroadcast(ply, "The lockdown has been cancelled.");
-            plugin.Lockdown = false;
-            SetGlobalBool("lockdown", false);
-            return true;
-        elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
-            if (plugin:IsAuthorised(ply)) then
-                ply:SayRadio("Mayor, could you end the lockdown please?");
-            else
-                plugin:SayRequest(ply,"Mayor, I suggest you end the lockdown.");
-            end
-            return false; -- Only the mayor can fufil our wish.
-        end
-        -- There should never be a lockdown without a mayor. If there is, turn it off.
-        player.NotifyAll(NOTIFY_CHAT, "The lockdown has been cancelled");
-        plugin.Lockdown = false;
-        SetGlobalBool("lockdown", false);
-    end
+	Command     = "unlockdown";
+	Help        = "Announce the end of the current lockdown.";
+	function(ply)
+		if (not plugin.Lockdown) then
+			return false, "There isn't an active lockdown!";
+		elseif (ply:Team() == TEAM_MAYOR) then
+			plugin:SayBroadcast(ply, "The lockdown has been cancelled.");
+			plugin.Lockdown = false;
+			SetGlobalBool("lockdown", false);
+			return true;
+		elseif (team.NumPlayers(TEAM_MAYOR) > 0) then -- If there's a mayor and we're not him, we gotta beg.
+			if (plugin:IsAuthorised(ply)) then
+				ply:SayRadio("Mayor, could you end the lockdown please?");
+			else
+				plugin:SayRequest(ply,"Mayor, I suggest you end the lockdown.");
+			end
+			return false; -- Only the mayor can fufil our wish.
+		end
+		-- There should never be a lockdown without a mayor. If there is, turn it off.
+		player.NotifyAll(NOTIFY_CHAT, "The lockdown has been cancelled");
+		plugin.Lockdown = false;
+		SetGlobalBool("lockdown", false);
+	end
 };

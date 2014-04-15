@@ -11,17 +11,17 @@ end
 
 local carz = {};
 GM:RegisterCommand{
-    Command     = "cleancars";
-    Access      = "a";
-    Help        = "Remove all currently spawned cars";
-    function(ply)
-        for _,ent in pairs(carz) do
-            if (IsValid(ent)) then
-                ent:Remove();
-            end
-            carz[_] = nil;
-        end
-    end
+	Command     = "cleancars";
+	Access      = "a";
+	Help        = "Remove all currently spawned cars";
+	function(ply)
+		for _,ent in pairs(carz) do
+			if (IsValid(ent)) then
+				ent:Remove();
+			end
+			carz[_] = nil;
+		end
+	end
 };
 
 vu_enablehorn = CreateConVar( "vu_enablehorn", "1")
@@ -30,25 +30,25 @@ function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
 	if (not IsValid(ent)) then
 		error("["..os.date().."] Applejack Vehicles Plugin: could not spawn a "..class.."!");
 	end
-	
+
 	ent:SetModel(model);
 	ent:SetAngles(ang);
 	ent:SetPos(pos);
-	
+
 	if (vtable and vtable.KeyValues) then
 		for k, v in pairs(vtable.KeyValues) do
 			ent:SetKeyValue(k, v);
 		end
 	end
-	
+
 	if ( vtable.Members ) then
 		table.Merge( ent, vtable.Members )
 		duplicator.StoreEntityModifier( ent, "VehicleMemDupe", vtable.Members );
 	end
-	
+
 	ent:Spawn();
 	ent:Activate();
-	
+
 	local p = ent:GetPhysicsObject();
 	if (not IsValid(p)) then
 		ent:Remove();
@@ -59,11 +59,11 @@ function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
 		ent:Remove();
 		return NULL;
 	end
-	
+
 	ent.VehicleName  = vname;
 	ent.VehicleTable = vtable;
 	ent.NoClear		 = true;
-	-- We need to override the class in the case of the Jeep, because it 
+	-- We need to override the class in the case of the Jeep, because it
 	-- actually uses a different class than is reported by GetClass
 	ent.ClassOverride= class;
 	gamemode.Call( "PlayerSpawnedVehicle", player, ent );
@@ -85,27 +85,27 @@ function PLUGIN:SpawnCar(ply, item)
 		ply:Notify("You must wait another "..string.ToMinutesSeconds(ply._NextVehicleSpawn-CurTime()).." minutes before you can spawn your car again.", 1);
 		return false;
 	end
-	
+
 	local car = list.Get"Vehicles"[item.VehicleName];
 	if (not car) then
 		ply:Notify("Invalid car referenced!",1);
 		error("["..os.date().."] Applejack Vehicles Plugin: Error spawning a "..item.Name..": Invalid vehicle type specified: '"..item.VehicleName.."'.");
 	end
 	local name = car.RPName or car.Name;
- 	local tr = ply:GetEyeTraceNoCursor() ;
- 	local trace = util.QuickTrace( tr.HitPos, sky );
+	local tr = ply:GetEyeTraceNoCursor() ;
+	local trace = util.QuickTrace( tr.HitPos, sky );
 	if (trace.Hit and not trace.HitSky) then
 		ply:Notify("You must spawn your "..car.Name.." under open sky!", 1);
 		return false;
 	end
 	ang.yaw = ply:GetAngles().yaw + 180;
-	
+
 	local ent = self:MakeVehicle( ply, tr.HitPos + spawnstep, ang, car.Model, car.Class, item.VehicleName, car );
 	if (not IsValid(ent)) then
 		return;
 	end
-    --ent:SetPPOwner(ply);
-    ent:SetPPOwner(NULL);
+	--ent:SetPPOwner(ply);
+	ent:SetPPOwner(NULL);
 	ent.CanTool = toolfunc;
 	ent._LockpickHits = GM.Config["Maximum Lockpick Hits"] * 2 + 5; -- Thus making cars a hell of a lot harder to pick. ;D
 	ent:Lock();

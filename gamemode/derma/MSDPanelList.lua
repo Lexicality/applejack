@@ -52,8 +52,8 @@ end
 
 function PANEL:EnableVerticalScrollbar()
 	if (not self.VBar) then
-        self.VBar = vgui.Create("DVScrollBar", self)
-    end
+		self.VBar = vgui.Create("DVScrollBar", self)
+	end
 end
 
 function PANEL:GetCanvas()
@@ -65,8 +65,8 @@ function PANEL:Clear(bDelete)
 		self.Items[k] = nil
 
 		if (not IsValid(panel)) then
-            continue
-        end
+			continue
+		end
 
 		panel:SetVisible(false)
 		if (bDelete) then
@@ -76,42 +76,42 @@ function PANEL:Clear(bDelete)
 end
 
 function PANEL:AddItem(item, strLineState, where)
-    if (not IsValid(item)) then
-        return
-    end
+	if (not IsValid(item)) then
+		return
+	end
 	table.RemoveByValue(self.Items, item)
 	item:SetVisible(true)
 	item:SetParent(self:GetCanvas())
 	item.m_strLineState = strLineState or item.m_strLineState
 	item:SetSelectable(self.m_bSelectionCanvas)
 
-    if (where) then
-        table.insert(self.Items, where, item)
-    else
-        table.insert(self.Items, item)
-    end
+	if (where) then
+		table.insert(self.Items, where, item)
+	else
+		table.insert(self.Items, item)
+	end
 
 	self:InvalidateLayout()
 end
 
 function PANEL:InsertBefore(before, insert, strLineState)
 	local key = table.KeyFromValue(self.Items, before)
-    key = key or 1 -- If the key doesn't exist, go to the top
-    self:AddItem(insert, strLineState, key)
+	key = key or 1 -- If the key doesn't exist, go to the top
+	self:AddItem(insert, strLineState, key)
 end
 
 function PANEL:InsertAfter(before, insert, strLineState)
 	local key = table.KeyFromValue(self.Items, before)
-    key = key and key + 1 or nil -- If the key exists, go one after. If not, go to the back.
-    self:AddItem(insert, strLineState, key)
+	key = key and key + 1 or nil -- If the key exists, go one after. If not, go to the back.
+	self:AddItem(insert, strLineState, key)
 end
 
 function PANEL:InsertAtTop(insert, strLineState)
-    self:AddItem(insert, strLineState, 1)
+	self:AddItem(insert, strLineState, 1)
 end
 
 function PANEL:InsertAtBottom(insert, strLineState)
-    self:AddItem(insert, strLineState)
+	self:AddItem(insert, strLineState)
 end
 
 function PANEL:RemoveItem(item, bDontDelete)
@@ -144,30 +144,30 @@ function PANEL:Rebuild()
 
 	self:CleanList()
 
-    for k, panel in ipairs(self.Items) do
-        if (not panel:IsVisible()) then
-            continue
-        end
+	for k, panel in ipairs(self.Items) do
+		if (not panel:IsVisible()) then
+			continue
+		end
 
-        --panel:SetSize(self:GetCanvas():GetWide() - self.Padding * 2, panel:GetTall())
-        panel:SetWidth(self:GetCanvas():GetWide() - self.Padding * 2)
+		--panel:SetSize(self:GetCanvas():GetWide() - self.Padding * 2, panel:GetTall())
+		panel:SetWidth(self:GetCanvas():GetWide() - self.Padding * 2)
 
-        if (self.m_fAnimTime > 0 and self.m_iBuilds > 1) then
-            panel:MoveTo(self.Padding, self.Padding + Offset, self.m_fAnimTime, self.m_fAnimEase)
-        else
-            panel:SetPos(self.Padding, self.Padding + Offset)
-        end
+		if (self.m_fAnimTime > 0 and self.m_iBuilds > 1) then
+			panel:MoveTo(self.Padding, self.Padding + Offset, self.m_fAnimTime, self.m_fAnimEase)
+		else
+			panel:SetPos(self.Padding, self.Padding + Offset)
+		end
 
-        -- Changing the width might ultimately change the height
-        -- So give the panel a chance to change its height now,
-        -- so when we call GetTall below the height will be correct.
-        -- True means layout now.
-        panel:InvalidateLayout(true)
+		-- Changing the width might ultimately change the height
+		-- So give the panel a chance to change its height now,
+		-- so when we call GetTall below the height will be correct.
+		-- True means layout now.
+		panel:InvalidateLayout(true)
 
-        Offset = Offset + panel:GetTall() + self.Spacing
-    end
+		Offset = Offset + panel:GetTall() + self.Spacing
+	end
 
-    Offset = Offset + self.Padding
+	Offset = Offset + self.Padding
 
 	self:GetCanvas():SetTall(Offset + self.Padding - self.Spacing)
 end
@@ -204,8 +204,8 @@ function PANEL:PerformLayout()
 		YPos = self.VBar:GetOffset()
 
 		if (self.VBar.Enabled) then
-            Wide = Wide - 13
-        end
+			Wide = Wide - 13
+		end
 	end
 
 	self.pnlCanvas:SetPos(0, YPos)
@@ -240,23 +240,23 @@ function PANEL:SortByMember(key, desc)
 	desc = desc or true
 
 	table.sort(self.Items, function(a, b)
-        if (not desc) then
-            a,b = b,a
-        end
+		if (not desc) then
+			a,b = b,a
+		end
 
-        if (a[key] == nil or b[key] == nil) then
-            return false
-        else
-            return a[key] < b[key]
-        end
-    end)
+		if (a[key] == nil or b[key] == nil) then
+			return false
+		else
+			return a[key] < b[key]
+		end
+	end)
 
-    self:InvalidateLayout();
+	self:InvalidateLayout();
 end
 
 function PANEL:SortByFunction(func)
-    table.sort(self.Items, func);
-    self:InvalidateLayout();
+	table.sort(self.Items, func);
+	self:InvalidateLayout();
 end
 
 derma.DefineControl("MSDPanelList", "A butchered version of DPanelList just for Moonshine", PANEL, "DPanel")

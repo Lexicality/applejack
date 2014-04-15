@@ -16,9 +16,9 @@ function meta:ESPPaint(lines, pos, dist, centre, ragdoll)
 	if (self:GetNWBool("Typing")) then
 		lines:Add("Typing", "(Typing)", color_white, 2);
 	end
-    if (not self:Alive()) then
-        lines:Add("Status", "(Dead)", color_lightgray, 3);
-    elseif (self:Arrested()) then
+	if (not self:Alive()) then
+		lines:Add("Status", "(Dead)", color_lightgray, 3);
+	elseif (self:Arrested()) then
 		lines:Add("Status", "(Arrested)", color_red, 3);
 	elseif (self:Tied()) then
 		lines:Add("Status", "(Tied)", color_lightblue, 3);

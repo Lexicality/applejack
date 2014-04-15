@@ -13,6 +13,6 @@ ITEM.Plural			= "GPSes";
 ITEM.Description	= "Helps you find things you own. (Like your car)";
 ITEM.Base			= "item";
 
-function ITEM:onUpdate(ply,number)
-	ply._GPS	= number >= 1;
+function ITEM:onUpdate(ply, number)
+	ply._GPS = number >= 1;
 end

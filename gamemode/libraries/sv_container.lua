@@ -119,7 +119,7 @@ function cider.container.update(entity,id,amount,force,player)
 	if player then
 		if (id == "money") then
 			player:GiveMoney(-amount)
-		else	
+		else
 			cider.inventory.update(player, id, -amount, force)
 		end
 		hook.Call("PlayerUpdatedContainerContents",GAMEMODE, player, entity, id, amount, force)

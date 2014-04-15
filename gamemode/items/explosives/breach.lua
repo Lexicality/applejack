@@ -19,19 +19,19 @@ function ITEM:onUse(ply)
 	local door	= trace.Entity;
 	if (not door:IsDoor()) then
 		ply:Notify("That is not a valid door!", 1);
-	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then	
+	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then
 		ply:Notify("You are not close enough to the door!", 1);
 	elseif (door._Jammed or door._Sealed) then
 		ply:Notify("This door cannot be breached!", 1);
-	elseif (IsValid(door._Breach)) then	
+	elseif (IsValid(door._Breach)) then
 		ply:Notify("This door already has a breach!", 1);
 	else
 		local ent = ents.Create("cider_breach");
 		ent:Spawn();
 		ent:SetDoor(door, trace, ply);
 		door._Breach = ent;
-        ent:SetPPOwner(ply);
-        ent:SetPPSpawner(ply);
+		ent:SetPPOwner(ply);
+		ent:SetPPSpawner(ply);
 		return true;
 	end
 	return false;

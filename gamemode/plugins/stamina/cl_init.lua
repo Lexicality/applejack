@@ -13,7 +13,7 @@ end);
 function PLUGIN:PlayerBindPress(player, bind, pressed)
 	if (player:InVehicle()) then return; end
 	local stamina = LocalPlayer()._Stamina or 100;
-	
+
 	-- Check if the stamina is smaller than 10.
 	if not player:KnockedOut()
 	and player:GetNWBool"Exhausted"

@@ -20,51 +20,51 @@ end
 -- Adds a person to the player's prop protection buddy list
 -- @param ply the person to add
 function meta:AddPPFriend(ply)
-    if (not IsPlayer(ply)) then
-        return;
-    end
-    local uid  = ply:UniqueID();
-    local name = ply:Name();
-    self._ppFriends[uid] = name;
-    umsg.Start("MS PPUpdate", self);
-    umsg.Char(1);
-    umsg.String(name);
-    umsg.Long(uid);
-    umsg.End();
+	if (not IsPlayer(ply)) then
+		return;
+	end
+	local uid  = ply:UniqueID();
+	local name = ply:Name();
+	self._ppFriends[uid] = name;
+	umsg.Start("MS PPUpdate", self);
+	umsg.Char(1);
+	umsg.String(name);
+	umsg.Long(uid);
+	umsg.End();
 end
 
 ---
 -- Removes a person from the player's prop protection buddy list
 -- @param ply The person to remove
 function meta:RemovePPFriend(ply)
-    if (not IsPlayer(ply)) then
-        return;
-    end
-    local uid =  ply:UniqueID();
-    self._ppFriends[uid] = nil;
-    umsg.Start("MS PPUpdate", self);
-    umsg.Char(2);
-    umsg.Long(uid);
-    umsg.End();
+	if (not IsPlayer(ply)) then
+		return;
+	end
+	local uid =  ply:UniqueID();
+	self._ppFriends[uid] = nil;
+	umsg.Start("MS PPUpdate", self);
+	umsg.Char(2);
+	umsg.Long(uid);
+	umsg.End();
 end
 
 ---
 -- Wipes a player's prop protection buddy list
 function meta:ClearPPFriends()
-    self._ppFriends[uid] = {};
-    umsg.Start("MS PPUpdate", self);
-    umsg.Char(3);
-    umsg.End();
+	self._ppFriends[uid] = {};
+	umsg.Start("MS PPUpdate", self);
+	umsg.Char(3);
+	umsg.End();
 end
 
 ---
 -- Checks to see if a person is on the player's buddy list
 -- @param ply The person to check
 function meta:IsPPFriendsWith(ply)
-    if (not IsPlayer(ply)) then
-        return false;
-    end
-    return self._ppFriends[ply:UniqueID()] ~= nil;
+	if (not IsPlayer(ply)) then
+		return false;
+	end
+	return self._ppFriends[ply:UniqueID()] ~= nil;
 end
 
 if (not meta.oAddCount) then
@@ -90,7 +90,7 @@ function meta:TakeCount(name, ent)
 	end
 	self:GetCount(name);
 	ent:SetPPOwner(NULL);
-    ent:SetPPSpawner(NULL);
+	ent:SetPPSpawner(NULL);
 end
 
 
@@ -152,7 +152,7 @@ function meta:Blacklist(kind, thing, time, reason, blacklister)
 		admin = blacklister
 	}
 	self.cider._Blacklist[kind] = blacklist;
-end	
+end
 ---
 -- Unblacklist a player from a previously existing blacklist.
 -- @param kind What kind of activity. Can be one of "cat","item","cmd" or "team". In order: Item category, specific item, command or specific team/job.
@@ -265,7 +265,7 @@ function meta:JoinTeam(tojoin)
 	self._Salary = tojoin.Salary;
 	gamemode.Call("PlayerAdjustSalary", self);
 
-	
+
 	-- Some tidying up
 	-- Unwarrant the player.
 	self:UnWarrant();
@@ -336,7 +336,7 @@ local function dobleed(ply)
 	});
 	util.Decal("Blood", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal);
 end
- 	
+
 ---
 -- Causes the player to leave a trail of blood behind them
 -- @param time How many seconds they should bleed for. 0 or nil for infinite bleeding.
@@ -391,16 +391,16 @@ function meta:KnockOut(time, velocity)
 	angles.p = 0;
 	ragdoll:SetAngles(angles);
 	ragdoll:Spawn();
-	
+
 	-- Gief to world to prevent people picking it up and waving it about
-    ragdoll:SetPPOwner(NULL);
+	ragdoll:SetPPOwner(NULL);
 	-- Pose the ragdoll in the same shape as us
 	for i, matrix in pairs(bones) do
 		ragdoll:SetBoneMatrix(i, matrix);
 	end
 	-- Try to send it flying in the same direction as us.
 	timer.Create("Ragdoll Force Application "..self:UniqueID(), 0.05, 5, doforce, ragdoll, (velocity or self:GetVelocity()) * 2);
-	
+
 	-- Make it look even more like us.
 	ragdoll:SetSkin		(self:GetSkin()		);
 	ragdoll:SetColor	(self:GetColor()	);
@@ -435,22 +435,22 @@ function meta:KnockOut(time, velocity)
 			umsg.End();
 			timer.Simple(time, recoveryTimer, self);
 		end
-        -- Stops the ragdoll colliding with players, to prevent accidental/intentional stupid deaths.
-        ragdoll:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-    else
-        -- Stops the ragdoll colliding with anything, to prevent ragdoll spazzing after a stupid death.
-        ragdoll:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		-- Stops the ragdoll colliding with players, to prevent accidental/intentional stupid deaths.
+		ragdoll:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+	else
+		-- Stops the ragdoll colliding with anything, to prevent ragdoll spazzing after a stupid death.
+		ragdoll:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	end
 	-- Get us ready for spectation
 	self:StripWeapons();
 	self:Flashlight(false);
 	self:CrosshairDisable();
 	self:StopBleeding();
-	
+
 	-- Spectate!
 	self:SpectateEntity(ragdoll);
 	self:Spectate(OBS_MODE_CHASE);
-	
+
 	-- Set some infos for everyone else
 	self:SetNWBool("KnockedOut", true);
 	self:SetNWEntity("Ragdoll", ragdoll);
@@ -502,7 +502,7 @@ function meta:WakeUp(reset)
 	self._Stunned = false;
 	self._Tripped = false;
 	self._Sleeping= false;
-	
+
 	-- Set some infos for everyone else
 	self:SetNWBool("KnockedOut", false);
 	self:SetNWEntity("Ragdoll", ragdoll);
@@ -566,7 +566,7 @@ function meta:Recapacitate()
 	self:SetJumpPower(GM.Config["Jump Power"]);
 	self:SetNWBool   ("Incapacitated",  false);
 	return true;
-end	
+end
 
 ---
 -- Ties a player up so they cannot do anything but walk about
@@ -685,51 +685,51 @@ end
 
 local getloaddataquery
 do
-    local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %i"
-    local function onFailure(query, err)
-        GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
-        timer.Simple(30, timerfunc, query.ply);
-    end
-    local function onData(query, data)
-        query.hasData = true;
-        local ply = query.ply;
-        if (not IsValid(ply)) then
-            return;
-        end
-        -- Load datas
-        loadCallback(ply, data);
-    end
-    local function onSuccess(query)
-        if (query.hasData) then
-            return;
-        end
-        local ply = query.ply;
-        if (not IsValid(ply)) then
-            return;
-        end
-        -- New player
-        ply.cider._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
-        GM:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
-        gamemode.Call("PlayerDataLoaded", ply, false);
-        ply:SaveData(true);
-    end
-    function getloaddataquery(ply)
-        local query = GM.Database:query(string.format(query, ply:UniqueID()));
-        query.name = ply:Name();
-        query.ply  = ply;
-        query.onSuccess = onSuccess;
-        query.onFailure = onFailure;
-        query.onData    = onData;
-        query:start();
-        return query;
-    end
+	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %i"
+	local function onFailure(query, err)
+		GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
+		timer.Simple(30, timerfunc, query.ply);
+	end
+	local function onData(query, data)
+		query.hasData = true;
+		local ply = query.ply;
+		if (not IsValid(ply)) then
+			return;
+		end
+		-- Load datas
+		loadCallback(ply, data);
+	end
+	local function onSuccess(query)
+		if (query.hasData) then
+			return;
+		end
+		local ply = query.ply;
+		if (not IsValid(ply)) then
+			return;
+		end
+		-- New player
+		ply.cider._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
+		GM:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
+		gamemode.Call("PlayerDataLoaded", ply, false);
+		ply:SaveData(true);
+	end
+	function getloaddataquery(ply)
+		local query = GM.Database:query(string.format(query, ply:UniqueID()));
+		query.name = ply:Name();
+		query.ply  = ply;
+		query.onSuccess = onSuccess;
+		query.onFailure = onFailure;
+		query.onData    = onData;
+		query:start();
+		return query;
+	end
 end
-    
+
 ---
 -- Load a player's data from the SQL database, overwriting any data already loaded on the player. Performs it's actions in a threaded query.
 -- If the player's data has not been loaded after 30 seconds, it will call itself again
 function meta:LoadData()
-	-- Set up the default cider table. 
+	-- Set up the default cider table.
 	self.cider = {
 		_Name = self:Name(),
 		_Misc = {},
@@ -743,12 +743,12 @@ function meta:LoadData()
 		_Inventory = {},
 		_Blacklist = {},
 	}
-    if (not GM:CanQueryDB()) then
-        GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
-        timer.Simple(30, timerfunc, self);
-        return;
-    end
-    self._LoadQuery = getloaddataquery(self);
+	if (not GM:CanQueryDB()) then
+		GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
+		timer.Simple(30, timerfunc, self);
+		return;
+	end
+	self._LoadQuery = getloaddataquery(self);
 end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
@@ -758,7 +758,7 @@ local function getKVs(ply)
 	local value, kind;
 	for k,v in pairs(ply.cider) do
 		value = nil;
-        kind  = type(v);
+		kind  = type(v);
 		if (player.saveIgnoreKeys[k]) then
 			value = false;
 		elseif (player.saveFunctions[k]) then
@@ -770,17 +770,17 @@ local function getKVs(ply)
 			else
 				value = r;
 			end
-        elseif (kind == "number") then
-            value = v;
+		elseif (kind == "number") then
+			value = v;
 		elseif (player.saveEscapeKeys[k]) then
 			value = GM.Database:escape(tostring(v));
 		else
 			value = tostring(v);
 		end
 		if (value) then
-            if (kind ~= "number") then
-                value = string.format(format, value);
-            end
+			if (kind ~= "number") then
+				value = string.format(format, value);
+			end
 			table.insert(keys, k);
 			table.insert(values, value);
 		end
@@ -792,38 +792,38 @@ end
 local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
 local function createCreateQuery(ply)
 	local keys, vals = getKVs(ply);
-    keys = table.concat(keys, ", "):sub(1, -3);
-    vals = table.concat(vals, ", "):sub(1, -3);
-    return string.format(createqueryformat, keys, vals);
+	keys = table.concat(keys, ", "):sub(1, -3);
+	vals = table.concat(vals, ", "):sub(1, -3);
+	return string.format(createqueryformat, keys, vals);
 end
 
 -- Creates an UPDATE query and returns it
 local updatequeryformat = "UPDATE "..GM.Config["MySQL Table"].." SET %s WHERE _UniqueID = %i";
 local function createUpdateQuery(ply)
 	local keys,values = getKVs(ply);
-    local q = "";
+	local q = "";
 	for i = 1, #keys do
-        q = q .. string.format("%s = %s, ", keys[i], values[i]);
+		q = q .. string.format("%s = %s, ", keys[i], values[i]);
 	end
-    return string.format(updatequeryformat, q:sub(1, -3), ply:UniqueID());
+	return string.format(updatequeryformat, q:sub(1, -3), ply:UniqueID());
 end
 
 local getsavedataquery
 do
-    local function onFailure(query, err)
-        GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", query.name, err);
-    end
-    local function onSuccess(query)
-        GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
-    end
-    function getsavedataquery(q, n)
-        local query = GM.Database:query(q);
-        query.onFailure = onFailure;
-        query.onSuccess = onSuccess;
-        query.name = n;
-        query:start();
-        return query;
-    end
+	local function onFailure(query, err)
+		GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", query.name, err);
+	end
+	local function onSuccess(query)
+		GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
+	end
+	function getsavedataquery(q, n)
+		local query = GM.Database:query(q);
+		query.onFailure = onFailure;
+		query.onSuccess = onSuccess;
+		query.name = n;
+		query:start();
+		return query;
+	end
 end
 
 ---
@@ -831,13 +831,13 @@ end
 -- @param create Whether to create a new entry or do a normal update.
 function meta:SaveData(create)
 	if (not self._Initialized) then return; end
-    if (not GM:CanQueryDB()) then
-        GM:Log(EVENT_ERROR,"Can't save %q's data as the DB is offline!", self:Name());
-        return;
-    end
-    gamemode.Call("PlayerSaveData", self);
+	if (not GM:CanQueryDB()) then
+		GM:Log(EVENT_ERROR,"Can't save %q's data as the DB is offline!", self:Name());
+		return;
+	end
+	gamemode.Call("PlayerSaveData", self);
 	local query = create and createCreateQuery(self) or createUpdateQuery(self);
-    self._SaveQuery = getsavedataquery(query, self:Name());
+	self._SaveQuery = getsavedataquery(query, self:Name());
 end
 
 ----------------------------
@@ -852,7 +852,7 @@ end
 function meta:HasAccess(flaglist, any)
 	local access, daccess, flag;
 	access = self.cider._Access;
-    daccess = GM.Config["Default Access"];
+	daccess = GM.Config["Default Access"];
 	for i = 1, flaglist:len() do
 		flag = flaglist:sub(i,i);
 		if (flag == GM.Config["Base Access"]
@@ -918,59 +918,59 @@ end
 -- @param sizeLimit The maximum size the entity may be in the X, Y or Z planes. (Diagonal lengths ignored)
 -- @return True if they can pick it up, false if they can't.
 function meta:CanPickupObject( pObject, massLimit, sizeLimit )
-    if (pObject == NULL) then
-        return false, "Object is NULL";
-    elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
-        return false, "Object cannot be moved!";
-    elseif (self:GetGroundEntity() == pObject) then
-        return false, "You're standing on that!";
-    end
+	if (pObject == NULL) then
+		return false, "Object is NULL";
+	elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
+		return false, "Object cannot be moved!";
+	elseif (self:GetGroundEntity() == pObject) then
+		return false, "You're standing on that!";
+	end
 
-    if (not massLimit) then
-        massLimit = 35;
-    end
-    if (not sizeLimit) then
-        sizeLimit = 128;
-    end
-     
-    local count = pObject:GetPhysicsObjectCount();
-     
-    if (not count) then
-        return false, "This object has no physics!";
-    end
-     
-    local objectMass = 0;
-    local checkEnable = false;
-         
-    for i = 0, count - 1 do
-        local pList = pObject:GetPhysicsObjectNum(i);
-        objectMass = objectMass + pList:GetMass();
-        if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
-            return false, "The map maker has asked that you not be able to pick this up.";
-        --[[elseif ( pList:IsHinged() ) then -- Not possible now
-            return false;]]
-        elseif (not pList:IsMoveable()) then
-            checkEnable = true;
-        end
-    end
-     
-    if (massLimit > 0 and objectMass > massLimit) then
-        return false, "That object is too heavy!";
-    elseif (checkEnable and not pObject:HasSpawnFlags(64)) then
-        return false, "That object is stuck!";
-    end
-     
-    if (sizeLimit > 0) then       
-        local maxs = pObject:OBBMaxs();
-        local mins = pObject:OBBMins();
-        local sizez = maxs.z - mins.z;
-        local sizey = maxs.y - mins.y;
-        local sizex = maxs.x - mins.x;
-        if (sizex > sizeLimit or sizey > sizeLimit or sizez > sizeLimit) then
-            return false, "That object is too big for you to move!";
-        end
-    end
-    return true;
+	if (not massLimit) then
+		massLimit = 35;
+	end
+	if (not sizeLimit) then
+		sizeLimit = 128;
+	end
+
+	local count = pObject:GetPhysicsObjectCount();
+
+	if (not count) then
+		return false, "This object has no physics!";
+	end
+
+	local objectMass = 0;
+	local checkEnable = false;
+
+	for i = 0, count - 1 do
+		local pList = pObject:GetPhysicsObjectNum(i);
+		objectMass = objectMass + pList:GetMass();
+		if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
+			return false, "The map maker has asked that you not be able to pick this up.";
+		--[[elseif ( pList:IsHinged() ) then -- Not possible now
+			return false;]]
+		elseif (not pList:IsMoveable()) then
+			checkEnable = true;
+		end
+	end
+
+	if (massLimit > 0 and objectMass > massLimit) then
+		return false, "That object is too heavy!";
+	elseif (checkEnable and not pObject:HasSpawnFlags(64)) then
+		return false, "That object is stuck!";
+	end
+
+	if (sizeLimit > 0) then
+		local maxs = pObject:OBBMaxs();
+		local mins = pObject:OBBMins();
+		local sizez = maxs.z - mins.z;
+		local sizey = maxs.y - mins.y;
+		local sizex = maxs.x - mins.x;
+		if (sizex > sizeLimit or sizey > sizeLimit or sizez > sizeLimit) then
+			return false, "That object is too big for you to move!";
+		end
+	end
+	return true;
 end
 
 ----------------------------
@@ -991,10 +991,10 @@ function meta:SayRadio(words)
 	else
 		recipients = team.GetPlayers(data.TeamID);
 	end
-	
+
 	-- Call a hook to allow plugins to adjust who also gets the message.
 	gamemode.Call("PlayerAdjustRadioRecipients", self, words, recipients);
-	
+
 	-- Compile a list of those who can't hear the voice
 	local nohear = {}
 	-- Loop through every recipient and add the message to their chatbox
@@ -1002,7 +1002,7 @@ function meta:SayRadio(words)
 		cider.chatBox.add(ply, self, "radio", words);
 		nohear[ply] = true;
 	end
-	
+
 	-- Tell everyone nearby that we just said a waydio
 	local pos = self:GetPos();
 	for _,ply in pairs(player.GetAll()) do
@@ -1092,7 +1092,7 @@ function meta:BlacklistAlert(kind, thing, name)
 		time = math.ceil(time / 1440) .. " days";
 	elseif (time >= 60) then
 		time = math.ceil(time / 60) .. " hours";
-	else 
+	else
 		time = time .. " minutes";
 	end
 	self:Notify("You have been blacklisted from using " .. tostring(name) .. " by " .. admin .. " for " .. time .. " for '" .. reason .. "'!");

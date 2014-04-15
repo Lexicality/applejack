@@ -28,17 +28,17 @@ function PANEL:OnMouseWheeled( dlta )
 
 	local MaxOffset = self.pnlCanvas:GetTall() - self:GetTall()
 	if ( MaxOffset > 0 ) then
-	
+
 		self.YOffset = math.Clamp( self.YOffset + dlta * -100, 0, MaxOffset )
-		
+
 	else
-		
+
 		self.YOffset = 0
-	
+
 	end
-	
+
 	self:InvalidateLayout()
-	
+
 end
 
 /*---------------------------------------------------------

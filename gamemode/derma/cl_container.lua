@@ -26,15 +26,15 @@ end
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetSize(width/2 -12, height - 40);
-	
+
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
- 	self.itemsList:SizeToContents();
- 	self.itemsList:SetPadding(2);
- 	self.itemsList:SetSpacing(3);
+	self.itemsList:SizeToContents();
+	self.itemsList:SetPadding(2);
+	self.itemsList:SetSpacing(3);
 	self.itemsList:StretchToParent(4, 4, 12, 44);
 	self.itemsList:EnableVerticalScrollbar();
-	
+
 	self.updatePanel = false
 	self.mSpace = 40
 	self.inventory = {}
@@ -52,7 +52,7 @@ local item,cat;
 function PANEL:Think()
 	if (self.updatePanel) then
 		self.updatePanel = false;
-		
+
 		-- Clear the current list of items.
 		self.itemsList:Clear();
 		local info = vgui.Create("cider_Container_Information", self)
@@ -62,7 +62,7 @@ function PANEL:Think()
 		self.itemsList:AddItem( info);
 			-- Create a table to store the categories.
 		local categories = { none = {} };
-		
+
 		-- Loop through the items.
 		for k, v in pairs(self.inventory) do
 			item = GM.Items[k];
@@ -70,7 +70,7 @@ function PANEL:Think()
 				cat = item.Category;
 				if (cat and GM:GetCategory(cat)) then
 					categories[cat] = categories[cat] or {};
-					
+
 					-- Insert the item into the category table.
 					table.insert(categories[cat], k);
 				else
@@ -79,7 +79,7 @@ function PANEL:Think()
 			end
 		end
 		for k, v in pairs(categories) do
-			if (k == "none") then				
+			if (k == "none") then
 				-- Loop through the items.
 				for k2, v2 in pairs(v) do
 					self.currentItem = v2;
@@ -94,10 +94,10 @@ function PANEL:Think()
 					header:SetToolTip( c.Description )
 					self.itemsList:AddItem(header);
 					local subitemsList = vgui.Create("DPanelList", self);
-					subitemsList:SetAutoSize( true ) 
+					subitemsList:SetAutoSize( true )
 					subitemsList:SetPadding(2);
 					subitemsList:SetSpacing(3);
-					header:SetContents( subitemsList )				
+					header:SetContents( subitemsList )
 					-- Loop through the items.
 					for k2, v2 in pairs(v) do
 						self.currentItem = v2;
@@ -124,14 +124,14 @@ function PANEL:Init()
 	-- Set the size and position of the panel.
 	self:SetSize(width/2, 75);
 	self:SetPos(1, 5);
-	
+
 	-- Set the item that we are.
 	self.item = self:GetParent().currentItem;
 	self.action = self:GetParent().action
 	local amount = self:GetParent().inventory[self.item]
 	local notake = false
 	local item = GM.Items[self.item]
-	if amount < 0 or item.Size < 0 	then 
+	if amount < 0 or item.Size < 0 	then
 		notake = true
 		amount = math.abs(amount)
 	end
@@ -141,25 +141,25 @@ function PANEL:Init()
 	self.name:SetText(amount.." "..word.." (Size: "..item.Size..")");
 	self.name:SizeToContents();
 	self.name:SetTextColor( Color(255, 255, 255, 255) );
-	
+
 	-- Create a label for the description.
-	self.description = vgui.Create("DLabel", self); 
+	self.description = vgui.Create("DLabel", self);
 	self.description:SetText(item.Description or "");
 	self.description:SizeToContents();
 	self.description:SetTextColor( Color(255, 255, 255, 255) );
-	
+
 	-- Create the spawn icon.
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
-	
+
 	-- Set the model of the spawn icon to the one of the item.
 	self.spawnIcon:SetModel(item.Model,item.Skin)
 
-	
+
 	self.spawnIcon:SetToolTip();
 	self.spawnIcon.DoClick = function() return; end
 	self.spawnIcon.OnMousePressed = function() return; end
 	self.itemFunctions = {};
-	
+
 	-- Check to see if the item has an on use callback.
 	if not notake and bit.band(self.action, containermenu.meta.io) == self.action then
 		if self.action == CAN_PUT then
@@ -178,7 +178,7 @@ In the interests of getting this fucking massive update out the door within the 
 The only thing that you can do with containers this update is spawn them from the Q menu. They [b]are[/b] Lock(pick)able, and they [b]are[/b] multiown, so it's not all that bad.
 Container props like filing cabinets spawned by the detail system [b]are[/b] automatically made into containers.
 --]]
-	
+
 	-- Create the table to store the item buttons.
 	self.itemButton = {};
 	--TODO: Deal with this horrible mess of inline functions
@@ -230,12 +230,12 @@ Container props like filing cabinets spawned by the detail system [b]are[/b] aut
 				button.DoClick = func
 				button:SetPos(EditPanel:GetWide()-button:GetWide()-10,46)
 		end)
-		
+
 		-- Open the menu.
 		menu:Open() ;
-		
+
 	end
-					
+
 	-- Loop through the item functions.
 	for i = 1, #self.itemFunctions do
 		if (self.itemFunctions[i]) then
@@ -252,19 +252,19 @@ function PANEL:PerformLayout()
 	self.name:SizeToContents();
 	self.description:SetPos(75, 24);
 	self.description:SizeToContents();
-	
+
 	-- Define the x position of the item functions.
 	local x = self.spawnIcon.x + self.spawnIcon:GetWide() + 8;
-	
+
 	-- Set the position of the name and description.
 	self.name:SetPos(x, 4);
 	self.description:SetPos(x, 24);
-	
+
 	-- Loop through the item functions and set the position of their button.
 	for i = 1, #self.itemFunctions do
 		if (self.itemButton[i]) then
 			self.itemButton[i]:SetPos(x, 47);
-			
+
 			-- Increase the x position for the next item function.
 			x = x + self.itemButton[i]:GetWide() + 4;
 		end
@@ -278,7 +278,7 @@ local PANEL = {};
 
 -- Called when the panel is initialized.
 function PANEL:Init()
-	
+
 	-- Create the space used label.
 	self.word = self.word or "argh"
 	self.spaceUsed = vgui.Create("DLabel", self);
@@ -289,13 +289,13 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
-	
+
 	-- Set the position of the label.
 	self.spaceUsed:SetPos( (self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5 );
 	self.spaceUsed:SetText(self.word.." Space Used: "..cider.inventory.getSize(self.inventory).."/"..self.mSpace);
 	self.spaceUsed:SizeToContents();
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Container_Information", PANEL, "DPanel");
 
@@ -311,7 +311,7 @@ function PANEL:Init()
 	self.close = vgui.Create("DButton", self);
 	self.close:SetText("Close");
 	self.close.DoClick = closeMenu
-	
+
 	-- Capture the position of the local player.
 	localPlayerPosition = LocalPlayer():GetPos();
 	self.pInventory = vgui.Create("cider_Container_Inventory",self)
@@ -320,7 +320,7 @@ function PANEL:Init()
 	self.pInventory.name = "Your Inventory"
 	self.cInventory.action = CAN_TAKE
 	self.cInventory.name = "Container Inventory"
-	
+
 end
 
 -- Called when the layout should be performed.
@@ -334,7 +334,7 @@ function PANEL:PerformLayout()
 	--]]
 	self.close:SetSize(48, 16);
 	self.close:SetPos(self:GetWide() - self.close:GetWide() - 4, 3);
-	
+
 	-- Set the position of both lists
 	self.pInventory:SetPos(8, 25);
 	self.cInventory:SetPos(8 + self.cInventory:GetWide() + 8, 25);
@@ -363,7 +363,7 @@ local function UpdateContainer(decoded)
 	containermenu.cInventory.mSpace = containermenu.meta.size
 	containermenu.pInventory.mSpace = cider.inventory.getMaximumSpace()
 	containermenu.pInventory.updatePanel = true
-	containermenu.cInventory.updatePanel = true	
+	containermenu.cInventory.updatePanel = true
 	containermenu.Buttoned = false
 end
 hook.Add("Tick","Hackily keep the money counter up to date",function()
@@ -372,10 +372,10 @@ hook.Add("Tick","Hackily keep the money counter up to date",function()
 	local m = LocalPlayer()._Money
 	m = m > 0 and m or nil
 	if containermenu.pInventory.inventory["money"] == m then return end
-	containermenu.pInventory.inventory["money"] = m 
+	containermenu.pInventory.inventory["money"] = m
 	containermenu.pInventory.updatePanel = true
 end)
-local function NewContainer( handle, id, encoded, decoded ) 
+local function NewContainer( handle, id, encoded, decoded )
 	--[[
 	local tab = {
 		contents = {

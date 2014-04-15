@@ -19,7 +19,7 @@ function ITEM:onUse(ply)
 	local door	= trace.Entity;
 	if (not (IsValid(door) and cider.entity.isOwnable(door))) then
 		ply:Notify("You can't put a padlock on that!", 1);
-	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then	
+	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then
 		ply:Notify("You are not close enough to the door!", 1);
 	elseif (door:GetNWBool("Padlocked")) then
 		ply:Notify("That door already has a padlock!", 1);
@@ -27,8 +27,8 @@ function ITEM:onUse(ply)
 		local entity = ents.Create("cider_padlock");
 		entity:Spawn();
 		entity:SetDoor(door, trace, ply);
-        ent:SetPPOwner(ply);
-        ent:SetPPSpawner(ply);
+		ent:SetPPOwner(ply);
+		ent:SetPPSpawner(ply);
 		local event	= "";
 		local addon	= "";
 		local entname	= door._eName or "entity";

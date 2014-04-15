@@ -18,7 +18,7 @@ end
 -- @param door The door entity to load
 function doors.Load(door)
 	check(door)
-	
+
 end
 
 ---
@@ -26,7 +26,7 @@ end
 -- @param door The door entity to save
 function doors.Save(door)
 	check(door)
-	
+
 end
 
 ---

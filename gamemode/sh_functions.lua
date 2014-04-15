@@ -1,6 +1,6 @@
 --[[
-    ~ Custom Functions ~
-    ~ Moonshine ~
+	~ Custom Functions ~
+	~ Moonshine ~
 --]]
 -- Prereq
 AddCSLuaFile("sh_functions.lua");
@@ -37,7 +37,7 @@ function IsValid( object )
 		error("What the fuck just passed me a non-ent? "..etype,2)
 	end
 	if (not (object and object.IsValid)) then return false end
-	return object:IsValid()	
+	return object:IsValid()
 	--]]
 	return object and object.IsValid and object:IsValid();
 end
@@ -101,8 +101,8 @@ end
 -- @return True if the file exists, false otherwise
 function file.ExistsInLua(filename)
 	-- TODO: Does "LUA" let you do this more easily?
-    return  file.Exists("lua/"       .. filename, "MOD") or
-            file.Exists("gamemodes/" .. filename, "MOD") or
-            file.Exists("lua_temp/"  .. filename, "MOD");
+	return  file.Exists("lua/"       .. filename, "MOD") or
+			file.Exists("gamemodes/" .. filename, "MOD") or
+			file.Exists("lua_temp/"  .. filename, "MOD");
 end
-    
+

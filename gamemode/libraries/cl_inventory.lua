@@ -12,14 +12,14 @@ cider.inventory.updatePanel = true;
 usermessage.Hook("cider_Inventory_Item", function(msg)
 	local item = msg:ReadString();
 	local amount = msg:ReadLong();
-	
+
 	-- Check to see if the amount is smaller than 1.
 	if (amount < 1) then
 		cider.inventory.stored[item] = nil;
 	else
 		cider.inventory.stored[item] = amount;
 	end
-	
+
 	-- Tell the inventory panel that we should update.
 	cider.inventory.updatePanel = true;
 end);
@@ -36,7 +36,7 @@ function cider.inventory.getMaximumSpace(inv,intial)
 			size = size + (item.Size * -v);
 		end
 	end
-	
+
 	-- Return the size.
 	return size;
 end
@@ -52,7 +52,7 @@ function cider.inventory.getSize(inv)
 			size = size + (item.Size * v);
 		end
 	end
-	
+
 	-- Return the size.
 	return size;
 end

@@ -2,7 +2,7 @@
 local PANEL = {}
 
 /*---------------------------------------------------------
-   Name: 
+   Name:
 ---------------------------------------------------------*/
 function PANEL:Init()
 
@@ -11,7 +11,7 @@ function PANEL:Init()
 end
 
 /*---------------------------------------------------------
-   Name: 
+   Name:
 ---------------------------------------------------------*/
 function PANEL:DoClick( x, y )
 
@@ -26,7 +26,7 @@ end
    Name: Paint
 ---------------------------------------------------------*/
 function PANEL:Paint()
-	
+
 	local bgColor = Color( 0,0,0,10 )
 
 	if ( self.Selected ) then
@@ -34,11 +34,11 @@ function PANEL:Paint()
 	elseif ( self.Armed ) then
 		bgColor = Color( 255, 255, 0, 255 )
 	end
-	
+
 	draw.RoundedBox( 4, 0, 0, self:GetWide(), self:GetTall(), bgColor )
-	
+
 	draw.SimpleText( self.Text, "DefaultSmall", self:GetWide() / 2, self:GetTall() / 2, Color(0,0,0,150), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	
+
 	return true
 
 end
@@ -59,7 +59,7 @@ PANEL.Text = "Kick"
 function PANEL:DoCommand( ply )
 
 	RunConsoleCommand( "citrus", "kick", ply:UserID() )
-	
+
 end
 
 vgui.Register( "PlayerKickButton", PANEL, "SpawnMenuAdminButton" )
@@ -124,7 +124,7 @@ function PANEL:DoCommand( ply )
 --	RunConsoleCommand( "banid2", "0", ply:UserID() )
 --	RunConsoleCommand( "kickid2", ply:UserID(), "Permabanned" )
 	RunConsoleCommand( "citrus", "ban", ply:UserID(),0 )
-	
+
 end
 
 vgui.Register( "PlayerPermBanButton", PANEL, "SpawnMenuAdminButton" )

@@ -34,22 +34,22 @@ function PANEL:Init()
 
 	self.Size = 36
 	self:OpenInfo( false )
-	
+
 	self.infoCard	= vgui.Create( "ScorePlayerInfoCard", self )
-	
+
 	self.lblName 	= vgui.Create( "Label", self )
 	self.lblFrags 	= vgui.Create( "Label", self )
 	self.lblDeaths 	= vgui.Create( "Label", self )
 	self.lblPing 	= vgui.Create( "Label", self )
-	
+
 	// If you don't do this it'll block your clicks
 	self.lblName:SetMouseInputEnabled( false )
 	self.lblFrags:SetMouseInputEnabled( false )
 	self.lblDeaths:SetMouseInputEnabled( false )
 	self.lblPing:SetMouseInputEnabled( false )
-	
+
 	self.imgAvatar = vgui.Create( "AvatarImage", self )
-	
+
 	self:SetCursor( "hand" )
 
 end
@@ -60,30 +60,30 @@ end
 function PANEL:Paint()
 
 	if ( !IsValid( self.Player ) ) then return end
-	
+
 	local color = team.GetColor(self.Player:Team())
 	-- Check if we're sliding
 	if ( self.Open || self.Size ~= self.TargetSize ) then
-	
+
 		draw.RoundedBox( 4, 0, 16, self:GetWide(), self:GetTall() - 16, color )
 		draw.RoundedBox( 4, 2, 16, self:GetWide()-4, self:GetTall() - 16 - 2, Color( 250, 250, 245, 255 ) )
-		
+
 		surface.SetTexture( texGradient )
 		surface.SetDrawColor( 255, 255, 255, 255 )
-		surface.DrawTexturedRect( 2, 16, self:GetWide()-4, self:GetTall() - 16 - 2 ) 
-	
+		surface.DrawTexturedRect( 2, 16, self:GetWide()-4, self:GetTall() - 16 - 2 )
+
 	end
-	
+
 	draw.RoundedBox( 4, 0, 0, self:GetWide(), 36, color )
-	
+
 	surface.SetTexture( texGradient )
 	surface.SetDrawColor( 255, 255, 255, 50 )
-	surface.DrawTexturedRect( 0, 0, self:GetWide(), 36 ) 
-	
+	surface.DrawTexturedRect( 0, 0, self:GetWide(), 36 )
+
 	// This should be an image panel!
 	surface.SetTexture( self.texRating )
 	surface.SetDrawColor( 255, 255, 255, 255 )
-	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 ) 	
+	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 )
 
 	return true
 
@@ -95,10 +95,10 @@ end
 function PANEL:SetPlayer( ply )
 
 	self.Player = ply
-	
+
 	self.infoCard:SetPlayer( ply )
 	self.imgAvatar:SetPlayer( ply )
-	
+
 	self:UpdatePlayerData()
 
 end
@@ -109,7 +109,7 @@ function PANEL:CheckRating( name, count )
 		count = self.Player:GetNetworkedInt( "Rating."..name, 0 )
 		self.texRating = texRatings[ name ]
 	end
-	
+
 	return count
 
 end
@@ -127,10 +127,10 @@ function PANEL:UpdatePlayerData()
 	self.lblFrags:SetText( self.Player:Frags() )
 	self.lblDeaths:SetText( self.Player:Deaths() )
 	self.lblPing:SetText( self.Player:Ping() )
-	
+
 	// Work out what icon to draw
 	self.texRating = surface.GetTextureID( "gui/silkicons/emoticon_smile" )
-	
+
 	self.texRating = texRatings[ 'user' ]
 	if self.Player:IsSuperAdmin() then
 		self.texRating = texRatings['super']
@@ -154,7 +154,7 @@ function PANEL:ApplySchemeSettings()
 	self.lblFrags:SetFont( "ScoreboardPlayerName" )
 	self.lblDeaths:SetFont( "ScoreboardPlayerName" )
 	self.lblPing:SetFont( "ScoreboardPlayerName" )
-	
+
 	self.lblName:SetFGColor( color_white )
 	self.lblFrags:SetFGColor( color_white )
 	self.lblDeaths:SetFGColor( color_white )
@@ -187,7 +187,7 @@ function PANEL:OpenInfo( bool )
 	else
 		self.TargetSize = 36
 	end
-	
+
 	self.Open = bool
 
 end
@@ -198,19 +198,19 @@ end
 function PANEL:Think()
 
 	if ( self.Size ~= self.TargetSize ) then
-	
+
 		self.Size = math.Approach( self.Size, self.TargetSize, (math.abs( self.Size - self.TargetSize ) + 1) * 10 * FrameTime() )
 		self:PerformLayout()
 		SCOREBOARD:InvalidateLayout()
 	//	self:GetParent():InvalidateLayout()
-	
+
 	end
-	
+
 	if ( !self.PlayerUpdate || self.PlayerUpdate < CurTime() ) then
-	
+
 		self.PlayerUpdate = CurTime() + 0.5
 		self:UpdatePlayerData()
-		
+
 	end
 
 end
@@ -224,30 +224,30 @@ function PANEL:PerformLayout()
 	self.imgAvatar:SetSize( 32, 32 )
 
 	self:SetSize( self:GetWide(), self.Size )
-	
+
 	self.lblName:SizeToContents()
 	self.lblName:SetPos( 24, 2 )
 	self.lblName:MoveRightOf( self.imgAvatar, 8 )
-	
+
 	local COLUMN_SIZE = 50
-	
+
 	self.lblPing:SetPos( self:GetWide() - COLUMN_SIZE * 1, 0 )
 	self.lblDeaths:SetPos( self:GetWide() - COLUMN_SIZE * 2, 0 )
 	self.lblFrags:SetPos( self:GetWide() - COLUMN_SIZE * 3, 0 )
-	
+
 	if ( self.Open || self.Size ~= self.TargetSize ) then
-	
+
 		self.infoCard:SetVisible( true )
 		self.infoCard:SetPos( 4, 36)--self.imgAvatar:GetTall() + 10 )
 		self.infoCard:SetSize( self:GetWide() - 8, self:GetTall() - self.lblName:GetTall() - 10 )
-	
+
 	else
-	
+
 		self.infoCard:SetVisible( false )
-	
+
 	end
-	
-	
+
+
 
 end
 

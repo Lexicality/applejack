@@ -56,9 +56,9 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 		return false
 	elseif (not gamemode.Call("PlayerCanDoSomething", ply, true)) then
 		return false;
-    elseif (teamdata.SizeLimit > 0 and team.NumPlayers(teamdata.TeamID) >= teamdata.SizeLimit) then
-        ply:Notify("That team is full!", NOTIFY_ERROR);
-        return false;
+	elseif (teamdata.SizeLimit > 0 and team.NumPlayers(teamdata.TeamID) >= teamdata.SizeLimit) then
+		ply:Notify("That team is full!", NOTIFY_ERROR);
+		return false;
 	end
 	-- Ask the shared hook which handles the complex gang related tings.
 	local res, msg = self:PlayerCanJoinTeamShared(ply, teamid);
@@ -165,7 +165,7 @@ function GM:KeyPress(ply, key)
 			ply.tying.target = ent;
 			ent.tying.savior = ply;
 		SendUserMessage("MS DoUnTie", ply);
-		SendUserMessage("MS BeUnTie", ent);			
+		SendUserMessage("MS BeUnTie", ent);
 		--[[~ Open mah doors ~]]--
 		elseif ent:IsDoor() and ent:GetClass() ~= "prop_door_rotating" and gamemode.Call("PlayerCanUseDoor", ply, ent) then
 			self:OpenDoor(ent, 0);

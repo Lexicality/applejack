@@ -137,7 +137,7 @@ function player.NotifyByAccess(access, message, class)
 end
 
 ---
--- Notifies every player on the server and logs a public event 
+-- Notifies every player on the server and logs a public event
 -- @see GM:Log
 -- @param message The message to display. (Use same form as GM:Log)
 -- @param level The notification level. Nil or unspecified = chat message. 0 = Water drip. 1 = Failure buzzer. 2 = 'Bip' Notification. 3 = 'Tic' Notification. (Used by the cleanup)
@@ -159,10 +159,10 @@ local function saveallTimer(playerlist)
 	local ply;
 	for i = 1, 5 do
 		ply = table.remove(playerlist);
-        if (not ply) then
-            gamemode.Call("PostPlayerSaveData");
-            break;
-        elseif (IsValid(ply)) then
+		if (not ply) then
+			gamemode.Call("PostPlayerSaveData");
+			break;
+		elseif (IsValid(ply)) then
 			ply:SaveData();
 		end
 	end
@@ -172,12 +172,12 @@ end
 -- Saves every player on the server's data. Unless told otherwise, this will do 5 per frame until they're all done, to ease server load.
 -- @param now Process every player's profile right now - used when time is urgent.
 function player.SaveAll(now)
-    gamemode.Call("PrePlayerSaveData");
+	gamemode.Call("PrePlayerSaveData");
 	if (now) then
 		for _, ply in pairs(player.GetAll()) do
 			ply:SaveData();
 		end
-        gamemode.Call("PostPlayerSaveData");
+		gamemode.Call("PostPlayerSaveData");
 		return;
 	end
 	local plys = player.GetAll();
@@ -237,7 +237,7 @@ timer.Create("Player Update Timer", 0.1, 0, function()
 						ply.ragdoll.health = ply:Health();
 					end
 				end
-				
+
 				for k,v in pairs(autosendvars) do
 					ply:SetCSVar(v, k, ply[k]);
 				end

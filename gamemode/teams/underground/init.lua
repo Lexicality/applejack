@@ -1,4 +1,4 @@
-GROUP.Name = "Underground";
+GROUP.Name        = "Underground";
 GROUP.Description = "Join the underground for more fun, but harsher treatment if caught";
-GROUP.Model = "models/player/Group03/Male_07.mdl";
-GROUP.SortWeight = 1;
+GROUP.Model       = "models/player/Group03/Male_07.mdl";
+GROUP.SortWeight  = 1;

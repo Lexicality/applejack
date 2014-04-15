@@ -36,13 +36,13 @@ GM.topTextGradient = {};
 GM.variableQueue = {};
 GM.ammoCount = {};
 
--- Detect when the local player is created 
+-- Detect when the local player is created
 function GM:OnEntityCreated(entity)
 	if (lpl == NULL and entity == LocalPlayer()) then
 		lpl = entity;
 		gamemode.Call("LocalPlayerCreated", lpl);
 	end
-	
+
 	-- Call the base class function.
 	return self.BaseClass:OnEntityCreated(entity);
 end
@@ -124,7 +124,7 @@ function GM:CalcView( pl, origin, angles, fov )
 	local view = {
 		origin = eyes.Pos,
 		angles = eyes.Ang,
-		fov = 90, 
+		fov = 90,
 	};
 	return view;
 	--]]
@@ -136,7 +136,7 @@ function GM:RenderScreenspaceEffects()
 	local modify = {};
 	local color = 0.8;
 	local addr = 0
-	
+
 	-- Check if the player is low on health or stunned.
 	if lpl._Stunned then
 		color = 0.4
@@ -151,7 +151,7 @@ function GM:RenderScreenspaceEffects()
 		-- Draw the motion blur.
 		DrawMotionBlur(math.Clamp(1 - ( ( 50 - lpl:Health() ) * 0.025 ), 0.1, 1), 1, 0);
 	end
-	
+
 	-- Set some color modify settings.
 	modify["$pp_colour_addr"] = addr;
 	modify["$pp_colour_addg"] = 0;
@@ -168,13 +168,13 @@ function GM:RenderScreenspaceEffects()
 		if (t > 0) then
 			modify["$pp_colour_contrast"] = t / GM.Config["Sleep Waiting Time"];
 		else
-			modify["$pp_colour_contrast"] = 0;			
+			modify["$pp_colour_contrast"] = 0;
 		end
 	end
 	if lpl._Sleeping then
 		modify["$pp_colour_contrast"] = 0
 	end
-	
+
 	-- Draw the modified color.
 	DrawColorModify(modify);
 end
@@ -187,26 +187,26 @@ function GM:HUDDrawScoreBoard() -- TODO: Find a better hook for this?
 		self.HUDDrawScoreBoard = self.BaseClass.HUDDrawScoreBoard;
 		return;
 	end
-	
+
 	-- Blank out the screen while players load.
-	
+
 	draw.RoundedBox( 2, 0, 0, ScrW(), ScrH(), color_black );
-	
+
 	-- Set the font of the text to Chat Font.
 	surface.SetFont("ChatFont");
-	
+
 	-- Get the size of the loading text.
 	local width, height = surface.GetTextSize("Loading!");
-	
+
 	-- Get the x and y position.
 	local x, y = self:GetScreenCenterBounce();
-	
+
 	-- Draw a rounded box for the loading text to go on.
 	draw.RoundedBox( 2, (ScrW() / 2) - (width / 2) - 8, (ScrH() / 2) - 8, width + 16, 30, color_darkgray );
-	
+
 	-- Draw the loading text in the middle of the screen.
 	draw.DrawText("Loading!", "ChatFont", ScrW() / 2, ScrH() / 2, color_white, 1, 1);
-	
+
 	-- Let them know how to rejoin if they are stuck.
 	draw.DrawText("Press 'Jump' to rejoin if you are stuck on this screen!", "ChatFont", ScrW() / 2, ScrH() / 2 + 32, Color(255, 50, 25, 255), 1, 1);
 end
@@ -214,20 +214,20 @@ end
 -- Draw Information.
 function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shadow)
 	surface.SetFont(font);
-	
+
 	-- Get the width and height of the text.
 	local width, height = surface.GetTextSize(text);
-    local ba = color.a;
+	local ba = color.a;
 	if alpha then color.a = alpha end
 	-- Check if we shouldn't left align it, if we have a callback, and if we should draw a shadow.
 	if (!left) then x = x - (width / 2); end
 	if (callback) then x, y = callback(x, y, width, height); end
 	if (shadow) then draw.DrawText(text, font, x + 1, y + 1, Color(0, 0, 0, color.a)); end
-	
+
 	-- Draw the text on the player.
 	draw.DrawText(text, font, x, y, color);
-    color.a = ba;
-	
+	color.a = ba;
+
 	-- Return the new y position.
 	return y + height + 8;
 end
@@ -263,7 +263,7 @@ usermessage.Hook("cider.player.initialized", iHasInitializedyay);
 	local errors = 0
 	local maxerrors = GM.Config["Model Choices Timeout"]
 	local function CheckForInitalised(tab)
-		
+
 		if errors >= maxerrors then
 			ErrorNoHalt"Something is very wrong - reconnecting!"
 			RunConsoleCommand("retry");
@@ -280,7 +280,7 @@ usermessage.Hook("cider.player.initialized", iHasInitializedyay);
 		end
 		--if errors > 0 then ErrorNoHalt"Nevermind it works now...\n" end
 		LocalPlayer()._ModelChoices = tab
-	end	
+	end
 usermessage.Hook("cider_ModelChoices",function(msg)
 	local tab = {}
 	local length = msg:ReadShort() or 0

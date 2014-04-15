@@ -29,7 +29,7 @@ function PLUGIN:PlayerSpawnedProp(ply, mdl, ent)
 	if (ply:Team() == TEAM_BUILDER) then
 		ply:GiveMoney(-self.Config["Builder Prop Cost"])
 		timer.Simple(0, tmr, ply);
-	end 
+	end
 end
 
 -- Stop silly donators plugging holes.

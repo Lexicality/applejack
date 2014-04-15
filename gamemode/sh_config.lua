@@ -1,5 +1,5 @@
 --[[
-    ~ Shared Configuration ~
+	~ Shared Configuration ~
 	~ Applejack ~
 --]]
 local config = {};
@@ -11,8 +11,8 @@ config["Default Clan"]				= ""; -- The clan that each player belongs to by defau
 config["Inventory Size"]			= 40; -- The default inventory size.
 config["Default Access"]			= ""; -- The access flags that each player begins with.
 
--- Command 
-config["Base Access"]               = "b"; -- The access flags that EVERYONE has.
+-- Command
+config["Base Access"]				= "b"; -- The access flags that EVERYONE has.
 config["Command Prefix"]			= "/"; -- The prefix that is used for chat commands.
 config["Maximum Notes"]				= 2; -- The maximum amount of notes a player can write.
 config["Advert Cost"]				= 60; -- The money that it costs to advertise.
@@ -176,14 +176,14 @@ config["Weapon Timers"] = {
 	["holstermessage"] = {	 -- 1 gun type, 2 gender
 		[TYPE_LARGE] = "puts the %s back on %s back",
 		[TYPE_SMALL] = "puts the %s back in %s pocket"
-	}	
-} -- 
+	}
+} --
 config["Acceptable Datastreams"] = {
 	"WhatTheFuckAreYouDoing?!",
 	"cider_Laws"
 }
 config["sv_tags"] = {
-	"applejack", -- Please always leave this in 
+	"applejack", -- Please always leave this in
 	"rp",
 	"roleplay",
 	"semi-serious",
@@ -289,7 +289,7 @@ config["Banned Props"] = {
 	"models/props_phx/amraam.mdl",
 	"models/props_mining/techgate01_outland03.mdl",
 	"models/props_mining/techgate01.mdl",
-	"models/props/cs_office/light_ceiling.mdl"   
+	"models/props/cs_office/light_ceiling.mdl"
 
 }; -- Props that are not allowed to be spawned. (make sure they are all lower case!)
 config["Rules"] = [[
@@ -319,7 +319,7 @@ THERE WILL BE NO APPEAL FOR THIS KIND OF BAN.
 12) If in a hostage situation, do not kill/punch-whore the hostage taker
 13) Do not prop block.
 13.1) Do not use props that are only see-through in one direction.
-13.1) All doors must be made by the door sTool 
+13.1) All doors must be made by the door sTool
 13.2) Do not make doors out of props or 'force fields' on the map.
 13.3) If you own a door that blocks off an area with doors in it, you must own every door in that area.
 13.4) You may not use your own doors to block or restrict access through unownable doors. (Bathrooms/Fridges/Minor doors are exempt from this rule)
@@ -400,7 +400,7 @@ You must actively be called back via radio or pm. "They told me to come on vent"
 All admins and moderators have logs and can tell what is going on without being there.
 You will be banned if you break any of these rules
 
-Need a rule breaker banned and no admins around? 
+Need a rule breaker banned and no admins around?
 Take screenshots, get as much evidence as you can and post here:
 http://www.ventmob.com/index.php?board=6.0
 ]]; -- The rules for the server.

@@ -17,4 +17,3 @@ function ITEM:onUse(ply)
 	end
 	ply._Hunger.amount = math.max(ply._Hunger.amount - self.Hunger, 0);
 end
-

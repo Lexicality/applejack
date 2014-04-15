@@ -20,7 +20,7 @@ local function dospawn(self,ply,pos)
 	ent:Spawn();
 	ply:AddCount(self.UniqueID, ent);
 end
-	
+
 -- Called when a player drops the item.
 function ITEM:onDrop(ply, pos)
 	if (not checkcount(ply,self)) then return false end

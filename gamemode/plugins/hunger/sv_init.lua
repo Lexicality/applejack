@@ -29,7 +29,7 @@ function PLUGIN:PostPlayerSpawn(player, lightSpawn, changeTeam)
 			player._Hunger.amount = 0;
 		end
 	end
-	
+
 	-- Set the last team.
 	player._Hunger.lastTeam = player:Team();
 	player._Hunger.suicided = false;
@@ -54,7 +54,7 @@ function PLUGIN:PlayerSecond(player)
 	end
 	adition = 1/(GM.Config["Hunger Minutes"]*0.6);
 	player._Hunger.amount = math.Clamp(player._Hunger.amount + adition, 0, 100);
-	
+
 	-- Set it so that we can get the player's hunger client side.
 	player:SetCSVar(CLASS_LONG, "_Hunger", math.Round(player._Hunger.amount));
 	local damage = GM.Config["Hunger Damage"];
@@ -63,7 +63,7 @@ function PLUGIN:PlayerSecond(player)
 		return
 	end
 	local world = GetWorldEntity();
-	
+
 	-- Check if the player is knocked out.
 	if (player:KnockedOut() and IsValid(player.ragdoll.entity)) then
 		player.ragdoll.entity:TakeDamage(damage,world,player);

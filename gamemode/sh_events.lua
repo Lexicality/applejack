@@ -4,8 +4,8 @@ Name: "sh_events.lua".
 --]]
 ----EVENTS----
 --- New format: Name, Description, Potential access.
---- Potential access: Pm = police or moderators. 
---- To save hastle, m = admin or moderator 
+--- Potential access: Pm = police or moderators.
+--- To save hastle, m = admin or moderator
 --- Events with the same name will appear under the same tab.#
 -- EVENT_SUPEREVENT EVENT_ADMINEVENT EVENT_EVENT EVENT_POLICEEVENT EVENT_PUBLICEVENT EVENT_DEBUG EVENT_SQLDEBUG EVENT_DEBUGERROR EVENT_ERROR EVENT_ALL EVENT_TALKING EVENT_BUILD EVENT_PICKUP EVENT_COMMAND EVENT_ITEM EVENT_PLAYERDAMAGE EVENT_DAMAGE EVENT_DEATH EVENT_ENTITY EVENT_TEAM
 EVENT_EVENT_TYPE =		GM:RegisterLogCategegoryMaster("Event",  "Events that you have access to",	color_white)

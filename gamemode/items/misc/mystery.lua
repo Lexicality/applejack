@@ -1,5 +1,5 @@
 --[[
-	~°'¨¤ MYSTERY ITEM ¤¨'°~ 	
+	~°'¨¤ MYSTERY ITEM ¤¨'°~
 	~ Applejack ~
 --]]
 
@@ -18,7 +18,7 @@ function ITEM:onUse(player)
 	cider.chatBox.addInRadius(nil, "action", "The balls glitter.", player:GetPos(), GM.Config["Talk Radius"]);
 	return false;
 end
-	
+
 -- Called when a player drops the item.
 function ITEM:onDrop(player, position, amount)
 	player:Emote("drops "..player._GenderWord.." balls on the ground.");

@@ -192,10 +192,10 @@ end
 local w;
 function drawboxes()
 	by = 10;
-    w = lpl:GetActiveWeapon();
-    if (IsValid(w) and w:GetClass() == "gmod_tool") then
-        by = by + w.ToolNameHeight + w.InfoBoxHeight - 8;
-    elseif (GetConVarNumber("developer") > 0) then
+	w = lpl:GetActiveWeapon();
+	if (IsValid(w) and w:GetClass() == "gmod_tool") then
+		by = by + w.ToolNameHeight + w.InfoBoxHeight - 8;
+	elseif (GetConVarNumber("developer") > 0) then
 		by = by + 82;--(boxheight + 3) * 3 + 3;
 	end
 	surface.SetFont(font);
@@ -367,7 +367,7 @@ local function painttimed(hint, time)
 	elseif (hint.timer < time) then
 		dir = OUT;
 	else
-		hint.live = hint.timer ~= time 
+		hint.live = hint.timer ~= time
 		dir = SHAKE_IT_ALL_ABOUT;
 	end
 	lastdir = dir;
@@ -410,7 +410,7 @@ local function painttimed(hint, time)
 				end
 			end
 		end
-	end 
+	end
 	surface.SetTextPos(x + textx, y + texty);
 	surface.DrawText(hint.text);
 end
@@ -460,7 +460,7 @@ local function paintperm(hint, time)
 				end
 			end
 		end
-	end 
+	end
 	surface.SetTextPos(x + textx, y + texty);
 	surface.DrawText(hint.text);
 end
@@ -506,7 +506,7 @@ end
 -- @param text The hint text
 -- @param length How long the hint should persist before shrinking away
 -- @param color The colour for the hint to flash when it enters fully
--- @param sound The sound to make as the colour flashes. 
+-- @param sound The sound to make as the colour flashes.
 function GM:AddNotification(text, length, color, sound)
 	dohint(text, color, sound).length = length or hintlength;
 end
@@ -590,7 +590,7 @@ usermessage.Hook("Notification", function(msg)
 	GM:AddNotification(message, 10, color, sound); -- TODO: work out colours!
 	print(message);
 end);
-end 
+end
 
 --[[ Center Bar ]]--
 -- TODO: The centerbar needs to be in a stack
@@ -605,7 +605,7 @@ local barwidth = math.floor(scrw / 4);
 local backgroundheight = barheight + (pad+4)*2
 local backgroundy = math.floor(scrh/2-backgroundheight/2);
 local barx = (scrw-barwidth) / 2;
-local bary = (backgroundy + (pad+4)); 
+local bary = (backgroundy + (pad+4));
 local barpercent = 1;
 -- paddings
 local toppady = bary-pad;
@@ -619,8 +619,8 @@ local textx, texty, tw;
 texty = bary + textheight * 0.25
 local updown;
 function calculateBar(percent)
-    percent = percent / 100
-    return (updown and (barx + barwidth*(1-percent)) or barx), barwidth*percent;
+	percent = percent / 100
+	return (updown and (barx + barwidth*(1-percent)) or barx), barwidth*percent;
 end
 local stack = {};
 local x, width;
@@ -632,31 +632,31 @@ function drawcenterbar()
 	if (size == 0) then return; end
 	-- Get datas
 	data = stack[size]
-    perc, dir = data.func(barpercent,updown);
-    if (not perc) then
+	perc, dir = data.func(barpercent,updown);
+	if (not perc) then
 		-- If this bar dies, pop the stack
 		table.remove(stack);
 		-- Do the next bar
-		return drawcenterbar();		
+		return drawcenterbar();
 	end
-    surface.SetDrawColor(0, 0, 0, 200);
-    surface.DrawRect(0, backgroundy, scrw, backgroundheight);  
-    surface.SetDrawColor(0, 0, 0, 255); 
-    surface.DrawRect(barx, toppady, barwidth, pad);  
-    surface.DrawRect(barx, bottompady, barwidth, pad);
-    surface.DrawRect(leftpadx, sidepady, pad, sidepadheight);
-    surface.DrawRect(rightpadx, sidepady, pad, sidepadheight);
-    surface.SetDrawColor(0, 0, 0, 150);
-    surface.DrawRect(barx, bary, barwidth, barheight);
-    barpercent = perc;
-    updown = dir;
-    x, width = calculateBar(barpercent);
-    surface.SetDrawColor(unpackcolour(data.colour));
-    surface.DrawRect(x, bary, width, barheight);
-    surface.SetFont(font);
-    surface.SetTextColor(255, 255, 255, 255);
-    surface.SetTextPos(data.textx, texty);
-    surface.DrawText(data.text);
+	surface.SetDrawColor(0, 0, 0, 200);
+	surface.DrawRect(0, backgroundy, scrw, backgroundheight);
+	surface.SetDrawColor(0, 0, 0, 255);
+	surface.DrawRect(barx, toppady, barwidth, pad);
+	surface.DrawRect(barx, bottompady, barwidth, pad);
+	surface.DrawRect(leftpadx, sidepady, pad, sidepadheight);
+	surface.DrawRect(rightpadx, sidepady, pad, sidepadheight);
+	surface.SetDrawColor(0, 0, 0, 150);
+	surface.DrawRect(barx, bary, barwidth, barheight);
+	barpercent = perc;
+	updown = dir;
+	x, width = calculateBar(barpercent);
+	surface.SetDrawColor(unpackcolour(data.colour));
+	surface.DrawRect(x, bary, width, barheight);
+	surface.SetFont(font);
+	surface.SetTextColor(255, 255, 255, 255);
+	surface.SetTextPos(data.textx, texty);
+	surface.DrawText(data.text);
 end
 local textcenter = barx + (barwidth / 2);
 function GM:SetCenterBar(text, color, callback)
@@ -664,13 +664,13 @@ function GM:SetCenterBar(text, color, callback)
 	data.text = text;
 	data.colour = color;
 	data.func = callback;
-    surface.SetFont(font);
-    tw = surface.GetTextSize(text);
-    data.textx = textcenter - tw / 2;
+	surface.SetFont(font);
+	tw = surface.GetTextSize(text);
+	data.textx = textcenter - tw / 2;
 	table.insert(stack, data);
 end
 hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
-	
+
 	do -- Sleepering
 		local endtime, length, left;
 		local function sleepfunc()
@@ -691,7 +691,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			GM:SetCenterBar("Going To Sleep . . .", sleepcolor, sleepfunc);
 		end);
 	end
-	
+
 	do -- Bondage
 		local tends, bends, uends, dends;
 		do -- Tying
@@ -711,7 +711,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			end
 			usermessage.Hook("MS DoTie", umsg);
 		end
-		
+
 		do -- Being Tied
 			local length, left = GM.Config["Tying Timeout"];
 			local function callback()
@@ -729,7 +729,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			end
 			usermessage.Hook("MS BeTie", umsg);
 		end
-		
+
 		do -- Untying
 			local length, left = GM.Config['UnTying Timeout'];
 			local function callback()
@@ -747,7 +747,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			end
 			usermessage.Hook("MS DoUnTie", umsg);
 		end
-		
+
 		do -- Being Untied
 			local length, left = GM.Config['UnTying Timeout'];
 			local function callback()
@@ -783,8 +783,8 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			end
 		end);
 	end
-	
-	do -- Respawning 
+
+	do -- Respawning
 		local ends, length, left;
 		local function callback()
 			if (not (length and ends)) then return false; end
@@ -798,7 +798,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		local function timr()
 			GM:SetCenterBar("Respawning . . .", barcolor, callback);
 		end
-		
+
 		local function umsg(msg)
 			length = msg:ReadShort();
 			ends = CurTime() + length;
@@ -809,7 +809,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			ends = false;
 		end);
 	end
-	
+
 	do -- Reganing Consiousness
 		-- TODO: Make the screen de-fade with this like it fades with sleep.
 		local endtime, length, left;
@@ -828,7 +828,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 			GM:SetCenterBar("Waking Up . . .", barcolor, callback);
 		end);
 	end
-	
+
 	do -- /fallover recovery
 		local ends, length, left;
 		local function callback()
@@ -842,7 +842,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		local barcolor = Color(150,210,20);
 		local function timr()
 			GM:SetCenterBar("Recovering . . .", barcolor, callback);
-		end			
+		end
 		local function umsg(msg)
 			length = msg:ReadShort();
 			ends = CurTime() + length;
@@ -850,12 +850,12 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		usermessage.Hook("MS Recovery Time", umsg);
 	end
-		
-	
-	-- 
+
+
+	--
 	-- TODO: go to sleep -> says 'wake up' -> hit jump -> says 'reganing consiousness' -> says 'get up'
 	--
-	
+
 	do -- Wakup Announcement
 		local function blaaa()
 			return lpl:KnockedOut() and 0 or false;
@@ -870,7 +870,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		usermessage.Hook("MS Wakeup Call",wakethefuckup);
 	end
-	
+
 	do -- /holster and equipping
 		local ends, length, left;
 		local function callback()
@@ -896,7 +896,7 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		usermessage.Hook("MS Equippr", umsg);
 		usermessage.Hook("MS Equippr FAIL", function() ends = false; end);
-	end		
+	end
 end);
 end
 
@@ -906,14 +906,14 @@ function GM:HUDPaint()
 	ctime = CurTime();
 	self:HUDPaintESP();
 	surface.SetDrawColor(0,0,0,150);
-    
-    local num = 0;
-    local w = lpl:GetActiveWeapon();
-    if (IsValid(w) and w:GetClass() == "gmod_tool") then
-        num = 0;--w.ToolNameHeight + w.InfoBoxHeight; -- I figure do the whole thing, it looks pretty pimp.
-    elseif (GetConVarNumber("developer") > 0) then
-        num = 82;
-    end
+
+	local num = 0;
+	local w = lpl:GetActiveWeapon();
+	if (IsValid(w) and w:GetClass() == "gmod_tool") then
+		num = 0;--w.ToolNameHeight + w.InfoBoxHeight; -- I figure do the whole thing, it looks pretty pimp.
+	elseif (GetConVarNumber("developer") > 0) then
+		num = 82;
+	end
 
 	surface.DrawRect(0,num,sidewidth,scrh - num);
 	if (gamemode.Call("HUDShouldDraw", "MSBars")) then
@@ -926,12 +926,12 @@ function GM:HUDPaint()
 		drawcenterbar();
 	end
 	--self.BaseClass:HUDPaint()
-	
+
 	-- Legacy centerprints
 	if ( not self:IsUsingCamera() ) then
 		-- Set the position of the chat box.
 		cider.chatBox.position = {x = 30, y = scrh - 160};
-		
+
 		-- Call the base class function.
 		self.BaseClass:HUDPaint();
 	end
@@ -946,7 +946,7 @@ function GM:HUDShouldDraw(name)
 		or  name == "CHudAmmo"   or name == "CHudSecondaryAmmo") then
 			return false;
 		end
-	
+
 	-- Call the base class function.
 	return self.BaseClass:HUDShouldDraw(name);
 end
@@ -1036,7 +1036,7 @@ do
 		end
 		cam = self:IsUsingCamera();
 		lpos = EyePos();
-			
+
 		-- Loop
 		for _, ent in pairs(ents.GetAll()) do if (ent:IsValid()) then
 			-- Prelims
@@ -1077,7 +1077,7 @@ do
 							name = "A Button";
 						end
 						lines:Add("Name", name, color_purpleblue, 1);
-					else	
+					else
 						ent:DefaultESPPaint(lines, pos, dist, centre)
 					end
 					gamemode.Call("AdjustESPLines", ent, class, lines, pos, dist, centre);
@@ -1095,7 +1095,7 @@ do
 	function GM:HUDDrawTargetID()
 		 return false
 	end
-	
+
 	---
 	-- TODO: desc
 	function GM:AdjustESPLines(ent, class, lines, pos, dist, center)

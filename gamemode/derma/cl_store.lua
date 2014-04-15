@@ -9,15 +9,15 @@ function PANEL:Init()
 	self.team = LocalPlayer():Team()
 	self.headers = {}
 	self:SetSize(cider.menu.width, cider.menu.height - 8);
-	
+
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
- 	self.itemsList:SizeToContents();
- 	self.itemsList:SetPadding(2);
- 	self.itemsList:SetSpacing(3);
+	self.itemsList:SizeToContents();
+	self.itemsList:SetPadding(2);
+	self.itemsList:SetSpacing(3);
 	self.itemsList:StretchToParent(4, 4, 12, 44);
 	self.itemsList:EnableVerticalScrollbar();
-	
+
 	-- Create a table to store the categories.
 	local categories = {};
 	-- Loop through the items
@@ -41,7 +41,7 @@ function PANEL:Init()
 			-- Loop through the items.
 			for k2, v2 in pairs(v) do
 				self.currentItem = v2;
-				
+
 				-- Add the item to the item list.
 				self.itemsList:AddItem( vgui.Create("cider_Store_Item", self) );
 			end
@@ -55,17 +55,17 @@ function PANEL:Init()
 				self.headers[k]:SetTooltip( c.Description )
 				self.itemsList:AddItem(self.headers[k]);
 				local subitemsList = vgui.Create("DPanelList", self);
-				subitemsList:SetAutoSize( true ) 
+				subitemsList:SetAutoSize( true )
 				subitemsList:SetPadding(2);
 				subitemsList:SetSpacing(3);
 				self.headers[k]:SetContents( subitemsList )
 				-- Sort the items by cost.
 				table.sort(v, function(a, b) return GM.Items[a].Cost > GM.Items[b].Cost end)
-			
+
 				-- Loop through the items.
 				for k2, v2 in pairs(v) do
 					self.currentItem = v2;
-				
+
 					-- Add the item to the item list.
 					subitemsList:AddItem( vgui.Create("cider_Store_Item", self) );
 				end
@@ -102,37 +102,37 @@ function PANEL:Init()
 	local item = GM.Items[self.item]
 	-- Get the cost of the item in total.
 	local cost = item.Cost * item.Batch;
-	
+
 	-- The name of the item.
 	self.label = vgui.Create("DLabel", self);
 	self.label:SetTextColor( Color(255, 255, 255, 255) );
-	
+
 	-- Check if it is not a single batch.
 	if (item.Batch > 1) then
 		self.label:SetText(item.Batch.." "..item.Plural.." ($"..cost..")");
 	else
 		self.label:SetText(item.Batch.." "..item.Name.." ($"..cost..")");
 	end
-	
+
 	-- The description of the item.
 	self.description = vgui.Create("DLabel", self);
 	self.description:SetTextColor( Color(255, 255, 255, 255) );
 	self.description:SetText(item.Description);
-	
+
 	-- Set the size of the panel.
 	self:SetSize(cider.menu.width, 75);
-	
+
 	-- Create the button and the spawn icon.
 	self.button = vgui.Create("DButton", self);
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
-	
+
 	-- Set the text of the button.
 	self.button:SetText("Manufacture");
 	self.button:SetSize(80, 22);
 	self.button.DoClick = function()
 		RunConsoleCommand("mshine", "manufacture", self.item);
 	end
-	
+
 	-- Set the model of the spawn icon to the one of the item.
 	self.spawnIcon:SetModel(item.Model,item.Skin)
 	self.spawnIcon:SetToolTip()
@@ -149,7 +149,7 @@ function PANEL:PerformLayout()
 	self.description:SizeToContents();
 	self.button:SetPos( self.spawnIcon.x + self.spawnIcon:GetWide() + 8, self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall() );
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Store_Item", PANEL, "DPanel");
 
@@ -169,6 +169,6 @@ function PANEL:PerformLayout()
 	self.label:SetPos( (self:GetWide() / 2) - (self.label:GetWide() / 2), 5 );
 	self.label:SizeToContents();
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Store_Header", PANEL, "DPanel");

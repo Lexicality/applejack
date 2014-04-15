@@ -12,10 +12,10 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
 	if (not tdata or tdata.Invisible) then
 		return false, "Invalid team!";
-    --elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
-    --    return false, "That team is full!";
+	--elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
+	--    return false, "That team is full!";
 	end
-	
+
 	local mdata = ply:GetTeam();
 	local tlevel, mlevel = tdata.GroupLevel, mdata.GroupLevel;
 	if(tdata.Group ~= mdata.Group) then -- We're moving between groups
@@ -24,7 +24,7 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	end
 	if (tlevel == GROUP_BASE) then -- We're trying to drop ourselves to the base. This is fine.
 		return true;
-	elseif (tlevel ~= (mlevel + 1) and tlevel ~= (mlevel - 1)) then -- You can only move up and down the tree one step at a time. (There aren't very many levels but if there are ever more this will be more active. 
+	elseif (tlevel ~= (mlevel + 1) and tlevel ~= (mlevel - 1)) then -- You can only move up and down the tree one step at a time. (There aren't very many levels but if there are ever more this will be more active.
 		return false, "You cannot join that team straight away!";
 	end
 	local tgang, mgang = tdata.Gang, mdata.Gang;
@@ -92,5 +92,5 @@ function GM:PlayerCanManufactureCategory(ply, category)
 			end
 		end
 	end
-	return false;	
+	return false;
 end

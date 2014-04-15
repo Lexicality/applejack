@@ -232,7 +232,7 @@ function meta:GetDoorName()
 	end
 	return dispname;
 end
-		
+
 
 meta.OriginalGetOwner = meta.GetOwner;
 ---
@@ -675,30 +675,30 @@ meta.TakeFromGroup = meta.TakeAccessFromGroup;
 -- Sets the prop protection (nothing to do with the ownership system) owner of an entity
 -- @param target Who should now own the entity. If this is not a player, the entity is given to The World.
 function meta:SetPPOwner(target)
-    self._pp = self._pp or {};
-    if (IsPlayer(target)) then
-        self._pp.Owner     = target;
-        self._pp.OwnerUID  = target:UniqueID();
-        self._pp.OwnerName = target:Name();
-    else
-        self._pp.Owner     = game.GetWorld();
-        self._pp.OwnerUID  = "WORLD";
-        self._pp.OwnerName = "The World";
-    end
+	self._pp = self._pp or {};
+	if (IsPlayer(target)) then
+		self._pp.Owner     = target;
+		self._pp.OwnerUID  = target:UniqueID();
+		self._pp.OwnerName = target:Name();
+	else
+		self._pp.Owner     = game.GetWorld();
+		self._pp.OwnerUID  = "WORLD";
+		self._pp.OwnerName = "The World";
+	end
 end
 
 ---
 -- Sets who the prop protection system believes spawned the entity.
 -- @param target Who should now have spawned the entity. If this is not a player, it defaults to The World
 function meta:SetPPSpawner(target)
-    self._pp = self._pp or {};
-    if (IsPlayer(target)) then
-        self._pp.Spawner     = target;
-        self._pp.SpawnerName = target:Name();
-    else
-        self._pp.Spawner     = GetWorldEntity();
-        self._pp.SpawnerName = "The World";
-    end
+	self._pp = self._pp or {};
+	if (IsPlayer(target)) then
+		self._pp.Spawner     = target;
+		self._pp.SpawnerName = target:Name();
+	else
+		self._pp.Spawner     = GetWorldEntity();
+		self._pp.SpawnerName = "The World";
+	end
 end
 
 -- Getting --
@@ -707,18 +707,18 @@ end
 -- Gets the prop protection owner of an entity.
 -- @return The owner's entity, the owner's name and then the owner's UniqueID
 function meta:GetPPOwner()
-    if (not self._pp) then
-        return nil;
-    end
-    return self._pp.Owner, self._pp.OwnerName, self._pp.OwnerUID;
+	if (not self._pp) then
+		return nil;
+	end
+	return self._pp.Owner, self._pp.OwnerName, self._pp.OwnerUID;
 end
 
 ---
 -- Gets who the prop protection system thinks spawned the entity
 -- @return The spawner's entity followed by their name.
 function meta:GetPPSpawner()
-    if (not self._pp) then
-        return nil;
-    end
-    return self._pp.Spawner, self._pp.SpawnerName;
+	if (not self._pp) then
+		return nil;
+	end
+	return self._pp.Spawner, self._pp.SpawnerName;
 end

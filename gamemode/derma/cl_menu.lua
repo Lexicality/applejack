@@ -70,15 +70,15 @@ function PANEL:Init()
 	self:SetTitle("Main Menu");
 	self:SetBackgroundBlur(true);
 	self:SetDeleteOnClose(false);
-	
+
 	-- Create the close button.
 	self.close = vgui.Create("DButton", self);
 	self.close:SetText("Close");
 	self.close.DoClick = function(self) cider.menu.toggle(); end
-	
+
 	-- Create the tabs property sheet.
 	self.tabs = vgui.Create("DPropertySheet", self);
-	
+
 	-- Add the sheets for the other menus to the property sheet.
 	self.tabs:AddSheet("Character", vgui.Create("cider_Character", self.tabs), "gui/silkicons/user");
 	self.tabs:AddSheet("Help", vgui.Create("cider_Help", self.tabs), "gui/silkicons/page");
@@ -96,17 +96,17 @@ function PANEL:PerformLayout()
 	self:SetVisible(cider.menu.open);
 	self:SetSize(cider.menu.width, cider.menu.height);
 	self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2);
-	
+
 	-- Set the size and position of the close button.
 	self.close:SetSize(48, 16);
 	self.close:SetPos(self:GetWide() - self.close:GetWide() - 4, 3);
-	
+
 	-- Stretch the tabs to the parent.
 	self.tabs:StretchToParent(4, 28, 4, 4);
-	
+
 	-- Size To Contents.
 	self:SizeToContents();
-	
+
 	-- Perform the layout of the main frame.
 	DFrame.PerformLayout(self);
 end
@@ -118,10 +118,10 @@ vgui.Register("cider_Menu", PANEL, "DFrame");
 function cider.menu.toggle(msg)
 	if (GAMEMODE.playerInitialized) then
 		cider.menu.open = !cider.menu.open;
-		
+
 		-- Toggle the screen clicker.
 		gui.EnableScreenClicker(cider.menu.open);
-		
+
 		-- Check if the main menu exists.
 		if (cider.menu.panel) then
 			cider.menu.panel:SetVisible(cider.menu.open);

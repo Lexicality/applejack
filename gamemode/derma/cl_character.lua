@@ -21,9 +21,9 @@ function PANEL:Init()
 	self:SetSize(cider.menu.width, cider.menu.height - 8);
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
- 	self.itemsList:SizeToContents();
- 	self.itemsList:SetPadding(2);
- 	self.itemsList:SetSpacing(3);
+	self.itemsList:SizeToContents();
+	self.itemsList:SetPadding(2);
+	self.itemsList:SetSpacing(3);
 	self.itemsList:StretchToParent(4, 4, 12, 44);
 	self.itemsList:EnableVerticalScrollbar();
 	-- We'll do the rest in the think func
@@ -60,7 +60,7 @@ function PANEL:Think()
 	self.job.button.DoClick = function()
 		RunConsoleCommand( "mshine", "job", self.job.textEntry:GetValue() );
 	end
-	
+
 	-- Create the clan control.
 	self.clan = vgui.Create("cider_Character_TextEntry", self);
 	self.clan.label:SetText("Clan");
@@ -69,7 +69,7 @@ function PANEL:Think()
 	self.clan.button.DoClick = function()
 		RunConsoleCommand( "mshine", "clan", self.clan.textEntry:GetValue() );
 	end
-	
+
 	-- Create the details control.
 	self.details = vgui.Create("cider_Character_TextEntry", self);
 	self.details.label:SetText("Details");
@@ -80,19 +80,19 @@ function PANEL:Think()
 	end
 	local details = lpl:GetNWString("Details") or ""
 	self.details.textEntry:SetValue(details)
-	
+
 	-- Create the gender control.
 	self.gender = vgui.Create("cider_Character_Gender", self);
 	self.gender.label:SetText("Gender");
 	self.gender.label:SizeToContents();
 	self.gender.button:SetText("Change");
-	
+
 	-- Add the controls to the item list.
 	self.itemsList:AddItem(self.job);
 	self.itemsList:AddItem(self.clan);
 	self.itemsList:AddItem(self.details);
 	self.itemsList:AddItem(self.gender);
-	
+
 	-- Loop through each of our groups in numerical order
 	for index, group in ipairs(GM.Groups) do
 		if (group.Invisible) then continue; end
@@ -103,21 +103,21 @@ function PANEL:Think()
 		header:SetToolTip( group.Description )
 		self.itemsList:AddItem(header);
 		local subitemsList = vgui.Create("DPanelList", self);
-		subitemsList:SetAutoSize( true ) 
+		subitemsList:SetAutoSize( true )
 		subitemsList:SetPadding(2);
 		subitemsList:SetSpacing(3);
-		header:SetContents( subitemsList )	
+		header:SetContents( subitemsList )
 		header.ilist = subitemsList
 		-- Store the list of teams here sorted by their index.
 		local teams = {};
-		
+
 		-- Loop through the teams in this group in order
 		for _, team in ipairs(group.Teams) do
 			--Check they can join the team
 			if (pteam == team.TeamID or gamemode.Call("PlayerCanJoinTeamShared", lpl, team.TeamID)) then
 				-- Create the team panel.
 				local panel = vgui.Create("cider_Character_Team", self);
-				panel:SetTeam(team);				
+				panel:SetTeam(team);
 				-- Add the controls to the item list.
 				subitemsList:AddItem(panel);
 			end
@@ -144,7 +144,7 @@ function PANEL:Init()
 	self.label:SizeToContents();
 	self.label:SetTextColor( Color(255, 255, 255, 255) );
 	self.textEntry = vgui.Create("DTextEntry", self);
-	
+
 	-- Create the button.
 	self.button = vgui.Create("DButton", self);
 end
@@ -160,7 +160,7 @@ function PANEL:PerformLayout()
 	self.textEntry:SetPos(self.label.x + self.label:GetWide() + 8, 5);
 	self.button:SetPos(self.textEntry.x + self.textEntry:GetWide() + 8, 5);
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Character_TextEntry", PANEL, "DPanel");
 
@@ -174,16 +174,16 @@ function PANEL:Init()
 	self.label:SetTextColor( Color(255, 255, 255, 255) );
 	self.textButton = vgui.Create("DButton", self);
 	self.textButton:SetDisabled(true);
-	
+
 	-- Create the button.
 	self.button = vgui.Create("DButton", self);
 	self.button.DoClick = function()
 		local menu = DermaMenu();
-		
+
 		-- Add male and female options to the menu.
 		menu:AddOption("Male", function() RunConsoleCommand("mshine", "gender", "male"); end);
 		menu:AddOption("Female", function() RunConsoleCommand("mshine", "gender", "female"); end);
-		
+
 		-- Open the menu and set it's position.
 		menu:Open();
 	end
@@ -206,7 +206,7 @@ function PANEL:PerformLayout()
 	self.textButton:SetPos(self.label.x + self.label:GetWide() + 8, 5);
 	self.button:SetPos(self.textButton.x + self.textButton:GetWide() + 8, 5);
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Character_Gender", PANEL, "DPanel");
 
@@ -217,14 +217,14 @@ local PANEL = {};
 function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
 	self.label:SetTextColor( Color(255, 255, 255, 255) );
-	
+
 	-- The description of the team.
 	self.description = vgui.Create("DLabel", self);
 	self.description:SetTextColor( Color(255, 255, 255, 255) );
-	
+
 	-- Set the size of the panel.
 	self:SetSize(cider.menu.width, 75);
-	
+
 	-- Create the button and the spawn icon.
 	self.button = vgui.Create("DButton", self);
 	function self.button:DoClick()
@@ -234,7 +234,7 @@ function PANEL:Init()
 	self.spawnIcon:SetToolTip();
 	self.spawnIcon.DoClick = function() end;
 	self.spawnIcon.OnMousePressed = function() end;
-	
+
 end
 
 function PANEL:SetTeam(team)
@@ -272,7 +272,7 @@ function PANEL:Think()
 	end
 	if (gender ~= self.gender) then
 		self.gender = gender;
-		local model = self.Models[gender][lpl._ModelChoices[gender][self.TeamID]]			
+		local model = self.Models[gender][lpl._ModelChoices[gender][self.TeamID]]
 		self.spawnIcon:SetModel(model);
 	end
 	local nump = team.NumPlayers(self.TeamID);
@@ -306,6 +306,6 @@ function PANEL:PerformLayout()
 	self.description:SizeToContents();
 	self.button:SetPos( self.spawnIcon.x + self.spawnIcon:GetWide() + 8, self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall() )
 end
-	
+
 -- Register the panel.
 vgui.Register("cider_Character_Team", PANEL, "DPanel");

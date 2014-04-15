@@ -28,9 +28,9 @@ function PANEL:Init()
 
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
- 	self.itemsList:SizeToContents();
- 	self.itemsList:SetPadding(2);
- 	self.itemsList:SetSpacing(3);
+	self.itemsList:SizeToContents();
+	self.itemsList:SetPadding(2);
+	self.itemsList:SetSpacing(3);
 	self.itemsList:StretchToParent(4, 4, 12, 0);
 	self.itemsList:EnableVerticalScrollbar();
 
@@ -182,9 +182,9 @@ local function handleGangs(self)
 			item:SetModel(gang.Model);
 			if (_ == 0) then
 				item:SetIdentifier("group", GroupID);
-			else			
+			else
 				item:SetIdentifier("gang", gang.GangID);
-			end			
+			end
 			item:SetButton(accessmenu.owned);
 			sublist:AddItem(item);
 		end
@@ -253,7 +253,7 @@ function PANEL:SetIdentifier(idkind, id)
 	self.idkind = idkind;
 	self.id = id;
 end
-	
+
 local function btn(self)
 	if (accessmenu.Buttoned or not CheckPos()) then
 		return false;
@@ -388,7 +388,7 @@ function PANEL:Init()
 	self.selbut:SetText("Sell")
 	self.selbut.DoClick = function()
 		local menu = DermaMenu();
-		
+
 		-- Add an option for yes and no.
 		menu:AddOption("No", function() end);
 		menu:AddOption("Yes", function()
@@ -397,7 +397,7 @@ function PANEL:Init()
 			accessmenu:Remove();
 			gui.EnableScreenClicker(false);
 		end);
-		
+
 		-- Open the menu.
 		menu:Open() ;
 	end
@@ -524,7 +524,7 @@ local function UpdateContainer(decoded)
 		if (not done[res]) then
 			--gnoaccess[res.GroupID][0] = res;
 			gno[res.GroupID] = res;
-		end		
+		end
 	end
 	for _, res in pairs(GM.Gangs) do
 		if (not done[res]) then

@@ -20,7 +20,7 @@ function PLUGIN:PlayerClosedContainerWindow(player)
 		end
 		player:Emote("seals the "..cider.container.getName(crate).." with some tape.");
 		player._UsingCrate = nil
-	end	
+	end
 end
 
 
@@ -43,8 +43,8 @@ function PLUGIN:CrateTime(player,item)
 		crate:SetPos( trace.HitPos - trace.HitNormal * crate:OBBMins().z )
 		crate:SetAngles( Ang )
 	end
-    crate:SetPPOwner(ply);
-    crate:SetPPSpawner(ply);
+	crate:SetPPOwner(ply);
+	crate:SetPPSpawner(ply);
 	crate:Spawn()
 	crate:Activate()
 	if item.skin then

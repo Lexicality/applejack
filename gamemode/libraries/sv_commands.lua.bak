@@ -9,7 +9,7 @@ cider.command.stored = {};
 -- Add a new command.
 function cider.command.add(command, access, arguments, callback, category, help, tip, unpack)
 	cider.command.stored[command] = {access = access, arguments = arguments, callback = callback, unpack = tobool(unpack)};
-	
+
 	-- Check to see if a category was specified.
 	if (category) then
 		if (!help or help == "") then
@@ -32,7 +32,7 @@ function cider.command.consoleCommand(player, _, arguments)
 				arguments[k] = string.Replace(arguments[k], " ' ", "'");
 				arguments[k] = string.Replace(arguments[k], " : ", ":");
 			end
-			
+
 			-- Check if the player can use this command.
 			if ( hook.Call("PlayerCanUseCommand", GAMEMODE, player, command, arguments) ) then
 				if (#arguments >= cider.command.stored[command].arguments) then

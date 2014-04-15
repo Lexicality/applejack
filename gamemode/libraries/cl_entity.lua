@@ -10,12 +10,12 @@ local function entgranted(ent, access)
 	GM.AccessableEntities[ent] = access;
 	if GetConVarNumber"developer" > 0 then
 		local moneyAlert = {}
-		
+
 		-- Set some information for the money alert.
 		local words = ent:GetNWString("Name","Door")..", "..tostring(ent:GetDisplayName())
 		moneyAlert.alpha = 255
 		moneyAlert.add = 1
-		
+
 		if access then
 			moneyAlert.color = color_white
 			moneyAlert.text = "+ "..words

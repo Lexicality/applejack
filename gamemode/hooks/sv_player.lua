@@ -304,7 +304,7 @@ function GM:PlayerDestroyedContraband(ply, ent)
 	if (not contra) then return end
 	ply:GiveMoney(contra.money);
 	ply:Notify("You earned $" .. contra.money .. " for destroying that " .. contra.name .. "!", 0);
-	
+
 	local pl = ent:GetPlayer();
 	local name;
 	if (IsValid(pl)) then
