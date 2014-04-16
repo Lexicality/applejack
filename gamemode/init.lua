@@ -335,7 +335,7 @@ function GM:IsListenServer()
 			self.ListenServer = v;
 		end
 	end
-	if ( SinglePlayer() ) then
+	if ( game.SinglePlayer() ) then
 		self.ListenServer = Entity(1);
 	end
 	return self.ListenServer

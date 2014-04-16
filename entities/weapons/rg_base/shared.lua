@@ -143,7 +143,7 @@ SWEP.FireModes.Auto.InitFunction = function(self)
 
 	self.Primary.Automatic = true
 	self.Primary.Delay = 60/self.AutoRPM
-	
+
 end
 
 SWEP.FireModes.Auto.RevertFunction = function(self)
@@ -164,7 +164,7 @@ SWEP.FireModes.Burst.FireFunction = function(self)
 	self:BaseAttack()
 	--[
 	timer.Simple(self.BurstDelay, self.BaseAttack, self)
-	
+
 	if clip > 1 then
 		timer.Simple(2*self.BurstDelay, self.BaseAttack, self)
 	end
@@ -206,15 +206,15 @@ function SWEP:Initialize()
 		self:SetNPCMaxBurst(6)
 		self:SetNPCFireRate(60/self.AutoRPM)
 	end
-	
+
 	self.CurFireMode		= 1 -- This is just an index to get the firemode from the available firemodes table
-	
+
 	if CLIENT then
-	
+
 		-- We need to get these so we can scale everything to the player's current resolution.
 		local iScreenWidth = surface.ScreenWidth()
 		local iScreenHeight = surface.ScreenHeight()
-		
+
 		-- The following code is only slightly riped off from Night Eagle
 		-- These tables are used to draw things like scopes and crosshairs to the HUD.
 		self.ScopeTable = {}
@@ -227,13 +227,13 @@ function SWEP:Initialize()
 		self.ScopeTable.y3 = self.ScopeTable.y2
 		self.ScopeTable.x4 = self.ScopeTable.x3
 		self.ScopeTable.y4 = self.ScopeTable.y1
-				
+
 		self.ParaScopeTable = {}
 		self.ParaScopeTable.x = 0.5*iScreenWidth - self.ScopeTable.l
 		self.ParaScopeTable.y = 0.5*iScreenHeight - self.ScopeTable.l
 		self.ParaScopeTable.w = 2*self.ScopeTable.l
 		self.ParaScopeTable.h = 2*self.ScopeTable.l
-		
+
 		self.ScopeTable.l = (iScreenHeight + 1)*self.ScopeScale -- I don't know why this works, but it does.
 
 		self.QuadTable = {}
@@ -269,7 +269,7 @@ function SWEP:Initialize()
 		self.CrossHairTable.y21 = 0
 		self.CrossHairTable.x22 = 0.5*iScreenWidth
 		self.CrossHairTable.y22 = iScreenHeight
-		
+
 	end
 
 	self.BulletSpeed	= self.MuzzleVelocity*50 -- phoenix - 39.37 -- Assuming source units are in inches per second
@@ -282,14 +282,14 @@ function SWEP:Initialize()
 	self.dt.silenced	= false;
 	self.dt.scope		= false;
 	self.dt.scopezoom	= 0;
-	
+
 	self.ScopeZooms 		= self.ScopeZooms or {5}
 	if self.UseScope then
 		self.CurScopeZoom	= 1 -- Another index, this time for ScopeZooms
 	end
-	
+
 	self:ResetVars()
-	
+
 end
 
 concommand.Add("DropPrim",function(p) p:DropWeapon(p:GetActiveWeapon()) end)
@@ -310,7 +310,7 @@ function SWEP:Deploy()
 		self.Weapon:SetNextPrimaryFire(CurTime() + GM.Config["Weapon Timers"]["deploytime"][self.Size])
 		self:OhGodGetItOff()
 	end
-	
+
 	self.Owner._NextDeploy	= CurTime() + GM.Config["Weapon Timers"]["redeploytime" ][self.Size]
 	self.NextHolster		= CurTime() + GM.Config["Weapon Timers"]["reholstertime"][self.Size]
 	if ( self.dt.silenced ) then
@@ -326,15 +326,15 @@ end
 function SWEP:ResetVars()
 
 	self.NextSecondaryAttack = 0
-	
+
 	self.CurrentSpread = self.MinSpread
 	self.CurrentRecoil	= self.MinRecoil
 	self.CurrentSpray 	= self.MinSpray
 	self.SprayVec 		= Vector(0,0,0)
-	
+
 	self.bLastIron = false
 	self.dt.ironsights = false;
-	
+
 	if self.UseScope then
 		self.CurScopeZoom = 1
 		self.fLastScopeZoom = 1
@@ -342,14 +342,14 @@ function SWEP:ResetVars()
 		self.dt.scope = false;
 		self.dt.scopezoom = self.ScopeZooms[1];
 	end
-	
+
 	if self.Owner and self.Owner:IsValid() then
 		self.OwnerIsNPC = self.Owner:IsNPC() -- This ought to be better than getting it every time we fire
 		self:SetIronsights(false,self.Owner) -- phoenix - placed in SWEP:Deply()
 		self:SetScope(false,self.Owner) -- phoenix - placed in SWEP:Deply()
 		self:SetFireMode() -- phoenix - placed in SWEP:Deply()
 	end
-	
+
 end
 
 --Stick shit on my back
@@ -478,7 +478,7 @@ function SWEP:OnRemove()
 	--MsgN"Remove"
 	self:DoAmmoStuff()
 	self:ResetVars()
-	
+
 	return true
 end
 function SWEP:OnDrop()
@@ -491,7 +491,7 @@ function SWEP:OnDrop()
 	end
 	self:DoAmmoStuff()
 	self:ResetVars()
-	
+
 	return true
 end
 function SWEP:OwnerChanged()
@@ -514,36 +514,36 @@ end
 SWEP.LastAttack = CurTime()
 SWEP.LastDeltaSprayVec = Vector(0,0,0)
 function SWEP:BaseAttack()
-	
+
 	if not self:CanFire(self.Weapon:Clip1()) then return end
-	
+
 	-- Calculate recover (cool down) scale
 	local fCurTime = CurTime()
 	local DeltaTime = fCurTime - self.LastAttack
 	local RecoverScale = (1 - DeltaTime/self.RecoverTime)
 	self.LastAttack = fCurTime
-	
+
 	-- Apply cool-down to spread, spray, and recoil
 	self.CurrentSpread = math.Clamp(self.CurrentSpread*RecoverScale, self.MinSpread, self.MaxSpread)
 	self.CurrentRecoil = math.Clamp(self.CurrentRecoil*RecoverScale, self.MinRecoil, self.MaxRecoil)
 	self.CurrentSpray = math.Clamp(self.CurrentSpray*RecoverScale, self.MinSpray, self.MaxSpray)
 	self.SprayVec = self.SprayVec*((self.CurrentSpray - self.MinSpray)/(self.MaxSpray - self.MinSpray))
-	
+
 	-- Calculate modifiers/take ammo
 	local modifier = 1
 	if not self.OwnerIsNPC then -- NPCs don't get modifiers
-	
+
 		modifier = self:CalculateModifiers(self.RunModifier,self.CrouchModifier,self.JumpModifier,self.IronSightModifier)
-		
+
 	end
 	self:TakePrimaryAmmo(1)
 	self.Weapon:EmitSound(self.Primary.Sound)
 	local NewSpray 		= self.CurrentSpray*modifier
 
-	self:RGShootBulletCheap(self.Primary.Damage, 
-						self.BulletSpeed, 
-						self.CurrentSpread*modifier, 
-						NewSpray, 
+	self:RGShootBulletCheap(self.Primary.Damage,
+						self.BulletSpeed,
+						self.CurrentSpread*modifier,
+						NewSpray,
 						self.SprayVec)
 
 	-- Apply recoil and spray
@@ -553,7 +553,7 @@ function SWEP:BaseAttack()
 	self.CurrentRecoil 	= math.Clamp(self.CurrentRecoil + self.DeltaRecoil, self.MinRecoil, self.MaxRecoil)
 	self.CurrentSpread 	= math.Clamp(self.CurrentSpread + self.DeltaSpread, self.MinSpread, self.MaxSpread)
 	self.CurrentSpray 	= math.Clamp(self.CurrentSpray + self.DeltaSpray, self.MinSpray, self.MaxSpray)
-	
+
 	local DeltaSprayVec = VectorRand()*0.02 -- Change in spray vector
 	self.SprayVec = self.SprayVec + DeltaSprayVec + self.LastDeltaSprayVec -- This "smooths out" the motion of the spray vector
 	self.LastDeltaSprayVec = DeltaSprayVec
@@ -617,7 +617,7 @@ function SWEP:RGShootBulletCheap(dmg, speed, spread, spray, sprayvec, numbul)
 	bullet.Callback = function(atk,tr,dmgInfo)
 		table.insert(traces,tr)
 		carshoot(self,tr,dmg);
-		if SinglePlayer() then
+		if game.SinglePlayer() then
 			debugoverlay.Line(tr.StartPos,tr.HitPos,10,Color(237,40,31,255),true)
 		end
 		--debugoverlay.Cross(tr.HitPos,10,5,color_white,true)
@@ -628,7 +628,7 @@ function SWEP:RGShootBulletCheap(dmg, speed, spread, spray, sprayvec, numbul)
 		self:PenetrateCallback(self.Owner, trace,self.PenetrateInfo.Damage,self.PenetrateInfo.Force)
 	end
 end
-local 
+local
 ricochetmats = {}
 ricochetmats[MAT_CLIP]			=-0.1 --Clipping brushes I guess
 ricochetmats[88		]			=-0.1 --skybox
@@ -661,7 +661,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 	if not trace.Hit then
 		return
 	end
-	if SinglePlayer() then
+	if game.SinglePlayer() then
 		debugoverlay.Text(trace.HitPos,"force: "..force,10)
 	end
 	local dir
@@ -673,7 +673,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 	if	-(trace.Normal:Dot(trace.HitNormal)) < mats
 	and	hook.Call("CanRicochet",GAMEMODE,trace,force,self)
 	then
-		if SinglePlayer() then
+		if game.SinglePlayer() then
 			debugoverlay.Text(trace.HitPos+vector_up,"ricochet",10)
 		end
 		dir = bounce(trace) + VectorRand() /4
@@ -683,7 +683,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 	and		hook.Call("CanPenetrate",GAMEMODE,trace,force,self)
 	and not self.dt.silenced
 	then
-		if SinglePlayer() then
+		if game.SinglePlayer() then
 			debugoverlay.Text(trace.HitPos+vector_up,"penetrate",10)
 		end
 		if (force < 100) then
@@ -712,7 +712,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 	bullet.Src		= trace.HitPos + (16 * bullet.Dir)
 	bullet.Callback = function( atk,_trace,di)
 		hook.Call("PenetrationDamage",GAMEMODE,_trace,di,self,atk)
-		if SinglePlayer() then
+		if game.SinglePlayer() then
 			debugoverlay.Line(_trace.StartPos,_trace.HitPos,10,Color(255,237,31,255),true)
 			debugoverlay.Line(trace.HitPos,_trace.HitPos,10,Color(200,200,255,255),true)
 		end
@@ -746,16 +746,16 @@ end
 function SWEP:ApplyRecoil(recoil,spray)
 
 	if self.OwnerIsNPC or (SERVER--[[ and not self.Owner:IsListenServerHost()--]]) then return end
-	
+
 	local EyeAng = Angle(
 	recoil*math.Rand(-1,-0.7 + spray*0.4) + spray*math.Rand(-0.3,0.3), -- Up/Down recoil
 	recoil*math.Rand(-0.4,0.4) + spray*math.Rand(-0.4,0.4), -- Left/Right recoil
 	0)
-	
+
 	-- Punch the player's view
 	self.Owner:ViewPunch(1.3*EyeAng) -- This smooths out the player's screen movement when recoil is applied
 	self.Owner:SetEyeAngles(self.Owner:EyeAngles() + EyeAng)
-	
+
 end
 
 -- Acuracy/recoil modifiers
@@ -766,19 +766,19 @@ function SWEP:CalculateModifiers(run,crouch,jump,iron)
 	if self.Owner:KeyDown(IN_FORWARD + IN_BACK + IN_MOVELEFT + IN_MOVERIGHT) then
 		modifier = modifier*run
 	end
-	
-	if self.dt.ironsights then 
+
+	if self.dt.ironsights then
 		modifier = modifier*iron
 	end
-	
+
 	if not self.Owner:IsOnGround() then
 		return modifier*jump --You can't be jumping and crouching at the same time, so return here
 	end
-	
-	if self.Owner:Crouching() then 
+
+	if self.Owner:Crouching() then
 		modifier = modifier*crouch
 	end
-	
+
 	return modifier
 
 end
@@ -787,7 +787,7 @@ function SWEP:ShootEffects()
 
 	local PlayerPos = self.Owner:GetShootPos()
 	local PlayerAim = self.Owner:GetAimVector()
-	
+
 	self.Owner:MuzzleFlash()
 	if self.dt.silenced then
 		self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
@@ -809,20 +809,20 @@ function SWEP:ShootEffects()
 		end
 	end
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
-	
+
 	local fx = EffectData()
 	fx:SetEntity(self.Weapon)
 	fx:SetOrigin(PlayerPos)
 	fx:SetNormal(PlayerAim)
 	fx:SetAttachment(self.MuzzleAttachment)
 	util.Effect(self.MuzzleEffect,fx)						-- Additional muzzle effects
-	
+
 	local fx = EffectData()
 	fx:SetEntity(self.Weapon)
 	fx:SetNormal(PlayerAim)
 	fx:SetAttachment(self.ShellEjectAttachment)
 	util.Effect(self.ShellEffect,fx)						-- Shell ejection
-	
+
 end
 
 -- Clip can be any number, ideally a clip or ammo count
@@ -831,13 +831,13 @@ function SWEP:CanFire(clip)
 	if not self.Weapon or not self.Owner or not (self.OwnerIsNPC or self.Owner:Alive()) then return end
 
 	if clip <= 0 or (self.Owner:WaterLevel() >= 3 and not self.FiresUnderwater) then
-	
+
 		self.Weapon:EmitSound("Weapon_Pistol.Empty")
 		self.Weapon:SetNextPrimaryFire(CurTime() + 0.2)
 		return false -- Note that we don't automatically reload.  The player has to do this manually.
-		
+
 	end
-	
+
 	return true
 
 end
@@ -854,7 +854,7 @@ if CLIENT or (not player) or player:IsNPC() then return end
 
 	-- Send the ironsight state to the client, so it can adjust the player's FOV/Viewmodel pos accordingly
 	self.dt.ironsights = b;
-	
+
 	if self.UseScope then -- If we have a scope, use that instead of ironsights
 		if b then
 			--Activate the scope after we raise the rifle
@@ -874,7 +874,7 @@ if CLIENT or (not player) or player:IsNPC() then return end
 	self.CurScopeZoom = 1 -- Just in case...
 	self.dt.scopezoom = self.ScopeZooms[self.CurScopeZoom];
 
-	if b then 
+	if b then
 		player:DrawViewModel(false)
 		if PlaySound then
 			self.Weapon:EmitSound(sndZoomIn)
@@ -885,7 +885,7 @@ if CLIENT or (not player) or player:IsNPC() then return end
 			self.Weapon:EmitSound(sndZoomOut)
 		end
 	end
-	
+
 	-- Send the scope state to the client, so it can adjust the player's fov/HUD accordingly
 	self.dt.scope = b;
 
@@ -895,12 +895,12 @@ function SWEP:SetFireMode()
 
 	local FireMode = self.AvailableFireModes[self.CurFireMode]
 	self.dt.firemode = self.CurFireMode;
-	
+
 	if (self.FireModes[FireMode]) then
-		self.FireFunction = self.FireModes[FireMode].FireFunction 
-		
+		self.FireFunction = self.FireModes[FireMode].FireFunction
+
 		-- Run the firemode's init function (for updating delay and other variables)
-		self.FireModes[FireMode].InitFunction(self) 
+		self.FireModes[FireMode].InitFunction(self)
 	end
 
 end
@@ -908,7 +908,7 @@ end
 function SWEP:RevertFireMode()
 
 	local FireMode = self.AvailableFireModes[self.CurFireMode]
-	
+
 	-- Run the firemode's revert function (for changing back variables that could interfere with other firemodes)
 	self.FireModes[FireMode].RevertFunction(self)
 
@@ -920,11 +920,11 @@ end
 ---------------------------------------------------------
 
 function SWEP:PrimaryAttack()
-	
+
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 	if not self.Owner:KeyDown(IN_USE) then
 		self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		self:FireFunction()	
+		self:FireFunction()
 	else
 		if self.HasSilencer then
 			if self.dt.silenced then
@@ -951,11 +951,11 @@ function SWEP:Think()
 	if self.HasLaser then
 		if (self.LaserLastRespawn + self.LaserRespawnTime) < CurTime() then
 			local effectdata = EffectData()
-			
+
 			effectdata:SetOrigin( self:GetOwner():GetShootPos() )
 			effectdata:SetEntity( self.Weapon )
-			util.Effect( "rg_reddot", effectdata ) 
-			
+			util.Effect( "rg_reddot", effectdata )
+
 			self.LaserLastRespawn = CurTime()
 		end
 	end
@@ -969,16 +969,16 @@ function SWEP:SecondaryAttack()
 
 	if self.NextSecondaryAttack > CurTime() or self.OwnerIsNPC then return end
 	self.NextSecondaryAttack = CurTime() + 0.3
-	
+
 	if self.Owner:KeyDown(IN_USE) then
-	
+
 	local NumberOfFireModes = table.getn(self.AvailableFireModes)
 	if NumberOfFireModes < 2 then return end -- We need at least 2 firemodes to change firemodes!
-	
+
 		self:RevertFireMode()
 		self.CurFireMode = math.fmod(self.CurFireMode, NumberOfFireModes) + 1 -- This just cycles through all available fire modes
 		self:SetFireMode()
-		
+
 		if (SERVER) then
 			if (self.AvailableFireModes[self.CurFireMode]) then
 				local fireMode = self.AvailableFireModes[self.CurFireMode];
@@ -991,36 +991,36 @@ function SWEP:SecondaryAttack()
 				end
 			end
 		end
-		
+
 		self.Weapon:EmitSound(sndCycleFireMode)
 	-- All of this is more complicated than it needs to be. Oh well.
 	elseif self.IronSightsPos then
-	
+
 		local NumberOfScopeZooms = table.getn(self.ScopeZooms)
 
 		if self.UseScope and self.dt.scope then
-		
+
 			self.CurScopeZoom = self.CurScopeZoom + 1
 			if self.CurScopeZoom <= NumberOfScopeZooms then
-		
+
 				self.dt.scopezoom = self.ScopeZooms[self.CurScopeZoom];
 				self.Weapon:EmitSound(sndCycleZoom)
-				
+
 			else
 				self:SetIronsights(false,self.Owner)
 			end
-			
+
 		else
-	
+
 			local bIronsights = not self.dt.ironsights
 			self:SetIronsights(bIronsights,self.Owner)
-		
-		end
-		
 
-	
+		end
+
+
+
 	end
-	
+
 end
 
 
@@ -1031,5 +1031,5 @@ function SWEP:Reload()
 	else
 		self.Weapon:DefaultReload(ACT_VM_RELOAD)
 	end
-	
+
 end

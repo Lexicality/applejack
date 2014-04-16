@@ -44,7 +44,7 @@ local function refund(ent)
     owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
     owner:TakeDoor(trace.Entity)
 end
-    
+
 
 function TOOL:LeftClick(tr)
 	if ( CLIENT ) then
@@ -63,7 +63,7 @@ function TOOL:LeftClick(tr)
 	local ply = self:GetOwner();
 	local ent = ents.Create(class);
 	ent:SetModel(model);
-	local ang = ply:GetAimVector():Angle() 
+	local ang = ply:GetAimVector():Angle()
 	local minn = ent:OBBMins()
 	tr.HitPos.Z = tr.HitPos.Z - (tr.HitNormal.z * minn.z);
 	ent:SetPos( tr.HitPos )
@@ -90,7 +90,7 @@ function TOOL:LeftClick(tr)
 		ply:GiveDoor(ent,ply:GetName().."'s door",true);
 		ent:Lock();
 	end);
-	ply:GiveMoney(-GM.Config["Door Cost"]);		
+	ply:GiveMoney(-GM.Config["Door Cost"]);
 	ply:Notify("You bought a door for $"..GM.Config["Door Cost"]..".", 0);
 	ply:AddCleanup("doors", ent );
 	undo.Create("Door");
@@ -104,22 +104,22 @@ function TOOL.BuildCPanel( CPanel )
 
 	// HEADER
 	CPanel:AddControl( "Header", { Text = "#Tool_door_name", Description	= "#Tool_door_desc" }  )
-	
+
 	// PRESETS
 	local params = { Label = "#Presets", MenuButton = 1, Folder = "door", Options = {}, CVars = {} }
-			
+
 		params.Options.default = {
 			door_model = "models/props_combine/combine_door01.mdl",
 			door_open	= 1,
 			door_close	= 2 }
-			
+
 		table.insert( params.CVars, "door_open" )
 		table.insert( params.CVars, "door_close" )
 		table.insert( params.CVars, "door_model" )
-		
+
 	CPanel:AddControl( "ComboBox", params )
 
-	
+
 	// EMITTERS
 	local params = { Label = "#Models", --[[Height = 150,]]MenuButton = 0, Options = {} }
 	params.Options[ "Tall Combine Door" ] = { door_class = "prop_dynamic",	door_model = "models/props_combine/combine_door01.mdl" }
@@ -146,12 +146,12 @@ function TOOL:UpdateGhost( ent, Player )
 	local tr 	= utilx.GetPlayerTrace( Player, Player:GetCursorAimVector() )
 	local trace 	= util.TraceLine( tr )
 	if (!trace.Hit) then return end
-	local ang = Player:GetAimVector():Angle() 
+	local ang = Player:GetAimVector():Angle()
 	local minn = ent:OBBMins()
 	trace.HitPos.Z = trace.HitPos.Z - (trace.HitNormal.z * minn.z)
 	ent:SetPos( trace.HitPos )
 	ent:SetAngles(Angle(0,ang.Yaw+180,0))
-	
+
 end
 
 -- This is in here so we can have all doors ghosted.
@@ -159,34 +159,34 @@ function TOOL:MakeGhostEntity( model, pos, angle )
 
 	if (!util.IsValidModel(model)) then return end
 	util.PrecacheModel( model )
-	
+
 	// We do ghosting serverside in single player
 	// It's done clientside in multiplayer
-	if (SERVER && !SinglePlayer()) then return end
-	if (CLIENT && SinglePlayer()) then return end
-	
+	if (SERVER && !game.SinglePlayer()) then return end
+	if (CLIENT && game.SinglePlayer()) then return end
+
 	// Release the old ghost entity
 	self:ReleaseGhostEntity()
-	
+
 	self.GhostEntity = ents.Create( "prop_physics" )
-	
+
 	// If there's too many entities we might not spawn..
 	if (!self.GhostEntity:IsValid()) then
 		self.GhostEntity = nil
 		return
 	end
-	
+
 	self.GhostEntity:SetModel( model )
 	self.GhostEntity:SetPos( pos )
 	self.GhostEntity:SetAngles( angle )
 	self.GhostEntity:Spawn()
-	
+
 	self.GhostEntity:SetSolid( SOLID_VPHYSICS );
 	self.GhostEntity:SetMoveType( MOVETYPE_NONE )
 	self.GhostEntity:SetNotSolid( true );
 	self.GhostEntity:SetRenderMode( RENDERMODE_TRANSALPHA )
 	self.GhostEntity:SetColor( 255, 255, 255, 150 )
-	
+
 end
 
 function TOOL:Think()
@@ -194,7 +194,7 @@ function TOOL:Think()
 	if (!self.GhostEntity || !self.GhostEntity:IsValid() || self.GhostEntity:GetModel() != self:GetClientInfo( "model" )) then
 		self:MakeGhostEntity( self:GetClientInfo( "model" ), Vector(0,0,0), Angle(0,0,0) )
 	end
-	
+
 	self:UpdateGhost( self.GhostEntity, self:GetOwner() )
-	
+
 end
