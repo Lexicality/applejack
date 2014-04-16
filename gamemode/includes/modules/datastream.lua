@@ -1,16 +1,16 @@
 --[[ Datastream 2.0
     Provides backwards compatibility for code using the old Datastream 1.0 module
     DEVELOPERS SHOULD NOT USE THIS MODULE; USE THE NET LIBRARY DIRECTLY INSTEAD.
-    
+
     Copyright (c) 2011 Declan White
-    
+
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-    
+
     The above copyright notice and this permission notice shall be included in
     all copies or substantial portions of the Software.
 
@@ -44,9 +44,10 @@ local hackyglon_meta = {
     __tostring = function(self)
         local enc = rawget(self, "enc")
         if not enc then
-            local worked
-            worked, enc = pcall(glon.encode, rawget(self, "dec"))
-            rawset(self, "enc", worked and enc or nil)
+            enc = "???"
+        --     local worked
+        --     worked, enc = pcall(glon.encode, rawget(self, "dec"))
+        --     rawset(self, "enc", worked and enc or nil)
         end
         return enc
     end,
@@ -59,11 +60,11 @@ local hackyglon_meta = {
 if SERVER then
     function Hook(name, callback, dont_confirm)
         net.Receive("$DS_"..name, function(len, ply)
-            local id = net.ReadByte()
+            local id = net.ReadInt(8)
             if not dont_confirm then
                 net.Start("$DSC_"..name)
-                    net.WriteByte(id)
-                    --net.WriteByte(len)
+                    net.WriteInt(id, 8)
+                    --net.WriteInt(len, 8)
                 net.Send(ply)
             end
             local data = net.ReadTable()
@@ -75,7 +76,9 @@ if SERVER then
             )
         end)
     end
-    
+
+    local pool = {};
+
     _operation_count = 0
     function StreamToClients(audience, name, data, callback)
         local audience_type = type(audience)
@@ -85,23 +88,27 @@ if SERVER then
             error("bad argument #1 to 'datastream.StreamToClients' (table or Player expected, got "..audience_type..")", 2)
         end
         _operation_count = (_operation_count+1)%256
+        if (not pool[name]) then
+            util.AddNetworkString("$DS_"..name)
+            pool[name] = true
+        end
         net.Start("$DS_"..name)
-            net.WriteByte(_operation_count) -- this isn't really needed
+            net.WriteInt(_operation_count, 8) -- this isn't really needed
             net.WriteTable(data)
         net.Send(audience)
         if callback then
             callback(_operation_count)
         end
     end
-    
+
     function _R.Player:SendData(name, data, callback)
         StreamToClients(self, name, data, callback)
     end
-    
+
 elseif CLIENT then
     function Hook(name, callback)
         net.Receive("$DS_"..name, function(len)
-            local id, data = net.ReadByte(), net.ReadTable()
+            local id, data = net.ReadInt(8), net.ReadTable()
             callback(
                 name,
                 id,
@@ -110,7 +117,7 @@ elseif CLIENT then
             )
         end)
     end
-    
+
     _operations = {}
     function StreamToServer(name, data, callback, accept_callback)
         if accept_callback then
@@ -120,7 +127,7 @@ elseif CLIENT then
         if not callbacks then
             callbacks = {}
             net.Receive("$DSC_"..name, function(len)
-                local id = net.ReadByte()
+                local id = net.ReadInt(8)
                 local callback = table.remove(callbacks, id)
                 if callback then callback(id) end
             end)
@@ -131,7 +138,7 @@ elseif CLIENT then
         end
         callbacks[id] = callback
         net.Start("$DS_"..name)
-            net.WriteByte(id)
+            net.WriteInt(id, 8)
             net.WriteTable(data)
         net.SendToServer()
     end
