@@ -636,7 +636,7 @@ local function handleKnownKey(ply, k, v)
 	elseif (a == "number") then
 		ply.cider[k] = tonumber(v) or 0;
 	elseif (a == "GLON") then
-		local s,r = pcall(glon.decode, v);
+		local s,r = pcall(util.JSONToTable, v);
 		if not s then
 			ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..r.."'\n");
 		else
@@ -659,7 +659,7 @@ local function loadCallback(ply, data)
 			if (tonumber(v)) then
 				ply.cider[k] = tonumber(v);
 			elseif (v:sub(1,1):byte() == 2) then
-				local a,b = pcall(glon.decode, v);
+				local a,b = pcall(util.JSONToTable, v);
 				if not a then
 					ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..b.."'\n");
 				else
@@ -764,7 +764,7 @@ local function getKVs(ply)
 		elseif (player.saveFunctions[k]) then
 			value = player.saveFunctions[k](ply, v);
 		elseif (kind == "table") then
-			local s, r = pcall(glon.encode, v);
+			local s, r = pcall(util.TableToJSON, v);
 			if (not s) then
 				ErrorNoHalt("["..os.date().."] Error encoding "..ply:Name().."'s '"..k.."' table: "..r.."\n");
 			else
