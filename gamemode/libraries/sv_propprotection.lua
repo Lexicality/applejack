@@ -281,7 +281,7 @@ do
 			ply._ppInsert = true;
 			return
 		end
-		local stat, res = pcall(glon.decode, str);
+		local stat, res = pcall(util.JSONToTable, str);
 		if (not stat) then
 			ErrorNoHalt("Unable to decode ", ply:Name(), "'s ppfriends table: ", res, "\n");
 			res = {};
@@ -348,7 +348,7 @@ do
 		buffering = true;
 	end
 	local function PlayerSaveData(ply)
-		local stat, res = pcall(glon.encode, ply._ppFriends);
+		local stat, res = pcall(util.TableToJSON, ply._ppFriends);
 		if (not stat) then
 			ErrorNoHalt("Could not encode ", ply:Name(), "'s PP Friends table: ", res, "\n");
 			return;
