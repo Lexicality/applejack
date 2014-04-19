@@ -11,7 +11,7 @@ SWEP.IconLetter = "c"
 SWEP.DrawCrosshair = true;
 
 function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
-	draw.SimpleText(self.IconLetter, "TitleFont2", x + 0.5*wide, y --[[+ tall*0.2]], Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
+	draw.SimpleText(self.IconLetter, "HL2WeaponIcons", x + 0.5*wide, y --[[+ tall*0.2]], Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
 	self:PrintWeaponInfo(x + wide + 20, y + tall*0.95, alpha)
 end
 

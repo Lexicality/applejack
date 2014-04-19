@@ -1,5 +1,14 @@
 include("shared.lua")
 
+surface.CreateFont("HL2WeaponIcons", {
+	font = "HalfLife2",
+	size = 600,
+	scanlines = 50,
+	additive = true,
+	shadow = true,
+	glow = 1,
+});
+
 SWEP.DrawAmmo			= true
 SWEP.DrawCrosshair		= false
 SWEP.ViewModelFOV		= 80
