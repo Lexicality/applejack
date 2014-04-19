@@ -5,7 +5,6 @@ Name: "cl_credits.lua".
 
 local PANEL = {};
 
--- Store the credits in a string.
 PANEL.credits = [[
 [Credits]
 kuromeku - kuromeku@gmail.com - http://conna.org - Made the core systems of Cider, populated it with items and released it.
@@ -45,10 +44,8 @@ Frosty
 deathstar
 ]]
 
--- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetText(self.credits);
 end
 
--- Register the panel.
 vgui.Register("cider_Credits", PANEL, "MSTextPanel");

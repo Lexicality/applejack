@@ -5,7 +5,6 @@ Name: "cl_donate.lua".
 
 local PANEL = {};
 
--- Store the services in a string.
 PANEL.services = [[
 [Donations]
 Official Forum Thread: http://www.ventmob.com/index.php?topic=101.0
@@ -38,10 +37,8 @@ Made your mind up you want to be a Donator?
 Go to: http://www.ventmob.com/donate/
 ]];
 
--- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetText(self.services)
 end
 
--- Register the panel.
 vgui.Register("cider_Donate", PANEL, "MSTextPanel");

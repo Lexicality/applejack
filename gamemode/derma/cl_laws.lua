@@ -5,9 +5,7 @@ Name: "cl_laws.lua".
 
 local PANEL = {};
 
--- Called when the panel is initialized.
 function PANEL:Init()
-	-- self:SetText(GM.Config["Laws"]);
 end
 
 -- TODO: Rewrite this towering pile of shit.
@@ -67,5 +65,4 @@ function PANEL:Think()
 	end
 end
 
--- Register the panel.
 vgui.Register("cider_Laws", PANEL, "MSTextPanel");

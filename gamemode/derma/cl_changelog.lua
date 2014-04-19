@@ -5,7 +5,6 @@ Name: "cl_changelog.lua".
 
 local PANEL = {};
 
--- Store the changelog in a string.
 PANEL.changelog = [[
 [27/06/2011]
 [Changed] Stamina exhaustion is now only 25%
@@ -594,10 +593,8 @@ PANEL.changelog = [[
 [Feature] Inventory viewer for admins
 ]]
 
--- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetText(self.changelog)
 end
 
--- Register the panel.
 vgui.Register("cider_Changelog", PANEL, "MSTextPanel")

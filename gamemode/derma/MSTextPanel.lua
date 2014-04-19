@@ -14,7 +14,6 @@ function PANEL:Init()
 end
 
 function PANEL:SetText(text)
-
 	local activeItem = nil;
 
 	for _, line in pairs(string.Split(text, "\n")) do
@@ -31,7 +30,6 @@ function PANEL:SetText(text)
 			end
 		end
 	end
-	print("Invalid layout time")
 	self:InvalidateLayout(true);
 end
 
