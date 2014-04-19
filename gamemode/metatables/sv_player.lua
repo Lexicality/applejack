@@ -817,6 +817,7 @@ do
 		GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
 	end
 	function getsavedataquery(q, n)
+		GM:Log(EVENT_SQLDEBUG,"SQL Statement for %q: %s", n, q);
 		local query = GM.Database:query(q);
 		query.onError = onError;
 		query.onSuccess = onSuccess;
