@@ -90,13 +90,13 @@ end
 -- A table that will hold entities that were there when the map started.
 GM.Entities = {}
 
-local function onConnected()
+local function onConnected(db)
 	GM:Log(EVENT_SQLDEBUG,"Connected to the MySQL server!");
 	for _, ply in pairs(player.GetAll()) do
 		ply:SaveData();
 	end
 end
-local function onFailure(q, err)
+local function onConnectionFailed(db, err)
 	GM:Log(EVENT_ERROR,"Error connecting to the MySQL server: %s", err);
 	timer.Simple(60, GM.Database.connect, GM.Database);
 end
@@ -115,6 +115,8 @@ function GM:Initialize()
 
 	-- Initialize a connection to the MySQL database.
 	self.Database = mysqloo.connect(hostname, username, password, database);
+	self.Database.onConnected = onConnected;
+	self.Database.onConnectionFailed = onConnectionFailed;
 	self.Database:connect();
 
 	-- Call the base class function.
