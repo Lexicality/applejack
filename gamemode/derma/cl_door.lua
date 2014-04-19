@@ -31,7 +31,7 @@ function PANEL:Init()
 	-- Create the label panels.
 	self.label = vgui.Create("DLabel", self);
 	self.nameLabel = vgui.Create("DLabel", self);
-	self.nameLabel:SetTextColor( Color(255, 255, 255, 255) );
+	self.nameLabel:SetDark(true);
 	self.nameLabel:SetText("Name:");
 	self.nameLabel:SizeToContents();
 	local function purch()

@@ -29,7 +29,6 @@ function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
 	self.label:SetDark( true );
 	self.label:SetFont("MenuLarge");
-	-- self.label:SetTextColor( color_black );
 	self.label:SizeToContents();
 end
 

@@ -116,13 +116,13 @@ function PANEL:Init()
 	word = (amount > 1) and item.Plural or item.Name;
 	self.name:SetText(amount.." "..word.." (Size: "..item.Size..")");
 	self.name:SizeToContents();
-	self.name:SetTextColor( Color(255, 255, 255, 255) );
+	self.name:SetDark(true);
 
 	-- Create a label for the description.
 	self.description = vgui.Create("DLabel", self);
 	self.description:SetText(item.Description);
 	self.description:SizeToContents();
-	self.description:SetTextColor( Color(255, 255, 255, 255) );
+	self.description:SetDark(true);
 
 	-- Create the spawn icon.
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
@@ -294,7 +294,7 @@ function PANEL:Init()
 	self.spaceUsed = vgui.Create("DLabel", self);
 	self.spaceUsed:SetText("Space Used: "..cider.inventory.getSize().."/"..maximumSpace);
 	self.spaceUsed:SizeToContents();
-	self.spaceUsed:SetTextColor( Color(255, 255, 255, 255) );
+	self.spaceUsed:SetDark(true);
 end
 
 -- Called when the layout should be performed.

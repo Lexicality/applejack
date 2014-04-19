@@ -142,7 +142,7 @@ local PANEL = {};
 function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
 	self.label:SizeToContents();
-	self.label:SetTextColor( Color(255, 255, 255, 255) );
+	self.label:SetDark(true);
 	self.textEntry = vgui.Create("DTextEntry", self);
 
 	-- Create the button.
@@ -171,7 +171,7 @@ local PANEL = {};
 function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
 	self.label:SizeToContents();
-	self.label:SetTextColor( Color(255, 255, 255, 255) );
+	self.label:SetDark(true);
 	self.textButton = vgui.Create("DButton", self);
 	self.textButton:SetDisabled(true);
 
@@ -216,11 +216,11 @@ local PANEL = {};
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
-	self.label:SetTextColor( Color(255, 255, 255, 255) );
+	self.label:SetDark(true);
 
 	-- The description of the team.
 	self.description = vgui.Create("DLabel", self);
-	self.description:SetTextColor( Color(255, 255, 255, 255) );
+	self.description:SetDark(true);
 
 	-- Set the size of the panel.
 	self:SetSize(cider.menu.width, 75);
