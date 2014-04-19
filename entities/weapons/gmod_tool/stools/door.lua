@@ -27,7 +27,7 @@ if (SERVER) then
 else
 	language.Add( "Tool_door_name", "Door STool V2" )
 	language.Add( "Tool_door_desc", "Spawn a Door" )
-	language.Add( "Tool_door_0", "Click somewhere to spawn a door. This will cost $"..GM.Config["Door Cost"] )
+	language.Add( "Tool_door_0", "Click somewhere to spawn a door. This will cost $" .. GM.Config["Door Cost"] )
 
 	language.Add( "Undone_door", "Undone door" )
 	language.Add( "Cleanup_door", "door" )
@@ -39,8 +39,8 @@ end
 local function refund(ent)
 	local owner = ent:GetOwner();
 	if (not IsPlayer(owner)) then return end
-	owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
-	owner:TakeDoor(trace.Entity)
+	owner:Notify("You got $" .. GM.Config["Door Cost"] / 2 .. " for selling your door.", 0);
+	owner:TakeDoor(ent);
 end
 
 
@@ -89,7 +89,7 @@ function TOOL:LeftClick(tr)
 		ent:Lock();
 	end);
 	ply:GiveMoney(-GM.Config["Door Cost"]);
-	ply:Notify("You bought a door for $"..GM.Config["Door Cost"]..".", 0);
+	ply:Notify("You bought a door for $" .. GM.Config["Door Cost"] .. ".", 0);
 	ply:AddCleanup("doors", ent );
 	undo.Create("Door");
 	undo.AddEntity( ent );
