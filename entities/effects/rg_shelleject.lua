@@ -33,7 +33,7 @@ function EFFECT:Init(data)
 
 	local effectdata = EffectData()
 	effectdata:SetOrigin(self.Position)
-	effectdata:SetAngle(self.Angle)
+	effectdata:SetAngles(self.Angle)
 	effectdata:SetEntity(self.WeaponEnt)
 	util.Effect("ShellEject", effectdata)
 
