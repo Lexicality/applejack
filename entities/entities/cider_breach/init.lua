@@ -170,5 +170,5 @@ function ENT:Explode()
 	
 	-- Create the effect from the data.
 	util.Effect("Explosion", effectData);
-	util.BlastDamage(self._Planter ~= NULL and self._Planter or GetWorldEntity(), self, self:GetPos(), 256, 100) -- Ouch!
+	util.BlastDamage(self._Planter ~= NULL and self._Planter or game.GetWorld(), self, self:GetPos(), 256, 100) -- Ouch!
 end

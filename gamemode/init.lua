@@ -931,11 +931,11 @@ function GM:EntityTakeDamage(entity, damageInfo)
 
 		-- Check if the attacker is not a player.
 		if ( not attacker:IsPlayer() ) then
-			if attacker ==GetWorldEntity() and inflictor == player then --hunger
+			if attacker ==game.GetWorld() and inflictor == player then --hunger
 --				player:SetHealth( math.max(player:Health() - damageInfo:GetDamage()	, 0) )
 --				player.ragdoll.health = player:Health()
 --				return
-			elseif ( attacker == GetWorldEntity() ) then
+			elseif ( attacker == game.GetWorld() ) then
 				if ( ( entity._NextWorldDamage and entity._NextWorldDamage > CurTime() )
 				or damageInfo:GetDamage() <= 10 ) then return end
 
@@ -956,7 +956,7 @@ function GM:EntityTakeDamage(entity, damageInfo)
 		end
 
 		-- Check if the player is supposed to scale damage.
-		if (entity._Player._ScaleDamage and attacker ~= GetWorldEntity()) then damageInfo:ScaleDamage(entity._Player._ScaleDamage) end
+		if (entity._Player._ScaleDamage and attacker ~= game.GetWorld()) then damageInfo:ScaleDamage(entity._Player._ScaleDamage) end
 
 		-- Take the damage from the player's health.
 		ply:SetHealth( math.max(ply:Health() - damageInfo:GetDamage(), 0) )

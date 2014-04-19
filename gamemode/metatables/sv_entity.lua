@@ -696,7 +696,7 @@ function meta:SetPPSpawner(target)
 		self._pp.Spawner     = target;
 		self._pp.SpawnerName = target:Name();
 	else
-		self._pp.Spawner     = GetWorldEntity();
+		self._pp.Spawner     = game.GetWorld();
 		self._pp.SpawnerName = "The World";
 	end
 end
