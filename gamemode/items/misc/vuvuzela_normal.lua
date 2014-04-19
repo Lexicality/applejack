@@ -11,6 +11,6 @@ ITEM.Model			= "models/vuvuzela.mdl";
 ITEM.Batch			= 1;
 ITEM.Store			= FALSE_FALSE_OH_A_HUNDED_TIMES_FALSE;--true;
 ITEM.Plural			= "Vuvuzelas";
-ITEM.Description	= "Celebrate the World Cup in style!";
+ITEM.Description	= "Celebrate in style!";
 ITEM.Base			= "weapon";
 hook.Add("PlayerCanDrop", "Nononono", function (ply, class) if (class == "vuvuzela_normal") then return false end end);
