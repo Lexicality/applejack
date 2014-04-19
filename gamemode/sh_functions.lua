@@ -75,6 +75,7 @@ function gamemode.Call(name, ...)
 	local gm = gmod.GetGamemode() or GM or GAMEMODE or {};
 	if (not gm[name]) then
 		ErrorNoHalt("Hook called '",name,"' called that does not have a GM: function!\n");
+		debug.Trace();
 	end
 	return hook.Call(name, gm, ...);
 end
