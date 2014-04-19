@@ -23,6 +23,8 @@
     SOFTWARE.
 ]]
 
+AddCSLuaFile()
+
 module("datastream", package.seeall)
 
 local hackyglon_meta = {
