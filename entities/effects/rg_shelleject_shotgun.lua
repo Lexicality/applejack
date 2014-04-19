@@ -1,8 +1,4 @@
-
-
-
 function EFFECT:Init(data)
-
 	self.WeaponEnt = data:GetEntity()
 	self.Attachment = data:GetAttachment()
 	if not (self.WeaponEnt:IsValid() and self.WeaponEnt:IsWeapon()) then return end
@@ -59,21 +55,11 @@ function EFFECT:Init(data)
 		end
 
 	emitter:Finish()
-
 end
-
 
 function EFFECT:Think()
-
 	return false
-
 end
-
 
 function EFFECT:Render()
-
-
 end
-
-
-

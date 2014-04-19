@@ -1,7 +1,4 @@
-
-
 function EFFECT:Init(data)
-
 	self.WeaponEnt = data:GetEntity()
 	self.Attachment = data:GetAttachment()
 
@@ -41,21 +38,11 @@ function EFFECT:Init(data)
 		particle:SetAirResistance(80)
 
 	emitter:Finish()
-
 end
-
 
 function EFFECT:Think()
-
 	return false
-
 end
-
 
 function EFFECT:Render()
-
-
 end
-
-
-
