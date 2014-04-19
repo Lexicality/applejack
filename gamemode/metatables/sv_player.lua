@@ -686,7 +686,7 @@ end
 local getloaddataquery
 do
 	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %i"
-	local function onFailure(query, err)
+	local function onError(query, err)
 		GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
 		timer.Simple(30, timerfunc, query.ply);
 	end
@@ -718,7 +718,7 @@ do
 		query.name = ply:Name();
 		query.ply  = ply;
 		query.onSuccess = onSuccess;
-		query.onFailure = onFailure;
+		query.onError = onError;
 		query.onData    = onData;
 		query:start();
 		return query;
@@ -810,7 +810,7 @@ end
 
 local getsavedataquery
 do
-	local function onFailure(query, err)
+	local function onError(query, err)
 		GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", query.name, err);
 	end
 	local function onSuccess(query)
@@ -818,7 +818,7 @@ do
 	end
 	function getsavedataquery(q, n)
 		local query = GM.Database:query(q);
-		query.onFailure = onFailure;
+		query.onError = onError;
 		query.onSuccess = onSuccess;
 		query.name = n;
 		query:start();
