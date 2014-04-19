@@ -938,4 +938,6 @@ function cider.chatBox.chatText(index, name, text, filter)
 end
 
 -- Create all the derma panels.
-cider.chatBox.createDermaAll();
+hook.Add("InitPostEntity", "Chatbox Derma", function()
+	cider.chatBox.createDermaAll();
+end);
