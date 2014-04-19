@@ -1,5 +1,5 @@
 --[[
-    ~ Breach Serverside Entity ~
+	~ Breach Serverside Entity ~
 	~ Applejack ~
 --]]
 
@@ -18,10 +18,10 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE);
 	self.PhysgunDisabled = true
 	self.m_tblToolsAllowed = {}
-	
+
 	-- Get the physics object of the entity.
 	local physicsObject = self:GetPhysicsObject();
-	
+
 	-- Check if the physics object is a valid entity.
 	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
@@ -37,14 +37,14 @@ function ENT:SetDoor(door, trace, owner)
 	self._Door = door;
 	self._Door:DeleteOnRemove(self);
 	self._Planter = owner
-    self._PlanterName = owner:Name();
-	
+	self._PlanterName = owner:Name();
+
 	-- Set the position and angles of the entity.
 	self:SetPos(trace.HitPos);
 	self:SetAngles( trace.HitNormal:Angle() + Angle(-90, 0, 180) );
 
 	if door:GetClass() == "prop_door_rotating" then
-	
+
 		self:SetParent(door)
 		local lpos = door:WorldToLocal(self:GetPos())
 		if lpos.x < 0 then
@@ -61,9 +61,9 @@ function ENT:SetDoor(door, trace, owner)
 	else
 		constraint.Weld(door, self, 0, 0);
 	end
-	
-    -- Trigger teh b33ps
-    self.Beeping = true;
+
+	-- Trigger teh b33ps
+	self.Beeping = true;
 end
 
 ENT.Beeping = false;
@@ -71,50 +71,50 @@ ENT.NextBeep = 0;
 ENT.NumBeeps = 0;
 ENT.FastBeeping = false;
 function ENT:Think()
-    if (not self.Beeping) then return; end
-    if (not IsValid(self._Door)) then
-        self.Beeping = false;
-        self:Remove();
-        return;
-    end
-    local ctime = CurTime();
-    if (self.NextBeep > ctime) then return; end
-    self:Beep();
-    self.NumBeeps = self.NumBeeps + 1;
-    if (self.NumBeeps == 5) then
-        self.FastBeeping = true;
-    elseif (self.NumBeeps == 10) then
-        self.Beeping = false;
-        -- BOOM
-        self:Breach();
-        return;
-    end
-    if (self.FastBeeping) then
-        self.NextBeep = ctime + 0.2;
-    else
-        self.NextBeep = ctime + 1;
-    end
+	if (not self.Beeping) then return; end
+	if (not IsValid(self._Door)) then
+		self.Beeping = false;
+		self:Remove();
+		return;
+	end
+	local ctime = CurTime();
+	if (self.NextBeep > ctime) then return; end
+	self:Beep();
+	self.NumBeeps = self.NumBeeps + 1;
+	if (self.NumBeeps == 5) then
+		self.FastBeeping = true;
+	elseif (self.NumBeeps == 10) then
+		self.Beeping = false;
+		-- BOOM
+		self:Breach();
+		return;
+	end
+	if (self.FastBeeping) then
+		self.NextBeep = ctime + 0.2;
+	else
+		self.NextBeep = ctime + 1;
+	end
 end
 
 
 function ENT:Breach()
-    local event = ""
-    local addon = self._Door:GetDoorName()
-    if addon ~= "" then
-        addon = ": "..addon
-    end
-    if self._Door:IsOwned() then
-        event = self._Door:GetPossessiveName()
-    else
-        event = "an unowned"
-    end
-    GM:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
-    GM:OpenDoor(self._Door, 0, true, self._Planter ~= NULL and gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door));
-    if self._Door:GetClass() == "prop_door_rotating" then
-        self:BlowDoorOffItsHinges()
-    end
-    self:Explode();
-    self:Remove();
+	local event = ""
+	local addon = self._Door:GetDoorName()
+	if addon ~= "" then
+		addon = ": "..addon
+	end
+	if self._Door:IsOwned() then
+		event = self._Door:GetPossessiveName()
+	else
+		event = "an unowned"
+	end
+	GM:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
+	GM:OpenDoor(self._Door, 0, true, self._Planter ~= NULL and gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door));
+	if self._Door:GetClass() == "prop_door_rotating" then
+		self:BlowDoorOffItsHinges()
+	end
+	self:Explode();
+	self:Remove();
 end
 
 local function dothrow(ent,backwards)
@@ -149,7 +149,7 @@ function ENT:BlowDoorOffItsHinges()
 	end
 	ent:Spawn()
 	ent:Activate()
-    ent:SetPPOwner(NULL);
+	ent:SetPPOwner(NULL);
 	local door = self._Door
 	timer.Simple(0.1,dothrow,ent,backwards);
 	timer.Simple(GM.Config["Jam Time"],doremove,ent,door)
@@ -162,12 +162,12 @@ end
 -- Explode the entity.
 function ENT:Explode()
 	local effectData = EffectData();
-	
+
 	-- Set the information for the effect.
 	effectData:SetStart( self:GetPos() );
 	effectData:SetOrigin( self:GetPos() );
 	effectData:SetScale(1);
-	
+
 	-- Create the effect from the data.
 	util.Effect("Explosion", effectData);
 	util.BlastDamage(self._Planter ~= NULL and self._Planter or game.GetWorld(), self, self:GetPos(), 256, 100) -- Ouch!

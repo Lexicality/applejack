@@ -14,7 +14,7 @@ SWEP.WorldModel = "models/weapons/w_fists.mdl";
 SWEP.AnimPrefix	= "admire";
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
-  
+
 -- Set the primary fire settings.
 SWEP.Primary.Damage = 1.5;
 SWEP.Primary.ClipSize = -1;

@@ -37,12 +37,12 @@ else
 end
 
 local function refund(ent)
-    local owner = ent:GetOwner();
-    if (not IsPlayer(owner)) then
-        return;
-    end
-    owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
-    owner:TakeDoor(trace.Entity)
+	local owner = ent:GetOwner();
+	if (not IsPlayer(owner)) then
+		return;
+	end
+	owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
+	owner:TakeDoor(trace.Entity)
 end
 
 
@@ -85,7 +85,7 @@ function TOOL:LeftClick(tr)
 	ent:Activate();
 	ent._Autoclose = math.max(self:GetClientNumber("closetime"),5);
 	ent:MakeOwnable();
-    ent:CallOnRemove("Refund", refund);
+	ent:CallOnRemove("Refund", refund);
 	timer.Simple(0,function()
 		ply:GiveDoor(ent,ply:GetName().."'s door",true);
 		ent:Lock();

@@ -14,10 +14,10 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);
 	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-	
+
 	-- Get the physics object of the entity.
 	local physicsObject = self:GetPhysicsObject();
-	
+
 	-- Check if the physics object is a valid entity.
 	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
@@ -29,14 +29,14 @@ end
 local linelength = 30;
 function ENT:SetText(text)
 	local lines, pos = {}, 1;
-	
+
 	local words = text:sub(pos, pos + linelength);
 	while (words ~= "") do
 		lines[#lines+1] = words;
 		pos = pos + linelength + 1;
 		words = text:sub(pos, pos + linelength);
 	end
-	
+
 	for i, words in pairs(lines) do
 		self:SetNWString("text_" .. i, words);
 	end

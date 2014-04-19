@@ -1,10 +1,10 @@
 
 
 function EFFECT:Init(data)
-	
+
 	self.WeaponEnt = data:GetEntity()
 	self.Attachment = data:GetAttachment()
-	
+
 	self.Position = self:GetTracerShootPos(data:GetOrigin(), self.WeaponEnt, self.Attachment)
 	self.Forward = data:GetNormal()
 	self.Angle = self.Forward:Angle()
@@ -12,13 +12,13 @@ function EFFECT:Init(data)
 	self.Up = self.Angle:Up()
 
 	if not IsValid(self.WeaponEnt) or not self.WeaponEnt:GetOwner() or self.WeaponEnt == NULL or self.WeaponEnt:GetOwner() == NULL then return end
-	
-	local AddVel = self.WeaponEnt:GetOwner():GetVelocity()
-	
-	local emitter = ParticleEmitter(self.Position)
-		
 
-	for i=1,2 do 
+	local AddVel = self.WeaponEnt:GetOwner():GetVelocity()
+
+	local emitter = ParticleEmitter(self.Position)
+
+
+	for i=1,2 do
 		local particle = emitter:Add("particle/particle_smokegrenade", self.Position)
 		particle:SetVelocity(40*i*self.Forward + 10*VectorRand() + AddVel)
 		particle:SetDieTime(math.Rand(0.36,0.38))
@@ -40,13 +40,13 @@ end
 function EFFECT:Think()
 
 	return false
-	
+
 end
 
 
 function EFFECT:Render()
 
-	
+
 end
 
 

@@ -16,11 +16,11 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_BBOX);
 	self:SetUseType(SIMPLE_USE);
 	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-    self:SetPPOwner(NULL);
-	
+	self:SetPPOwner(NULL);
+
 	-- Get the physics object of the entity.
 	local physicsObject = self:GetPhysicsObject();
-	
+
 	-- Check if the physics object is a valid entity.
 	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
@@ -70,7 +70,7 @@ function ENT:Use(activator, caller)
 			return false;
 		elseif (not gamemode.Call("PlayerCanUseItem", activator, self.item)) then
 			return false;
-		end 		
+		end
 		activator._NextUseItem = CurTime() + 2;
 		if (self.item.Weapon) then
 			activator._NextHolsterWeapon = CurTime() + 5;

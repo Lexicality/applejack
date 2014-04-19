@@ -19,10 +19,10 @@ function ENT:Initialize()
 	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 	self.PhysgunDisabled = true
 	self.m_tblToolsAllowed = {}
-	
+
 	-- Get the physics object of the entity.
 	local physicsObject = self:GetPhysicsObject();
-	
+
 	-- Check if the physics object is a valid entity.
 	if ( IsValid(physicsObject) ) then
 		physicsObject:Wake();
@@ -35,13 +35,13 @@ function ENT:SetDoor(door, trace,owner)
 	self._Door = door;
 	self._Door:DeleteOnRemove(self);
 	self._Planter = owner
-	
+
 	-- Set the position and angles of the entity.
 	self:SetPos(trace.HitPos);
 	self:SetAngles( trace.HitNormal:Angle() + Angle(0, 0, 0) );
 
 	if door:GetClass() == "prop_door_rotating" then
-	
+
 		self:SetParent(door)
 		local lpos = door:WorldToLocal(self:GetPos())
 		if lpos.x < 0 then
@@ -89,7 +89,7 @@ function ENT:OnTakeDamage(damageInfo)
 						addon = ": "..name
 					end
 				end
-					
+
 				GM:Log(EVENT_EVENT,"%s destroyed the padlock on %s %s%s.",damageInfo:GetAttacker():GetName(),event,entname,addon)
 			end
 			self._Door:SetNWBool("Padlocked",false)

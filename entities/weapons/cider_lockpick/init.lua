@@ -9,7 +9,7 @@ umsg.PoolString("dosnd");
 -- Called when the player attempts to primary fire.
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
-	
+
 
 	-- Set the animation of the owner to one of them attacking.
 	-- self.Owner:SetAnimation(PLAYER_ATTACK1);
@@ -76,7 +76,7 @@ function SWEP:PrimaryAttack()
 	-- Add to the lockpicker's pick break chance and tell them.
 	owner._LockpickChance = owner._LockpickChance + GM.Config["Lockpick Break Chance"];
 	-- Since we can now pick the cuffs on players to unarrest them, we need to treat them differently.
-	if (ent:IsPlayer()) then 
+	if (ent:IsPlayer()) then
 		ent:UnArrest();
 		ent:Emote("pulls off the unlocked handcuffs and throws them away hard enough to break them.");
 		GM:Log(EVENT_EVENT, "%s picked the lock on %s handcuffs", ply:Name(), ent:Name());

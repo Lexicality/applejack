@@ -12,7 +12,7 @@ else
 	SWEP.DrawAmmo = false;
 	SWEP.IconLetter = "c"
 	SWEP.DrawCrosshair = true;
-	
+
 	function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
 		draw.SimpleText(self.IconLetter, "TitleFont2", x + 0.5*wide, y --[[+ tall*0.2]], Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
 		self:PrintWeaponInfo(x + wide + 20, y + tall*0.95, alpha)
@@ -32,7 +32,7 @@ SWEP.WorldModel = "models/weapons/w_crowbar.mdl";
 -- Set whether it's spawnable by players and by administrators.
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
-  
+
 -- Set the primary fire settings.
 SWEP.Primary.Delay = 0.75;
 SWEP.Primary.ClipSize = -1;
@@ -124,7 +124,7 @@ function SWEP:DoSound(tabn,sn)
 		tab = fiddlesounds;
 	elseif (tabn == 1) then
 		tab = unlocksounds;
-	elseif (tabn == 2) then	
+	elseif (tabn == 2) then
 		tab = breaksounds
 	elseif (tabn == 3) then
 		tab = thumpsounds;
@@ -140,5 +140,5 @@ function SWEP:DoSound(tabn,sn)
 		umsg.Char(sn);
 		umsg.End();
 	end
-	self:EmitSound(tab[sn]);	
+	self:EmitSound(tab[sn]);
 end

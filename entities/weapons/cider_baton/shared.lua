@@ -16,7 +16,7 @@ SWEP.WorldModel = "models/weapons/w_stunbaton.mdl";
 SWEP.AnimPrefix	= "stunstick";
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
-  
+
 -- Set the primary fire settings.
 SWEP.Primary.Delay = 0.75;
 SWEP.Primary.ClipSize = -1;
@@ -57,15 +57,15 @@ function SWEP:DoHitEffects(sound)
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_impact"..math.random(1, 2)..".wav");
 		end
-		
+
 		-- Create new effect data.
 		local effectData = EffectData();
-		
+
 		-- Set some information about the effect.
 		effectData:SetStart(trace.HitPos);
 		effectData:SetOrigin(trace.HitPos)
 		effectData:SetScale(32);
-		
+
 		-- Create the effect.
 		util.Effect("StunstickImpact", effectData);
 	else
