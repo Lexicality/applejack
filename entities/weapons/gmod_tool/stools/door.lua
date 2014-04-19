@@ -15,12 +15,12 @@ TOOL.ClientConVar[ "hardware" ] = "1"
 cleanup.Register( "door" )
 
 -- Tool Infos
-TOOL.Category		= "Construction"	// Name of the category
-TOOL.Name			= "#Door V2"		// Name to display
+TOOL.Category	= "Construction"	-- Name of the category
+TOOL.Name		= "#Door V2"		-- Name to display
 
 if (SERVER) then
 	if ( not ConVarExists("sbox_maxdoors") ) then
-		CreateConVar("sbox_maxdoors", GM.Config["Maximum Doors"], {FCVAR_NOTIFY;FCVAR_REPLICATED} );
+		CreateConVar("sbox_maxdoors", GM.Config["Maximum Doors"], { FCVAR_NOTIFY, FCVAR_REPLICATED } );
 	else
 		RunConsoleCommand("sbox_maxdoors", GM.Config["Maximum Doors"]);
 	end
@@ -38,9 +38,7 @@ end
 
 local function refund(ent)
 	local owner = ent:GetOwner();
-	if (not IsPlayer(owner)) then
-		return;
-	end
+	if (not IsPlayer(owner)) then return end
 	owner:Notify("You got $"..self.Config["Door Cost"]/2 .." for selling your door.",0)
 	owner:TakeDoor(trace.Entity)
 end
@@ -77,7 +75,7 @@ function TOOL:LeftClick(tr)
 		ent:SetKeyValue("distance",		90);
 		ent:SetKeyValue("speed",		100);
 		ent:SetKeyValue("returndelay",	-1);
-		ent:SetKeyValue("spawnflags",	8192); //"Use closes"
+		ent:SetKeyValue("spawnflags",	8192); -- "Use closes"
 		ent:SetKeyValue("forceclosed",	0);
 	end
 	ent._State = "closed";
@@ -102,51 +100,67 @@ end
 
 function TOOL.BuildCPanel( CPanel )
 
-	// HEADER
-	CPanel:AddControl( "Header", { Text = "#Tool_door_name", Description	= "#Tool_door_desc" }  )
+	-- HEADER
+	CPanel:AddControl( "Header", {
+		Text        = "#Tool_door_name";
+		Description	= "#Tool_door_desc";
+	} );
 
-	// PRESETS
-	local params = { Label = "#Presets", MenuButton = 1, Folder = "door", Options = {}, CVars = {} }
+	-- PRESETS
+	local params = {
+		Label      = "#Presets";
+		MenuButton = 1;
+		Folder     = "door";
+		Options    = {};
+		CVars      = {};
+	}
 
-		params.Options.default = {
-			door_model = "models/props_combine/combine_door01.mdl",
-			door_open	= 1,
-			door_close	= 2 }
+	params.Options.default = {
+		door_model = "models/props_combine/combine_door01.mdl";
+		door_open  = 1;
+		door_close = 2;
+	}
 
-		table.insert( params.CVars, "door_open" )
-		table.insert( params.CVars, "door_close" )
-		table.insert( params.CVars, "door_model" )
+	table.insert( params.CVars, "door_open"  )
+	table.insert( params.CVars, "door_close" )
+	table.insert( params.CVars, "door_model" )
 
 	CPanel:AddControl( "ComboBox", params )
 
 
-	// EMITTERS
-	local params = { Label = "#Models", --[[Height = 150,]]MenuButton = 0, Options = {} }
-	params.Options[ "Tall Combine Door" ] = { door_class = "prop_dynamic",	door_model = "models/props_combine/combine_door01.mdl" }
-	params.Options[ "Lab Elevator Door" ] = { door_class = "prop_dynamic",	door_model = "models/props_lab/elevatordoor.mdl" }
-	params.Options[ "Wide Combine Door" ] = { door_class = "prop_dynamic",	door_model = "models/combine_gate_Vehicle.mdl" }
-	params.Options[ "Thin Combine Door" ] = { door_class = "prop_dynamic",	door_model = "models/combine_gate_citizen.mdl" }
-	params.Options[ "Secret Lab Door"   ] = { door_class = "prop_dynamic",	door_model = "models/props_doors/doorKLab01.mdl" }
-	params.Options[ "Door with a handle"] = { door_hardware = "1",			door_class = "prop_door_rotating",door_model = "models/props_c17/door01_left.mdl" }
-	params.Options[ "Door with a bar"   ] = { door_hardware = "2",			door_class = "prop_door_rotating",door_model = "models/props_c17/door01_left.mdl" }
+	-- EMITTERS
+	local params = {
+		Label = "#Models",
+		-- Height = 150,
+		MenuButton = 0,
+		Options = {}
+	}
+	params.Options[ "Tall Combine Door" ] = { door_class = "prop_dynamic",       door_model = "models/props_combine/combine_door01.mdl" }
+	params.Options[ "Lab Elevator Door" ] = { door_class = "prop_dynamic",       door_model = "models/props_lab/elevatordoor.mdl" }
+	params.Options[ "Wide Combine Door" ] = { door_class = "prop_dynamic",       door_model = "models/combine_gate_Vehicle.mdl" }
+	params.Options[ "Thin Combine Door" ] = { door_class = "prop_dynamic",       door_model = "models/combine_gate_citizen.mdl" }
+	params.Options[ "Secret Lab Door"   ] = { door_class = "prop_dynamic",       door_model = "models/props_doors/doorKLab01.mdl" }
+	params.Options[ "Door with a handle"] = { door_class = "prop_door_rotating", door_model = "models/props_c17/door01_left.mdl", door_hardware = "1" }
+	params.Options[ "Door with a bar"   ] = { door_class = "prop_door_rotating", door_model = "models/props_c17/door01_left.mdl", door_hardware = "2" }
 	CPanel:AddControl( "ComboBox", params )
-	CPanel:AddControl( "Slider",  { Label	= "#AutoClose Delay",
-								Type	= "Float",
-								Min		= 5,
-								Max		= 120,
-								Command = "door_closetime" }	 )
+	CPanel:AddControl( "Slider",  {
+		Label	= "#AutoClose Delay",
+		Type	= "Float",
+		Min		= 5,
+		Max		= 120,
+		Command = "door_closetime"
+	} )
 end
 
 -- This is here because the ghost should match the spawnpos, and we spawn funky.
 function TOOL:UpdateGhost( ent, Player )
 
-	if ( !ent ) then return end
-	if ( !ent:IsValid() ) then return end
+	if ( not IsValid(ent) ) then return end
 
-	local tr 	= util.GetPlayerTrace( Player, Player:GetCursorAimVector() )
-	local trace 	= util.TraceLine( tr )
-	if (!trace.Hit) then return end
-	local ang = Player:GetAimVector():Angle()
+	local tr    = util.GetPlayerTrace( Player, Player:GetCursorAimVector() )
+	local trace = util.TraceLine( tr )
+	if (not trace.Hit) then return end
+	local ang  = Player:GetAimVector():Angle()
 	local minn = ent:OBBMins()
 	trace.HitPos.Z = trace.HitPos.Z - (trace.HitNormal.z * minn.z)
 	ent:SetPos( trace.HitPos )
@@ -157,21 +171,21 @@ end
 -- This is in here so we can have all doors ghosted.
 function TOOL:MakeGhostEntity( model, pos, angle )
 
-	if (!util.IsValidModel(model)) then return end
+	if (not util.IsValidModel(model)) then return end
 	util.PrecacheModel( model )
 
-	// We do ghosting serverside in single player
-	// It's done clientside in multiplayer
-	if (SERVER && !game.SinglePlayer()) then return end
-	if (CLIENT && game.SinglePlayer()) then return end
+	-- We do ghosting serverside in single player
+	-- It's done clientside in multiplayer
+	if (SERVER and not game.SinglePlayer()) then return end
+	if (CLIENT and game.SinglePlayer()) then return end
 
-	// Release the old ghost entity
+	-- Release the old ghost entity
 	self:ReleaseGhostEntity()
 
 	self.GhostEntity = ents.Create( "prop_physics" )
 
-	// If there's too many entities we might not spawn..
-	if (!self.GhostEntity:IsValid()) then
+	-- If there's too many entities we might not spawn..
+	if (not self.GhostEntity:IsValid()) then
 		self.GhostEntity = nil
 		return
 	end
@@ -191,7 +205,7 @@ end
 
 function TOOL:Think()
 
-	if (!self.GhostEntity || !self.GhostEntity:IsValid() || self.GhostEntity:GetModel() != self:GetClientInfo( "model" )) then
+	if (not self.GhostEntity or not self.GhostEntity:IsValid() or self.GhostEntity:GetModel() ~= self:GetClientInfo( "model" )) then
 		self:MakeGhostEntity( self:GetClientInfo( "model" ), Vector(0,0,0), Angle(0,0,0) )
 	end
 
