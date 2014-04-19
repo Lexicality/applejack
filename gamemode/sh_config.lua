@@ -293,7 +293,6 @@ config["Banned Props"] = {
 
 }; -- Props that are not allowed to be spawned. (make sure they are all lower case!)
 config["Rules"] = [[
-<Ventmob Roleplay Rules>
 [General]
 DO NOT EXPLOIT ANY SOURCE GLITCH, MAP GLITCH OR SCRIPT GLITCH - NO MATTER HOW SMALL - INTENTIONALLY. YOU WILL BE PERMANENTLY BANNED.
 DO NOT USE ANY CLIENTSIDE MODIFICATIONS OR CHEATS TO GIVE YOU AN ADVANTAGE OVER OTHER PLAYERS - IF CAUGHT YOU WILL BE PERMANENTLY BANNED.
@@ -405,7 +404,7 @@ Take screenshots, get as much evidence as you can and post here:
 http://www.ventmob.com/index.php?board=6.0
 ]]; -- The rules for the server.
 config["Laws"] = [[
-[Permanent Laws0]
+[Permanent Laws]
 Contraband is illegal. Anyone found with it will be arrested. Any police found with it will be demoted on the spot.
 Murder is illegal.
 Assault is illegal.
@@ -426,7 +425,7 @@ Civilians may not build in a public area without permission.
 Civilians may not block any offical thoroughfare without written consent from the mayor.
 Civilians may not use silenced weapons
 Any civilian seen with an illegal or police weapon will be arrested on the spot.
-[Temporary Laws1]
+[Temporary Laws]
 ]]
 
 GM.Config = config;
