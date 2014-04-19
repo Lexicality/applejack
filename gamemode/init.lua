@@ -153,7 +153,8 @@ hook.Add( "AcceptStream", "AcceptStream", AcceptStream )
 function GM:InitPostEntity()
 	local count = 0;
 	for _, ent in pairs(ents.GetAll()) do
-		if (ent:IsDoor()) then
+		-- FIXME: Check to see if this is my fault
+		if (IsValid(ent) and ent:IsDoor()) then
 			ent:MakeOwnable();
 			doors.Load(ent)
 		end
