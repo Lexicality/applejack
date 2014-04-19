@@ -1,11 +1,10 @@
 --[[
-Name: "shared.lua".
+	~ MP5 SWEP ~
 	~ Applejack ~
 --]]
 
-if (SERVER) then
-	AddCSLuaFile("shared.lua");
-else
+AddCSLuaFile();
+if (CLIENT) then
 	SWEP.DrawAmmo = true;
 	SWEP.DrawCrosshair = false;
 	SWEP.ViewModelFlip = true;
@@ -13,9 +12,9 @@ else
 	SWEP.CustomCrosshair = false -- = true;
 	SWEP.Slot = 2;
 	SWEP.SlotPos = 3;
-	SWEP.IconLetter = "q";
+	SWEP.IconLetter = "x";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_ump", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont( "cider_mp5", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
 end
 
 -- Set the base and category.
@@ -23,9 +22,9 @@ SWEP.Base = "rg_base";
 SWEP.Category = "Cider";
 
 -- Set some shared information.
-SWEP.PrintName = "UMP 4.5";
-SWEP.Author = "Lexi";
-SWEP.Purpose = "A small sub-machine gun with a medium fire rate but high damage.";
+SWEP.PrintName = "MP5";
+SWEP.Author = "kuromeku";
+SWEP.Purpose = "A small sub-machine gun with a fast fire rate.";
 SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
@@ -42,12 +41,12 @@ SWEP.CanPenetrate = true;
 SWEP.CanPenetrateWorld = true;
 SWEP.BulletTracer = 1;
 
--- Set some information for the primary fire.ump45-1.
-SWEP.Primary.Sound = Sound("Weapon_UMP45.Single");
-SWEP.Primary.Damage = 15;
+-- Set some information for the primary fire.
+SWEP.Primary.Sound = Sound("Weapon_MP5Navy.Single");
+SWEP.Primary.Damage = 10;
 SWEP.Primary.NumShots = 1;
-SWEP.Primary.ClipSize = 25;
-SWEP.Primary.DefaultClip = 25;
+SWEP.Primary.ClipSize = 31;
+SWEP.Primary.DefaultClip = 31;
 SWEP.Primary.Ammo = "smg1";
 
 -- Set some information for the secondary fire.
@@ -67,9 +66,11 @@ SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
+SWEP.IronSightsPos = Vector(4.7456, -4.1011, 1.7288);
+SWEP.IronSightsAng = Vector(2.0327, -0.1475, 0.2779);
 --------------------
-SWEP.IronSightsPos = Vector (7.3074, -3.7238, 3.2311)
-SWEP.IronSightsAng = Vector (-1.18, 0.1421, 0)
+SWEP.IronSightsPos = Vector (4.7431, -3.1151, 1.8602)
+SWEP.IronSightsAng = Vector (1.3507, -0.1619, 0)
 --------------------
 
 
@@ -81,9 +82,8 @@ SWEP.DrawSniperSights = false;
 SWEP.DrawRifleSights = false;
 
 -- Set some information about the model and visual effects.
-SWEP.ViewModel = "models/weapons/v_smg_ump45.mdl";
-SWEP.WorldModel = "models/weapons/w_smg_ump45.mdl";
-
+SWEP.ViewModel = "models/weapons/v_smg_mp5.mdl";
+SWEP.WorldModel = "models/weapons/w_smg_mp5.mdl";
 SWEP.MuzzleEffect = "rg_muzzle_rifle";
 SWEP.ShellEffect = "rg_shelleject_rifle";
 SWEP.MuzzleAttachment = "1";
@@ -96,6 +96,7 @@ SWEP.RunModifier = 1.5;
 SWEP.JumpModifier = 2;
 
 -- Set some information about the available fire modes and RPM.
-SWEP.AvailableFireModes = {"Auto", "Semi"};
-SWEP.AutoRPM = 600;
-SWEP.SemiRPM = 500;
+SWEP.AvailableFireModes = {"Auto", "Burst", "Semi"};
+SWEP.AutoRPM = 750;
+SWEP.SemiRPM = 700;
+SWEP.BurstRPM = 850;

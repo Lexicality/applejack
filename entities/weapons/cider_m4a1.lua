@@ -1,11 +1,10 @@
 --[[
-Name: "shared.lua".
+	~ M4A1 SWEP ~
 	~ Applejack ~
 --]]
 
-if (SERVER) then
-	AddCSLuaFile("shared.lua");
-else
+AddCSLuaFile();
+if (CLIENT) then
 	SWEP.DrawAmmo = true;
 	SWEP.DrawCrosshair = false;
 	SWEP.ViewModelFlip = true;

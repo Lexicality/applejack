@@ -1,11 +1,10 @@
 --[[
-Name: "shared.lua".
+	~ M3 Super 90 SWEP ~
 	~ Applejack ~
 --]]
 
-if (SERVER) then
-	AddCSLuaFile("shared.lua");
-else
+AddCSLuaFile();
+if (CLIENT) then
 	SWEP.DrawAmmo = true;
 	SWEP.DrawCrosshair = false;
 	SWEP.ViewModelFlip = true;
@@ -104,13 +103,13 @@ SWEP.SemiRPM = 400;
 -- Called when the SWEP is reloaded.
 function SWEP:Reload()
 	if (CLIENT) then return end
-	
+
 	-- Set our iron sights to be off.
 	self:SetIronsights(false);
-	
+
 	-- Check if we are already reloading.
 	if ( self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
-	
+
 	-- Check if we can reload.
 	if (self.Weapon:Clip1() < self.Primary.ClipSize and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
 		self.Weapon:SetNetworkedBool("reloading", true);
@@ -125,19 +124,19 @@ function SWEP:Think()
 		if ( self.Weapon:GetVar("reloadtimer", 0) < CurTime() ) then
 			if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
 				self.Weapon:SetNetworkedBool("reloading", false)
-				
+
 				-- Return here because we've finished reloading.
 				return;
 			end
-			
+
 			-- Set their reload timer to be a while from now.
 			self.Weapon:SetVar("reloadtimer", CurTime() + 0.3);
 			self.Weapon:SendWeaponAnim(ACT_VM_RELOAD);
-			
+
 			-- Remove ammo from the owner.
 			self.Owner:RemoveAmmo(1, self.Primary.Ammo, false);
 			self.Weapon:SetClip1( self.Weapon:Clip1() + 1);
-			
+
 			-- Check if we've finished reloading.
 			if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
 				self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH);
@@ -158,14 +157,14 @@ SWEP.ShotgunRPM = 175;
 -- Called when the SWEP fires.
 SWEP.FireModes.Shotgun.FireFunction = function(self)
 	if ( !self:CanFire( self.Weapon:Clip1() ) or self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
-	
+
 	-- Check if we are not an NPC.
 	if (!self.OwnerIsNPC) then self:TakePrimaryAmmo(1); end
 
 	-- Shoot a cheap bullet and apply recoil to the SWEP.
 	self:RGShootBulletCheap(15, self.BulletSpeed, 0.075, 0, Vector(0,0,0), self.FireModes.Shotgun.NumBullets);
 	self:ApplyRecoil(6, 1);
-	
+
 	-- Emit the weapon sound and set the next primary fire.
 	self.Weapon:EmitSound(self.Primary.Sound);
 	self.Weapon:SetNextPrimaryFire(CurTime() + 1);
