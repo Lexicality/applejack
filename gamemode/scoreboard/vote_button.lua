@@ -70,7 +70,7 @@ end
 function PANEL:Paint()
 
 	if ( !self.Material ) then
-		self.Material = surface.GetTextureID( "gui/silkicons/" .. self.MaterialName )
+		self.Material = surface.GetTextureID( "icon16/" .. self.MaterialName )
 	end
 
 	local bgColor = Color( 0,0,0,10 )

@@ -170,7 +170,7 @@ local function paintbox(box, text) -- Does the basic shit for the box
 	icon = box.icon;
 	if (icon) then
 		surface.SetDrawColor(255, 255, 255, 255);
-		surface.SetTexture(icon);
+		surface.SetMaterial(icon);
 		surface.DrawTexturedRect(iconx, by + icony, 16, 16);
 	end
 	surface.DrawText(text);
@@ -217,7 +217,7 @@ function GM:AddStaticHUDBox(text, icon, candraw)
 	surface.SetFont(font);
 	statboxes[#statboxes + 1] = {
 		text = text,
-		icon = icon and surface.GetTextureID(icon),
+		icon = icon and Material(icon),
 		todraw = candraw,
 		textx = sidewidth + (boxwidth - surface.GetTextSize(text)) / 2,
 	}
@@ -230,7 +230,7 @@ end
 function GM:AddDynamicHUDBox(textfunc, icon)
 	dyboxes[#dyboxes+1] = {
 		text = textfunc,
-		icon = icon and surface.GetTextureID(icon),
+		icon = icon and Material(icon),
 	}
 end
 
@@ -239,11 +239,11 @@ local text
 -- Name
 GM:AddDynamicHUDBox(function(self)
 	return "Name: " .. lpl:Name():sub(1,43);
-end,"gui/silkicons/user");
+end,"icon16/user.png");
 
 -- Gender
 do
-local mi,fi = surface.GetTextureID("gui/silkicons/male"), surface.GetTextureID("gui/silkicons/female");
+local mi,fi = Material("icon16/male.png"), Material("icon16/female.png");
 GM:AddDynamicHUDBox(function(box)
 	text = lpl._Gender or "???"
 	if (text ~= box.gender) then
@@ -265,22 +265,22 @@ GM:AddDynamicHUDBox(function(box)
 		return -1;
 	end
 	return "Clan: " .. text;
-end,"gui/silkicons/group");
+end,"icon16/group.png");
 
 -- Salary
 GM:AddDynamicHUDBox(function(box)
 	return "Salary: $" .. (lpl._Salary or 0);
-end, "gui/silkicons/money"); -- Previously money_add
+end, "icon16/money.png"); -- Previously money_add
 
 -- Cash
 GM:AddDynamicHUDBox(function(box)
 	return "Money: $" .. (lpl._Money or 0);
-end, "gui/silkicons/coins"); -- previously money
+end, "icon16/coins.png"); -- previously money
 
 -- Job
 GM:AddDynamicHUDBox(function(box)
 	return "Job: " .. lpl:GetNWString("Job");
-end, "gui/silkicons/wrench");
+end, "icon16/wrench.png");
 
 -- Details
 GM:AddDynamicHUDBox(function(box)
@@ -289,7 +289,7 @@ GM:AddDynamicHUDBox(function(box)
 		return -1;
 	end
 	return "Details: " .. text;
-end, "gui/silkicons/vcard");
+end, "icon16/vcard.png");
 
 -- Warrant
 GM:AddDynamicHUDBox(function(box)
@@ -298,22 +298,22 @@ GM:AddDynamicHUDBox(function(box)
 		return -1;
 	end
 	return "You have " .. (text == "arrest" and "an" or "a") .. " " .. text .. " warrant!";
-end,"gui/silkicons/page_white_text")
+end,"icon16/page_white_text.png")
 
 -- Kevlar
-GM:AddStaticHUDBox("You are wearing Kevlar", "gui/silkicons/shield", function(box)
+GM:AddStaticHUDBox("You are wearing Kevlar", "icon16/shield.png", function(box)
 	return lpl._ScaleDamage == 0.5;
 end);
 
 -- Website
-GM:AddStaticHUDBox(GM.Config["Website URL"], "gui/silkicons/link");
+GM:AddStaticHUDBox(GM.Config["Website URL"], "icon16/link.png");
 -- Arrested
-GM:AddStaticHUDBox("You have been arrested.", "gui/silkicons/lock", function(box)
+GM:AddStaticHUDBox("You have been arrested.", "icon16/lock.png", function(box)
 	return lpl:Arrested();
 end);
 
 -- Tied
-GM:AddStaticHUDBox("You have been tied up.", "gui/silkicons/link", function(box)
+GM:AddStaticHUDBox("You have been tied up.", "icon16/link.png", function(box)
 	return lpl:Tied();
 end);
 

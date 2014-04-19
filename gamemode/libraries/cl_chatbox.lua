@@ -696,7 +696,7 @@ function cider.chatBox.hudPaint()
 
 		-- Check if the player is a icon.
 		if (v.icon) then
-			surface.SetTexture( surface.GetTextureID( v.icon[1] ) );
+			surface.SetMaterial( Material( v.icon[1] ) );
 			surface.SetDrawColor(255, 255, 255, v.alpha);
 			surface.DrawTexturedRect(messageX, messageY - 1, 16, 16);
 
@@ -854,13 +854,13 @@ function cider.chatBox.chatText(index, name, text, filter)
 
 		-- Check if the player is a super admin.
 		if ( player:IsSuperAdmin() ) then
-			icon = {"gui/silkicons/shield", "^"};
+			icon = {"icon16/shield.png", "^"};
 		elseif ( player:IsAdmin() ) then
-			icon = {"gui/silkicons/star", "*"};
+			icon = {"icon16/star.png", "*"};
 		elseif ( player:IsModerator() ) then
-			icon = {"gui/silkicons/emoticon_smile", ":)"};
+			icon = {"icon16/emoticon_smile.png", ":)"};
 		elseif ( player:GetNetworkedBool("Donator") ) then
-			icon = {"gui/silkicons/heart", "<3"};
+			icon = {"icon16/heart.png", "<3"};
 		end
 
 		-- Check if the class is valid.

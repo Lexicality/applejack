@@ -19,12 +19,12 @@ surface.CreateFont("ScoreboardPlayerNameBig" , {
 local texGradient = surface.GetTextureID( "gui/center_gradient" )
 
 local texRatings = {}
-texRatings[ 'user' ] 		= surface.GetTextureID( "gui/silkicons/user" )
-texRatings[ 'mod' ] 		= surface.GetTextureID( "gui/silkicons/emoticon_smile" )
-texRatings[ 'donator' ] 	= surface.GetTextureID( "gui/silkicons/heart" )
-texRatings[ 'admin' ] 		= surface.GetTextureID( "gui/silkicons/star" )
-texRatings[ 'super' ] 		= surface.GetTextureID( "gui/silkicons/shield" )
---surface.GetTextureID( "gui/silkicons/emoticon_smile" )
+texRatings[ 'user' ] 	= Material( "icon16/user.png" )
+texRatings[ 'mod' ] 	= Material( "icon16/emoticon_smile.png" )
+texRatings[ 'donator' ] = Material( "icon16/heart.png" )
+texRatings[ 'admin' ] 	= Material( "icon16/star.png" )
+texRatings[ 'super' ] 	= Material( "icon16/shield.png" )
+--surface.GetTextureID( "icon16/emoticon_smile.png" )
 local PANEL = {}
 
 /*---------------------------------------------------------
@@ -81,7 +81,7 @@ function PANEL:Paint()
 	surface.DrawTexturedRect( 0, 0, self:GetWide(), 36 )
 
 	// This should be an image panel!
-	surface.SetTexture( self.texRating )
+	surface.SetMaterial( self.texRating )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 )
 
@@ -129,7 +129,6 @@ function PANEL:UpdatePlayerData()
 	self.lblPing:SetText( self.Player:Ping() )
 
 	// Work out what icon to draw
-	self.texRating = surface.GetTextureID( "gui/silkicons/emoticon_smile" )
 
 	self.texRating = texRatings[ 'user' ]
 	if self.Player:IsSuperAdmin() then
