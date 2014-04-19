@@ -750,13 +750,14 @@ end
 
 -- Called when an entity takes damage.
 local vector0 = Vector(5,0,0)
-function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
+function GM:EntityTakeDamage(entity, damageInfo)
 	--[[
 	if !entity or !inflictor or !attacker or entity == NULL or inflictor == NULL or attacker == NULL then
 		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
 		return
 	end
 	--]]
+	local inflictor, attacker, amount = damageInfo:GetInflictor(), damageInfo:GetAttacker(), damageInfo:GetDamage();
 	local logme = false
 	if (attacker:IsPlayer() and IsValid( attacker:GetActiveWeapon() )) then
 		if attacker:GetActiveWeapon():GetClass() == "weapon_stunstick" then
@@ -795,7 +796,7 @@ function GM:EntityTakeDamage(entity, inflictor, attacker, amount, damageInfo)
 	if ( entity:IsPlayer() ) then
 		if (entity:KnockedOut()) then
 			if ( IsValid(entity.ragdoll.entity) ) then
-				hook.Call("EntityTakeDamage",GAMEMODE, entity.ragdoll.entity, inflictor, attacker, damageInfo:GetDamage(), damageInfo)
+				hook.Call("EntityTakeDamage",GAMEMODE, entity.ragdoll.entity, damageInfo)
 			end
 		else
 			-- :/ hacky
