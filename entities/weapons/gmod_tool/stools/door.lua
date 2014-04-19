@@ -143,7 +143,7 @@ function TOOL:UpdateGhost( ent, Player )
 	if ( !ent ) then return end
 	if ( !ent:IsValid() ) then return end
 
-	local tr 	= utilx.GetPlayerTrace( Player, Player:GetCursorAimVector() )
+	local tr 	= util.GetPlayerTrace( Player, Player:GetCursorAimVector() )
 	local trace 	= util.TraceLine( tr )
 	if (!trace.Hit) then return end
 	local ang = Player:GetAimVector():Angle()
