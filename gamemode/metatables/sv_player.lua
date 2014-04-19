@@ -792,8 +792,8 @@ end
 local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
 local function createCreateQuery(ply)
 	local keys, vals = getKVs(ply);
-	keys = table.concat(keys, ", "):sub(1, -3);
-	vals = table.concat(vals, ", "):sub(1, -3);
+	keys = table.concat(keys, ", ");
+	vals = table.concat(vals, ", ");
 	return string.format(createqueryformat, keys, vals);
 end
 
