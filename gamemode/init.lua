@@ -1088,8 +1088,8 @@ function GM:ShutDown()
 	ErrorNoHalt"----------------------\n"
 	ErrorNoHalt(os.date().." - Server shutting down\n")
 	ErrorNoHalt"----------------------\n"
-	for k, v in pairs( player.GetAll() ) do
-		v:HolsterAll()
+	for _, ply in pairs( player.GetAll() ) do
+		ply:HolsterAll()
 		ply:SaveData(true)
 	end
 end
