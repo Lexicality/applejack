@@ -105,7 +105,7 @@ function PANEL:Init()
 
 	-- The name of the item.
 	self.label = vgui.Create("DLabel", self);
-	self.label:SetTextColor( Color(255, 255, 255, 255) );
+	self.label:SetDark(true);
 
 	-- Check if it is not a single batch.
 	if (item.Batch > 1) then
@@ -116,7 +116,7 @@ function PANEL:Init()
 
 	-- The description of the item.
 	self.description = vgui.Create("DLabel", self);
-	self.description:SetTextColor( Color(255, 255, 255, 255) );
+	self.description:SetDark(true);
 	self.description:SetText(item.Description);
 
 	-- Set the size of the panel.
@@ -161,7 +161,7 @@ function PANEL:Init()
 	self.label = vgui.Create("DLabel", self);
 	self.label:SetText("N/A");
 	self.label:SizeToContents();
-	self.label:SetTextColor( Color(255, 255, 255, 255) );
+	self.label:SetDark(true);
 end
 
 -- Called when the layout should be performed.

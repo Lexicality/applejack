@@ -80,15 +80,15 @@ function PANEL:Init()
 	self.tabs = vgui.Create("DPropertySheet", self);
 
 	-- Add the sheets for the other menus to the property sheet.
-	self.tabs:AddSheet("Character", vgui.Create("cider_Character", self.tabs), "gui/silkicons/user");
-	self.tabs:AddSheet("Help", vgui.Create("cider_Help", self.tabs), "gui/silkicons/page");
-	self.tabs:AddSheet("Laws", vgui.Create("cider_Laws",self.tabs),"gui/silkicons/world");
-	self.tabs:AddSheet("Rules", vgui.Create("cider_Rules", self.tabs), "gui/silkicons/exclamation");
-	self.tabs:AddSheet("Inventory", vgui.Create("cider_Inventory", self.tabs), "gui/silkicons/application_view_tile");
-	self.tabs:AddSheet("Store", vgui.Create("cider_Store", self.tabs), "gui/silkicons/box");
-	self.tabs:AddSheet("Changelog",vgui.Create("cider_Changelog", self.tabs), "gui/silkicons/plugin");
-	self.tabs:AddSheet("Donate", vgui.Create("cider_Donate", self.tabs), "gui/silkicons/heart");
-	self.tabs:AddSheet("Credits",vgui.Create("cider_Credits",self.tabs), "gui/silkicons/group");
+	self.tabs:AddSheet("Character", vgui.Create("cider_Character"), "icon16/user.png");
+	self.tabs:AddSheet("Help",      vgui.Create("cider_Help"),      "icon16/page.png");
+	self.tabs:AddSheet("Laws",      vgui.Create("cider_Laws"),      "icon16/world.png");
+	self.tabs:AddSheet("Rules",     vgui.Create("cider_Rules"),     "icon16/exclamation.png");
+	self.tabs:AddSheet("Inventory", vgui.Create("cider_Inventory"), "icon16/application_view_tile.png");
+	self.tabs:AddSheet("Store",     vgui.Create("cider_Store"),     "icon16/box.png");
+	self.tabs:AddSheet("Changelog", vgui.Create("cider_Changelog"), "icon16/plugin.png");
+	self.tabs:AddSheet("Donate",    vgui.Create("cider_Donate"),    "icon16/heart.png");
+	self.tabs:AddSheet("Credits",   vgui.Create("cider_Credits"),   "icon16/group.png");
 end
 
 -- Called when the layout should be performed.

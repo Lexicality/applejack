@@ -226,9 +226,9 @@ function PANEL:Init()
 	self:SetSize(width/2, 75);
 	self:SetPos(1, 5);
 	self.name = vgui.Create("DLabel", self);
-	self.name:SetTextColor(Color(255, 255, 255));
+	self.name:SetDark(true);
 	self.description = vgui.Create("DLabel", self);
-	self.description:SetTextColor(Color(255, 255, 255));
+	self.description:SetDark(true);
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 	self.spawnIcon:SetToolTip();
 	self.spawnIcon.DoClick = function() end;
@@ -306,7 +306,7 @@ function PANEL:Init()
 	self.spaceUsed = vgui.Create("DLabel", self);
 	self.spaceUsed:SetText(self.word);
 	self.spaceUsed:SizeToContents();
-	self.spaceUsed:SetTextColor( Color(255, 255, 255, 255) );
+	self.spaceUsed:SetDark(true);
 end
 
 -- Called when the layout should be performed.
