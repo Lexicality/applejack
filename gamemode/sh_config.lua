@@ -62,7 +62,7 @@ config["Scale Limb Damage"]			= 0.75; -- How much to scale limb damage by.
 config["Anti propkill"]				= true -- Disables damage recieved from prop_physics', unless it's fall damage.
 
 -- Other
-config["Website URL"]				= "www.bybservers.co.uk"; -- The website URL drawn at the bottom of the screen.
+config["Website URL"]				= "www.ventmob.net"; -- The website URL drawn at the bottom of the screen.
 config["Cleanup Decals"]			= true; -- Whether or not to automatically cleanup decals every minute.
 config["Model Choices Timeout"]		= 30 -- Number of seconds to wait before reconnecting if model choices aren't sent.
 config["Autokick time"]				= 15 * 60 -- Number of seconds a player has to do something in to avoid being kicked
