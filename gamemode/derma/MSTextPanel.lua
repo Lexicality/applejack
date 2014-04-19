@@ -13,23 +13,51 @@ function PANEL:Init()
 	self:SetPaintBackground( true )
 end
 
-function PANEL:SetText(text)
-	local activeItem = nil;
+function PANEL:Empty()
+	for _, item in pairs(self.items) do
+		item:Remove();
+	end
+end
 
-	for _, line in pairs(string.Split(text, "\n")) do
+function PANEL:SplitIntoSections(text)
+	local sections = {};
+	local currSection = nil;
+	for _, line in ipairs(string.Split(text, "\n")) do
 		if (line ~= "") then
 			if (line:sub(1,1) == "[" and line:sub(-1) == "]") then
-				activeItem = vgui.Create("MSTextPanelItem", self);
-				activeItem:SetLabel(line:sub(2, -2));
-				activeItem:Dock(TOP);
-				table.insert(self.items, activeItem);
-			elseif (not activeItem) then
+				currSection = {
+					title = line:sub(2, -2);
+					text  = {};
+				};
+				table.insert(sections, currSection);
+			elseif (not currSection) then
 				error("Text does not start with a header entry!", 2);
 			else
-				activeItem:AddLine(line);
+				table.insert(currSection.text, line);
 			end
 		end
 	end
+	return sections;
+end
+
+PANEL.ChildPanel = "MSTextPanelItem";
+
+function PANEL:CreateChildren(sections)
+	local child;
+	for _, section in ipairs(sections) do
+		child = vgui.Create(self.ChildPanel, self);
+		child:SetLabel(section.title);
+		child:Dock(TOP);
+		for _, line in ipairs(section.text) do
+			child:AddLine(line);
+		end
+		table.insert(self.items, child);
+	end
+end
+
+function PANEL:SetText(text)
+	local sections = self:SplitIntoSections(text);
+	self:CreateChildren(sections);
 	self:InvalidateLayout(true);
 end
 
