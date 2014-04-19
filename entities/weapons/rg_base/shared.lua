@@ -296,16 +296,16 @@ concommand.Add("DropPrim",function(p) p:DropWeapon(p:GetActiveWeapon()) end)
 function SWEP:Deploy()
 	if (SERVER) then
 		if (!self.DrawCrosshair or self.CustomCrosshair) then self.Owner:CrosshairDisable() end
-		if (self.Owner._Ammo[self.Classname]) then
-			self.Weapon:SetClip1(self.Owner._Ammo[self.Classname]);
+		if (self.Owner._Ammo[self.ClassName]) then
+			self.Weapon:SetClip1(self.Owner._Ammo[self.ClassName]);
 		end
-		if not self.Owner._FreshWeapons[self.Classname] then
+		if not self.Owner._FreshWeapons[self.ClassName] then
 			cider.chatBox.addInRadius(self.Owner, "me",
 				GM.Config["Weapon Timers"]["deploymessage"][self.Size]:format(self.TypeName,self.Owner._GenderWord),
 				self.Owner:GetPos(), GM.Config["Talk Radius"]
 			);
 		else
-			self.Owner._FreshWeapons[self.Classname] = nil
+			self.Owner._FreshWeapons[self.ClassName] = nil
 		end
 		self.Weapon:SetNextPrimaryFire(CurTime() + GM.Config["Weapon Timers"]["deploytime"][self.Size])
 		self:OhGodGetItOff()
@@ -414,20 +414,20 @@ function SWEP:DoAmmoStuff()
 	self.previousOwner:CrosshairEnable()
 	-- Grab the ammo counts
 	self.previousOwner._Ammo = self.previousOwner._Ammo or {}
-	self.previousOwner._Ammo[self.Classname] = self.Weapon:Clip1();
+	self.previousOwner._Ammo[self.ClassName] = self.Weapon:Clip1();
 	-- Make sure that the weapon's clip is empty and the player doesn't have any more ammo to put in the clip
-	if not (self.previousOwner._Ammo[self.Classname] == 0 and self.previousOwner:GetAmmoCount(self.Primary.Ammo) == 0)
+	if not (self.previousOwner._Ammo[self.ClassName] == 0 and self.previousOwner:GetAmmoCount(self.Primary.Ammo) == 0)
 	-- Make sure the player is alive
 	or not  self.previousOwner:Alive()
 	-- Make sure the player can actually put this weapon in their inventory
-	or not  GAMEMODE.Items[self.Classname]
+	or not  GAMEMODE.Items[self.ClassName]
 	-- Make sure we haven't done this already
 	or		self.doneAmmoStuff
 	-- Make sure the owner isn't already holstering
 	or      self.previousOwner._Equipping
 	then return end
 	-- Set up a quick timer to remove the weapon
-	timer.Simple(0, ammostuff, self.previousOwner, self.Classname);
+	timer.Simple(0, ammostuff, self.previousOwner, self.ClassName);
 	-- Stop the player managing to get multiple weapons in their inventory with quick button presses
 	self.doneAmmoStuff = true
 end
