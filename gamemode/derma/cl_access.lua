@@ -512,7 +512,7 @@ local function UpdateContainer(decoded)
 	for _, ply in pairs(player.GetAll()) do
 		if (not done[ply]) then
 			res = ply:GetTeam();
-			table.insert(paccess[res.Group.GroupID][res.TeamID], ply);
+			table.insert(pnoaccess[res.Group.GroupID][res.TeamID], ply);
 		end
 	end
 	for _, res in pairs(GM.Teams) do
