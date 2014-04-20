@@ -50,8 +50,8 @@ function PANEL:SetInfo( column, k, v )
 	if ( !self.InfoLabels[ column ][ k ] ) then
 
 		self.InfoLabels[ column ][ k ] = {}
-		self.InfoLabels[ column ][ k ].Key 	= vgui.Create( "Label", self )
-		self.InfoLabels[ column ][ k ].Value 	= vgui.Create( "Label", self )
+		self.InfoLabels[ column ][ k ].Key 	= vgui.Create( "DLabel", self )
+		self.InfoLabels[ column ][ k ].Value 	= vgui.Create( "DLabel", self )
 		self.InfoLabels[ column ][ k ].Key:SetText( k )
 		self:InvalidateLayout()
 
@@ -81,13 +81,13 @@ function PANEL:UpdatePlayerData()
 	if (!self.Player) then return end
 	if ( !self.Player:IsValid() ) then return end
 
-	self:SetInfo( 1, "Website:", self.Player:GetWebsite() )
-	self:SetInfo( 1, "Location:", self.Player:GetLocation() )
-	self:SetInfo( 1, "Email:", self.Player:GetEmail() )
-	self:SetInfo( 1, "GTalk:", self.Player:GetGTalk() )
-	self:SetInfo( 1, "MSN:", self.Player:GetMSN() )
-	self:SetInfo( 1, "AIM:", self.Player:GetAIM() )
-	self:SetInfo( 1, "XFire:", self.Player:GetXFire() )
+	-- self:SetInfo( 1, "Website:", self.Player:GetWebsite() )
+	-- self:SetInfo( 1, "Location:", self.Player:GetLocation() )
+	-- self:SetInfo( 1, "Email:", self.Player:GetEmail() )
+	-- self:SetInfo( 1, "GTalk:", self.Player:GetGTalk() )
+	-- self:SetInfo( 1, "MSN:", self.Player:GetMSN() )
+	-- self:SetInfo( 1, "AIM:", self.Player:GetAIM() )
+	-- self:SetInfo( 1, "XFire:", self.Player:GetXFire() )
 
 	self:SetInfo( 2, "Props:", self.Player:GetCount( "props" ) + self.Player:GetCount( "ragdolls" ) + self.Player:GetCount( "effects" ) )
 	self:SetInfo( 2, "HoverBalls:", self.Player:GetCount( "hoverballs" ) )
