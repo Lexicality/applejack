@@ -30,10 +30,10 @@ function PANEL:Init()
 
 	SCOREBOARD = self
 
-	self.Hostname = vgui.Create( "Label", self )
+	self.Hostname = vgui.Create( "DLabel", self )
 	self.Hostname:SetText( GetGlobalString( "ServerName" ) )
 
-	self.Description = vgui.Create( "Label", self )
+	self.Description = vgui.Create( "DLabel", self )
 	self.Description:SetText( GAMEMODE.Name .. " - " .. GAMEMODE.Author )
 
 	self.PlayerFrame = vgui.Create( "PlayerFrame", self )
@@ -45,13 +45,13 @@ function PANEL:Init()
 	// Update the scoreboard every 1 second
 	timer.Create( "ScoreboardUpdater", 1, 0, self.UpdateScoreboard, self )
 
-	self.lblPing = vgui.Create( "Label", self )
+	self.lblPing = vgui.Create( "DLabel", self )
 	self.lblPing:SetText( "Ping" )
 
-	self.lblKills = vgui.Create( "Label", self )
+	self.lblKills = vgui.Create( "DLabel", self )
 	self.lblKills:SetText( "Kills" )
 
-	self.lblDeaths = vgui.Create( "Label", self )
+	self.lblDeaths = vgui.Create( "DLabel", self )
 	self.lblDeaths:SetText( "Deaths" )
 
 end

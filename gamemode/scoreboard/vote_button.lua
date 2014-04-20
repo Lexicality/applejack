@@ -9,7 +9,7 @@ PANEL.MaterialName = "exclamation"
 ---------------------------------------------------------*/
 function PANEL:Init()
 
-	self.Label = vgui.Create( "Label", self )
+	self.Label = vgui.Create( "DLabel", self )
 	self:ApplySchemeSettings()
 	self:SetCursor( "hand" )
 

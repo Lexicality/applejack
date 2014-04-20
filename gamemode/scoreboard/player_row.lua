@@ -37,10 +37,10 @@ function PANEL:Init()
 
 	self.infoCard	= vgui.Create( "ScorePlayerInfoCard", self )
 
-	self.lblName 	= vgui.Create( "Label", self )
-	self.lblFrags 	= vgui.Create( "Label", self )
-	self.lblDeaths 	= vgui.Create( "Label", self )
-	self.lblPing 	= vgui.Create( "Label", self )
+	self.lblName 	= vgui.Create( "DLabel", self )
+	self.lblFrags 	= vgui.Create( "DLabel", self )
+	self.lblDeaths 	= vgui.Create( "DLabel", self )
+	self.lblPing 	= vgui.Create( "DLabel", self )
 
 	// If you don't do this it'll block your clicks
 	self.lblName:SetMouseInputEnabled( false )

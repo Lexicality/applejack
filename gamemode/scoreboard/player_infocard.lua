@@ -50,8 +50,8 @@ function PANEL:SetInfo( column, k, v )
 	if ( !self.InfoLabels[ column ][ k ] ) then
 
 		self.InfoLabels[ column ][ k ] = {}
-		self.InfoLabels[ column ][ k ].Key 	= vgui.Create( "Label", self )
-		self.InfoLabels[ column ][ k ].Value 	= vgui.Create( "Label", self )
+		self.InfoLabels[ column ][ k ].Key 	= vgui.Create( "DLabel", self )
+		self.InfoLabels[ column ][ k ].Value 	= vgui.Create( "DLabel", self )
 		self.InfoLabels[ column ][ k ].Key:SetText( k )
 		self:InvalidateLayout()
 
