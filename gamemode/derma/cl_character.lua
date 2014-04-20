@@ -16,6 +16,10 @@ local function teamChanged(msg)
 end
 usermessage.Hook("TeamChange", teamChanged);
 
+local function cmd(cmd, ...)
+	RunConsoleCommand("mshine", cmd, ...);
+end
+
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self:SetSize(cider.menu.width, cider.menu.height - 8);
@@ -52,57 +56,58 @@ function PANEL:Think()
 	local lgroup = team.Query(pteam, "Group");
 	--Wipe the itemlist so we can renew it
 	self.itemsList:Clear()
-	-- Create the job control.
-	self.job = vgui.Create("cider_Character_TextEntry", self);
-	self.job.label:SetText("Job");
-	self.job.label:SizeToContents();
-	self.job.button:SetText("Change");
-	self.job.button.DoClick = function()
-		RunConsoleCommand( "mshine", "job", self.job.textEntry:GetValue() );
+
+	local header = vgui.Create("DCollapsibleCategory", self);
+	header:SetLabel("Character Details");
+	local contents = vgui.Create("DPanel");
+	function contents:PerformLayout()
+		self:SizeToChildren(false, true);
 	end
+	contents:DockPadding(5, 3, 5, 3);
+	contents:InvalidateLayout();
+
+	local job, clan, details, gender;
+	-- Create the job control.
+	job = vgui.Create("cider_Character_TextEntry", contents);
+	job:SetCommand("job");
+	job:SetLabel("Job Title");
+	job:Dock(TOP)
 
 	-- Create the clan control.
-	self.clan = vgui.Create("cider_Character_TextEntry", self);
-	self.clan.label:SetText("Clan");
-	self.clan.label:SizeToContents();
-	self.clan.button:SetText("Change");
-	self.clan.button.DoClick = function()
-		RunConsoleCommand( "mshine", "clan", self.clan.textEntry:GetValue() );
-	end
+	clan = vgui.Create("cider_Character_TextEntry", contents);
+	clan:SetCommand("clan");
+	clan:SetLabel("Clan");
+	clan:Dock(TOP)
 
 	-- Create the details control.
-	self.details = vgui.Create("cider_Character_TextEntry", self);
-	self.details.label:SetText("Details");
-	self.details.label:SizeToContents();
-	self.details.button:SetText("Change");
-	self.details.button.DoClick = function()
-		RunConsoleCommand( "mshine", "details", self.details.textEntry:GetValue() );
-	end
-	local details = lpl:GetNWString("Details") or ""
-	self.details.textEntry:SetValue(details)
+	details = vgui.Create("cider_Character_TextEntry", contents);
+	details:SetLabel("Details");
+	details:SetCommand("details");
+	details:SetValue(lpl:GetNWString("Details") or "")
+	details:Dock(TOP)
 
 	-- Create the gender control.
-	self.gender = vgui.Create("cider_Character_Gender", self);
-	self.gender.label:SetText("Gender");
-	self.gender.label:SizeToContents();
-	self.gender.button:SetText("Change");
+	gender = vgui.Create("cider_Character_Gender", contents);
+	gender:Dock(TOP)
 
-	-- Add the controls to the item list.
-	self.itemsList:AddItem(self.job);
-	self.itemsList:AddItem(self.clan);
-	self.itemsList:AddItem(self.details);
-	self.itemsList:AddItem(self.gender);
+	header:SetContents(contents);
 
+	self.job, self.clan, self.details, self.gender = job, clan, details, gender;
+	self.userDetails = header;
+	self.itemsList:AddItem(header);
+	-- self.itemsList:AddItem(contents);
+
+	local subitemsList;
 	-- Loop through each of our groups in numerical order
 	for index, group in ipairs(GM.Groups) do
 		if (group.Invisible) then continue; end
-		local header = vgui.Create("DCollapsibleCategory", self)
+		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
 		header:SetLabel( group.Name )
 		header:SetExpanded(lgroup == group)
 		header:SetToolTip( group.Description )
 		self.itemsList:AddItem(header);
-		local subitemsList = vgui.Create("DPanelList", self);
+		subitemsList = vgui.Create("DPanelList", self);
 		subitemsList:SetAutoSize( true )
 		subitemsList:SetPadding(2);
 		subitemsList:SetSpacing(3);
@@ -135,80 +140,117 @@ end
 -- Register the panel.
 vgui.Register("cider_Character", PANEL, "Panel");
 
--- Define a new panel.
+-- cider_Character_Editor
 local PANEL = {};
 
--- Called when the panel is initialized.
+AccessorFunc(PANEL, "m_Command", "Command");
+
 function PANEL:Init()
-	self.label = vgui.Create("DLabel", self);
-	self.label:SizeToContents();
-	self.label:SetDark(true);
-	self.textEntry = vgui.Create("DTextEntry", self);
+	self:SetSizeX(false);
+	self:DockPadding(0, 2, 0, 2);
+	self:InvalidateLayout();
 
-	-- Create the button.
-	self.button = vgui.Create("DButton", self);
-end
+	local label, button;
 
--- Called when the layout should be performed.
-function PANEL:PerformLayout()
-	self.label:SetPos(8, 5);
-	self.label:SizeToContents();
-	self.button:SizeToContents();
-	self.button:SetTall(16);
-	self.button:SetWide(self.button:GetWide() + 16);
-	self.textEntry:SetSize(self:GetWide() - self.button:GetWide() - self.label:GetWide() - 32, 16);
-	self.textEntry:SetPos(self.label.x + self.label:GetWide() + 8, 5);
-	self.button:SetPos(self.textEntry.x + self.textEntry:GetWide() + 8, 5);
-end
+	label = vgui.Create("DLabel", self);
+	label:SetContentAlignment( 6 );
+	-- label:SetAutoStretchVertical( true );
+	label:SetDark(true);
+	label:Dock(LEFT);
 
--- Register the panel.
-vgui.Register("cider_Character_TextEntry", PANEL, "DPanel");
-
--- Define a new panel.
-local PANEL = {};
-
--- Called when the panel is initialized.
-function PANEL:Init()
-	self.label = vgui.Create("DLabel", self);
-	self.label:SizeToContents();
-	self.label:SetDark(true);
-	self.textButton = vgui.Create("DButton", self);
-	self.textButton:SetDisabled(true);
-
-	-- Create the button.
-	self.button = vgui.Create("DButton", self);
-	self.button.DoClick = function()
-		local menu = DermaMenu();
-
-		-- Add male and female options to the menu.
-		menu:AddOption("Male", function() RunConsoleCommand("mshine", "gender", "male"); end);
-		menu:AddOption("Female", function() RunConsoleCommand("mshine", "gender", "female"); end);
-
-		-- Open the menu and set it's position.
-		menu:Open();
+	button = vgui.Create("DButton", self);
+	button:SetText("Change");
+	button:Dock(RIGHT);
+	button.DoClick = function()
+		self:ButtonPress();
 	end
+
+	self.label, self.button = label, button;
 end
 
--- Called every frame.
+function PANEL:SetContents(panel)
+	panel:SetParent(self);
+	panel:Dock(FILL);
+	panel:DockMargin( 8, 0, 8, 0 );
+	self.contents = panel;
+	self:InvalidateLayout();
+end
+
+function PANEL:SetLabel(text)
+	self.label:SetText(text)
+end
+
+function PANEL:ButtonPress()
+end
+
+function PANEL:Command(...)
+	cmd(self:GetCommand(), ...);
+end
+
+vgui.Register("cider_Character_Editor", PANEL, "DSizeToContents");
+
+-- cider_Character_TextEntry
+local PANEL = {};
+
+function PANEL:Init()
+	local contents = vgui.Create("DTextEntry", self);
+	contents:SetContentAlignment(5);
+	self:SetContents(contents);
+end
+
+function PANEL:SetValue(text)
+	self.contents:SetValue(text);
+end
+
+function PANEL:ButtonPress()
+	self:Command(self.contents:GetValue());
+end
+
+vgui.Register("cider_Character_TextEntry", PANEL, "cider_Character_Editor");
+
+-- cider_Character_Gender
+local PANEL = {};
+
+function PANEL:Init()
+	self:SetCommand("gender");
+	self:SetLabel("Gender");
+
+	local contents = vgui.Create("DButton", self);
+	contents:SetContentAlignment(5);
+	contents:SetDisabled(true);
+	self:SetContents(contents);
+end
+
+function PANEL:DoClick()
+	local menu = DermaMenu();
+
+	menu:AddOption("Male", function()
+		self:Command("male");
+	end);
+	menu:AddOption("Female", function()
+		self:Command("female");
+	end);
+
+	menu:Open();
+end
+
 function PANEL:Think()
-	self.textButton:SetText(LocalPlayer()._Gender or "Male");
-	self.textButton:SetContentAlignment(5);
+	-- FIXME: Why a think?
+	self.contents:SetText(LocalPlayer()._Gender or "Male");
 end
 
--- Called when the layout should be performed.
-function PANEL:PerformLayout()
-	self.label:SetPos(8, 5);
-	self.label:SizeToContents();
-	self.button:SizeToContents();
-	self.button:SetTall(16);
-	self.button:SetWide(self.button:GetWide() + 16);
-	self.textButton:SetSize(self:GetWide() - self.button:GetWide() - self.label:GetWide() - 32, 16);
-	self.textButton:SetPos(self.label.x + self.label:GetWide() + 8, 5);
-	self.button:SetPos(self.textButton.x + self.textButton:GetWide() + 8, 5);
-end
+vgui.Register("cider_Character_Gender", PANEL, "cider_Character_Editor");
 
--- Register the panel.
-vgui.Register("cider_Character_Gender", PANEL, "DPanel");
+-- function PANEL:PerformLayout()
+-- 	self.label:SetPos(8, 5);
+-- 	self.label:SizeToContents();
+-- 	self.button:SizeToContents();
+-- 	self.button:SetTall(16);
+-- 	self.button:SetWide(self.button:GetWide() + 16);
+-- 	self.textEntry:SetSize(self:GetWide() - self.button:GetWide() - self.label:GetWide() - 32, 16);
+-- 	self.textEntry:SetPos(self.label.x + self.label:GetWide() + 8, 5);
+-- 	self.button:SetPos(self.textEntry.x + self.textEntry:GetWide() + 8, 5);
+-- end
 
 -- Define a new panel.
 local PANEL = {};
