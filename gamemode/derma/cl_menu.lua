@@ -70,6 +70,7 @@ function PANEL:Init()
 	self:SetTitle("Main Menu");
 	self:SetBackgroundBlur(true);
 	self:SetDeleteOnClose(false);
+	self:ShowCloseButton(false);
 
 	-- Create the close button.
 	self.close = vgui.Create("DButton", self);
