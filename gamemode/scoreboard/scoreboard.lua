@@ -32,9 +32,11 @@ function PANEL:Init()
 
 	self.Hostname = vgui.Create( "DLabel", self )
 	self.Hostname:SetText( GetGlobalString( "ServerName" ) )
+	self.Hostname:SetBright( true );
 
 	self.Description = vgui.Create( "DLabel", self )
 	self.Description:SetText( GAMEMODE.Name .. " - " .. GAMEMODE.Author )
+	self.Description:SetBright( true );
 
 	self.PlayerFrame = vgui.Create( "PlayerFrame", self )
 
@@ -47,12 +49,15 @@ function PANEL:Init()
 
 	self.lblPing = vgui.Create( "DLabel", self )
 	self.lblPing:SetText( "Ping" )
+	self.lblPing:SetDark( true );
 
 	self.lblKills = vgui.Create( "DLabel", self )
 	self.lblKills:SetText( "Kills" )
+	self.lblKills:SetDark( true );
 
 	self.lblDeaths = vgui.Create( "DLabel", self )
 	self.lblDeaths:SetText( "Deaths" )
+	self.lblDeaths:SetDark( true );
 
 end
 

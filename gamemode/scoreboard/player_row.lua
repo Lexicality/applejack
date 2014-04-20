@@ -48,6 +48,11 @@ function PANEL:Init()
 	self.lblDeaths:SetMouseInputEnabled( false )
 	self.lblPing:SetMouseInputEnabled( false )
 
+	self.lblName:SetBright(true);
+	self.lblFrags:SetBright(true);
+	self.lblDeaths:SetBright(true);
+	self.lblPing:SetBright(true);
+
 	self.imgAvatar = vgui.Create( "AvatarImage", self )
 
 	self:SetCursor( "hand" )
