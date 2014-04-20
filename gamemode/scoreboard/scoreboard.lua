@@ -222,4 +222,34 @@ function PANEL:UpdateScoreboard( force )
 
 end
 
-vgui.Register( "ScoreBoard", PANEL, "Panel" )
+-- vgui.Register( "ScoreBoard", PANEL, "Panel" )
+
+-- SCORE_BOARD = vgui.RegisterTable( PANEL, "EditablePanel" );
+local SCORE_BOARD;
+SCORE_BOARD = vgui.RegisterTable( PANEL, "Panel" );
+
+function GM:ScoreboardShow()
+
+	if ( !IsValid( g_Scoreboard ) ) then
+		g_Scoreboard = vgui.CreateFromTable( SCORE_BOARD )
+	end
+
+	if ( IsValid( g_Scoreboard ) ) then
+		g_Scoreboard:Show()
+		g_Scoreboard:MakePopup()
+		g_Scoreboard:SetKeyboardInputEnabled( false )
+	end
+
+end
+
+--[[---------------------------------------------------------
+   Name: gamemode:ScoreboardHide( )
+   Desc: Hides the scoreboard
+-----------------------------------------------------------]]
+function GM:ScoreboardHide()
+
+	if ( IsValid( g_Scoreboard ) ) then
+		g_Scoreboard:Hide()
+	end
+
+end
