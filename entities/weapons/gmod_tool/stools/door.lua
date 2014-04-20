@@ -182,10 +182,14 @@ function TOOL:MakeGhostEntity( model, pos, angle )
 	-- Release the old ghost entity
 	self:ReleaseGhostEntity()
 
-	self.GhostEntity = ents.Create( "prop_physics" )
+	if (SERVER) then
+		self.GhostEntity = ents.Create("prop_physics")
+	else
+		self.GhostEntity = ents.CreateClientProp()
+	end
 
 	-- If there's too many entities we might not spawn..
-	if (not self.GhostEntity:IsValid()) then
+	if (not IsValid(self.GhostEntity)) then
 		self.GhostEntity = nil
 		return
 	end
@@ -199,7 +203,7 @@ function TOOL:MakeGhostEntity( model, pos, angle )
 	self.GhostEntity:SetMoveType( MOVETYPE_NONE )
 	self.GhostEntity:SetNotSolid( true );
 	self.GhostEntity:SetRenderMode( RENDERMODE_TRANSALPHA )
-	self.GhostEntity:SetColor( 255, 255, 255, 150 )
+	self.GhostEntity:SetColor( Color( 255, 255, 255, 150 ) )
 
 end
 
