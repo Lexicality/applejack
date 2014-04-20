@@ -487,9 +487,13 @@ local function UpdateContainer(decoded)
 	-- Get privilaged
 	decoded.access[decoded.owner] = true;
 	for key in pairs(decoded.access) do
-		if type(key) == "Player" then
+		if type(key) == "Player" and IsValid(key) then
 			res = key:GetTeam();
-			table.insert(paccess[res.Group.GroupID][res.TeamID], key);
+			if (res) then
+				table.insert(paccess[res.Group.GroupID][res.TeamID], key);
+			else
+				ErrorNoHalt("I don't know what team ", tostring(key), " is in! (", key:Team(), ").\n");
+			end
 			done[key] = true;
 		else
 			local kind, id = string.match(key, "(.+): (.+)");
@@ -512,7 +516,9 @@ local function UpdateContainer(decoded)
 	for _, ply in pairs(player.GetAll()) do
 		if (not done[ply]) then
 			res = ply:GetTeam();
-			table.insert(pnoaccess[res.Group.GroupID][res.TeamID], ply);
+			if (res) then
+				table.insert(pnoaccess[res.Group.GroupID][res.TeamID], ply);
+			end
 		end
 	end
 	for _, res in pairs(GM.Teams) do
