@@ -79,7 +79,7 @@ function GM:LoadTeams()
 			if (not validfile(group) or group:find('.', 1, true)) then
 				continue;
 			end
-			gdata = "GROUP_" string.upper(group);
+			gdata = "GROUP_" .. string.upper(group);
 			gdata = _G[gdata];
 			if (gdata) then
 				GROUP = self.Groups[gdata] or Error("oh god what? group:", group, " gdata:", gdata, " res:", tostring(self.Groups[gdata]));
