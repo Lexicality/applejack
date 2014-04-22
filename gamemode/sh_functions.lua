@@ -95,19 +95,6 @@ function util.IsWithinBox(topleft, bottomright, pos)
 end
 
 ---
--- Checks to see if a filename is able to be include()'d
--- Takes into account the fact that the gamemode folders are in the root of the lua vfs,
--- and the lua_temp folder.
--- @param filename The file to check
--- @return True if the file exists, false otherwise
-function file.ExistsInLua(filename)
-	-- TODO: Does "LUA" let you do this more easily?
-	return  file.Exists("lua/"       .. filename, "MOD") or
-			file.Exists("gamemodes/" .. filename, "MOD") or
-			file.Exists("lua_temp/"  .. filename, "MOD");
-end
-
----
 -- Works around file.Exists(x, "LUA") returning false on the client for folders
 -- @param folder The path to the folder, sans final /
 -- @return bool

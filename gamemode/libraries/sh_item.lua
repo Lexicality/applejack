@@ -39,7 +39,7 @@ function GM:LoadItems()
 	local files, folders = file.Find(path.."*", "LUA");
 	for _, filename in pairs(folders) do
 		if (validfile(filename) and not filename:find('.',1,true) and
-				 file.ExistsInLua(path..filename.."/init.lua")) then
+				 file.Exists(path..filename.."/init.lua", "LUA")) then
 			str,count = "",0;
 			CAT = {};
 			CAT.UniqueID = filename:lower();
@@ -99,7 +99,7 @@ function GM:LoadItems()
 			end
 			spath = path .. filename
 			uid = filename:lower();
-			if (file.ExistsInLua(spath .. "/init.lua")) then
+			if (file.Exists(spath .. "/init.lua", "LUA")) then
 				-- redef the cat3g0ry.
 				CAT = {};
 				CAT.UniqueID = uid;

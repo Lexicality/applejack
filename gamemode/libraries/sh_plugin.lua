@@ -42,16 +42,16 @@ function GM:LoadPlugins()
 			PLUGIN = {};
 			PLUGIN.Folder = id;
 			PLUGIN.FullPath = cpath;
-			if (file.ExistsInLua(cpath.."/sh_init.lua")) then
+			if (file.Exists(cpath.."/sh_init.lua", "LUA")) then
 				includecs(cpath.."/sh_init.lua");
 			end
 			if (SERVER) then
-				if (file.ExistsInLua(cpath.."/sv_init.lua")) then
+				if (file.Exists(cpath.."/sv_init.lua", "LUA")) then
 					include(cpath.."/sv_init.lua");
-				end if (file.ExistsInLua(cpath.."/cl_init.lua")) then
+				end if (file.Exists(cpath.."/cl_init.lua", "LUA")) then
 					AddCSLuaFile(cpath.."/cl_init.lua");
 				end
-			elseif (file.ExistsInLua(cpath.."/cl_init.lua")) then
+			elseif (file.Exists(cpath.."/cl_init.lua", "LUA")) then
 				include(cpath.."/cl_init.lua");
 			end
 			if (file.FolderExistsInLua(cpath.."/items")) then

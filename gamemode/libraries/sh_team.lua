@@ -27,7 +27,7 @@ function GM:LoadTeams()
 	for _, group in pairs(folders) do
 		cpath = path .. group .. "/"
 		if (not (validfile(group) and not group:find('.',1,true) and
-			file.ExistsInLua(cpath .. "init.lua"))) then
+			file.Exists(cpath .. "init.lua", "LUA"))) then
 			continue;
 		end
 		newgroup();
@@ -44,7 +44,7 @@ function GM:LoadTeams()
 		for _, gang in pairs(folders) do
 			local cpath = cpath .. gang .. "/";
 			if (not (validfile(gang) and not gang:find('.',1,true) and
-			   file.ExistsInLua(cpath .. "init.lua"))) then
+			   file.Exists(cpath .. "init.lua", "LUA"))) then
 				continue;
 			end
 			newgang();
@@ -84,7 +84,7 @@ function GM:LoadTeams()
 			if (gdata) then
 				GROUP = self.Groups[gdata] or Error("oh god what? group:", group, " gdata:", gdata, " res:", tostring(self.Groups[gdata]));
 			end
-			init = file.ExistsInLua(cpath .. "init.lua");
+			init = file.Exists(cpath .. "init.lua", "LUA");
 			if (init) then
 				if (not gdata) then
 					newgroup();
@@ -120,7 +120,7 @@ function GM:LoadTeams()
 				if (gdata) then
 					GANG = self.Gangs[gdata] or Error("oh god what? gang:", gang, " gdata:", gdata, " res:", tostring(self.Gangs[gdata]));
 				end
-				init = file.ExistsInLua(cpath .. "init.lua");
+				init = file.Exists(cpath .. "init.lua", "LUA");
 				if (init) then
 					if (not gdata) then
 						newgang();
