@@ -115,7 +115,7 @@ function GM:LoadTeams()
 				if (not validfile(gang) or gang:find('.',1,true)) then
 					continue;
 				end
-				gdata = "GANG_" string.upper(gang);
+				gdata = "GANG_" .. string.upper(gang);
 				gdata = _G[gdata];
 				if (gdata) then
 					GANG = self.Gangs[gdata] or Error("oh god what? gang:", gang, " gdata:", gdata, " res:", tostring(self.Gangs[gdata]));
