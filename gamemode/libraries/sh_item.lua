@@ -71,7 +71,7 @@ function GM:LoadItems()
 	end
 	MsgN(" Looking for bases.");
 	for plugin, path in pairs(plugins) do
-		if (not file.ExistsInLua(path .. "base")) then
+		if (not file.FolderExistsInLua(path .. "base")) then
 			continue;
 		end
 		MsgN("  Found bases in " .. plugin.Name .. "!");

@@ -107,3 +107,15 @@ function file.ExistsInLua(filename)
 			file.Exists("lua_temp/"  .. filename, "MOD");
 end
 
+---
+-- Works around file.Exists(x, "LUA") returning false on the client for folders
+-- @param folder The path to the folder, sans final /
+-- @return bool
+function file.FolderExistsInLua(folder)
+	if (file.Exists(folder, "LUA")) then
+		return true;
+	end
+	local files, folders = file.Find(folder .. '/*', "LUA");
+	return #files > 0 or #folders > 0;
+end
+

@@ -54,10 +54,10 @@ function GM:LoadPlugins()
 			elseif (file.ExistsInLua(cpath.."/cl_init.lua")) then
 				include(cpath.."/cl_init.lua");
 			end
-			if (file.ExistsInLua(cpath.."/items")) then
+			if (file.FolderExistsInLua(cpath.."/items")) then
 				PLUGIN._HasItems = true;
 			end
-			if (file.ExistsInLua(cpath.."/teams")) then
+			if (file.FolderExistsInLua(cpath.."/teams")) then
 				PLUGIN._HasTeams = true;
 			end
 			if (PLUGIN.Name) then
