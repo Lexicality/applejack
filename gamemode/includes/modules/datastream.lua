@@ -60,7 +60,16 @@ local hackyglon_meta = {
 --setmetatable(hackyglon_meta, {__index = string}) -- if the developer uses string.__index.. too bad!
 
 if SERVER then
+    local pool = {}
+    local function ensurePooled(name)
+        if (not pool[name]) then
+            util.AddNetworkString("$DS_"..name)
+            util.AddNetworkString("$DSC_"..name)
+            pool[name] = true
+        end
+    end
     function Hook(name, callback, dont_confirm)
+        ensurePooled(name)
         net.Receive("$DS_"..name, function(len, ply)
             local id = net.ReadInt(8)
             if not dont_confirm then
@@ -79,7 +88,6 @@ if SERVER then
         end)
     end
 
-    local pool = {};
 
     _operation_count = 0
     function StreamToClients(audience, name, data, callback)
@@ -90,10 +98,7 @@ if SERVER then
             error("bad argument #1 to 'datastream.StreamToClients' (table or Player expected, got "..audience_type..")", 2)
         end
         _operation_count = (_operation_count+1)%256
-        if (not pool[name]) then
-            util.AddNetworkString("$DS_"..name)
-            pool[name] = true
-        end
+        ensurePooled(name)
         net.Start("$DS_"..name)
             net.WriteInt(_operation_count, 8) -- this isn't really needed
             net.WriteTable(data)
