@@ -587,8 +587,8 @@ do
 		s(p, "-------------------------------------------------------------------------------------------");
 		f(p, "Position", makepos(ent:GetPos()))
 		f(p, "Angle",    makeang(ent:GetAngles()))
-		local r,g,b,a = ent:GetColor()
-		f(p, "Colour",     "Color("..r..", "..g..", "..b..", "..a..")");
+		local c = ent:GetColor()
+		f(p, "Colour",     "Color("..c.r..", "..c.g..", "..c.b..", "..c.a..")");
 		f(p, "Material",   tostring(ent:GetMaterial()));
 		f(p, "Size",       tostring(ent:OBBMaxs() - ent:OBBMins()));
 		f(p, "Radius",     tostring(ent:BoundingRadius()));
