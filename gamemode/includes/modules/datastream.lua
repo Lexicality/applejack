@@ -80,6 +80,7 @@ if SERVER then
             end
             local data = net.ReadTable()
             callback(
+                ply,
                 name,
                 id,
                 setmetatable({dec = data, enc = nil}, hackyglon_meta), -- let's hope no one actually uses this variable (the hack will probably fail!)
