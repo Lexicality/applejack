@@ -94,7 +94,7 @@ function SWEP:PrimaryAttack()
 	dmg:SetDamage(self.Primary.Damage);
 	local phys = ent:GetPhysicsObject();
 	if (IsValid(phys) and phys:IsMoveable()) then
-		dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass() * 10);
+		dmg:SetDamageForce(tr.Normal * self.Primary.PunchAcceleration * phys:GetMass());
 	end
 	dmg:SetDamagePosition(tr.HitPos);
 	if (self:GetDTBool(0)) then -- super
