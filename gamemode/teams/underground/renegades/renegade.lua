@@ -1,4 +1,4 @@
-TEAM.Name             = "Renegage";
+TEAM.Name             = "Renegade";
 TEAM.Description      = "A member of the Regegades gang.";
 TEAM.Color            = Color(220,140,15);
 TEAM.Models.Male      = {"models/player/phoenix.mdl"};
