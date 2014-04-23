@@ -949,7 +949,7 @@ GM:RegisterCommand{
 			if ((ply._NextUseItem or 0) > time) then
 				return false, "You cannot use another item for " .. math.ceil(ply._NextUseItem - time) .. " more seconds!";
 			elseif ((ply._NextUse[id] or 0) > time) then
-				return false, "You cannot use another " .. item.Name .. " for " .. math.ceil(ply._NextUse[id]) .. " more seconds!";
+				return false, "You cannot use another " .. item.Name .. " for " .. math.ceil(ply._NextUse[id] - time) .. " more seconds!";
 			end if (ply:InVehicle() and item.NoVehicles) then
 				return false, "You cannot use that item while in a vehicle!";
 			elseif (not gamemode.Call("PlayerCanUseItem", ply, id)) then
