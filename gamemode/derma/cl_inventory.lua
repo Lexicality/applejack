@@ -161,8 +161,9 @@ function PANEL:Init()
 				end
 			elseif (self.itemFunctions[i] == "Drop") then
 				self.itemButton[i].DoClick = function()
+					local amount = cider.inventory.stored[self.item]
 
-					if cider.inventory.stored[self.item] < 2 then
+					if amount < 2 then
 						RunConsoleCommand("mshine", "inventory", self.item, "drop", 1);
 						-- Close the main menu.
 						cider.menu.toggle();
@@ -177,7 +178,7 @@ function PANEL:Init()
 						cider.menu.toggle();
 					end);
 					menu:AddOption("All", function()
-						RunConsoleCommand("mshine", "inventory", self.item, "drop", "all");
+						RunConsoleCommand("mshine", "inventory", self.item, "drop", amount);
 						-- Close the main menu.
 						cider.menu.toggle();
 					end);
