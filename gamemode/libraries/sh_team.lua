@@ -24,7 +24,7 @@ function GM:LoadTeams()
 	TEAMCOUNT = 0;
 	local cpath;
 	local files, folders = file.Find(path.."*", "LUA")
-	for _, group in pairs(folders) do
+	for _, group in ipairs(folders) do
 		cpath = path .. group .. "/"
 		if (not (validfile(group) and not group:find('.',1,true) and
 			file.Exists(cpath .. "init.lua", "LUA"))) then
@@ -41,7 +41,7 @@ function GM:LoadTeams()
 		GROUP.UniqueID = string.lower(group);
 		reggroup();
 		files, folders = file.Find(cpath .. "*", "LUA")
-		for _, gang in pairs(folders) do
+		for _, gang in ipairs(folders) do
 			local cpath = cpath .. gang .. "/";
 			if (not (validfile(gang) and not gang:find('.',1,true) and
 			   file.Exists(cpath .. "init.lua", "LUA"))) then
@@ -67,14 +67,19 @@ function GM:LoadTeams()
 	local plugins = {};
 	for _, plugin in pairs(GM.Plugins) do
 		if (plugin._HasTeams) then
-			plugins[plugin] = plugin.FullPath .. "/teams/";
+			table.insert(plugins, plugin);
 		end
 	end
-	local gdata, init;
-	for plugin, path in pairs(plugins) do
+	table.sort(plugins, function(a, b)
+		return a.Folder < b.Folder
+	end);
+
+	local gdata, init, path;
+	for _, plugin in ipairs(plugins) do
+		path = plugin.FullPath .. "/teams/";
 		MsgN(" Looking in ", plugin.Name);
 		files, folders = file.Find(path .. "*", "LUA");
-		for _, group in pairs(folders) do
+		for _, group in ipairs(folders) do
 			cpath = path .. group .. "/";
 			if (not validfile(group) or group:find('.', 1, true)) then
 				continue;
@@ -110,7 +115,7 @@ function GM:LoadTeams()
 				MsgN("  Loaded group ", GROUP.Name, ".");
 			end
 			local files, folders = file.Find(cpath .. "*", "LUA");
-			for _, gang in pairs(folders) do
+			for _, gang in ipairs(folders) do
 				local cpath = cpath .. gang .. "/";
 				if (not validfile(gang) or gang:find('.',1,true)) then
 					continue;
