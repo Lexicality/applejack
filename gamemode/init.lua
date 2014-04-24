@@ -1093,7 +1093,7 @@ function GM:ShutDown()
 	ErrorNoHalt"----------------------\n"
 	for _, ply in pairs( player.GetAll() ) do
 		ply:HolsterAll()
-		ply:SaveData(true)
+		ply:SaveData()
 	end
 end
 
