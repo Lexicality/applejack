@@ -135,7 +135,6 @@ local function sortTeamFunc(a, b)
 end
 
 local function sortGangFunc(a, b)
-	--[[
 	-- Make sure groups are always above gangs
 	if (a.IsGroup) then
 		if (b.IsGroup) then
@@ -152,8 +151,6 @@ local function sortGangFunc(a, b)
 		-- Neither is a group, sort normally.
 		return sortTeamFunc(a, b);
 	end
-	--]]
-	return a.IsGroup and (not b.IsGroup or sortTeamFunc(a, b)) or (not b.IsGroup and sortTeamFunc(a, b));
 end
 
 local function formatPlayerList(list)
