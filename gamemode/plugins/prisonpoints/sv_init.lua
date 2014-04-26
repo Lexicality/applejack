@@ -15,9 +15,9 @@ function PLUGIN:LoadData()
 		return
 	end
 	data = file.Read(path, "DATA");
-	status, results = pcall(glon.decode,data);
+	status, results = pcall(util.JSONToTable,data);
 	if (status == false) then
-		error("Error GLON decoding '"..path.."': "..results);
+		error("Error JSON decoding '"..path.."': "..results);
 	elseif (not results) then
 		return
 	end
@@ -26,9 +26,9 @@ end
 
 function PLUGIN:SaveData()
 	local data,status,result,path;
-	status, result = pcall(glon.encode,self.Prisonpoints);
+	status, result = pcall(util.TableToJSON,self.Prisonpoints);
 	if (status == false) then
-		error("["..os.date().."] Prisonpoints Plugin: Error GLON encoding prisonpoints : "..results);
+		error("["..os.date().."] Prisonpoints Plugin: Error JSON encoding prisonpoints : "..results);
 	end
 	path = GM.LuaFolder.."/prisonpoints/"..game.GetMap()..".txt";
 	if (not result or result == "") then
@@ -37,6 +37,8 @@ function PLUGIN:SaveData()
 		end
 		return;
 	end
+	file.CreateDir( "sample" );
+	file.CreateDir(GM.LuaFolder .. "/doors/");
 	file.Write(path,result);
 end
 
