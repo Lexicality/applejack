@@ -686,7 +686,7 @@ end
 
 local getloaddataquery
 do
-	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %i"
+	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %u"
 	local function onError(query, err)
 		GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
 		timer.Simple(30, timerfunc, query.ply);
@@ -802,7 +802,7 @@ local function createCreateQuery(ply)
 end
 
 -- Creates an UPDATE query and returns it
-local updatequeryformat = "UPDATE "..GM.Config["MySQL Table"].." SET %s WHERE _UniqueID = %i";
+local updatequeryformat = "UPDATE "..GM.Config["MySQL Table"].." SET %s WHERE _UniqueID = %u";
 local function createUpdateQuery(ply)
 	local keys,values = getKVs(ply);
 	local q = "";
