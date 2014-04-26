@@ -1441,7 +1441,8 @@ GM:RegisterCommand{
 
 local function canmutiny(ply, victim)
 	local pt, vt = ply:GetTeam(), victim:GetTeam();
-	return pt.Group == vt.Group
+	return pt and vt
+	and    pt.Group == vt.Group
 	and    pt.Gang  == pt.Gang and pt.Gang
 	and    vt.GroupLevel == GROUP_GANGBOSS;
 end

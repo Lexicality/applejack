@@ -17,6 +17,10 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	end
 
 	local mdata = ply:GetTeam();
+	if (not mdata) then
+		-- FIXME: Maybe only return true for the citizen?
+		return true; -- If they're not in a cider team we shouldn't block them from joining one.
+	end
 	local tlevel, mlevel = tdata.GroupLevel, mdata.GroupLevel;
 	if(tdata.Group ~= mdata.Group) then -- We're moving between groups
 		-- While not immediately apprent, this returns true if they are switching from level 1 to level 1 and takes advantage of the fact that the message is not displayed if 'true' is returned.
@@ -75,6 +79,7 @@ end
 -- @return True if they can, false if they can't.
 function GM:PlayerCanManufactureCategory(ply, category)
 	local t = ply:GetTeam();
+	if (not t) then return false; end
 	for _, cat in pairs(t.CanMake) do
 		if (cat == category) then
 			return true;

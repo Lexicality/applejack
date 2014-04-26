@@ -12,7 +12,7 @@ end
 -- Check if they're the right group/gang
 function PLUGIN:IsAuthorised(ply, gang)
 	local data = ply:GetTeam();
-	return (data.Group == self.group or gang and data.Gang == self.gang);
+	return data and (data.Group == self.group or gang and data.Gang == self.gang);
 end
 
 -- Say a message as a request.

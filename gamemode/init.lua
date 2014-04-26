@@ -564,7 +564,8 @@ function GM:PlayerSetModel(ply)
 		ply:SetModel(ply.cider._Misc.custommodel[ply:Team()])
 		return true
 	end
-	local models = ply:GetTeam().Models;--team.Query(ply:Team(), "Models")
+	-- Query the team in case they're not in one we know of.
+	local models = team.Query(ply:Team(), "Models")
 
 	-- Check if the models table exists.
 	if (models) then

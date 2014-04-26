@@ -284,7 +284,7 @@ umsg.PoolString("TeamChange");
 function meta:Demote()
 	self:HolsterAll();
 	local data = self:GetTeam();
-	local base = data.Group.BaseTeam
+	local base = data and data.Group.BaseTeam
 	if (base == data) then
 		self:JoinTeam(TEAM_DEFAULT)
 	else
