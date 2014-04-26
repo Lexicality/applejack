@@ -1,4 +1,4 @@
-TEAM.Name             = "Renegage Leader";
+TEAM.Name             = "Renegagde Leader";
 TEAM.Description      = "Leader of the Renegades.";
 TEAM.Color            = Color(200,140,40);
 TEAM.Models.Male      = {"models/player/arctic.mdl"};
