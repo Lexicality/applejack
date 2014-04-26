@@ -34,6 +34,7 @@ player.loadKnownKeys = {
 	_Blacklist	= "GLON";
 	_Misc		= "GLON";
 	_Donator	= "number";
+	_UniqueID   = "number";
 	_Money		= "number";
 	_Clan		= "string";
 	_Access		= "string";
