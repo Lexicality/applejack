@@ -303,3 +303,5 @@ usermessage.Hook("cider_ModelChoices",function(msg)
 	end
 	CheckForInitalised(tab)
 end)
+
+hook.Remove( "GUIMousePressed", "PropertiesClick"
