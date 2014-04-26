@@ -19,9 +19,9 @@ function PLUGIN:LoadDoors()
 		ErrorNoHalt("[",os.date(),"] Doors Plugin: cannot find the file " .. path .. "!\n");
 		return;
 	end
-	local stat, res = pcall(glon.decode, file.Read(path, "DATA"));
+	local stat, res = pcall(util.JSONToTable, file.Read(path, "DATA"));
 	if (not stat) then
-		error("["..os.date().."] Doors Plugin: Error GLON decoding '"..path.."': "..res);
+		error("["..os.date().."] Doors Plugin: Error JSON decoding '"..path.."': "..res);
 	elseif (not res) then
 		ErrorNoHalt("[",os.date(),"] Doors Plugin: No results for map " .. game.GetMap() .. "!\n");
 		return;
@@ -132,9 +132,9 @@ function PLUGIN:SaveData()
 		end
 	end
 	if (stat == 0) then return; end
-	stat, res = pcall(glon.encode, ret);
+	stat, res = pcall(util.TableToJSON, ret);
 	if (not stat) then
-		error("["..os.date().."] Doors Plugin: Error GLON encoding "..game.GetMap().."'s door data: "..res);
+		error("["..os.date().."] Doors Plugin: Error JSON encoding "..game.GetMap().."'s door data: "..res);
 	end
 	file.Write(GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt", res);
 end
