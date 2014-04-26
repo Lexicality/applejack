@@ -18,9 +18,9 @@ function PLUGIN:LoadData()
 		return
 	end
 	data = file.Read(path, "DATA");
-	status, results = pcall(glon.decode,data);
+	status, results = pcall(util.JSONToTable,data);
 	if (status == false) then
-		error("Error GLON decoding '"..path.."': "..results);
+		error("Error JSON decoding '"..path.."': "..results);
 	elseif (not results) then
 		return
 	end
@@ -41,9 +41,9 @@ function PLUGIN:SaveData()
 			tocode[data.Name] = spawns; --Indexes change, names tend not to.
 		end
 	end
-	status, result = pcall(glon.encode,tocode);
+	status, result = pcall(util.TableToJSON,tocode);
 	if (status == false) then
-		error("["..os.date().."] Spawnpoints Plugin: Error GLON encoding spawnpoints : "..results);
+		error("["..os.date().."] Spawnpoints Plugin: Error JSON encoding spawnpoints : "..results);
 	end
 	path = GM.LuaFolder.."/spawnpoints/"..game.GetMap()..".txt";
 	if (not result or result == "") then
@@ -52,6 +52,8 @@ function PLUGIN:SaveData()
 		end
 		return;
 	end
+	file.CreateDir( "sample" );
+	file.CreateDir(GM.LuaFolder .. "/spawnpoints/");
 	file.Write(path,result);
 end
 
