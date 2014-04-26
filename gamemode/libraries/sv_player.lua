@@ -25,6 +25,14 @@ player.loadIgnoreKeys = {
 }
 
 ---
+-- SQL Fields that should never be updated (insert is fine)
+player.updateIgnoreKeys = {
+	_Key = true;
+	_SteamID = true;
+	_UniqueID = true;
+}
+
+---
 -- Known SQL fields that should be treated in a specific way
 -- (cleaner to use this than let the auto take care of it)
 -- Acceptable words: "function", "GLON", "number", "bool" and "string"
@@ -63,6 +71,7 @@ player.loadFunctions = {
 ---
 -- Keys in the player's .cider table that shouldn't be saved in to the SQL database
 player.saveIgnoreKeys = {
+	_Key = true
 }
 
 ---

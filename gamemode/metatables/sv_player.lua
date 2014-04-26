@@ -653,6 +653,7 @@ end
 local function loadCallback(ply, data)
 	for k,v in pairs(data) do
 		if (player.loadIgnoreKeys[k]) then
+			-- Nothing
 		elseif (player.loadKnownKeys[k]) then
 			handleKnownKey(ply, k, v);
 		else
@@ -753,14 +754,17 @@ end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
 local format = '"%s"';
-local function getKVs(ply)
+local function getKVs(ply, is_insert)
 	local keys, values = {}, {};
 	local value, kind;
 	for k,v in pairs(ply.cider) do
 		value = nil;
 		kind  = type(v);
+		print(k, v, kind);
 		if (player.saveIgnoreKeys[k]) then
 			value = false;
+		elseif (not is_insert and player.updateIgnoreKeys[k]) then
+				value = false;
 		elseif (player.saveFunctions[k]) then
 			value = player.saveFunctions[k](ply, v);
 		elseif (kind == "table") then
@@ -791,7 +795,7 @@ end
 -- Creates a CREATE query to make a new entry in the SQL DB and returns it
 local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
 local function createCreateQuery(ply)
-	local keys, vals = getKVs(ply);
+	local keys, vals = getKVs(ply, true);
 	keys = table.concat(keys, ", ");
 	vals = table.concat(vals, ", ");
 	return string.format(createqueryformat, keys, vals);
