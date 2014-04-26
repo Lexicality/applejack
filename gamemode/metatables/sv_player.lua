@@ -738,7 +738,7 @@ function meta:LoadData()
 		_Access = GM.Config["Default Access"],
 		_Donator = 0,
 		_SteamID = self:SteamID();
-		_UniqueID = self:UniqueID();
+		_UniqueID = tonumber(self:UniqueID());
 		_Arrested = false,
 		_Inventory = {},
 		_Blacklist = {},
