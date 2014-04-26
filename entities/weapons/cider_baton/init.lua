@@ -74,7 +74,7 @@ function SWEP:PrimaryAttack()
 		-- Violence time.
 		ply:TakeDamage(10, self.Owner, self.Owner);
 		-- Knock the victim back a little
-		ply:SetLocalVelocity(256 * (ply:GetPos() - self.Owner:GetPos()):Normalize());
+		ply:SetLocalVelocity(256 * (ply:GetPos() - self.Owner:GetPos()):GetNormalized());
 	-- Wake up the slumbering.
 	elseif (ply:KnockedOut()) then
 		-- Check they're allowed to.
