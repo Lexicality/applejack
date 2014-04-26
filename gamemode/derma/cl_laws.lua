@@ -19,7 +19,13 @@ function PANEL:Think()
 	cider.laws.update = false
 
 	self:Clear();
-	self:SetText(GM.Config["Laws"] .. table.concat(cider.laws.stored, "\n"));
+	local laws = {};
+	for k, law in pairs(cider.laws.stored) do
+		law = string.gsub(law, '[[%]]', '');
+		table.insert(laws, law);
+	end
+	laws = table.concat(laws, "\n");
+	self:SetText(GM.Config["Laws"] .. laws);
 
 	if LocalPlayer():IsAdmin() or LocalPlayer():Team() == TEAM_MAYOR then
 		local button = vgui.Create("DButton", self);
