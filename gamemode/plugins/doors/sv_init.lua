@@ -136,6 +136,8 @@ function PLUGIN:SaveData()
 	if (not stat) then
 		error("["..os.date().."] Doors Plugin: Error JSON encoding "..game.GetMap().."'s door data: "..res);
 	end
+	file.CreateDir( "sample" );
+	file.CreateDir(GM.LuaFolder .. "/doors/");
 	file.Write(GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt", res);
 end
 
