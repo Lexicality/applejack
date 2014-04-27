@@ -198,7 +198,7 @@ Container props like filing cabinets spawned by the detail system [b]are[/b] aut
 			containermenu.Buttoned = true
 		end);
 		menu:AddOption("All", function()
-			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), "all");
+			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), amount);
 			-- Close the main menu.
 			containermenu.Buttoned = true
 		end);
