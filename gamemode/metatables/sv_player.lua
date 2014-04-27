@@ -760,7 +760,6 @@ local function getKVs(ply, is_insert)
 	for k,v in pairs(ply.cider) do
 		value = nil;
 		kind  = type(v);
-		print(k, v, kind);
 		if (player.saveIgnoreKeys[k]) then
 			value = false;
 		elseif (not is_insert and player.updateIgnoreKeys[k]) then
