@@ -643,6 +643,7 @@ hook.Add("Think", "cider.chatBox.think", cider.chatBox.think);
 
 -- Called when the HUD should be painted.
 function cider.chatBox.hudPaint()
+	if (not IsValid(cider.chatBox.derma.panel)) then return; end
 	local x, y = cider.chatBox.getPosition();
 
 	-- Set the font of the text.
