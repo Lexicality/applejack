@@ -1079,7 +1079,8 @@ do --isolate vars
 
 	-- A command to holster your current weapon.
 	GM:RegisterCommand{
-		Command     = "holster";
+		Command = "holster";
+		Help    = "Store your current gun in your inventory";
 		function(ply)
 			local weapon = ply:GetActiveWeapon();
 
