@@ -23,7 +23,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> [time]";
 	Types       = "Player Number";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Knock someone out. (Defaults to 5 seconds)";
 	function(ply, victim, time)
 		victim:KnockOut(time or 5);
@@ -37,7 +37,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim>";
 	Types       = "Player";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Wake someone up";
 	function(ply, victim)
 		victim:WakeUp();
@@ -58,7 +58,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "[time]";
 	Types       = "Number";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Knock everyoneone out. (Defaults to 5 seconds)";
 	function(ply, time)
 		local tbl = player.GetAll();
@@ -77,7 +77,7 @@ end
 GM:RegisterCommand{
 	Command     = "wakeupall";
 	Access      = "s";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Wake everyone up";
 	function(ply)
 		local tbl = player.GetAll();
@@ -92,7 +92,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim>";
 	Types       = "Player";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Tie someone up";
 	function(ply, victim)
 		victim:TieUp();
@@ -105,7 +105,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim>";
 	Types       = "Player";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Untie someone";
 	function(ply, victim)
 		victim:UnTie();
@@ -121,7 +121,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim>";
 	Types       = "Player";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Instantly repsawn someone.";
 	function(ply, victim)
 		victim:Spawn();
@@ -135,7 +135,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> [time]";
 	Types       = "Player Number";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Arrest someone. Optionally define how long they're arrested for.";
 	function(ply, victim, time)
 		victim:Arrest(time);
@@ -149,7 +149,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim>";
 	Types       = "Player";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Unarrest someone.";
 	function(ply, victim)
 		victim:UnArrest();
@@ -163,7 +163,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> <arrest|search> [time]";
 	Types       = "Player Phrase Number";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Instantly give a player a warrant, ignoring game mechanics. Optionally give it a length.";
 	function(ply, victim, kind, time)
 		GM:Log(EVENT_EVENT,"%s gave %s a %s warrant for %s seconds", ply:Name(), victim:Name(), kind, time or "default");
@@ -177,7 +177,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> <class>";
 	Types       = "Player String";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Give someone a weapon by classname, ie cider_baton";
 	function(ply, victim, kind)
 		if (not IsValid(victim:Give(kind))) then
@@ -193,7 +193,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> <class> [amount]";
 	Types       = "Player String Number";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Give someone ammo by classname, ie smg1_grenade";
 	function(ply, victim, kind, amount)
 		amount = amount or 20
@@ -208,7 +208,7 @@ GM:RegisterCommand{
 	Access      = "s";
 	Arguments   = "<victim> <item> [amount] [force]";
 	Types       = "Player String Number Bool";
-	Category    = "SuperAdmin Abuse Commands";
+	Category    = "Superadmin Abuse Commands";
 	Help        = "Give someone an item. Use negative numbers to remove items.";
 	function(ply, victim, name, amount, force)
 		amount = amount or 1;
