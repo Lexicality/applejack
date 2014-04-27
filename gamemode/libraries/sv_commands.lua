@@ -78,6 +78,7 @@ function GM:RegisterCommand(tab)
 		end
 	end
 	if (not tab.Arguments or tab.Arguments == "") then
+		tab.Arguments = ""
 		tab.targs = 0;
 		tab.rargs = 0;
 		tab.oargs = 0;
@@ -135,6 +136,12 @@ function GM:RegisterCommand(tab)
 	if (tab.Hidden) then
 		return;
 	end
+	-- Standin
+	local args = tab.Arguments;
+	if (args ~= '') then
+		args = args .. ' ';
+	end
+	cider.help.add(tab.Category, self.Config["Command Prefix"] .. tab.Command .. ' ' .. args .. '- ' .. tab.Help);
 	-- TODO: Setup help files and send to client.
 end
 
