@@ -282,15 +282,13 @@ GM:RegisterCommand{
 			victim = ply;
 		end
 		if (victim:GetColor() == 0) then
-			victim:SetColor(255,255,255,255)
-			victim:DrawShadow(true);
+			victim:SetNoDraw(false);
 			victim:Notify("You are now visible",0);
 			if (ply ~= victim) then
 				ply:Notify(victim:Name() .. " is now visible.",0);
 			end
 		else
-			victim:SetColor(0,0,0,0)
-			victim:DrawShadow(false);
+			victim:SetNoDraw(true);
 			victim:Notify("You are now invisible",0);
 			if (ply ~= victim) then
 				ply:Notify(victim:Name() .. " is now invisible.",0);
