@@ -228,17 +228,26 @@ function GM:PlayerCanUseItem(ply, id)
 	if (not item) then return false; end
 	if (item.Category) then
 		local cat = item.Category;
-		local id = ply:Team();
-		if (table.HasValue(team.Query(id,"CantUse",{}), cat)) then -- Is it set that our team can't use this category? (ie police can't use illegals)
-			ply:Notify(team.Query(id,"Name","Your team's member").."s cannot use "..self:GetCategory(cat).Name.."!", 1);
-			return false;
+		local team = ply:GetTeam();
+		if (team) then
+			local cantuse = table.Copy(team.CantUse);
+			if (team.Gang) then
+				table.Add(cantuse, team.Gang.CantUse);
+			end
+			if (team.Group) then
+				table.Add(cantuse, team.Group.CantUse);
+			end
+			if (table.HasValue(cantuse, cat)) then -- Is it set that our team can't use this category? (ie police can't use illegals)
+				ply:Notify(team.Name .. "s cannot use " .. self:GetCategory(cat).Name .. "!", 1);
+				return false;
+			end
 		elseif (ply:Blacklisted("cat", cat) > 0) then -- Are we blacklisted from this category?
-			ply:BlacklistAlert("cat",cat,self:GetCategory(cat).Name);
+			ply:BlacklistAlert("cat", cat, self:GetCategory(cat).Name);
 			return false;
 		end
 	end
 	if (ply:Blacklisted("item", item.UniqueID) > 0) then -- Are we blacklisted from this specific item?
-		ply:BlacklistAlert("item",item.UniqueID,item.Plural);
+		ply:BlacklistAlert("item", item.UniqueID, item.Plural);
 		return false;
 	end
 	--[ [ TODO: Why is this needed? I don't think it is tbh
