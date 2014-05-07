@@ -96,12 +96,8 @@ local function doprint(name, msg, ...)
 		if (GM:IsListenServer()) then
 			return;
 		end
-	end if (console) then
-		-- If we've got the nice console module installed, give us some colours.
-		console.Print(GM.LogCategoryData[name].color, text.."\n");
-	else
-		print(text);
 	end
+	MsgC(GM.LogCategoryData[name].color, text, "\n");
 end
 
 if (SERVER) then
@@ -154,13 +150,6 @@ if (SERVER) then
 		umsg.End();
 	end
 else
-	-- FIXME Find a version of console.dll that works for GM13
-	-- if (#file.Find("lua/includes/modules/gm_console.dll", true) > 0) then
-	-- 	require("console");
-	-- else
-	-- 	ErrorNoHalt("If you had installed nevec's gm_console dll, you would have pretty text!\n");
-	-- 	ErrorNoHalt("http://www.facepunch.com/showthread.php?t=723687\n");
-	-- end
 	---
 	-- All the stored log entries (clientside)
 	GM.LogEntries = {
