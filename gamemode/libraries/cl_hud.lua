@@ -967,6 +967,11 @@ do
 		elseif lineWeight < 1 then
 			error("lineWeight cannot be lower than 1!",2)
 		end
+		-- FIXME Remove me when #76 is fixed.
+		if (type(lineText) ~= 'string') then
+			ErrorNoHalt(debug.traceback("Non-string passed to lines:Add!", 2), "\n");
+			lineText = "ERROR please check console! (" .. tostring(lineText) .. ")";
+		end
 		self.lines[lineID] = { text = lineText, color = lineColour, weight = lineWeight}
 	end
 	function esplines:Remove(lineID)
