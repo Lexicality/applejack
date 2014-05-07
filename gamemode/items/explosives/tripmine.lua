@@ -26,7 +26,7 @@ function ITEM:onUse(ply)
 	ent:SetAngles(trace.HitNormal:Angle() + Angle(90, 0, 0));
 	ent:SetPos(trace.HitPos + ent:GetUp() * 2);
 	ent._planter = ply;
-	ent:SetSolid(false);
+	ent:SetSolid(SOLID_NONE);
 	ent:Spawn();
 	ent:SetPPOwner(ply);
 	ent:SetPPSpawner(ply);
