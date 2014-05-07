@@ -218,7 +218,7 @@ local function SpawnMenuOpen()
 	end
 	if (aPanel) then
 		adminPanel(aPanel);
-		hook.Remove("SpawnMenuOpen", "Post Init Spawnmenu Rebuild");
+		hook.Remove("SpawnMenuOpen", "PP Post Init Spawnmenu Rebuild");
 		dun = true;
 	end
 end
