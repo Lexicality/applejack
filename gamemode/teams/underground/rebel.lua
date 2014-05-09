@@ -9,8 +9,7 @@ TEAM.Models.Female = {
 	"models/player/Group03/Female_02.mdl",
 	"models/player/Group03/Female_03.mdl",
 	"models/player/Group03/Female_04.mdl",
-	"models/player/Group03/Female_06.mdl",
-	"models/player/Group03/Female_07.mdl"
+	"models/player/Group03/Female_06.mdl"
 };
 TEAM.Models.Male = {
 	"models/player/Group03/Male_01.mdl",
