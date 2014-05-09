@@ -172,7 +172,7 @@ function GM:ParseCommand(ply, text)
 				args[#args+1] = text:sub(j, i-1);
 				-- This is the first argument, and thus is the command.
 				if (c == 1) then
-					local cmd = self.Commands[args[1]];
+					local cmd = self.Commands[string.lower(args[1])];
 					-- Make sure it exists so we don't do evreything for nothing
 					if (not cmd) then
 						-- Skip everything else, so the command handler can yell at them.
