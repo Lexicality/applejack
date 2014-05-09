@@ -276,10 +276,6 @@ function GM:DoCommand(ply, args)
 				break;
 			end
 			arg = string.Trim(arg);
-			if (arg == "") then
-				ply:Notify("Don't force blank arguments please.", NOTIFY_ERROR);
-				return;
-			end
 			t = cmd.Types[i];
 			if (t == "string") then
 				pargs[i] = arg;
