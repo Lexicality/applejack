@@ -145,6 +145,61 @@ function GM:RegisterCommand(tab)
 	-- TODO: Setup help files and send to client.
 end
 
+function GM:ParseCommand(ply, text)
+	local args = {};
+	local varg      = 0;
+	local j         = 1;
+	local leng      = text:len();
+	local lastc     = '';
+	local quoting   = false;
+	local c         = 1;
+	local i         = 1;
+	local ctext     = "";
+	while (i <= leng) do
+		ctext = text:sub(i, i);
+		if (i == leng) then
+			args[#args+1] = text:sub(j);
+			break;
+		elseif (quoting) then
+			if (ctext == ' ' and lastc == '"') then
+				quoting = false;
+				args[#args+1] = text:sub(j, i-2);
+				c = c + 1;
+				j = i + 1;
+			end
+		else
+			if (ctext == ' ') then
+				args[#args+1] = text:sub(j, i-1);
+				-- This is the first argument, and thus is the command.
+				if (c == 1) then
+					local cmd = self.Commands[args[1]];
+					-- Make sure it exists so we don't do evreything for nothing
+					if (not cmd) then
+						-- Skip everything else, so the command handler can yell at them.
+						break;
+					end
+					--  Apply vargocity
+					if (cmd.VarArg) then
+						varg = cmd.VarArg + 1;
+					end
+				end
+				c = c + 1;
+				j = i + 1
+			elseif (ctext == '"' and lastc == ' ') then
+				quoting = true;
+				j = i + 1;
+			end
+		end
+		lastc = ctext;
+		i = i + 1;
+		if (c == varg) then
+			args[#args+1] = text:sub(i);
+			break;
+		end
+	end
+	self:DoCommand(ply, args);
+end
+
 function GM:PlayerSay(ply, text, public)
 	-- The OOC commands have shortcuts.
 	if (string.sub(text, 1, 2) == "//") then
@@ -163,60 +218,9 @@ function GM:PlayerSay(ply, text, public)
 
 	-- Commands
 	if (string.sub(text, 1, 1) == self.Config["Command Prefix"]) then
-		local args = {};
 		-- Get rid of the prefix
 		text = string.Trim(string.sub(text, 2));
-		local varg      = 0;
-		local j         = 1;
-		local leng      = text:len();
-		local lastc     = '';
-		local quoting   = false;
-		local c         = 1;
-		local i         = 1;
-		local ctext     = "";
-		while (i <= leng) do
-			ctext = text:sub(i, i);
-			if (i == leng) then
-				args[#args+1] = text:sub(j);
-				break;
-			elseif (quoting) then
-				if (ctext == ' ' and lastc == '"') then
-					quoting = false;
-					args[#args+1] = text:sub(j, i-2);
-					c = c + 1;
-					j = i + 1;
-				end
-			else
-				if (ctext == ' ') then
-					args[#args+1] = text:sub(j, i-1);
-					-- This is the first argument, and thus is the command.
-					if (c == 1) then
-						local cmd = self.Commands[args[1]];
-						-- Make sure it exists so we don't do evreything for nothing
-						if (not cmd) then
-							-- Skip everything else, so the command handler can yell at them.
-							break;
-						end
-						--  Apply vargocity
-						if (cmd.VarArg) then
-							varg = cmd.VarArg + 1;
-						end
-					end
-					c = c + 1;
-					j = i + 1
-				elseif (ctext == '"' and lastc == ' ') then
-					quoting = true;
-					j = i + 1;
-				end
-			end
-			lastc = ctext;
-			i = i + 1;
-			if (c == varg) then
-				args[#args+1] = text:sub(i);
-				break;
-			end
-		end
-		self:DoCommand(ply, args);
+		self:ParseCommand(ply, text);
 	elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
 		if (ply:Arrested()) then
 			cider.chatBox.addInRadius(ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"])
@@ -331,6 +335,6 @@ function GM:DoCommand(ply, args)
 	GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
 end
 
-concommand.Add("mshine", function(ply, _, args)
-	GM:DoCommand(ply, args);
+concommand.Add("mshine", function(ply, _, _, command)
+	GM:ParseCommand(ply, command);
 end);
