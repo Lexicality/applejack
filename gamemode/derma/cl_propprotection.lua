@@ -148,7 +148,7 @@ local function clientPanel(panel)
 
 	panel:Help("Applejack - Prop Protection");
 	panel:Help(" ");
-	panel:Button("Delete my props", "mshine", "ppcleanprops");
+	panel:Button("Delete my props", "mshine", "ppclearprops");
 	panel:Help(" ");
 	panel:Help("Friends");
 	panel:Button("Add Friend").DoClick = addButton;
