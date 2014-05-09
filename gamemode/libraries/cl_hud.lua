@@ -841,12 +841,15 @@ hook.Add("LibrariesLoaded", "CSVars shit for teh hud", function()
 		end
 		local barcolor = Color(150,210,20);
 		local function timr()
+			if (ends <= ctime) then return; end
+			-- It's quite possible for this to be called well in advance of KockedOut returning true.
+			if (not lpl:KnockedOut()) then return timer.Simple(0.01, timr); end
 			GM:SetCenterBar("Recovering . . .", barcolor, callback);
 		end
 		local function umsg(msg)
 			length = msg:ReadShort();
 			ends = CurTime() + length;
-			timer.Simple(0.01, timr);
+			timr();
 		end
 		usermessage.Hook("MS Recovery Time", umsg);
 	end
