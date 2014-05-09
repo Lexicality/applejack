@@ -91,6 +91,7 @@ config["Car Doors"]					= true -- whether or not you must be looking at a car do
 config["Prop Limit"]				= 30 -- The amount of props donators can spawn
 config["Builder Prop Limit"]		= 15 -- The amount of props builders can spawn
 config["Builder Prop Cost"]			= 100 -- The price of each prop a builder spawns
+config["Maximum Pickup Distance"]   = 500 -- The maximum distance a prop can be picked up from
 
 -- Job related
 config["Master Race"]				= true -- All group changes must go through one base class
