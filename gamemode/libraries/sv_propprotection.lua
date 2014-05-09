@@ -130,7 +130,7 @@ function GM:PlayerCanTouch(ply, ent)
 	elseif (ply:IsAdmin()) then
 		-- Admins can pick up anything
 		return true;
-	elseif (owner == ply or (IsPlayer(ply) and owner:IsPPFriendsWith(ply))) then
+	elseif (owner == ply or (IsPlayer(ply) and IsPlayer(owner) and owner:IsPPFriendsWith(ply))) then
 		return true;
 	else
 		return false;
