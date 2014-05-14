@@ -125,6 +125,9 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 	end if (tab.Skin) then
 		car:SetSkin(tab.Skin);
 	end
+	if (tab.Color) then --Allows the more recent cars (TDM etc) to be spawned in with a colour
+		car:SetColor(tab.Color);
+	end
 	car.RPName = tab.RPName or tab.Name;
 	car:SetNWString("Vehicle RP Name",car.RPName);
 	car:SetNWString("Vehicle Name",car.VehicleName);
@@ -149,10 +152,13 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 			seat:Fire("lock", "", 0);
 			seat:SetCollisionGroup(COLLISION_GROUP_WORLD);
 			if (tab.HideSeats) then
-				seat:SetColor(color_transparent);
-			end if (data.Members) then
+				seat:SetColor(Color(255,255,255, 0));
+				seat:SetRenderMode( RENDERMODE_TRANSALPHA );
+			end;
+			if (data.Members) then
 				table.Merge(seat, data.Members);
-			end if (data.KeyValues) then
+			end;
+			if (data.KeyValues) then
 				for k, v in pairs(data.KeyValues) do
 					seat:SetKeyValue(k, v);
 				end
