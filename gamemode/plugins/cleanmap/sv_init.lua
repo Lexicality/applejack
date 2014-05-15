@@ -20,6 +20,12 @@ PLUGIN.EntitiesToDelete = {
 		"func_button",
 		"prop_physics",
 		"prop_ragdoll"
+	};
+	rp_evocity_v17x = {
+		"prop_physics_multiplayer",
+		"info_teleport_destination",
+		"trigger_teleport",
+		"func_brush"
 	}
 }
 PLUGIN.SpecificEntitiesToDelete = {
