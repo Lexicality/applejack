@@ -60,8 +60,8 @@ function PANEL:Reload()
 
 	for title, text in pairs(cider.help.stored) do
 		local text2 = {};
-		for _, data in ipairs(text) do
-			table.insert(text2, data.text);
+		for _, line in ipairs(text) do
+			table.insert(text2, line);
 		end
 		table.insert(sections, {
 			title = title;
