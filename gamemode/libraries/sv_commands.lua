@@ -145,6 +145,16 @@ function GM:RegisterCommand(tab)
 	-- TODO: Setup help files and send to client.
 end
 
+-- local cr, cg, cy = Color(255,0,0), Color(0,255,00), Color(255,255,0);
+
+-- local function yn(pred)
+-- 	if (pred) then
+-- 		MsgC(cg, 'y');
+-- 	else
+-- 		MsgC(cr, 'n');
+-- 	end
+-- end
+
 function GM:ParseCommand(text)
 	local args = {};
 	local varg      = 0;
@@ -155,32 +165,44 @@ function GM:ParseCommand(text)
 	local c         = 1;
 	local i         = 1;
 	local ctext     = "";
+	-- MsgN("Incoming Text:");
+	-- MsgN(text);
 	while (i <= leng) do
 		ctext = text:sub(i, i);
+		-- MsgC(Color(200,200,200), i, '/', leng);
+		-- MsgC(Color(255,255,255), " '", ctext, "' ");
 		if (i == leng) then
+			-- MsgC(cg, "End of the message!");
 			if (ctext == '"') then
 				i = i - 1;
 			end
 			args[c] = text:sub(j, i);
 			break;
 		elseif (quoting) then
+			-- MsgC(cy, '-')
+			-- yn(ctext == ' ') yn(lastc == '"')
 			if (ctext == ' ' and lastc == '"') then
 				quoting = false;
 				args[c] = text:sub(j, i-2);
+				-- MsgC(cg," New arg: '", args[c], "' ");
 				c = c + 1;
 				j = i + 1;
 			end
 		elseif (ctext == '"' and (i == 1 or lastc == ' ')) then
+			-- MsgC(cg, '+')
 			quoting = true;
 			j = i + 1;
 		else
 			if (ctext == ' ') then
 				args[c] = text:sub(j, i-1);
+				-- MsgC(cg," New arg: '", args[c], "' ");
 				-- This is the first argument, and thus is the command.
 				if (c == 1) then
+					-- MsgC(cy, "CMD! ")
 					local cmd = self.Commands[string.lower(args[c])];
 					-- Make sure it exists so we don't do evreything for nothing
 					if (not cmd) then
+						-- MsgC(cr, "Unknown command :(");
 						-- Skip everything else, so the command handler can yell at them.
 						break;
 					end
@@ -193,13 +215,18 @@ function GM:ParseCommand(text)
 				j = i + 1
 			end
 		end
+		-- MsgN();
 		lastc = ctext;
 		i = i + 1;
 		if (c == varg) then
 			args[c] = text:sub(i);
+			-- MsgN("vararg! Dumping the rest of the message as: '", args[#args], "'");
 			break;
 		end
 	end
+	-- MsgN();
+	-- MsgN("Args be like");
+	-- PrintTable(args);
 	return args;
 end
 
