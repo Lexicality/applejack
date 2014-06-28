@@ -9,8 +9,8 @@ cider.help.stored = {};
 function cider.help.add(cat, help)
 	cider.help.stored[cat] = cider.help.stored[cat] or {};
 	table.insert(cider.help.stored[cat], help);
-	if (CLIENT and cider.help.panel) then
-		cider.help.panel:Reload();
+	if (CLIENT and cider.menu and cider.menu.tabs["Help"]) then
+		cider.menu.tabs["Help"]:Reload();
 	end
 end
 if (CLIENT) then
@@ -24,8 +24,8 @@ if (CLIENT) then
 			data[net.ReadString()] = lines;
 		end
 		cider.help.stored = data;
-		if (cider.help.panel) then
-			cider.help.panel:Reload();
+		if (cider.menu and cider.menu.tabs["Help"]) then
+			cider.menu.tabs["Help"]:Reload();
 		end
 	end);
 else

@@ -8,7 +8,6 @@ local PANEL = {};
 function PANEL:Init()
 	-- We need to load the current help into our items list.
 	self:Reload();
-	cider.help.panel = self;
 end
 
 local function isModerator(text)
