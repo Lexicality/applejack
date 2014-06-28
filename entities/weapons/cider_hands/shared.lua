@@ -38,4 +38,3 @@ SWEP.IronSightPos = Vector(0, 0, 0);
 SWEP.IronSightAng = Vector(0, 0, 0);
 SWEP.NoIronSightFovChange = true;
 SWEP.NoIronSightAttack = true;
-SWEP.HeldEnt = NULL

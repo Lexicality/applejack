@@ -46,6 +46,14 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
+	if (self:GetDTBool(1)) then
+		-- "Throw" and woosh
+		self:EmitSound("npc/vort/claw_swing2.wav");
+		self:SendWeaponAnim(ACT_VM_HITCENTER);
+		-- Don't do this again until later.
+		self:SetNextPrimaryFire(CurTime() + self.Primary.Refire);
+		return;
+	end
 	local ply = self.Owner;
 	local keys = ply:KeyDown(IN_SPEED);
 	-- If the player is exhausted, they can only use their keys.
@@ -91,6 +99,9 @@ end
 
 -- Called when the player attempts to secondary fire.
 function SWEP:SecondaryAttack()
+	if (self:GetDTBool(1)) then
+		return;
+	end
 	local ply = self.Owner;
 	local tr = ply:GetEyeTraceNoCursor();
 	if (tr.HitWorld or not tr.Hit or tr.StartPos:Distance(tr.HitPos) > 128) then

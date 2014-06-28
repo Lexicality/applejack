@@ -13,6 +13,14 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
+	if (self:GetDTBool(1)) then
+		-- "Throw" and woosh
+		self:EmitSound("npc/vort/claw_swing2.wav");
+		self:SendWeaponAnim(ACT_VM_HITCENTER);
+		-- Don't do this again until later.
+		self:SetNextPrimaryFire(CurTime() + self.Primary.Refire);
+		return;
+	end
 	local ply = self.Owner;
 	local keys = ply:KeyDown(IN_SPEED);
 	if (not (keys or self:GetDTBool(0)) and ply:GetNWBool("Exhausted")) then
@@ -109,6 +117,9 @@ end
 -- Called when the player attempts to secondary fire.
 function SWEP:SecondaryAttack()
 	self:SetNextSecondaryFire(CurTime() + 0.25);
+	if (self:GetDTBool(1)) then
+		return;
+	end
 	local ply = self.Owner;
 	local tr = ply:GetEyeTraceNoCursor();
 	if (tr.HitWorld or not tr.Hit or tr.StartPos:Distance(tr.HitPos) > 128) then
@@ -182,14 +193,21 @@ function SWEP:PickUp(ent, tr)
 end
 
 function SWEP:Think()
-	if (not self.PickupAttempt) then
-		return;
-	elseif (self.Owner:KeyDown(IN_ATTACK2)) then
-		-- While the guy holds the right mouse button down, they'll drop the object instantly.
-		return;
-	elseif (IsValid(self.PickupAttempt)) then
-		self.Owner:PickupObject(self.PickupAttempt);
+	if (self.PickupAttempt) then
+		if (self.Owner:KeyDown(IN_ATTACK2)) then
+			-- While the guy holds the right mouse button down, they'll drop the object instantly.
+			return;
+		elseif (IsValid(self.PickupAttempt) and not self.PickupAttempt:IsPlayerHolding()) then
+			self.Owner:PickupObject(self.PickupAttempt);
+			if ( self.PickupAttempt:IsPlayerHolding() ) then
+				self:SetDTBool(1, true);
+			end
+		else
+			print("didn't try hard enoguh");
+		end
+		self.PickupAttempt = nil;
+	elseif (self:GetDTBool(1)) then
+		self:SetDTBool(1, false);
 	end
-	self.PickupAttempt = nil;
 end
 
