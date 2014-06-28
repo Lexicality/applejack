@@ -158,21 +158,27 @@ function GM:ParseCommand(text)
 	while (i <= leng) do
 		ctext = text:sub(i, i);
 		if (i == leng) then
-			args[#args+1] = text:sub(j);
+			if (ctext == '"') then
+				i = i - 1;
+			end
+			args[c] = text:sub(j, i);
 			break;
 		elseif (quoting) then
 			if (ctext == ' ' and lastc == '"') then
 				quoting = false;
-				args[#args+1] = text:sub(j, i-2);
+				args[c] = text:sub(j, i-2);
 				c = c + 1;
 				j = i + 1;
 			end
+		elseif (ctext == '"' and (i == 1 or lastc == ' ')) then
+			quoting = true;
+			j = i + 1;
 		else
 			if (ctext == ' ') then
-				args[#args+1] = text:sub(j, i-1);
+				args[c] = text:sub(j, i-1);
 				-- This is the first argument, and thus is the command.
 				if (c == 1) then
-					local cmd = self.Commands[string.lower(args[1])];
+					local cmd = self.Commands[string.lower(args[c])];
 					-- Make sure it exists so we don't do evreything for nothing
 					if (not cmd) then
 						-- Skip everything else, so the command handler can yell at them.
@@ -185,15 +191,12 @@ function GM:ParseCommand(text)
 				end
 				c = c + 1;
 				j = i + 1
-			elseif (ctext == '"' and lastc == ' ') then
-				quoting = true;
-				j = i + 1;
 			end
 		end
 		lastc = ctext;
 		i = i + 1;
 		if (c == varg) then
-			args[#args+1] = text:sub(i);
+			args[c] = text:sub(i);
 			break;
 		end
 	end
