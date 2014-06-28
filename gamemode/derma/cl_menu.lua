@@ -2,57 +2,8 @@
 Name: "cl_menu.lua".
 	~ Applejack ~
 --]]
---[[
-
-] lua_run_cl PrintTable( file.Find( "../materials/gui/silkicons/*.vmt" ))
-1	=	add.vmt
-2	=	anchor.vmt
-3	=	application.vmt
-4	=	application_cascade.vmt
-5	=	application_form_magnify.vmt
-6	=	application_put.vmt
-7	=	application_view_detail.vmt
-8	=	application_view_tile.vmt
-9	=	arrow_refresh.vmt
-10	=	bomb.vmt
-11	=	box.vmt
-12	=	brick_add.vmt
-13	=	car.vmt
-14	=	check_off.vmt
-15	=	check_on.vmt
-16	=	check_on_s.vmt
-17	=	emoticon_smile.vmt
-18	=	exclamation.vmt
-19	=	folder_go.vmt
-20	=	group.vmt
-21	=	heart.vmt
-22	=	magnifier.vmt
-23	=	page.vmt
-24	=	page_white_find.vmt
-25	=	page_white_magnify.vmt
-26	=	page_white_wrench.vmt
-27	=	palette.vmt
-28	=	picture_edit.vmt
-29	=	plugin.vmt
-30	=	shield.vmt
-31	=	sound.vmt
-32	=	star.vmt
-33	=	table_edit.vmt
-34	=	user.vmt
-35	=	world.vmt
-36	=	wrench.vmt
-37	=	application_xp_terminal.vmt
-38	=	edgar.vmt
-39	=	error.vmt
-40	=	key.vmt
-41	=	map.vmt
-42	=	pill.vmt
-43	=	sport_soccer.vmt
-44	=	status_offline.vmt
-45	=	thumb_down.vmt
-46	=	newspaper.vmt
-]]
 cider.menu = {};
+cider.menu.tabs = {};
 cider.menu.open = nil;
 local width = 700
 if ScrW() > width then
@@ -79,17 +30,26 @@ function PANEL:Init()
 
 	-- Create the tabs property sheet.
 	self.tabs = vgui.Create("DPropertySheet", self);
+	local function addTab(name, panel, icon)
+		local data = {
+			Name  = name;
+			Panel = vgui.Create(panel);
+			Icon  = "icon16/" .. icon .. ".png"
+		};
+		self.tabs:AddSheet(data.Name, data.Panel, data.Icon);
+		cider.menu.tabs[name] = data;
+	end
 
 	-- Add the sheets for the other menus to the property sheet.
-	self.tabs:AddSheet("Character", vgui.Create("cider_Character"), "icon16/user.png");
-	self.tabs:AddSheet("Help",      vgui.Create("cider_Help"),      "icon16/page.png");
-	self.tabs:AddSheet("Laws",      vgui.Create("cider_Laws"),      "icon16/world.png");
-	self.tabs:AddSheet("Rules",     vgui.Create("cider_Rules"),     "icon16/exclamation.png");
-	self.tabs:AddSheet("Inventory", vgui.Create("cider_Inventory"), "icon16/application_view_tile.png");
-	self.tabs:AddSheet("Store",     vgui.Create("cider_Store"),     "icon16/box.png");
-	self.tabs:AddSheet("Changelog", vgui.Create("cider_Changelog"), "icon16/plugin.png");
-	self.tabs:AddSheet("Donate",    vgui.Create("cider_Donate"),    "icon16/heart.png");
-	self.tabs:AddSheet("Credits",   vgui.Create("cider_Credits"),   "icon16/group.png");
+	addTab("Character", "cider_Character", "user");
+	addTab("Help",      "cider_Help",      "page");
+	addTab("Laws",      "cider_Laws",      "world");
+	addTab("Rules",     "cider_Rules",     "exclamation");
+	addTab("Inventory", "cider_Inventory", "application_view_tile");
+	addTab("Store",     "cider_Store",     "box");
+	addTab("Changelog", "cider_Changelog", "plugin");
+	addTab("Donate",    "cider_Donate",    "heart");
+	addTab("Credits",   "cider_Credits",   "group");
 end
 
 -- Called when the layout should be performed.
