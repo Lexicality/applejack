@@ -145,7 +145,7 @@ function GM:RegisterCommand(tab)
 	-- TODO: Setup help files and send to client.
 end
 
-function GM:ParseCommand(ply, text)
+function GM:ParseCommand(text)
 	local args = {};
 	local varg      = 0;
 	local j         = 1;
@@ -197,7 +197,7 @@ function GM:ParseCommand(ply, text)
 			break;
 		end
 	end
-	self:DoCommand(ply, args);
+	return args;
 end
 
 function GM:PlayerSay(ply, text, public)
@@ -220,7 +220,8 @@ function GM:PlayerSay(ply, text, public)
 	if (string.sub(text, 1, 1) == self.Config["Command Prefix"]) then
 		-- Get rid of the prefix
 		text = string.Trim(string.sub(text, 2));
-		self:ParseCommand(ply, text);
+		local args = self:ParseCommand(text);
+		self:DoCommand(ply, args);
 	elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
 		if (ply:Arrested()) then
 			cider.chatBox.addInRadius(ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"])
@@ -332,5 +333,6 @@ function GM:DoCommand(ply, args)
 end
 
 concommand.Add("mshine", function(ply, _, _, command)
-	GM:ParseCommand(ply, command);
+	local args = GM:ParseCommand(command);
+	GM:DoCommand(ply, args);
 end);
