@@ -1,14 +1,13 @@
 --[[
-Name: "sh_help.lua".
-	~ Applejack ~
+	~ Help "Library" ~
+	~ Moonshine ~
 --]]
 
-cider.help = {};
-cider.help.stored = {};
+GM.HelpItems = {};
 
-function cider.help.add(cat, help)
-	cider.help.stored[cat] = cider.help.stored[cat] or {};
-	table.insert(cider.help.stored[cat], help);
+function GM:AddHelp(cat, help)
+	self.HelpItems[cat] = self.HelpItems[cat] or {};
+	table.insert(self.HelpItems[cat], help);
 	if (CLIENT and cider.menu and cider.menu.tabs["Help"]) then
 		cider.menu.tabs["Help"]:Reload();
 	end
@@ -23,22 +22,22 @@ if (CLIENT) then
 			end
 			data[net.ReadString()] = lines;
 		end
-		cider.help.stored = data;
+		GM.HelpItems = data;
 		if (cider.menu and cider.menu.tabs["Help"]) then
 			cider.menu.tabs["Help"]:Reload();
 		end
 	end);
 else
 	--[[ Add generic helps TODO: Do bettr ]]--
-	cider.help.add("General", "Using any exploits will get you banned permanently.");
-	cider.help.add("General", "Put // before your message to talk in global OOC.");
-	cider.help.add("General", "Put .// before your message to talk in local OOC.");
-	cider.help.add("General", "Press F1 to open the main menu.");
-	cider.help.add("General", "Press F2 to open the access menu when looking at something you have access to.");
+	GM:AddHelp("General", "Using any exploits will get you banned permanently.");
+	GM:AddHelp("General", "Put // before your message to talk in global OOC.");
+	GM:AddHelp("General", "Put .// before your message to talk in local OOC.");
+	GM:AddHelp("General", "Press F1 to open the main menu.");
+	GM:AddHelp("General", "Press F2 to open the access menu when looking at something you have access to.");
 
 	util.AddNetworkString("Moonshine Help");
 	hook.Add("PlayerInitialized", "Applejack Help Spammer", function(ply)
-		local help = cider.help.stored;
+		local help = GM.HelpItems;
 		net.Start("Moonshine Help");
 		net.WriteUInt(table.Count(help), 8)
 		for key, lines in pairs(help) do

@@ -141,7 +141,7 @@ function GM:RegisterCommand(tab)
 	if (args ~= '') then
 		args = args .. ' ';
 	end
-	cider.help.add(tab.Category, self.Config["Command Prefix"] .. tab.Command .. ' ' .. args .. '- ' .. tab.Help);
+	GM:AddHelp(tab.Category, self.Config["Command Prefix"] .. tab.Command .. ' ' .. args .. '- ' .. tab.Help);
 	-- TODO: Setup help files and send to client.
 end
 
