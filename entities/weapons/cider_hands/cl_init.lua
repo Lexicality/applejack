@@ -59,7 +59,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Refire);
 	-- Get where we're punching.
 	local tr = ply:GetEyeTraceNoCursor();
-	if (not (tr.Hit or tr.HitWorld) or tr.StartPos:Distance(tr.HitPos) > 128) then
+	if (not (tr.Hit or tr.HitWorld) or tr.StartPos:Distance(tr.HitPos) > 40) then
 		return;
 	end
 	-- Are we using keys?

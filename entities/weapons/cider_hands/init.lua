@@ -26,7 +26,7 @@ function SWEP:PrimaryAttack()
 
 	-- See where we're punching
 	local tr = ply:GetEyeTraceNoCursor();
-	if (not (tr.Hit or tr.HitWorld) or tr.StartPos:Distance(tr.HitPos) > 128) then
+	if (not (tr.Hit or tr.HitWorld) or tr.StartPos:Distance(tr.HitPos) > 40) then
 		return;
 	end
 	local ent = tr.Entity;
