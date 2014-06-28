@@ -43,7 +43,6 @@ end
 
 -- Updates the name normal and NWVar
 local function setname(ent, name)
-	if (type(name) ~= 'string') then error("What the fuck?", 2); end
 	ent._Owner.name = name;
 	ent:SetNWString("DisplayName", name);
 end

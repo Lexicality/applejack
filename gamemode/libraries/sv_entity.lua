@@ -101,7 +101,7 @@ function GM:SaveAccess(ply)
 		if (IsValid(ent) and ent:IsOwnable()) then
 			if (ent._Owner.owner == ply) then
 				ent = ent:GetMaster() or ent;
-				tab[ent] = {_name = ent:GetDisplayName()};
+				tab[ent] = {};
 				for access in pairs(ent._Owner.access) do
 					if (type(access) == "Player" and IsValid(access)) then
 						tab[ent][access:UniqueID()] = true;
@@ -109,6 +109,7 @@ function GM:SaveAccess(ply)
 						tab[ent][access] = true;
 					end
 				end
+				tab[ent]._name = ent:GetDisplayName()
 				ent:ClearOwnershipData();
 			elseif (ent._Owner.access[ply]) then
 				ent._Owner.access[ply] = nil;
@@ -141,10 +142,12 @@ function GM:RestoreAccess(ply)
 		if (IsValid(ent) and not ent:IsOwned()) then
 			filter:RemoveAllPlayers();
 			for data in pairs(access) do
-				pl = player.UniqueIDs[data];
-				ent._Owner.access[pl or data] = true;
-				if (pl) then
-					filter:AddPlayer(pl);
+				if (data ~= "_name") then
+					pl = player.UniqueIDs[data];
+					ent._Owner.access[pl or data] = true;
+					if (pl) then
+						filter:AddPlayer(pl);
+					end
 				end
 			end
 			ent._Owner.owner = ply;
