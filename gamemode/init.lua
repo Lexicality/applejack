@@ -610,6 +610,7 @@ function GM:PlayerSpawn(ply)
 			--ply:UnSpectate()
 			-- Set the ply's model and give them their loadout.
 			self:PlayerSetModel(ply)
+			ply:SetupHands()
 			self:PlayerLoadout(ply)
 		end
 
@@ -622,6 +623,19 @@ function GM:PlayerSpawn(ply)
 	else
 		ply:KillSilent()
 	end
+end
+
+-- Choose the model for hands according to their player model.
+function GM:PlayerSetHandsModel( ply, ent )
+
+	local simplemodel = player_manager.TranslateToPlayerModelName( ply:GetModel() )
+	local info = player_manager.TranslatePlayerHands( simplemodel )
+	if ( info ) then
+		ent:SetModel( info.model )
+		ent:SetSkin( info.skin )
+		ent:SetBodyGroups( info.body )
+	end
+
 end
 
 -- Called when a ply should take damage.
