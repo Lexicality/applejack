@@ -7,3 +7,4 @@ TEAM.Models.Female    = TEAM.Models.Male;
 TEAM.SizeLimit        = 1;
 TEAM.Salary           = 350;
 TEAM.PossessiveString = "The %s";
+TEAM.CantUse          = { CATEGORY_WEAPONS, CATEGORY_POLICE_WEAPONS };
