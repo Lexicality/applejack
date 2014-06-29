@@ -300,6 +300,7 @@ function PLUGIN:PlayerUse(ply, ent)
 		if (math.abs(ang.r) > 10) then
 			ang.r,ang.p = 0,0;
 			ent:SetAngles(ang);
+			ent:Spawn();
 		end
 		return false;
 	end
