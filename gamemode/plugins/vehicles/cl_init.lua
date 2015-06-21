@@ -74,7 +74,9 @@ local views,lastname;
 
 function PLUGIN:CalcView(ply, origin, angles, fov)
 	local car = ply:GetVehicle();
-	if (not IsValid(car)) then return end
+	if (not IsValid(car)) then
+		return
+	end
 	local name = car:GetNWString("Vehicle Name");
 	if (name ~= lastname) then
 		views = nil;
@@ -82,7 +84,9 @@ function PLUGIN:CalcView(ply, origin, angles, fov)
 		local vtable = list.Get("Vehicles")[name];
 		if (not vtable) then return end
 		views = vtable.CustomViews;
-	elseif (not views) then return end
+	elseif (not views) then
+		return
+	end
 
 	local view = {angles = angles, fov = fov};
 	if (ply:KeyDown(IN_DUCK) and views.RearView) then
