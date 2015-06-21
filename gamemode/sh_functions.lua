@@ -106,3 +106,13 @@ function file.FolderExistsInLua(folder)
 	return #files > 0 or #folders > 0;
 end
 
+---
+-- Replaces the existing Error function which has stopped working properly
+-- @param ... The messsage to be error'd
+function Error(...)
+	local err = "";
+	for _, s in ipairs{...} do
+		err = err .. tostring(s);
+	end
+	error(err, 2);
+end
