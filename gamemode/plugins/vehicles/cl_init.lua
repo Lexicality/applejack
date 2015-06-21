@@ -74,9 +74,9 @@ local views,lastname;
 
 function PLUGIN:CalcView(ply, origin, angles, fov)
 	local car = ply:GetVehicle();
+	if (not IsValid(car)) then return end
 	local name = car:GetNWString("Vehicle Name");
-	if (not IsValid(car)) then return
-	elseif (name ~= lastname) then
+	if (name ~= lastname) then
 		views = nil;
 		lastname = name;
 		local vtable = list.Get("Vehicles")[name];
