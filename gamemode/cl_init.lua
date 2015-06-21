@@ -36,16 +36,17 @@ GM.topTextGradient = {};
 GM.variableQueue = {};
 GM.ammoCount = {};
 
--- Detect when the local player is created
-function GM:OnEntityCreated(entity)
-	if (lpl == NULL and entity == LocalPlayer()) then
-		lpl = entity;
+-- Detect when the local player is created and store it in a global.
+-- I'm not convinced this is the most sensible behavior, but it's heavily ingrained
+--  in the gamemode, and I can't be bothered correcting it.
+hook.Add("OnEntityCreated", "LocalPlayer Detector", function()
+	lpl = LocalPlayer();
+	if (IsValid(lpl)) then
 		gamemode.Call("LocalPlayerCreated", lpl);
+		hook.Remove("OnEntityCreated", "LocalPlayer Detector");
 	end
+end)
 
-	-- Call the base class function.
-	return self.BaseClass:OnEntityCreated(entity);
-end
 function GM:LocalPlayerCreated(ply)
 	-- Clean up people's consoles for them.
 	if (GetConVarString("con_filter_text_out") == "") then
