@@ -12,7 +12,7 @@ config["Inventory Size"]			= 40; -- The default inventory size.
 config["Default Access"]			= ""; -- The access flags that each player begins with.
 
 -- Command
-config["Base Access"]				= "b"; -- The access flags that EVERYONE has.
+config["Base Access"]				= "b"; -- The flag that represents all users. Do not change this.
 config["Command Prefix"]			= "/"; -- The prefix that is used for chat commands.
 config["Maximum Notes"]				= 2; -- The maximum amount of notes a player can write.
 config["Advert Cost"]				= 60; -- The money that it costs to advertise.
