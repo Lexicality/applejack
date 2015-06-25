@@ -1483,36 +1483,43 @@ GM:RegisterCommand{
 };
 
 -- A command to give Donator status to a player.
---[[
-cider.com mand.add("donator", "s", 1, function(ply, arguments)
-	local target = player.Get( arguments[1] )
+GM:RegisterCommand{
+	Command     = "donator";
+	Access      = "s";
+	Arguments   = "<victim> [time]";
+	Types       = "Player Number";
+	Category    = "Superadmin Commands";
+	Help        = "Gives donator to the player.";
+	function(ply, victim, time)
+	local dayplural -- Gets the pluralized version of day.
+	
+	victim.cider._Donator = os.time() + (86400 * math.ceil(tonumber(time)))
 
-	-- Calculate the days that the player will be given Donator status for.
-	local days = math.ceil(tonumber( arguments[2] ) or 30);
+	-- Give them their access and save their data.
+	victim:GiveAccess("tpew") -- Pew pew
+	victim:SaveData()
 
-	-- Check if we got a valid target.
-	if not (target) then
-		return false, arguments[1].." is not a valid player!"
+	-- Give them the tool and the physics gun.
+	victim:Give("gmod_tool")
+	victim:Give("weapon_physgun")
+
+	-- Set some Donator only player variables.
+	victim._SpawnTime = victim._SpawnTime / 2
+	victim._ArrestTime = victim._ArrestTime / 2
+	victim._KnockOutTime = victim._KnockOutTime / 2
+
+	-- There might be a better way to do this, but oh well.
+	if math.ceil(tonumber(time)) >= 2 then
+	dayplural = "days"
+	else
+	dayplural = "day"
 	end
-		target.cider._Donator = os.time() + (86400 * days);
+	
+	-- Print a message to all players about this player getting Donator status.
+	player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i "..dayplural..".", ply:Name(), victim:Name(), math.ceil(tonumber(time)))
+	end
+};
 
-		-- Give them their access and save their data.
-		target:GiveAccess("tpew");
-		target:SaveData();
-
-		-- Give them the tool and the physics gun.
-		target:Give("gmod_tool");
-		target:Give("weapon_physgun");
-
-		-- Set some Donator only player variables.
-		target._SpawnTime = target._SpawnTime / 2;
-		target._ArrestTime = target._ArrestTime / 2;
-		target._KnockOutTime = target._KnockOutTime / 2;
-
-		-- Print a message to all players about this player getting Donator status.
-		player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
-end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
---]]
 -- A command to change your details
 GM:RegisterCommand{
 	Command     = "details";
