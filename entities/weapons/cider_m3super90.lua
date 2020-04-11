@@ -156,10 +156,10 @@ SWEP.ShotgunRPM = 175;
 
 -- Called when the SWEP fires.
 SWEP.FireModes.Shotgun.FireFunction = function(self)
-	if ( !self:CanFire( self.Weapon:Clip1() ) or self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
+	if ( not self:CanFire( self.Weapon:Clip1() ) or self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
 
 	-- Check if we are not an NPC.
-	if (!self.OwnerIsNPC) then self:TakePrimaryAmmo(1); end
+	if (not self.OwnerIsNPC) then self:TakePrimaryAmmo(1); end
 
 	-- Shoot a cheap bullet and apply recoil to the SWEP.
 	self:RGShootBulletCheap(15, self.BulletSpeed, 0.075, 0, Vector(0,0,0), self.FireModes.Shotgun.NumBullets);

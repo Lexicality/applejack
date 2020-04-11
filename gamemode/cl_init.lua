@@ -87,7 +87,7 @@ end
 
 -- Called when a player presses a bind.
 function GM:PlayerBindPress(player, bind, press)
-	if ( !self.playerInitialized and string.find(bind, "+jump") ) then
+	if ( not self.playerInitialized and string.find(bind, "+jump") ) then
 		RunConsoleCommand("retry");
 	end
 	-- Call the base class function.
@@ -142,7 +142,7 @@ function GM:RenderScreenspaceEffects()
 	if lpl._Stunned then
 		color = 0.4
 		DrawMotionBlur(0.1,1,0)
-	elseif (lpl:Health() < 50 and !lpl._HideHealthEffects) then
+	elseif (lpl:Health() < 50 and not lpl._HideHealthEffects) then
 		if ( lpl:Alive() ) then
 			color = math.Clamp(color - ( ( 50 - lpl:Health() ) * 0.025 ), 0, color);
 		else
@@ -225,7 +225,7 @@ function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shad
 		color_.a = alpha
 	end
 	-- Check if we shouldn't left align it, if we have a callback, and if we should draw a shadow.
-	if (!left) then
+	if (not left) then
 		x = x - (width / 2);
 	end
 	if (callback) then
@@ -283,7 +283,7 @@ usermessage.Hook("cider.player.initialized", iHasInitializedyay);
 			ErrorNoHalt("LocalPlayer(): "..tostring(LocalPlayer()).."\n")
 			ErrorNoHalt("---------------------------\n")
 		end
-		if !IsValid(LocalPlayer()) then
+		if not IsValid(LocalPlayer()) then
 			errors = errors + 1
 		--	ErrorNoHalt("LocalPlayer is invalid! ("..errors.."/"..maxerrors..")\n")
 			return timer.Simple(1,CheckForInitalised,tab)

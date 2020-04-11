@@ -23,9 +23,6 @@ local texLogo 		= surface.GetTextureID( "gui/gmod_logo" )
 
 local PANEL = {}
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:Init()
 
 	SCOREBOARD = self
@@ -44,7 +41,7 @@ function PANEL:Init()
 
 	self:UpdateScoreboard()
 
-	// Update the scoreboard every 1 second
+	-- Update the scoreboard every 1 second
 	timer.Create( "ScoreboardUpdater", 1, 0, self.UpdateScoreboard, self )
 
 	self.lblPing = vgui.Create( "DLabel", self )
@@ -61,9 +58,6 @@ function PANEL:Init()
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:AddPlayerRow( ply )
 
 	local button = vgui.Create( "ScorePlayerRow", self.PlayerFrame:GetCanvas() )
@@ -72,18 +66,12 @@ function PANEL:AddPlayerRow( ply )
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:GetPlayerRow( ply )
 
 	return self.PlayerRows[ ply ]
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:Paint()
 
 	draw.RoundedBox( 4, 0, 0, self:GetWide(), self:GetTall(), Color( 170, 170, 170, 255 ) )
@@ -91,33 +79,30 @@ function PANEL:Paint()
 	surface.SetDrawColor( 255, 255, 255, 50 )
 	surface.DrawTexturedRect( 0, 0, self:GetWide(), self:GetTall() )
 
-	// White Inner Box
+	-- White Inner Box
 	draw.RoundedBox( 4, 4, self.Description.y - 4, self:GetWide() - 8, self:GetTall() - self.Description.y - 4, Color( 230, 230, 230, 200 ) )
 	surface.SetTexture( texGradient )
 	surface.SetDrawColor( 255, 255, 255, 50 )
 	surface.DrawTexturedRect( 4, self.Description.y - 4, self:GetWide() - 8, self:GetTall() - self.Description.y - 4 )
 
-	// Sub Header
+	-- Sub Header
 	draw.RoundedBox( 4, 5, self.Description.y - 3, self:GetWide() - 10, self.Description:GetTall() + 5, Color( 150, 200, 50, 200 ) )
 	surface.SetTexture( texGradient )
 	surface.SetDrawColor( 255, 255, 255, 50 )
 	surface.DrawTexturedRect( 4, self.Description.y - 4, self:GetWide() - 8, self.Description:GetTall() + 8 )
 
-	// Logo!
+	-- Logo!
 	surface.SetTexture( texLogo )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( 0, 0, 128, 128 )
 
 
 
-	//draw.RoundedBox( 4, 10, self.Description.y + self.Description:GetTall() + 6, self:GetWide() - 20, 12, Color( 0, 0, 0, 50 ) )
+	--draw.RoundedBox( 4, 10, self.Description.y + self.Description:GetTall() + 6, self:GetWide() - 20, 12, Color( 0, 0, 0, 50 ) )
 
 end
 
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:PerformLayout()
 
 	self.Hostname:SizeToContents()
@@ -169,14 +154,11 @@ function PANEL:PerformLayout()
 	self.lblDeaths:SetPos( self:GetWide() - 50*2 - self.lblDeaths:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
 	self.lblKills:SetPos( self:GetWide() - 50*3 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
 
-	//self.lblKills:SetFont( "DefaultSmall" )
-	//self.lblDeaths:SetFont( "DefaultSmall" )
+	--self.lblKills:SetFont( "DefaultSmall" )
+	--self.lblDeaths:SetFont( "DefaultSmall" )
 
 end
 
-/*---------------------------------------------------------
-   Name: ApplySchemeSettings
----------------------------------------------------------*/
 function PANEL:ApplySchemeSettings()
 
 	self.Hostname:SetFont( "ScoreboardHeader" )
@@ -198,11 +180,11 @@ end
 
 function PANEL:UpdateScoreboard( force )
 
-	if ( !force && !self:IsVisible() ) then return end
+	if ( not force and not self:IsVisible() ) then return end
 
 	for k, v in pairs( self.PlayerRows ) do
 
-		if ( !k:IsValid() ) then
+		if ( not k:IsValid() ) then
 
 			v:Remove()
 			self.PlayerRows[ k ] = nil
@@ -214,7 +196,7 @@ function PANEL:UpdateScoreboard( force )
 	local PlayerList = player.GetAll()
 	for id, pl in pairs( PlayerList ) do
 
-		if ( !self:GetPlayerRow( pl ) ) then
+		if ( not self:GetPlayerRow( pl ) ) then
 
 			self:AddPlayerRow( pl )
 
@@ -222,7 +204,7 @@ function PANEL:UpdateScoreboard( force )
 
 	end
 
-	// Always invalidate the layout so the order gets updated
+	-- Always invalidate the layout so the order gets updated
 	self:InvalidateLayout()
 
 end
@@ -235,7 +217,7 @@ SCORE_BOARD = vgui.RegisterTable( PANEL, "Panel" );
 
 function GM:ScoreboardShow()
 
-	if ( !IsValid( g_Scoreboard ) ) then
+	if ( not IsValid( g_Scoreboard ) ) then
 		g_Scoreboard = vgui.CreateFromTable( SCORE_BOARD )
 	end
 

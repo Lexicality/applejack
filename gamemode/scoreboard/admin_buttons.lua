@@ -1,30 +1,21 @@
 
 local PANEL = {}
 
-/*---------------------------------------------------------
-   Name:
----------------------------------------------------------*/
 function PANEL:Init()
 
 	self:SetCursor( "hand" )
 
 end
 
-/*---------------------------------------------------------
-   Name:
----------------------------------------------------------*/
 function PANEL:DoClick( x, y )
 
-	--if ( !self:GetParent().Player || LocalPlayer() == self:GetParent().Player ) then return end
+	--if ( not self:GetParent().Player or LocalPlayer() == self:GetParent().Player ) then return end
 
 	self:DoCommand( self:GetParent().Player )
 	timer.Simple( 0.1, SCOREBOARD.UpdateScoreboard, SCOREBOARD )
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:Paint()
 
 	local bgColor = Color( 0,0,0,10 )
@@ -48,14 +39,11 @@ vgui.Register( "SpawnMenuAdminButton", PANEL, "Button" )
 
 
 
-/*   PlayerKickButton */
+-- PlayerKickButton
 
 PANEL = {}
 PANEL.Text = "Kick"
 
-/*---------------------------------------------------------
-   Name: DoCommand
----------------------------------------------------------*/
 function PANEL:DoCommand( ply )
 
 	RunConsoleCommand( "citrus", "kick", ply:UserID() )
@@ -65,14 +53,11 @@ end
 vgui.Register( "PlayerKickButton", PANEL, "SpawnMenuAdminButton" )
 
 
-/*   PlayerDemoteButton */
+-- PlayerDemoteButton
 
 PANEL = {}
 PANEL.Text = "Demote"
 
-/*---------------------------------------------------------
-   Name: DoCommand
----------------------------------------------------------*/
 function PANEL:DoCommand( ply )
 	local EditPanel = vgui.Create( "DFrame" )
 	EditPanel:SetPos( (ScrW()- 50)/2,(ScrH() -38)/2 )
@@ -111,14 +96,11 @@ end
 
 vgui.Register( "PlayerDemoteButton", PANEL, "SpawnMenuAdminButton" )
 
-/*   PlayerPermBanButton */
+-- PlayerPermBanButton
 
 PANEL = {}
 PANEL.Text = "PermBan"
 
-/*---------------------------------------------------------
-   Name: DoCommand
----------------------------------------------------------*/
 function PANEL:DoCommand( ply )
 
 --	RunConsoleCommand( "banid2", "0", ply:UserID() )
@@ -131,14 +113,11 @@ vgui.Register( "PlayerPermBanButton", PANEL, "SpawnMenuAdminButton" )
 
 
 
-/*   Player1hBanButton */
+-- Player1hBanButton
 
 PANEL = {}
 PANEL.Text = "1hr Ban"
 
-/*---------------------------------------------------------
-   Name: DoCommand
----------------------------------------------------------*/
 function PANEL:DoCommand( ply )
 
 --	RunConsoleCommand( "banid2", "60", ply:UserID() )
@@ -147,5 +126,3 @@ function PANEL:DoCommand( ply )
 end
 
 vgui.Register( "PlayerBanButton", PANEL, "SpawnMenuAdminButton" )
-
-

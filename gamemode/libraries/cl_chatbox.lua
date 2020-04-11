@@ -179,7 +179,7 @@ end
 
 -- Create the derma buttons.
 function cider.chatBox.createDermaButtons()
-	if (!cider.chatBox.derma.buttons) then
+	if (not cider.chatBox.derma.buttons) then
 		cider.chatBox.derma.buttons = {};
 
 		-- Create a derma button to scroll up the chat box.
@@ -231,7 +231,7 @@ end
 
 -- Create a derma button parented to the chat panel.
 function cider.chatBox.createDermaButton(name, text, x, width, toolTip, doClick, think)
-	if (!cider.chatBox.derma.buttons[name]) then
+	if (not cider.chatBox.derma.buttons[name]) then
 		cider.chatBox.derma.buttons[name] = vgui.Create("DButton", cider.chatBox.derma.panel);
 		cider.chatBox.derma.buttons[name]:SetText(text);
 		cider.chatBox.derma.buttons[name]:SetSize(width, 16);
@@ -244,12 +244,12 @@ end
 
 -- Create the derma check boxes.
 function cider.chatBox.createDermaCheckBoxes()
-	if (!cider.chatBox.derma.checkBoxes) then cider.chatBox.derma.checkBoxes = {} end
+	if (not cider.chatBox.derma.checkBoxes) then cider.chatBox.derma.checkBoxes = {} end
 end
 
 -- Create a derma check box parented to the chat panel.
 function cider.chatBox.createDermaCheckBox(name, conVar, x, toolTip, label, parent, y)
-	if (!cider.chatBox.derma.checkBoxes[name]) then
+	if (not cider.chatBox.derma.checkBoxes[name]) then
 		parent = parent or cider.chatBox.derma.panel;
 		y = y or 4;
 
@@ -277,7 +277,7 @@ end
 
 -- Create the derma text entry parented to the chat panel.
 function cider.chatBox.createDermaTextEntry()
-	if (!cider.chatBox.derma.textEntry) then
+	if (not cider.chatBox.derma.textEntry) then
 		cider.chatBox.derma.textEntry = vgui.Create("DTextEntry", cider.chatBox.derma.panel);
 		cider.chatBox.derma.textEntry:SetPos(34, 4);
 		cider.chatBox.derma.textEntry:SetSize(396, 16);
@@ -317,7 +317,7 @@ end
 
 -- Create the derma text filters parented to the chat panel.
 function cider.chatBox.createDermaFilters()
-	if (!cider.chatBox.derma.filters) then
+	if (not cider.chatBox.derma.filters) then
 		cider.chatBox.derma.filters = vgui.Create("EditablePanel");
 		cider.chatBox.derma.filters:SetSize(116, 72);
 
@@ -350,7 +350,7 @@ end
 
 -- Create the derma chat panel.
 function cider.chatBox.createDermaPanel()
-	if (!cider.chatBox.derma.panel) then
+	if (not cider.chatBox.derma.panel) then
 		cider.chatBox.derma.panel = vgui.Create("EditablePanel");
 		cider.chatBox.derma.panel:SetSize(576, 24);
 		cider.chatBox.derma.panel.show = function()
@@ -607,7 +607,7 @@ function cider.chatBox.extractClasses(message)
 	-- Loop through our blocks.
 	for k, v in pairs(message.blocks) do
 		if (v.newline) then
-			if (!message.blocks[k + 1]) then
+			if (not message.blocks[k + 1]) then
 				message.blocks[k].newline = false;
 
 				-- Reduce the number of lines.
@@ -682,7 +682,7 @@ function cider.chatBox.hudPaint()
 		local isVisible = cider.chatBox.derma.panel:IsVisible();
 
 		-- Check if our main chat panel is visible or we're the first key in the table.
-		if (!isVisible and k == 1) then
+		if (not isVisible and k == 1) then
 			y = y - ((cider.chatBox.getSpacing() + v.spacing) * (v.lines - 1)) + 14;
 		else
 			if (k == 1) then y = y + 2; end
@@ -794,7 +794,7 @@ function cider.chatBox.explodeByTags(variable, seperator, open, close)
 		local character = string.sub(variable, i, i);
 
 		-- Check to see if we're currently handling a tag.
-		if (!tag) then
+		if (not tag) then
 			if (character == open) then
 				current = current..character; tag = true;
 			elseif (character == Seperator) then
@@ -837,7 +837,7 @@ function cider.chatBox.chatText(index, name, text, filter)
 	-- Check if a convar exists for this filter.
 	if (ConVarExists("cider_chatbox_"..filter) and GetConVarNumber("cider_chatbox_"..filter) == 1) then
 		filtered = true;
-	elseif filter == "ic" and !(LocalPlayer():Alive() or LocalPlayer()._Sleeping) then --Kant stop the music.
+	elseif filter == "ic" and not (LocalPlayer():Alive() or LocalPlayer()._Sleeping) then --Kant stop the music.
 		return
 	end
 
@@ -923,7 +923,7 @@ function cider.chatBox.chatText(index, name, text, filter)
 				-- Add the edited message.
 				cider.chatBox.messageAdd(nil, nil, {text, Color(255, 75, 75, 255) }, filtered);
 			else
-				if (!cider.chatBox.joinSpam[text] or CurTime() > cider.chatBox.joinSpam[text]) then
+				if (not cider.chatBox.joinSpam[text] or CurTime() > cider.chatBox.joinSpam[text]) then
 					cider.chatBox.messageAdd(nil, nil, {text, Color(175, 255, 125, 255) }, filtered);
 
 					-- Set the next available join for this player to be 5 seconds from now.

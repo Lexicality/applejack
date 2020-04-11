@@ -22,7 +22,7 @@ end
 
 function EFFECT:Think()
 
-	if !self.Weapon:IsValid() then return false end
+	if not self.Weapon:IsValid() then return false end
 
 	self.Pos = self:GetPos()
 	self:SetPos( self.Pos )

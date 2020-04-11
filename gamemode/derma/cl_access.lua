@@ -437,7 +437,7 @@ function PANEL:PerformLayout()
 	self.sheets:StretchToParent(8,25,8,8)
 	self.sheets:InvalidateLayout()
 	-- Check if the local player's position is different from our captured one.
-	if ( LocalPlayer():GetPos() ~= localPlayerPosition or !LocalPlayer():Alive() ) then
+	if ( LocalPlayer():GetPos() ~= localPlayerPosition or not LocalPlayer():Alive() ) then
 		self:Close();
 		self:Remove();
 

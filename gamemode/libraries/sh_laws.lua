@@ -40,7 +40,7 @@ if SERVER then
 			return
 		end
 		ply._NextLawUpdate = CurTime() + 120
-		if !hook.Call("PlayerCanChangeLaws",GAMEMODE, ply) then
+		if not hook.Call("PlayerCanChangeLaws",GAMEMODE, ply) then
 			ply:Notify("You may not change the laws.",1)
 			return
 		end

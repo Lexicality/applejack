@@ -116,7 +116,7 @@ function SWEP:PrimaryAttack()
 
 				-- Check if we're running on the server.
 				if (SERVER) then
-					if (trace.Entity:GetClass() != "prop_ragdoll") then
+					if (trace.Entity:GetClass() ~= "prop_ragdoll") then
 						local aimVectorOwner = self.Owner:GetAimVector();
 
 						-- Check if we hit a player.

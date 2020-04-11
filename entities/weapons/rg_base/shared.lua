@@ -295,7 +295,7 @@ end
 concommand.Add("DropPrim",function(p) p:DropWeapon(p:GetActiveWeapon()) end)
 function SWEP:Deploy()
 	if (SERVER) then
-		if (!self.DrawCrosshair or self.CustomCrosshair) then self.Owner:CrosshairDisable() end
+		if (not self.DrawCrosshair or self.CustomCrosshair) then self.Owner:CrosshairDisable() end
 		if (self.Owner._Ammo[self.ClassName]) then
 			self.Weapon:SetClip1(self.Owner._Ammo[self.ClassName]);
 		end
@@ -679,7 +679,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 		dir = bounce(trace) + VectorRand() /4
 		damage,force = damage * 0.75, force / 2
 	elseif	self.CanPenetrate
-	and		(!trace.HitWorld or self.CanPenetrateWorld)
+	and		(not trace.HitWorld or self.CanPenetrateWorld)
 	and		hook.Call("CanPenetrate",GAMEMODE,trace,force,self)
 	and not self.dt.silenced
 	then
@@ -726,7 +726,7 @@ function SWEP:PenetrateCallback(pl, trace,damage,force)
 			[MAT_WOOD] = {"Impact.Wood", "MetalSpark"},
 			[MAT_GLASS] = {"Impact.Glass", "GlassImpact"}
 		}
-		if ( !IsValid(_trace.Entity) or ( !_trace.Entity:IsPlayer() and !_trace.Entity:IsNPC() ) ) then
+		if ( not IsValid(_trace.Entity) or ( not _trace.Entity:IsPlayer() and not _trace.Entity:IsNPC() ) ) then
 			if (_trace.Entity == trace.Entity) then
 				if (matTypes[_trace.MatType]) then
 					util.Decal(matTypes[_trace.MatType][1], _trace.HitPos + _trace.HitNormal, _trace.HitPos - _trace.HitNormal)

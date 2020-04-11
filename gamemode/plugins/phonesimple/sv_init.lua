@@ -49,7 +49,7 @@ end
 
 -- Register the phone handling command
 cider.command.add("phone","b",1,function(ply, action, targetnumber)
-	if( !ply._Phone )then ply:Notify("You don't have a phone!", 1); return; end;
+	if( not ply._Phone )then ply:Notify("You don't have a phone!", 1); return; end;
 
 	local phoneNumber = UniqueIDToPhoneNumber(ply:UniqueID());
 
@@ -57,14 +57,14 @@ cider.command.add("phone","b",1,function(ply, action, targetnumber)
 		local canAfford, need = ply:CanAfford(charge);
 
 		if( canAfford )then
-			if( !ply.phoneCalling and !ply.phoneAnswer )then
+			if( not ply.phoneCalling and not ply.phoneAnswer )then
 				if( targetnumber and string.find(targetnumber, "-") )then
 					ply:Notify("(Phone) Now calling " .. targetnumber .. " (Wait for them to answer)");
 
 					local target = player.GetByUniqueID(PhoneNumberToUniqueID(targetnumber));
 
 					if(IsValid(target))then
-						if(!target.phoneCalling and !target.phoneAnswer and ply ~= target)then
+						if(not target.phoneCalling and not target.phoneAnswer and ply ~= target)then
 							ply.phoneCalling = target;
 
 							target:Notify("(Phone) Incomming call from " .. phoneNumber .. " ('/phone answer|deny' to answer or deny)");

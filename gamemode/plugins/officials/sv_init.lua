@@ -304,7 +304,7 @@ end
 
 -- Called when a player attempts to unwarrant another player.
 function PLUGIN:PlayerCanUnwarrant(ply, target)
-	if (ply:Team() == TEAM_MAYOR || ply:Team() == TEAM_POLICECOMMANDER) then
+	if (ply:Team() == TEAM_MAYOR or ply:Team() == TEAM_POLICECOMMANDER) then
 		return true;
 	end
 end

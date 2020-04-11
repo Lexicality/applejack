@@ -4,9 +4,6 @@ local PANEL = {}
 PANEL.VoteName = "none"
 PANEL.MaterialName = "exclamation"
 
-/*---------------------------------------------------------
-   Name:
----------------------------------------------------------*/
 function PANEL:Init()
 
 	self.Label = vgui.Create( "DLabel", self )
@@ -15,21 +12,15 @@ function PANEL:Init()
 
 end
 
-/*---------------------------------------------------------
-   Name:
----------------------------------------------------------*/
 function PANEL:DoClick( x, y )
 
 	local ply = self:GetParent().Player
-	if ( !ply || !ply:IsValid() || ply == LocalPlayer() ) then return end
+	if ( not ply or not ply:IsValid() or ply == LocalPlayer() ) then return end
 
 	RunConsoleCommand( "rateuser", ply:EntIndex(), self.VoteName )
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:ApplySchemeSettings()
 
 	self.Label:SetFont( "DefaultSmall" )
@@ -38,12 +29,9 @@ function PANEL:ApplySchemeSettings()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:PerformLayout()
 
-	if ( self:GetParent().Player && self:GetParent().Player:IsValid() ) then
+	if ( self:GetParent().Player and self:GetParent().Player:IsValid() ) then
 		self.Label:SetText( self:GetParent().Player:GetNetworkedInt( "Rating."..self.VoteName, 0 ) )
 	end
 
@@ -52,9 +40,6 @@ function PANEL:PerformLayout()
 
 end
 
-/*---------------------------------------------------------
-   Name:
----------------------------------------------------------*/
 function PANEL:SetUp( mat, votename, nicename )
 
 	self.MaterialName 	= mat
@@ -64,12 +49,9 @@ function PANEL:SetUp( mat, votename, nicename )
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:Paint()
 
-	if ( !self.Material ) then
+	if ( not self.Material ) then
 		self.Material = surface.GetTextureID( "icon16/" .. self.MaterialName )
 	end
 
@@ -91,7 +73,7 @@ function PANEL:Paint()
 	surface.DrawTexturedRect( self:GetWide()/2 - 8, self:GetWide()/2 - 8, 16, 16 )
 
 
-	//draw.SimpleText( , "DefaultSmall", self:GetWide() / 2, 19, Color(0,0,0,100), TEXT_ALIGN_CENTER )
+	--draw.SimpleText( , "DefaultSmall", self:GetWide() / 2, 19, Color(0,0,0,100), TEXT_ALIGN_CENTER )
 
 	return true
 

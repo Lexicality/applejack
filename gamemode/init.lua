@@ -104,7 +104,7 @@ end
 
 -- Called when the server initializes.
 function GM:Initialize()
-	GM = self; -- ¬_¬ garru
+	GM = self; -- Â¬_Â¬ garru
 	ErrorNoHalt"----------------------\n"
 	ErrorNoHalt(os.date().." - Server starting up\n")
 	ErrorNoHalt"----------------------\n"
@@ -322,7 +322,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 end
 
 --[[function GM:PlayerSpawnedVehicle(player, entity)
-	if (!IsValid(player._Vehicle)) then player._Vehicle = entity end
+	if (not IsValid(player._Vehicle)) then player._Vehicle = entity end
 end]]
 
 ---
@@ -770,7 +770,7 @@ end
 local vector0 = Vector(5,0,0)
 function GM:EntityTakeDamage(entity, damageInfo)
 	--[[
-	if !entity or !inflictor or !attacker or entity == NULL or inflictor == NULL or attacker == NULL then
+	if not entity or not inflictor or not attacker or entity == NULL or inflictor == NULL or attacker == NULL then
 		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
 		return
 	end

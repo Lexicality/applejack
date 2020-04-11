@@ -73,7 +73,7 @@ end
 
 --Called when a ply has authed
 function GM:PlayerAuthed( ply, steamID, uniqueID )
-	if !string.find(ply:Name(),"[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
+	if not string.find(ply:Name(),"[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
 		ply:Kick("A minimum of 4 alphanumeric characters is required in your name to play here.")
 	elseif string.find(ply:Name(),";") then
 		ply:Kick("Please take the semi-colon out of your name.")

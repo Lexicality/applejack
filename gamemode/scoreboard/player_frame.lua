@@ -2,9 +2,6 @@
 local PANEL = {}
 
 
-/*---------------------------------------------------------
-   Name: Init
----------------------------------------------------------*/
 function PANEL:Init()
 
 	self.pnlCanvas 	= vgui.Create( "Panel", self )
@@ -12,18 +9,12 @@ function PANEL:Init()
 
 end
 
-/*---------------------------------------------------------
-   Name: Init
----------------------------------------------------------*/
 function PANEL:GetCanvas()
 
 	return self.pnlCanvas
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:OnMouseWheeled( dlta )
 
 	local MaxOffset = self.pnlCanvas:GetTall() - self:GetTall()
@@ -41,9 +32,6 @@ function PANEL:OnMouseWheeled( dlta )
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:PerformLayout()
 
 	self.pnlCanvas:SetPos( 0, self.YOffset * -1 )

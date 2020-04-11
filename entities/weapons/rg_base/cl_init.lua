@@ -62,17 +62,17 @@ local SCOPEFADE_TIME = 0.4
 local LaserMat = Material( "cable/redlaser" )
 function SWEP:DrawHUD()
 
-	if self.CustomCrosshair and !self.dt.ironsights and !self.dt.scope then
+	if self.CustomCrosshair and not self.dt.ironsights and not self.dt.scope then
 		local x = ScrW() / 2.0
 		local y = ScrH() / 2.0
 		local scale = 5 * self.CurrentSpread
 
-		// Scale the size of the crosshair according to how long ago we fired our weapon
+		-- Scale the size of the crosshair according to how long ago we fired our weapon
 		scale = scale * (2 - math.Clamp( (CurTime() - self.LastShootTime) * 5, 0.0, 1.0 ))
 
 		surface.SetDrawColor( 255, 255, 255, 255 )
 
-		// Draw an awesome crosshair
+		-- Draw an awesome crosshair
 		local gap = 40 * scale
 		local length = gap + 20 * scale
 		surface.DrawLine( x - length, y, x - gap, y )

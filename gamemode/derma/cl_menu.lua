@@ -78,7 +78,7 @@ vgui.Register("cider_Menu", PANEL, "DFrame");
 -- A function to toggle the menu.
 function cider.menu.toggle(msg)
 	if (GAMEMODE.playerInitialized) then
-		cider.menu.open = !cider.menu.open;
+		cider.menu.open = not cider.menu.open;
 
 		-- Toggle the screen clicker.
 		gui.EnableScreenClicker(cider.menu.open);

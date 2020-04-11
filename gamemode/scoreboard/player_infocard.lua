@@ -4,9 +4,6 @@ include( "vote_button.lua" )
 
 local PANEL = {}
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:Init()
 
 	self.InfoLabels = {}
@@ -40,14 +37,11 @@ function PANEL:Init()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:SetInfo( column, k, v )
 
-	if ( !v || v == "" ) then v = "N/A" end
+	if ( not v or v == "" ) then v = "N/A" end
 
-	if ( !self.InfoLabels[ column ][ k ] ) then
+	if ( not self.InfoLabels[ column ][ k ] ) then
 
 		self.InfoLabels[ column ][ k ] = {}
 		self.InfoLabels[ column ][ k ].Key 	= vgui.Create( "DLabel", self )
@@ -63,9 +57,6 @@ function PANEL:SetInfo( column, k, v )
 end
 
 
-/*---------------------------------------------------------
-   Name: UpdatePlayerData
----------------------------------------------------------*/
 function PANEL:SetPlayer( ply )
 
 	self.Player = ply
@@ -73,13 +64,10 @@ function PANEL:SetPlayer( ply )
 
 end
 
-/*---------------------------------------------------------
-   Name: UpdatePlayerData
----------------------------------------------------------*/
 function PANEL:UpdatePlayerData()
 
-	if (!self.Player) then return end
-	if ( !self.Player:IsValid() ) then return end
+	if (not self.Player) then return end
+	if ( not self.Player:IsValid() ) then return end
 
 	-- self:SetInfo( 1, "Website:", self.Player:GetWebsite() )
 	-- self:SetInfo( 1, "Location:", self.Player:GetLocation() )
@@ -101,9 +89,6 @@ function PANEL:UpdatePlayerData()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:ApplySchemeSettings()
 
 	for _k, column in pairs( self.InfoLabels ) do
@@ -119,21 +104,15 @@ function PANEL:ApplySchemeSettings()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:Think()
 
-	if ( self.PlayerUpdate && self.PlayerUpdate > CurTime() ) then return end
+	if ( self.PlayerUpdate and self.PlayerUpdate > CurTime() ) then return end
 	self.PlayerUpdate = CurTime() + 0.25
 
 	self:UpdatePlayerData()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:PerformLayout()
 
 	local x = 5
@@ -157,14 +136,14 @@ function PANEL:PerformLayout()
 
 		end
 
-		//x = RightMost + 10
+		--x = RightMost + 10
 		x = x + 300
 
 	end
 
-	if ( !self.Player ||
-		 self.Player == LocalPlayer() ||
-		 !LocalPlayer():IsAdmin() ) then
+	if ( not self.Player or
+		 self.Player == LocalPlayer() or
+		 not LocalPlayer():IsAdmin() ) then
 
 		self.btnKick:SetVisible( false )
 		self.btnBan:SetVisible( false )
@@ -185,7 +164,7 @@ function PANEL:PerformLayout()
 		self.btnPBan:SetPos( self:GetWide() - 52 * 1, 80 )
 		self.btnPBan:SetSize( 48, 20 )
 	end
-	if !IsValid(self.Player) || self.Player == LocalPlayer() || !hook.Call("PlayerCanDemote",GAMEMODE,LocalPlayer(),self.Player) then
+	if not IsValid(self.Player) or self.Player == LocalPlayer() or not hook.Call("PlayerCanDemote",GAMEMODE,LocalPlayer(),self.Player) then
 		self.btnDem:SetVisible( false )
 	else
 		self.btnDem:SetVisible( true )

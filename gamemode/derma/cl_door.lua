@@ -41,7 +41,7 @@ function PANEL:Init()
 		-- Disable the screen clicker.
 		gui.EnableScreenClicker(false);
 		-- Check if the local player's position is different from our captured one.
-		if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or !LocalPlayer():Alive() ) then
+		if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or not LocalPlayer():Alive() ) then
 			return
 		end
 
@@ -106,7 +106,7 @@ function PANEL:PerformLayout()
 	-- Set the frame to size itself based on it's contents.
 	self:SizeToContents();
 	-- Check if the local player's position is different from our captured one.
-	if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or !LocalPlayer():Alive() ) then
+	if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or not LocalPlayer():Alive() ) then
 		self:Close();
 		self:Remove();
 

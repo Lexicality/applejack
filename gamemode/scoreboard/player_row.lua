@@ -27,9 +27,6 @@ texRatings[ 'super' ] 	= Material( "icon16/shield.png" )
 --surface.GetTextureID( "icon16/emoticon_smile.png" )
 local PANEL = {}
 
-/*---------------------------------------------------------
-   Name: Init
----------------------------------------------------------*/
 function PANEL:Init()
 
 	self.Size = 36
@@ -42,7 +39,7 @@ function PANEL:Init()
 	self.lblDeaths 	= vgui.Create( "DLabel", self )
 	self.lblPing 	= vgui.Create( "DLabel", self )
 
-	// If you don't do this it'll block your clicks
+	-- If you don't do this it'll block your clicks
 	self.lblName:SetMouseInputEnabled( false )
 	self.lblFrags:SetMouseInputEnabled( false )
 	self.lblDeaths:SetMouseInputEnabled( false )
@@ -59,16 +56,13 @@ function PANEL:Init()
 
 end
 
-/*---------------------------------------------------------
-   Name: Paint
----------------------------------------------------------*/
 function PANEL:Paint()
 
-	if ( !IsValid( self.Player ) ) then return end
+	if ( not IsValid( self.Player ) ) then return end
 
 	local color = team.GetColor(self.Player:Team())
 	-- Check if we're sliding
-	if ( self.Open || self.Size ~= self.TargetSize ) then
+	if ( self.Open or self.Size ~= self.TargetSize ) then
 
 		draw.RoundedBox( 4, 0, 16, self:GetWide(), self:GetTall() - 16, color )
 		draw.RoundedBox( 4, 2, 16, self:GetWide()-4, self:GetTall() - 16 - 2, Color( 250, 250, 245, 255 ) )
@@ -85,7 +79,7 @@ function PANEL:Paint()
 	surface.SetDrawColor( 255, 255, 255, 50 )
 	surface.DrawTexturedRect( 0, 0, self:GetWide(), 36 )
 
-	// This should be an image panel!
+	-- This should be an image panel!
 	surface.SetMaterial( self.texRating )
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.DrawTexturedRect( self:GetWide() - 16 - 8, 36 / 2 - 8, 16, 16 )
@@ -94,9 +88,6 @@ function PANEL:Paint()
 
 end
 
-/*---------------------------------------------------------
-   Name: UpdatePlayerData
----------------------------------------------------------*/
 function PANEL:SetPlayer( ply )
 
 	self.Player = ply
@@ -119,13 +110,10 @@ function PANEL:CheckRating( name, count )
 
 end
 
-/*---------------------------------------------------------
-   Name: UpdatePlayerData
----------------------------------------------------------*/
 function PANEL:UpdatePlayerData()
 
-	if ( !self.Player ) then return end
-	if ( !self.Player:IsValid() ) then return end
+	if ( not self.Player ) then return end
+	if ( not self.Player:IsValid() ) then return end
 	local clan = "" if (self.Player:GetNetworkedString("Clan") ~= "") then clan = " ("..self.Player:GetNetworkedString("Clan")..")" end
 	self.lblName:SetText( "["..self.Player:GetNetworkedString("Job").."] "..self.Player:Nick()..clan )
 	self.lblName:SizeToContents()
@@ -133,7 +121,7 @@ function PANEL:UpdatePlayerData()
 	self.lblDeaths:SetText( self.Player:Deaths() )
 	self.lblPing:SetText( self.Player:Ping() )
 
-	// Work out what icon to draw
+	-- Work out what icon to draw
 
 	self.texRating = texRatings[ 'user' ]
 	if self.Player:IsSuperAdmin() then
@@ -149,9 +137,6 @@ end
 
 
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:ApplySchemeSettings()
 
 	self.lblName:SetFont( "ScoreboardPlayerNameBig" )
@@ -166,9 +151,6 @@ function PANEL:ApplySchemeSettings()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:DoClick( x, y )
 
 	if ( self.Open ) then
@@ -177,13 +159,10 @@ function PANEL:DoClick( x, y )
 		surface.PlaySound( "ui/buttonclick.wav" )
 	end
 
-	self:OpenInfo( !self.Open )
+	self:OpenInfo( not self.Open )
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:OpenInfo( bool )
 
 	if ( bool ) then
@@ -196,9 +175,6 @@ function PANEL:OpenInfo( bool )
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:Think()
 
 	if ( self.Size ~= self.TargetSize ) then
@@ -206,11 +182,11 @@ function PANEL:Think()
 		self.Size = math.Approach( self.Size, self.TargetSize, (math.abs( self.Size - self.TargetSize ) + 1) * 10 * FrameTime() )
 		self:PerformLayout()
 		SCOREBOARD:InvalidateLayout()
-	//	self:GetParent():InvalidateLayout()
+	--	self:GetParent():InvalidateLayout()
 
 	end
 
-	if ( !self.PlayerUpdate || self.PlayerUpdate < CurTime() ) then
+	if ( not self.PlayerUpdate or self.PlayerUpdate < CurTime() ) then
 
 		self.PlayerUpdate = CurTime() + 0.5
 		self:UpdatePlayerData()
@@ -219,9 +195,6 @@ function PANEL:Think()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:PerformLayout()
 
 	self.imgAvatar:SetPos( 2, 2 )
@@ -239,7 +212,7 @@ function PANEL:PerformLayout()
 	self.lblDeaths:SetPos( self:GetWide() - COLUMN_SIZE * 2, 0 )
 	self.lblFrags:SetPos( self:GetWide() - COLUMN_SIZE * 3, 0 )
 
-	if ( self.Open || self.Size ~= self.TargetSize ) then
+	if ( self.Open or self.Size ~= self.TargetSize ) then
 
 		self.infoCard:SetVisible( true )
 		self.infoCard:SetPos( 4, 36)--self.imgAvatar:GetTall() + 10 )
@@ -255,9 +228,6 @@ function PANEL:PerformLayout()
 
 end
 
-/*---------------------------------------------------------
-   Name: PerformLayout
----------------------------------------------------------*/
 function PANEL:HigherOrLower( row )
 	if not IsValid(self.Player) then return false end
 	if not IsValid( row.Player) then return true  end
