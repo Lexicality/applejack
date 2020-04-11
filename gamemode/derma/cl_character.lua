@@ -35,13 +35,13 @@ function PANEL:Init()
 	-- TODO: Find out why this sometimes isn't there
 	if not lpl._ModelChoices then
 		lpl._ModelChoices = {}
-		for index, team in pairs(GM.Teams) do
+		for id, team in pairs(GM.Teams) do
 			for gender,models in pairs(team.Models) do
 				lpl._ModelChoices[gender] = lpl._ModelChoices[gender] or {}
 				if #models ~= 1 then
-					lpl._ModelChoices[gender][index] = math.random(1,#models)
+					lpl._ModelChoices[gender][id] = math.random(1,#models)
 				else
-					lpl._ModelChoices[gender][index] = 1
+					lpl._ModelChoices[gender][id] = 1
 				end
 			end
 		end
@@ -99,7 +99,7 @@ function PANEL:Think()
 
 	local subitemsList;
 	-- Loop through each of our groups in numerical order
-	for index, group in ipairs(GM.Groups) do
+	for _, group in pairs(GM.Groups) do
 		if (group.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(cider.menu.width, 50); -- Keep the second number at 50

@@ -268,7 +268,7 @@ function PLUGIN:InitPostEntity()
 			ent._DoorState = "closed";
 			ent._Autoclose = 5;
 			ent:MakeOwnable();
-			ent:GiveToGroup(GROUP_OFFICIALS);
+			ent:GiveToGroup(self.group);
 			ent:SetDisplayName(tab[5]);
 			ent:Lock();
 			ent:SetNWString("Name","GHQ");

@@ -497,7 +497,6 @@ local function UpdateContainer(decoded)
 			done[key] = true;
 		else
 			local kind, id = string.match(key, "(.+): (.+)");
-			id = tonumber(id);
 			if (kind == "Team") then
 				res = team.Get(id);
 				table.insert(taccess[res.Group.GroupID], res);

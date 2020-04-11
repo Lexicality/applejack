@@ -1250,7 +1250,7 @@ end
 GM:RegisterCommand{
 	Command     = "access";
 	Arguments   = "<Give|Take> <kind> <id>";
-	Types       = "Phrase String Number";
+	Types       = "Phrase String String";
 	Hidden      = true;
 	Help        = "oh fuck I'm a badger";
 	function(ply, ...)
