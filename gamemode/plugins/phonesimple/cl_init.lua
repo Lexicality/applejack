@@ -1,4 +1,0 @@
---
--- ~ Phone Plugin / CL ~
--- ~ Applejack ~
---
