@@ -62,15 +62,7 @@ end
 -- @param pos The vector to check
 -- @return True if it is completely within the box, false otherwise.
 function util.IsWithinBox(topleft, bottomright, pos)
-	if not (pos.z < math.min(topleft.z, bottomright.z) or pos.z >
-		math.max(topleft.z, bottomright.z) or pos.x <
-		math.min(topleft.x, bottomright.x) or pos.x >
-		math.max(topleft.x, bottomright.x) or pos.y <
-		math.min(topleft.y, bottomright.y) or pos.y >
-		math.max(topleft.y, bottomright.y)) then
-		return true;
-	end
-	return false;
+	return pos:WithinAABox(topleft, bottomright);
 end
 
 ---
