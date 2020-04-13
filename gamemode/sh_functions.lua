@@ -18,21 +18,6 @@ function validfile(filename) -- A curse brought on by editing things in mac/linu
 end
 
 ---
--- Because sometimes things go wrong and I need to debug IsValid. (Doesn't happen much anymore tbh)
--- @param object The object to check
--- @return If the object is valid.
-function IsValid(object)
-	-- local object = object or nil
-	-- local etype = type(object);
-	-- if etype == "number" or etype == "function" or etype == "string" or etype == "boolean" or etype == "thread" then
-	-- 	error("What the fuck just passed me a non-ent? "..etype,2)
-	-- end
-	-- if (not (object and object.IsValid)) then return false end
-	-- return object:IsValid()
-	return object and object.IsValid and object:IsValid();
-end
-
----
 -- Checks if an entity is both valid and a player
 -- @param object The object in question
 -- @return True if it's valid+player, false otherwise.
