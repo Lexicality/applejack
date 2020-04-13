@@ -10,14 +10,6 @@ AddCSLuaFile("sh_functions.lua");
 --
 
 ---
--- Include a file and add it to the CSLua Cache
--- @param file The file to add
-function includecs(file)
-	include(file);
-	AddCSLuaFile(file);
-end
-
----
 -- Makes sure that files aren't linux/OSX metadata files
 -- @param filename The file to check
 -- @return True if it is a valid file or false if it's a stray.

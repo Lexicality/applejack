@@ -43,7 +43,7 @@ function GM:LoadPlugins()
 			PLUGIN.Folder = id;
 			PLUGIN.FullPath = cpath;
 			if (file.Exists(cpath .. "/sh_init.lua", "LUA")) then
-				includecs(cpath .. "/sh_init.lua");
+				IncludeCS(cpath .. "/sh_init.lua");
 			end
 			if (SERVER) then
 				if (file.Exists(cpath .. "/sv_init.lua", "LUA")) then

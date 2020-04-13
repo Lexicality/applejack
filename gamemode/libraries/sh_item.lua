@@ -31,7 +31,7 @@ function GM:LoadItems()
 		if (validfile(filename)) then
 			ITEM = meta();
 			ITEM.Name = "NULL"; -- For the search
-			includecs(path .. "base/" .. filename);
+			IncludeCS(path .. "base/" .. filename);
 			ITEM.UniqueID = filename:sub(1, -5):lower();
 			ITEM:Register();
 			MsgN(" Loaded item base '" .. ITEM.UniqueID .. "'");
@@ -46,7 +46,7 @@ function GM:LoadItems()
 			str, count = "", 0;
 			CAT = {};
 			CAT.UniqueID = filename:lower();
-			includecs(path .. filename .. "/init.lua");
+			IncludeCS(path .. filename .. "/init.lua");
 			newcat = registerCategory(CAT);
 			_E["CATEGORY_" .. string.upper(filename)] = newcat;
 			for _, item in pairs(file.Find(path .. filename .. "/*.lua", "LUA")) do
@@ -54,7 +54,7 @@ function GM:LoadItems()
 					ITEM = meta();
 					ITEM.UniqueID = item:sub(1, -5):lower();
 					ITEM.Category = newcat;
-					includecs(path .. filename .. "/" .. item);
+					IncludeCS(path .. filename .. "/" .. item);
 					ITEM:Register();
 					str = str .. ", " .. ITEM.UniqueID;
 					count = count + 1;
@@ -84,7 +84,7 @@ function GM:LoadItems()
 			end
 			ITEM = meta();
 			ITEM.Name = "NULL"; -- For the search
-			includecs(path .. "base/" .. filename);
+			IncludeCS(path .. "base/" .. filename);
 			ITEM.UniqueID = filename:sub(1, -5);
 			ITEM:Register();
 			MsgN("   Loaded item base '" .. ITEM.UniqueID .. "'");
@@ -107,7 +107,7 @@ function GM:LoadItems()
 				-- redef the cat3g0ry.
 				CAT = {};
 				CAT.UniqueID = uid;
-				includecs(path .. filename .. "/init.lua");
+				IncludeCS(path .. filename .. "/init.lua");
 				local reg = true;
 				for index, data in pairs(cats) do
 					if (data.UnqiueID == CAT.UniqueID) then
@@ -142,7 +142,7 @@ function GM:LoadItems()
 				ITEM = GM.Items[uid] or meta();
 				ITEM.UniqueID = item:sub(1, -5):lower();
 				ITEM.Category = CAT.Index;
-				includecs(path .. filename .. "/" .. item);
+				IncludeCS(path .. filename .. "/" .. item);
 				ITEM:Register();
 				str = str .. ", " .. ITEM.UniqueID;
 				count = count + 1;

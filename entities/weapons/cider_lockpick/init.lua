@@ -2,7 +2,7 @@
 -- ~ Lockpick SWep ~ Clientside ~
 -- ~ Applejack ~
 --
-includecs("shared.lua");
+IncludeCS("shared.lua");
 AddCSLuaFile("cl_init.lua");
 umsg.PoolString("dosnd");
 

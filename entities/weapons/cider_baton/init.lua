@@ -2,7 +2,7 @@
 -- ~ Baton ~ Serverside ~
 -- ~ Applejack ~
 --
-includecs("shared.lua");
+IncludeCS("shared.lua");
 AddCSLuaFile("cl_init.lua");
 
 function SWEP:GetTarget()

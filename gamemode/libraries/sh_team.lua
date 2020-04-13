@@ -62,7 +62,7 @@ do
 				end
 			end
 
-			includecs(path .. filename);
+			IncludeCS(path .. filename);
 
 			if (not TEAM.Valid) then
 				_G.TEAM = nil;
@@ -140,7 +140,7 @@ do
 						_G.GROUP.GroupID = groupID;
 					end
 
-					includecs(groupPath .. "init.lua");
+					IncludeCS(groupPath .. "init.lua");
 				end
 
 				if (not _G.GROUP.Valid) then
@@ -176,7 +176,7 @@ do
 							_G.GANG.GroupID = _G.GROUP.GroupID;
 						end
 
-						includecs(gangPath .. "init.lua");
+						IncludeCS(gangPath .. "init.lua");
 					end
 
 					if (not _G.GANG.Valid) then

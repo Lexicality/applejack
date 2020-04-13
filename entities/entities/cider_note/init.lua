@@ -2,7 +2,7 @@
 -- ~ Note Entity ~ Serverside ~
 -- ~ Applejack ~
 --
-includecs("shared.lua");
+IncludeCS("shared.lua");
 AddCSLuaFile("cl_init.lua");
 
 -- This is called when the entity initializes.

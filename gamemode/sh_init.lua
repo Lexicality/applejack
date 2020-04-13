@@ -14,7 +14,7 @@ GM.Email = "mwaness@gmail.com";
 GM.Author = "Lexi, original gamemode by kuromeku";
 GM.Website = "http://www.ventmob.com";
 GM.LuaFolder = string.sub(GM.Folder, 11, -1)
-includecs("timer.lua");
+IncludeCS("timer.lua");
 -- Derive the gamemode from sandbox.
 DeriveGamemode("Sandbox");
 require("datastream")
@@ -24,8 +24,8 @@ require("csvars")
 cider = {};
 
 -- Include the configuration and enumeration files.
-includecs("sh_enumerations.lua");
-includecs("sh_config.lua");
+IncludeCS("sh_enumerations.lua");
+IncludeCS("sh_config.lua");
 
 -- Check if we're running on the server.
 if (SERVER) then
@@ -51,7 +51,7 @@ local function doload(path, name, plural) -- path must be the relative path from
 			subd = v:sub(1, 3);
 			fname = v:sub(4, -5);
 			if (subd == "sh_") then
-				includecs(path .. v);
+				IncludeCS(path .. v);
 				MsgN(" Loaded the shared " .. fname .. " " .. name .. ".");
 				count = count + 1;
 			elseif (SERVER) then
@@ -89,7 +89,7 @@ GM:LoadPlugins()
 GM:LoadItems();
 
 -- This stuff needs to be after plugins but before everything else
-includecs("sh_events.lua")
+IncludeCS("sh_events.lua")
 GM:LoadTeams();
 
 -- Loop through derma panels and include them.

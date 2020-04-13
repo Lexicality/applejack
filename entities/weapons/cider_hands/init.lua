@@ -2,7 +2,7 @@
 -- ~ Hands Swep ~ Serverside ~
 -- ~ Applejack ~
 --
-includecs("shared.lua");
+IncludeCS("shared.lua");
 AddCSLuaFile("cl_init.lua");
 
 local stamina;
