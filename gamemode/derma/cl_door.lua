@@ -40,14 +40,15 @@ function PANEL:Init()
 		-- Disable the screen clicker.
 		gui.EnableScreenClicker(false);
 		-- Check if the local player's position is different from our captured one.
-		if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or not LocalPlayer():Alive() ) then
+		if (LocalPlayer():GetPos() ~= self.localPlayerPosition or
+			not LocalPlayer():Alive()) then
 			return
 		end
 
 		if (self.textEntry:GetValue() == "") then
 			RunConsoleCommand("mshine", "entity", "purchase");
 		else
-			RunConsoleCommand( "mshine", "entity", "purchase", self.textEntry:GetValue() );
+			RunConsoleCommand("mshine", "entity", "purchase", self.textEntry:GetValue());
 		end
 	end
 
@@ -64,8 +65,11 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
-		local width = math.max( 112, self.label:GetWide() );
-	self:SetSize(8 + width + 8, 28 + self.label:GetTall() + 8 + self.textEntry:GetTall() + 8 + self.purchase:GetTall() + 8);
+	local width = math.max(112, self.label:GetWide());
+	self:SetSize(
+		8 + width + 8, 28 + self.label:GetTall() + 8 + self.textEntry:GetTall() + 8 +
+			self.purchase:GetTall() + 8
+	);
 
 	-- Set the visibility of the label.
 	self.label:SetVisible(true);
@@ -89,13 +93,17 @@ function PANEL:PerformLayout()
 
 	-- Set the position of the label and text entry panels.
 	self.nameLabel:SetPos(8, 28 + self.label:GetTall() + 8);
-	self.textEntry:SetPos(8 + self.nameLabel:GetWide() + 8, 28 + self.label:GetTall() + 8);
+	self.textEntry:SetPos(
+		8 + self.nameLabel:GetWide() + 8, 28 + self.label:GetTall() + 8
+	);
 
 	-- Set the position of the purchase button.
-	self.purchase:SetPos(8, 28 + self.label:GetTall() + 8 + self.textEntry:GetTall() + 8);
+	self.purchase:SetPos(
+		8, 28 + self.label:GetTall() + 8 + self.textEntry:GetTall() + 8
+	);
 
-	self.label:SetTextColor( Color(50, 255, 50, 255) );
-	self.label:SetText("Purchase this door for $"..GM.Config["Door Cost"]..".");
+	self.label:SetTextColor(Color(50, 255, 50, 255));
+	self.label:SetText("Purchase this door for $" .. GM.Config["Door Cost"] .. ".");
 	self.label:SizeToContents();
 
 	-- Set the label and text entry panels to be visible.
@@ -105,7 +113,8 @@ function PANEL:PerformLayout()
 	-- Set the frame to size itself based on it's contents.
 	self:SizeToContents();
 	-- Check if the local player's position is different from our captured one.
-	if ( LocalPlayer():GetPos() ~= self.localPlayerPosition or not LocalPlayer():Alive() ) then
+	if (LocalPlayer():GetPos() ~= self.localPlayerPosition or
+		not LocalPlayer():Alive()) then
 		self:Close();
 		self:Remove();
 
@@ -120,15 +129,18 @@ end
 -- Register the panel.
 vgui.Register("cider_Door", PANEL, "DFrame");
 
+usermessage.Hook(
+	"cider_BuyDoor", function()
 
-usermessage.Hook("cider_BuyDoor",function()
+		-- Enable the screen clicker.
+		gui.EnableScreenClicker(true);
 
-	-- Enable the screen clicker.
-	gui.EnableScreenClicker(true);
-
-	-- Check if the door panel already exists.
-	if (cider.door.panel) then cider.door.panel:Remove(); end
-	cider.door.panel = vgui.Create("cider_Door");
-	cider.door.panel.unsellable = unsellable;
-	cider.door.panel:MakePopup();
-end)
+		-- Check if the door panel already exists.
+		if (cider.door.panel) then
+			cider.door.panel:Remove();
+		end
+		cider.door.panel = vgui.Create("cider_Door");
+		cider.door.panel.unsellable = unsellable;
+		cider.door.panel:MakePopup();
+	end
+)

@@ -7,7 +7,7 @@ function PLUGIN:PlayerCanSpawnProp(ply, mdl)
 		return;
 	end
 	if (ply:GetCount("props") > self.Config["Builder Prop Limit"]) then
-		ply:Notify("You hit the prop limit!",1)
+		ply:Notify("You hit the prop limit!", 1)
 		return false;
 	end
 	local afford, costing = ply:CanAfford(self.Config["Builder Prop Cost"]);
@@ -15,7 +15,7 @@ function PLUGIN:PlayerCanSpawnProp(ply, mdl)
 		ply:Notify("You need another $" .. costing .. " to spawn this prop!", 1);
 		return false;
 	end
-	--return gamemode.Call("PlayerCanSpawnProp", ply, mdl);
+	-- return gamemode.Call("PlayerCanSpawnProp", ply, mdl);
 end
 
 local function tmr(ply)

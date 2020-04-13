@@ -2,21 +2,22 @@
 -- ~ Serverside Entity Library ~
 -- ~ Applejack ~
 --
-
 ---
 -- A table of all currently ownable entities, with the entity as a key
 GM.OwnableEntities = {};
 
 local function unbreach(ent)
-	if (not IsValid(ent)) then return end
+	if (not IsValid(ent)) then
+		return
+	end
 	ent._Jammed = nil;
 	ent:UnLock(0, true);
 	local close = ent._Autoclose or GM.Config["Door Autoclose Time"];
 	local class = ent:GetClass();
-	if (class:find"func_door") then
-		ent:SetKeyValue("wait",close);
-	elseif (class:find"prop_door") then
-		ent:SetKeyValue("returndelay",close);
+	if (class:find "func_door") then
+		ent:SetKeyValue("wait", close);
+	elseif (class:find "prop_door") then
+		ent:SetKeyValue("returndelay", close);
 	end
 	GM:CloseDoor(ent, 0);
 end
@@ -33,7 +34,8 @@ function GM:OpenDoor(ent, delay, unlock, jam)
 	elseif (not (ent:IsDoor() and ent:IsOwnable())) then
 		error("Non-door passed to OpenDoor!", 2);
 	elseif (delay and delay > 0) then
-		return timer.Simple(delay, self.OpenDoor, self, ent, false, unlock, sound, jam);
+		return
+			timer.Simple(delay, self.OpenDoor, self, ent, false, unlock, sound, jam);
 	elseif (ent._Jammed or ent._Sealed or ent._DoorState == "open") then
 		return false;
 	end
@@ -53,9 +55,9 @@ function GM:OpenDoor(ent, delay, unlock, jam)
 		ent._Jammed = true;
 		ent:Lock(delay + 0.025, true);
 		local class = ent:GetClass();
-		if (class:find"func_door") then
+		if (class:find "func_door") then
 			ent:SetKeyValue("wait", GM.Config["Jam Time"]);
-		elseif (class:find"prop_door") then
+		elseif (class:find "prop_door") then
 			ent:SetKeyValue("returndelay", GM.Config["Jam Time"]);
 		end
 		timer.Simple(GM.Config["Jam Time"], unbreach, ent);
@@ -79,10 +81,10 @@ function GM:CloseDoor(ent, delay, lock)
 	elseif (ent._Jammed or ent._Sealed or ent._DoorState == "closed") then
 		return false;
 	elseif (ent:GetClass() == "prop_dynamic") then
-		ent:Fire("setanimation","close",0);
+		ent:Fire("setanimation", "close", 0);
 		ent._DoorState = "closed";
 	else
-		ent:Fire("close","",0);
+		ent:Fire("close", "", 0);
 	end
 	if (lock) then
 		ent:Lock(0.025);
@@ -136,9 +138,11 @@ end
 -- @param ply The player in question
 function GM:RestoreAccess(ply)
 	local id, pl = ply:UniqueID();
-	if (not saves[id]) then return; end
+	if (not saves[id]) then
+		return;
+	end
 	local filter = RecipientFilter();
-	for ent,access in pairs(saves[id]) do
+	for ent, access in pairs(saves[id]) do
 		if (IsValid(ent) and not ent:IsOwned()) then
 			filter:RemoveAllPlayers();
 			for data in pairs(access) do
@@ -166,10 +170,12 @@ function GM:RestoreAccess(ply)
 	end
 end
 
-timer.Create("Applejack Entity Housecleaning", GM.Config["Earning Interval"], 0, function()
-	for ent in pairs(GM.OwnableEntities) do
-		if (not IsValid(ent)) then
-			GM.OwnableEntities[ent] = nil;
+timer.Create(
+	"Applejack Entity Housecleaning", GM.Config["Earning Interval"], 0, function()
+		for ent in pairs(GM.OwnableEntities) do
+			if (not IsValid(ent)) then
+				GM.OwnableEntities[ent] = nil;
+			end
 		end
 	end
-end)
+)

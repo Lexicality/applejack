@@ -10,13 +10,12 @@ function PANEL:Init()
 end
 
 local function isModerator(text)
-	return text:sub(1,  9) == "Moderator";
+	return text:sub(1, 9) == "Moderator";
 end
 
 local function isAuthed(text)
-	return text:sub(1, 10) == "Superadmin"
-		or text:sub(1,  5) == "Admin"
-		or isModerator(text);
+	return text:sub(1, 10) == "Superadmin" or text:sub(1, 5) == "Admin" or
+       		isModerator(text);
 end
 
 local function isAbuse(text)
@@ -24,7 +23,7 @@ local function isAbuse(text)
 end
 
 local function bullshitSort(a, b)
-	a,b = a.title, b.title;
+	a, b = a.title, b.title;
 	-- General always floats to the top
 	if (a == "General") then
 		return true;
@@ -62,10 +61,7 @@ function PANEL:Reload()
 		for _, line in ipairs(text) do
 			table.insert(text2, line);
 		end
-		table.insert(sections, {
-			title = title;
-			text  = text2;
-		} );
+		table.insert(sections, {title = title, text = text2});
 	end
 
 	table.sort(sections, bullshitSort);

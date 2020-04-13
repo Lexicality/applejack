@@ -2,7 +2,6 @@
 -- ~ Doors Plugin / SV ~
 -- ~ Applejack ~
 --
-
 -- Changelog:
 -- 29/1/10: Mostly rewritten to use the new plugin format and be sane.
 -- 04/06/11: Completely rewritten to use v113 game.CleanupMap compatible shizzle + team lib
@@ -13,21 +12,33 @@ function PLUGIN:LoadDoors()
 	self.Doors = {};
 	local path = GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt";
 	if (not file.Exists(path, "DATA")) then
-		ErrorNoHalt("[",os.date(),"] Doors Plugin: cannot find the file " .. path .. "!\n");
+		ErrorNoHalt(
+			"[", os.date(), "] Doors Plugin: cannot find the file " .. path .. "!\n"
+		);
 		return;
 	end
 	local stat, res = pcall(util.JSONToTable, file.Read(path, "DATA"));
 	if (not stat) then
-		error("["..os.date().."] Doors Plugin: Error JSON decoding '"..path.."': "..res);
+		error(
+
+				"[" .. os.date() .. "] Doors Plugin: Error JSON decoding '" .. path .. "': " ..
+					res
+		);
 	elseif (not res) then
-		ErrorNoHalt("[",os.date(),"] Doors Plugin: No results for map " .. game.GetMap() .. "!\n");
+		ErrorNoHalt(
+			"[", os.date(),
+			"] Doors Plugin: No results for map " .. game.GetMap() .. "!\n"
+		);
 		return;
 	end
 	local ent, ment;
 	for id, data in pairs(res) do
 		ent = ents.GetMapCreatedEntity(id);
 		if (not IsValid(ent)) then
-			ErrorNoHalt("[",os.date(),"] Doors Plugin: No such entity '", id, "' as specified for map ", game.GetMap(), " in the stored data!\n");
+			ErrorNoHalt(
+				"[", os.date(), "] Doors Plugin: No such entity '", id,
+				"' as specified for map ", game.GetMap(), " in the stored data!\n"
+			);
 			continue;
 		end
 		if (data.Master) then
@@ -42,17 +53,25 @@ function PLUGIN:LoadDoors()
 		if (data.Owner) then
 			local kind, id = string.match(data.Owner, "(.+): (.+)");
 			if (not (kind and id)) then
-				ErrorNoHalt("[",os.date(),"] Doors Plugin: Malformed owner field for ", id, ": ", data.Owner);
+				ErrorNoHalt(
+					"[", os.date(), "] Doors Plugin: Malformed owner field for ", id, ": ",
+					data.Owner
+				);
 				continue;
 			end
 			local func = GM["Get" .. kind];
 			if (not func) then
-				ErrorNoHalt("[",os.date(),"] Doors Plugin: Malformed owner field for ", id, ": ", data.Owner);
+				ErrorNoHalt(
+					"[", os.date(), "] Doors Plugin: Malformed owner field for ", id, ": ",
+					data.Owner
+				);
 				continue;
 			end
 			local owner = func(GM, id);
 			if (not owner) then
-				ErrorNoHalt("[",os.date(),"] Doors Plugin: Unknown owner for ", id, ": ", data.Owner);
+				ErrorNoHalt(
+					"[", os.date(), "] Doors Plugin: Unknown owner for ", id, ": ", data.Owner
+				);
 				continue;
 			end
 			ent["GiveTo" .. kind](ent, owner);
@@ -72,7 +91,6 @@ function PLUGIN:LoadDoors()
 	end
 end
 
-
 -- Called when all good plugins should load their datas. (Normally a frame after InitPostEntity)
 function PLUGIN:LoadData()
 	self:LoadDoors();
@@ -85,7 +103,7 @@ function PLUGIN:PlayerCanJamDoor(ply, door)
 	end
 end
 
---Called when a player attempts to own a door.
+-- Called when a player attempts to own a door.
 function PLUGIN:PlayerCanOwnDoor(player, door)
 	if (door._Unownable) then
 		return false;
@@ -107,7 +125,8 @@ function PLUGIN:GetDoorData(door, create)
 end
 
 local function care(door)
-	return IsValid(door) and door:CreatedByMap() and door:IsDoor() and door:IsOwnable();
+	return IsValid(door) and door:CreatedByMap() and door:IsDoor() and
+       		door:IsOwnable();
 end
 
 -- Called when data needs to be saved
@@ -128,14 +147,22 @@ function PLUGIN:SaveData()
 			ret[ent:MapCreationID()] = res;
 		end
 	end
-	if (stat == 0) then return; end
+	if (stat == 0) then
+		return;
+	end
 	stat, res = pcall(util.TableToJSON, ret);
 	if (not stat) then
-		error("["..os.date().."] Doors Plugin: Error JSON encoding "..game.GetMap().."'s door data: "..res);
+		error(
+
+				"[" .. os.date() .. "] Doors Plugin: Error JSON encoding " .. game.GetMap() ..
+					"'s door data: " .. res
+		);
 	end
-	file.CreateDir( "sample" );
+	file.CreateDir("sample");
 	file.CreateDir(GM.LuaFolder .. "/doors/");
-	file.Write(GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt", res);
+	file.Write(
+		GM.LuaFolder .. "/doors/" .. string.lower(game.GetMap()) .. ".txt", res
+	);
 end
 
 function PLUGIN:EntityNameSet(door, name)
@@ -144,29 +171,29 @@ function PLUGIN:EntityNameSet(door, name)
 	elseif (not name or name == "") then
 		self:GetDoorData(door).Name = nil;
 	else
-		self:GetDoorData(door,true).Name = name;
+		self:GetDoorData(door, true).Name = name;
 	end
 	self:SaveData();
 end
 
-function PLUGIN:EntityMasterSet(door,master)
+function PLUGIN:EntityMasterSet(door, master)
 	if (not care(door)) then
 		return
 	elseif (IsValid(master)) then
-		self:GetDoorData(door,true).Master = master;
+		self:GetDoorData(door, true).Master = master;
 	else
 		self:GetDoorData(door).Master = nil;
 	end
 	self:SaveData();
 end
 
-function PLUGIN:EntitySealed(door,unsealed)
+function PLUGIN:EntitySealed(door, unsealed)
 	if (not care(door)) then
 		return
 	elseif (unsealed) then
 		self:GetDoorData(door).Sealed = nil;
 	else
-		self:GetDoorData(door,true).Sealed = true;
+		self:GetDoorData(door, true).Sealed = true;
 	end
 	self:SaveData();
 end
@@ -189,12 +216,12 @@ end
 
 local plugin = PLUGIN;
 GM:RegisterCommand{
-	Command     = "unownable";
-	Access      = "s";
-	Category    = "Door Commands";
-	Help        = "Make it so no one can own this door and optionally give it a name.";
-	Arguments   = "[name]";
-	Types       = "...";
+	Command = "unownable",
+	Access = "s",
+	Category = "Door Commands",
+	Help = "Make it so no one can own this door and optionally give it a name.",
+	Arguments = "[name]",
+	Types = "...",
 	function(ply, name)
 		local door = ply:GetEyeTraceNoCursor().Entity;
 		if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
@@ -213,17 +240,17 @@ GM:RegisterCommand{
 		end
 		door:SetDisplayName(name)
 		name = door:GetDoorName()
-		ply:Notify("'"..name.."' is now unownable.");
-		GM:Log(EVENT_EVENT,"%s unownable'd %q",ply:Name(),name)
+		ply:Notify("'" .. name .. "' is now unownable.");
+		GM:Log(EVENT_EVENT, "%s unownable'd %q", ply:Name(), name)
 		plugin:SaveData();
-	end
+	end,
 };
 
 GM:RegisterCommand{
-	Command     = "reownable";
-	Access      = "s";
-	Category    = "Door Commands";
-	Help        = "Make it so people can own a previously unownable door";
+	Command = "reownable",
+	Access = "s",
+	Category = "Door Commands",
+	Help = "Make it so people can own a previously unownable door",
 	function(ply)
 		local door = ply:GetEyeTraceNoCursor().Entity;
 		if (not (IsValid(door) and door:IsOwnable() and door:IsDoor())) then
@@ -240,7 +267,7 @@ GM:RegisterCommand{
 			door["GiveTo" .. data.Owner.Type](door, data.Owner);
 		end
 		local name = door:GetDoorName()
-		ply:Notify("'"..name.."' is no longer unownable.");
-		GM:Log(EVENT_EVENT,"%s de unownable'd %q",ply:Name(),name)
-	end
+		ply:Notify("'" .. name .. "' is no longer unownable.");
+		GM:Log(EVENT_EVENT, "%s de unownable'd %q", ply:Name(), name)
+	end,
 };

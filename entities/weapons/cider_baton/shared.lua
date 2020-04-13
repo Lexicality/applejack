@@ -2,10 +2,10 @@
 -- ~ Baton ~ Shared ~
 -- ~ Applejack ~
 --
-
 -- Define some shared variables.
-SWEP.Author	= "Lexi";
-SWEP.Instructions = "Primary Fire: Knock Out. Use+Primary Fire: Damage\nSecondary Fire: Arrest/breach door.";
+SWEP.Author = "Lexi";
+SWEP.Instructions =
+	"Primary Fire: Knock Out. Use+Primary Fire: Damage\nSecondary Fire: Arrest/breach door.";
 SWEP.Purpose = "General Purpous Electrical Baton";
 
 -- Set the view model and the world model to nil.
@@ -13,7 +13,7 @@ SWEP.ViewModel = "models/weapons/v_stunstick.mdl";
 SWEP.WorldModel = "models/weapons/w_stunbaton.mdl";
 
 -- Set the animation prefix and some other settings.
-SWEP.AnimPrefix	= "stunstick";
+SWEP.AnimPrefix = "stunstick";
 SWEP.Spawnable = false;
 SWEP.AdminSpawnable = false;
 
@@ -29,7 +29,7 @@ SWEP.Secondary.Delay = 0.75;
 SWEP.Secondary.ClipSize = -1;
 SWEP.Secondary.DefaultClip = 0;
 SWEP.Secondary.Automatic = false;
-SWEP.Secondary.Ammo	= "";
+SWEP.Secondary.Ammo = "";
 
 -- Set the iron sight positions (pointless here).
 SWEP.IronSightPos = Vector(0, 0, 0);
@@ -45,17 +45,27 @@ end
 function SWEP:DoHitEffects(sound)
 	local trace = self.Owner:GetEyeTrace();
 	-- Check if the trace hit or it hit the world.
-	if ( ( (trace.Hit or trace.HitWorld) and self.Owner:GetPos():Distance(trace.HitPos) <= 96 ) ) then
-		if ( IsValid(trace.Entity) and ( trace.Entity:IsPlayer() or trace.Entity:IsNPC() ) ) then
+	if (((trace.Hit or trace.HitWorld) and
+		self.Owner:GetPos():Distance(trace.HitPos) <= 96)) then
+		if (IsValid(trace.Entity) and
+			(trace.Entity:IsPlayer() or trace.Entity:IsNPC())) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
-			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_fleshhit"..math.random(1, 2)..".wav");
-		elseif ( IsValid(trace.Entity)
-		and IsValid( trace.Entity:GetNetworkedEntity("player") ) ) then
+			self.Weapon:EmitSound(
+				sound or "weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) ..
+					".wav"
+			);
+		elseif (IsValid(trace.Entity) and
+			IsValid(trace.Entity:GetNetworkedEntity("player"))) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
-			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_fleshhit"..math.random(1, 2)..".wav");
+			self.Weapon:EmitSound(
+				sound or "weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) ..
+					".wav"
+			);
 		else
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
-			self.Weapon:EmitSound(sound or "weapons/stunstick/stunstick_impact"..math.random(1, 2)..".wav");
+			self.Weapon:EmitSound(
+				sound or "weapons/stunstick/stunstick_impact" .. math.random(1, 2) .. ".wav"
+			);
 		end
 
 		-- Create new effect data.

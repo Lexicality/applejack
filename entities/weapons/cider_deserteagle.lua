@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 1;
 	SWEP.IconLetter = "f";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_deserteagle", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_deserteagle", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -65,8 +67,8 @@ SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
-SWEP.IronSightsPos = Vector (5.1444, -0.403, 2.5673)
-SWEP.IronSightsAng = Vector (0.6577, -0.0624, 0)
+SWEP.IronSightsPos = Vector(5.1444, -0.403, 2.5673)
+SWEP.IronSightsAng = Vector(0.6577, -0.0624, 0)
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = false;

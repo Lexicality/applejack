@@ -1,9 +1,9 @@
-TEAM.Name             = "Renegagde Leader";
-TEAM.Description      = "Leader of the Renegades.";
-TEAM.Color            = Color(200,140,40);
-TEAM.Models.Male      = {"models/player/arctic.mdl"};
-TEAM.Models.Female    = TEAM.Models.Male;
-TEAM.GroupLevel       = GROUP_GANGBOSS;
+TEAM.Name = "Renegagde Leader";
+TEAM.Description = "Leader of the Renegades.";
+TEAM.Color = Color(200, 140, 40);
+TEAM.Models.Male = {"models/player/arctic.mdl"};
+TEAM.Models.Female = TEAM.Models.Male;
+TEAM.GroupLevel = GROUP_GANGBOSS;
 TEAM.PossessiveString = "The %s";
-TEAM.SizeLimit        = 1;
-TEAM.Salary           = 250;
+TEAM.SizeLimit = 1;
+TEAM.Salary = 250;

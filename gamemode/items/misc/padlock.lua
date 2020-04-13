@@ -2,19 +2,19 @@
 -- ~ Padlock ~
 -- ~ Applejack ~
 --
-ITEM.Name			= "Padlock";
-ITEM.Size			= 2;
-ITEM.Cost			= 250;
-ITEM.Model			= "models/props_wasteland/prison_padlock001a.mdl";
-ITEM.Batch			= 10;
-ITEM.Store			= true;
-ITEM.Plural			= "Padlocks";
-ITEM.Description	= "Will make a lock harder to pick.";
-ITEM.Base			= "item"
+ITEM.Name = "Padlock";
+ITEM.Size = 2;
+ITEM.Cost = 250;
+ITEM.Model = "models/props_wasteland/prison_padlock001a.mdl";
+ITEM.Batch = 10;
+ITEM.Store = true;
+ITEM.Plural = "Padlocks";
+ITEM.Description = "Will make a lock harder to pick.";
+ITEM.Base = "item"
 
 function ITEM:onUse(ply)
-	local trace	= ply:GetEyeTraceNoCursor();
-	local door	= trace.Entity;
+	local trace = ply:GetEyeTraceNoCursor();
+	local door = trace.Entity;
 	if (not (IsValid(door) and cider.entity.isOwnable(door))) then
 		ply:Notify("You can't put a padlock on that!", 1);
 	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then
@@ -27,26 +27,29 @@ function ITEM:onUse(ply)
 		entity:SetDoor(door, trace, ply);
 		ent:SetPPOwner(ply);
 		ent:SetPPSpawner(ply);
-		local event	= "";
-		local addon	= "";
-		local entname	= door._eName or "entity";
+		local event = "";
+		local addon = "";
+		local entname = door._eName or "entity";
 		if (cider.entity.isOwned(door)) then
-			event	= cider.entity.getPossessiveName(door);
+			event = cider.entity.getPossessiveName(door);
 		else
-			event	= "an unowned";
+			event = "an unowned";
 		end
 		if (cider.entity.isDoor(door)) then
-			addon	= cider.entity.getDoorName(door);
+			addon = cider.entity.getDoorName(door);
 			if (addon ~= "") then
-				addon = ": "..addon;
+				addon = ": " .. addon;
 			end
 		else
-			local name	= hook.Call("GetEntityName",GAMEMODE,door);
+			local name = hook.Call("GetEntityName", GAMEMODE, door);
 			if (name and name ~= "") then
-				addon	= ": "..name;
+				addon = ": " .. name;
 			end
 		end
-		GM:Log(EVENT_EVENT, "%s put a padlock on %s %s%s.", ply:GetName(), event, entname, addon);
+		GM:Log(
+			EVENT_EVENT, "%s put a padlock on %s %s%s.", ply:GetName(), event, entname,
+			addon
+		);
 		return true;
 	end
 	return false;

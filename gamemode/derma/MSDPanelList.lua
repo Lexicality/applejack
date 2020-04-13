@@ -1,19 +1,25 @@
 local PANEL = {}
 
-AccessorFunc( PANEL, "m_bSizeToContents", 		"AutoSize" )
-AccessorFunc(PANEL, "m_fAnimTime",				"AnimTime")
-AccessorFunc(PANEL, "m_fAnimEase",				"AnimEase")
+AccessorFunc(PANEL, "m_bSizeToContents", "AutoSize")
+AccessorFunc(PANEL, "m_fAnimTime", "AnimTime")
+AccessorFunc(PANEL, "m_fAnimEase", "AnimEase")
 
-AccessorFunc(PANEL, "Spacing",		"Spacing")
-AccessorFunc(PANEL, "Padding",		"Padding")
+AccessorFunc(PANEL, "Spacing", "Spacing")
+AccessorFunc(PANEL, "Padding", "Padding")
 
 function PANEL:Init()
-	self.pnlCanvas	= vgui.Create("DPanel", self)
+	self.pnlCanvas = vgui.Create("DPanel", self)
 	self.pnlCanvas:SetPaintBackground(false)
-	self.pnlCanvas.OnMousePressed = function(self, code) self:GetParent():OnMousePressed(code) end
-	self.pnlCanvas.OnChildRemoved = function() self:OnChildRemoved() end
+	self.pnlCanvas.OnMousePressed = function(self, code)
+		self:GetParent():OnMousePressed(code)
+	end
+	self.pnlCanvas.OnChildRemoved = function()
+		self:OnChildRemoved()
+	end
 	self.pnlCanvas:SetMouseInputEnabled(true)
-	self.pnlCanvas.InvalidateLayout = function() self:InvalidateLayout() end
+	self.pnlCanvas.InvalidateLayout = function()
+		self:InvalidateLayout()
+	end
 	self.Items = {}
 	self.YOffset = 0
 	self.m_fAnimTime = 0
@@ -141,11 +147,13 @@ function PANEL:Rebuild()
 			continue
 		end
 
-		--panel:SetSize(self:GetCanvas():GetWide() - self.Padding * 2, panel:GetTall())
+		-- panel:SetSize(self:GetCanvas():GetWide() - self.Padding * 2, panel:GetTall())
 		panel:SetWidth(self:GetCanvas():GetWide() - self.Padding * 2)
 
 		if (self.m_fAnimTime > 0 and self.m_iBuilds > 1) then
-			panel:MoveTo(self.Padding, self.Padding + Offset, self.m_fAnimTime, self.m_fAnimEase)
+			panel:MoveTo(
+				self.Padding, self.Padding + Offset, self.m_fAnimTime, self.m_fAnimEase
+			)
 		else
 			panel:SetPos(self.Padding, self.Padding + Offset)
 		end
@@ -211,7 +219,6 @@ function PANEL:PerformLayout()
 	end
 end
 
-
 function PANEL:OnChildRemoved()
 	self:CleanList()
 	self:InvalidateLayout()
@@ -227,21 +234,22 @@ function PANEL:ScrollToChild(panel)
 	self.VBar:AnimateTo(y, 0.5, 0, 0.5)
 end
 
-
 function PANEL:SortByMember(key, desc)
 	desc = desc or true
 
-	table.sort(self.Items, function(a, b)
-		if (not desc) then
-			a,b = b,a
-		end
+	table.sort(
+		self.Items, function(a, b)
+			if (not desc) then
+				a, b = b, a
+			end
 
-		if (a[key] == nil or b[key] == nil) then
-			return false
-		else
-			return a[key] < b[key]
+			if (a[key] == nil or b[key] == nil) then
+				return false
+			else
+				return a[key] < b[key]
+			end
 		end
-	end)
+	)
 
 	self:InvalidateLayout();
 end
@@ -251,4 +259,7 @@ function PANEL:SortByFunction(func)
 	self:InvalidateLayout();
 end
 
-derma.DefineControl("MSDPanelList", "A butchered version of DPanelList just for Moonshine", PANEL, "DPanel")
+derma.DefineControl(
+	"MSDPanelList", "A butchered version of DPanelList just for Moonshine", PANEL,
+	"DPanel"
+)

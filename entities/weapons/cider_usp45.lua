@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 5;
 	SWEP.IconLetter = "a";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_usp45", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_usp45", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -24,7 +26,8 @@ SWEP.Category = "Cider";
 SWEP.PrintName = "USP .45";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "A powerful pistol with burst fire and a silencer.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Primary Fire: Attach/Detach the silencer.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Primary Fire: Attach/Detach the silencer.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -70,8 +73,8 @@ SWEP.DeltaSpray = 0.25;
 SWEP.IronSightsPos = Vector(4.5106, -6.4072, 2.3808);
 SWEP.IronSightsAng = Vector(2.0239, -0.0813, 0.5508);
 --------------------
-SWEP.IronSightsPos = Vector (4.4896, -1.4454, 2.6242)
-SWEP.IronSightsAng = Vector (0.314, -0.0861, 0)
+SWEP.IronSightsPos = Vector(4.4896, -1.4454, 2.6242)
+SWEP.IronSightsAng = Vector(0.314, -0.0861, 0)
 --------------------
 
 SWEP.IronSightZoom = 1;

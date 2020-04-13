@@ -36,9 +36,9 @@ function PANEL:Think()
 
 		-- Clear the current list of items.
 		self.itemsList:Clear();
-		self.itemsList:AddItem( vgui.Create("cider_Inventory_Information", self) );
-			-- Create a table to store the categories.
-		local categories = { none = {} };
+		self.itemsList:AddItem(vgui.Create("cider_Inventory_Information", self));
+		-- Create a table to store the categories.
+		local categories = {none = {}};
 
 		-- Loop through the items.
 		for k, v in pairs(cider.inventory.stored) do
@@ -55,33 +55,33 @@ function PANEL:Think()
 				end
 			end
 		end
-	--	table.sort(categories)
+		--	table.sort(categories)
 		-- Loop through the categories.
 		for k, v in pairs(categories) do
 			if (k == "none") then
 				-- Loop through the items.
 				for k2, v2 in pairs(v) do
 					self.currentItem = v2;
-					self.itemsList:AddItem( vgui.Create("cider_Inventory_Item", self) ) ;
+					self.itemsList:AddItem(vgui.Create("cider_Inventory_Item", self));
 				end
 			else
 				local c = GM:GetCategory(k)
 				if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 					local header = vgui.Create("DCollapsibleCategory", self)
 					header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
-					header:SetLabel( c.Name )
-					header:SetToolTip( c.Description )
+					header:SetLabel(c.Name)
+					header:SetToolTip(c.Description)
 					self.itemsList:AddItem(header);
 					local subitemsList = vgui.Create("DPanelList", self);
-					subitemsList:SetAutoSize( true )
+					subitemsList:SetAutoSize(true)
 					subitemsList:SetPadding(2);
 					subitemsList:SetSpacing(3);
-					header:SetContents( subitemsList )
+					header:SetContents(subitemsList)
 					-- Loop through the items.
 					for k2, v2 in pairs(v) do
 						self.currentItem = v2;
 						-- Add the item to the item list.
-						subitemsList:AddItem( vgui.Create("cider_Inventory_Item", self) ) ;
+						subitemsList:AddItem(vgui.Create("cider_Inventory_Item", self));
 					end
 				end
 			end
@@ -113,7 +113,7 @@ function PANEL:Init()
 	-- Create a label for the name.
 	self.name = vgui.Create("DLabel", self);
 	word = (amount > 1) and item.Plural or item.Name;
-	self.name:SetText(amount.." "..word.." (Size: "..item.Size..")");
+	self.name:SetText(amount .. " " .. word .. " (Size: " .. item.Size .. ")");
 	self.name:SizeToContents();
 	self.name:SetDark(true);
 
@@ -127,19 +127,32 @@ function PANEL:Init()
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 
 	-- Set the model of the spawn icon to the one of the item.
-	self.spawnIcon:SetModel(item.Model,item.Skin)
-
+	self.spawnIcon:SetModel(item.Model, item.Skin)
 
 	self.spawnIcon:SetToolTip();
-	self.spawnIcon.DoClick = function() return; end
-	self.spawnIcon.OnMousePressed = function() return; end
+	self.spawnIcon.DoClick = function()
+		return;
+	end
+	self.spawnIcon.OnMousePressed = function()
+		return;
+	end
 
 	-- Check to see if the item has an on use callback.
-	if (item.onUse) then table.insert(self.itemFunctions, "Use"); end
-	if (item.onDrop) then table.insert(self.itemFunctions, "Drop"); end
-	if (item.onSell ) then table.insert(self.itemFunctions, "Sell"); end
-	if (item.onPickup) then table.insert(self.itemFunctions, "Pick up") end
-	if (item.onDestroy) then table.insert(self.itemFunctions, "Destroy All"); end
+	if (item.onUse) then
+		table.insert(self.itemFunctions, "Use");
+	end
+	if (item.onDrop) then
+		table.insert(self.itemFunctions, "Drop");
+	end
+	if (item.onSell) then
+		table.insert(self.itemFunctions, "Sell");
+	end
+	if (item.onPickup) then
+		table.insert(self.itemFunctions, "Pick up")
+	end
+	if (item.onDestroy) then
+		table.insert(self.itemFunctions, "Destroy All");
+	end
 	-- Create the table to store the item buttons.
 	self.itemButton = {};
 
@@ -171,53 +184,65 @@ function PANEL:Init()
 					local menu = DermaMenu();
 
 					-- Add an option for yes and no.
-					menu:AddOption("1", function()
-						RunConsoleCommand("mshine", "inventory", self.item, "drop", 1);
-						-- Close the main menu.
-						cider.menu.toggle();
-					end);
-					menu:AddOption("All", function()
-						RunConsoleCommand("mshine", "inventory", self.item, "drop", amount);
-						-- Close the main menu.
-						cider.menu.toggle();
-					end);
-					menu:AddOption("Amount",function()
-							local EditPanel = vgui.Create( "DFrame" )
-							EditPanel:SetPos( (ScrW()- 50)/2,(ScrH() -38)/2 )
-							EditPanel:SetSize( 100 ,76 )
-							EditPanel:SetTitle( "Amount" )
-							EditPanel:SetVisible( true )
-							EditPanel:SetDraggable( true )
-							EditPanel:ShowCloseButton( true )
+					menu:AddOption(
+						"1", function()
+							RunConsoleCommand("mshine", "inventory", self.item, "drop", 1);
+							-- Close the main menu.
+							cider.menu.toggle();
+						end
+					);
+					menu:AddOption(
+						"All", function()
+							RunConsoleCommand("mshine", "inventory", self.item, "drop", amount);
+							-- Close the main menu.
+							cider.menu.toggle();
+						end
+					);
+					menu:AddOption(
+						"Amount", function()
+							local EditPanel = vgui.Create("DFrame")
+							EditPanel:SetPos((ScrW() - 50) / 2, (ScrH() - 38) / 2)
+							EditPanel:SetSize(100, 76)
+							EditPanel:SetTitle("Amount")
+							EditPanel:SetVisible(true)
+							EditPanel:SetDraggable(true)
+							EditPanel:ShowCloseButton(true)
 							EditPanel:MakePopup()
 							--	y = 28
-							local box = vgui.Create("DTextEntry",EditPanel)
-							box:SetPos(10,28)
-							box:SetSize(EditPanel:GetWide()-20,16)
+							local box = vgui.Create("DTextEntry", EditPanel)
+							box:SetPos(10, 28)
+							box:SetSize(EditPanel:GetWide() - 20, 16)
 							box:RequestFocus()
 							box.OnEnter = function()
 								val = tonumber(box:GetValue())
-								if not val or string.sub(val,1,1) == "-" then return end
-								RunConsoleCommand("mshine", "inventory", self.item, "drop", math.floor(val));
+								if not val or string.sub(val, 1, 1) == "-" then
+									return
+								end
+								RunConsoleCommand(
+									"mshine", "inventory", self.item, "drop", math.floor(val)
+								);
 								EditPanel:Close()
 								-- Close the main menu.
 								cider.menu.toggle();
 							end
-							button = vgui.Create("DButton",EditPanel)
+							button = vgui.Create("DButton", EditPanel)
 							button:SetText("Drop")
 							button.DoClick = function()
 								val = tonumber(box:GetValue())
-								if not val then return end
+								if not val then
+									return
+								end
 								RunConsoleCommand("mshine", "inventory", self.item, "drop", val);
 								EditPanel:Close()
 								-- Close the main menu.
 								cider.menu.toggle();
 							end
-							button:SetPos(EditPanel:GetWide()-button:GetWide()-10,46)
-					end)
+							button:SetPos(EditPanel:GetWide() - button:GetWide() - 10, 46)
+						end
+					)
 
 					-- Open the menu.
-					menu:Open() ;
+					menu:Open();
 
 				end
 			elseif (self.itemFunctions[i] == "Pick up") then
@@ -229,26 +254,36 @@ function PANEL:Init()
 					local menu = DermaMenu();
 
 					-- Add an option for yes and no.
-					menu:AddOption("No", function() end);
-					menu:AddOption("Yes", function()
-						RunConsoleCommand("mshine", "inventory", self.item, "sell");
-					end);
+					menu:AddOption(
+						"No", function()
+						end
+					);
+					menu:AddOption(
+						"Yes", function()
+							RunConsoleCommand("mshine", "inventory", self.item, "sell");
+						end
+					);
 
 					-- Open the menu.
-					menu:Open() ;
+					menu:Open();
 				end
 			elseif (self.itemFunctions[i] == "Destroy All") then
 				self.itemButton[i].DoClick = function()
 					local menu = DermaMenu();
 
 					-- Add an option for yes and no.
-					menu:AddOption("No", function() end);
-					menu:AddOption("Yes", function()
-						RunConsoleCommand("mshine", "inventory", self.item, "destroy");
-					end);
+					menu:AddOption(
+						"No", function()
+						end
+					);
+					menu:AddOption(
+						"Yes", function()
+							RunConsoleCommand("mshine", "inventory", self.item, "destroy");
+						end
+					);
 
 					-- Open the menu.
-					menu:Open() ;
+					menu:Open();
 				end
 			end
 		end
@@ -292,7 +327,9 @@ function PANEL:Init()
 
 	-- Create the space used label.
 	self.spaceUsed = vgui.Create("DLabel", self);
-	self.spaceUsed:SetText("Space Used: "..cider.inventory.getSize().."/"..maximumSpace);
+	self.spaceUsed:SetText(
+		"Space Used: " .. cider.inventory.getSize() .. "/" .. maximumSpace
+	);
 	self.spaceUsed:SizeToContents();
 	self.spaceUsed:SetDark(true);
 end
@@ -302,8 +339,10 @@ function PANEL:PerformLayout()
 	local maximumSpace = cider.inventory.getMaximumSpace();
 
 	-- Set the position of the label.
-	self.spaceUsed:SetPos( (self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5 );
-	self.spaceUsed:SetText("Space Used: "..cider.inventory.getSize().."/"..maximumSpace);
+	self.spaceUsed:SetPos((self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5);
+	self.spaceUsed:SetText(
+		"Space Used: " .. cider.inventory.getSize() .. "/" .. maximumSpace
+	);
 end
 
 -- Register the panel.

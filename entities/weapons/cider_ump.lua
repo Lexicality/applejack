@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 3;
 	SWEP.IconLetter = "q";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_ump", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_ump", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -23,8 +25,10 @@ SWEP.Category = "Cider";
 -- Set some shared information.
 SWEP.PrintName = "UMP .45";
 SWEP.Author = "Lexi";
-SWEP.Purpose = "A small sub-machine gun with a medium fire rate but high damage.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Purpose =
+	"A small sub-machine gun with a medium fire rate but high damage.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -66,10 +70,9 @@ SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
 --------------------
-SWEP.IronSightsPos = Vector (7.3074, -3.7238, 3.2311)
-SWEP.IronSightsAng = Vector (-1.18, 0.1421, 0)
+SWEP.IronSightsPos = Vector(7.3074, -3.7238, 3.2311)
+SWEP.IronSightsAng = Vector(-1.18, 0.1421, 0)
 --------------------
-
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = false;

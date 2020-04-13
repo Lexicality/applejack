@@ -2,7 +2,6 @@
 -- ~ Serveride Entity Hooks ~
 -- ~ Applejack ~
 --
-
 ---
 -- @name GM
 -- @class table

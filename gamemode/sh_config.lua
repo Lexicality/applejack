@@ -5,183 +5,178 @@
 local config = {};
 
 -- Player Defaults
-config["Default Money"]				= 0; -- The money that each player starts with.
-config["Default Job"]				= "Citizen"; -- The job that each player starts with.
-config["Default Clan"]				= ""; -- The clan that each player belongs to by default.
-config["Inventory Size"]			= 40; -- The default inventory size.
-config["Default Access"]			= ""; -- The access flags that each player begins with.
+config["Default Money"] = 0; -- The money that each player starts with.
+config["Default Job"] = "Citizen"; -- The job that each player starts with.
+config["Default Clan"] = ""; -- The clan that each player belongs to by default.
+config["Inventory Size"] = 40; -- The default inventory size.
+config["Default Access"] = ""; -- The access flags that each player begins with.
 
 -- Command
-config["Base Access"]				= "b"; -- The flag that represents all users. Do not change this.
-config["Command Prefix"]			= "/"; -- The prefix that is used for chat commands.
-config["Maximum Notes"]				= 2; -- The maximum amount of notes a player can write.
-config["Advert Cost"]				= 60; -- The money that it costs to advertise.
-config["Advert Timeout"]			= 150 -- How many seconds between adverts
-config["OOC Timeout"]				= 10 -- How many seconds between OOC messages
-config["Item Timer"]				= 7 -- How many seconds between item uses
-config["Item Timer (S)"]			= 20 -- How many seconds between specific item uses
-config["Note Fade Speed"]			= 2.353 -- How many seconds to wait between each fade tick. (2.353 roughly = 10mins)
+config["Base Access"] = "b"; -- The flag that represents all users. Do not change this.
+config["Command Prefix"] = "/"; -- The prefix that is used for chat commands.
+config["Maximum Notes"] = 2; -- The maximum amount of notes a player can write.
+config["Advert Cost"] = 60; -- The money that it costs to advertise.
+config["Advert Timeout"] = 150 -- How many seconds between adverts
+config["OOC Timeout"] = 10 -- How many seconds between OOC messages
+config["Item Timer"] = 7 -- How many seconds between item uses
+config["Item Timer (S)"] = 20 -- How many seconds between specific item uses
+config["Note Fade Speed"] = 2.353 -- How many seconds to wait between each fade tick. (2.353 roughly = 10mins)
 
 -- Door related things
-config["Door Cost"]					= 150; -- The money that it costs to purchase a door.
-config["Door Tax"]					= true; -- Whether door taxing is be enabled.
-config["Door Tax Amount"]			= 50; -- The amount of money a player is charged in tax per door.
-config["Maximum Doors"]				= 5; -- The maximum amount of doors a player can own.
-config["Jam Time"]					= 60 -- How many seconds a door is jammed open for
-config["Door Autoclose Time"]		= 10 -- How many seconds a door should autoshut after
+config["Door Cost"] = 150; -- The money that it costs to purchase a door.
+config["Door Tax"] = true; -- Whether door taxing is be enabled.
+config["Door Tax Amount"] = 50; -- The amount of money a player is charged in tax per door.
+config["Maximum Doors"] = 5; -- The maximum amount of doors a player can own.
+config["Jam Time"] = 60 -- How many seconds a door is jammed open for
+config["Door Autoclose Time"] = 10 -- How many seconds a door should autoshut after
 
 -- Player Stuff
-config["Walk Speed"]				= 150; -- The speed that players walk at.
-config["Run Speed"]					= 275; -- The speed that players run at.
-config["Incapacitated Speed"]		= 100; -- The speed arrested/tied/carrying players walk/run at.
-config["Jump Power"]				= 160; -- Player's jump power. Don't mess with it unless you know what you're doing
-config["Spawn Time"]				= 30; -- The time that a player has to wait before they can spawn again (seconds).
-config["Bleed Time"]				= 5; -- The time that a player bleeds for when they get damaged.
-config["Knock Out Time"]			= 30; -- The time that a player gets knocked out for (seconds).
-config["Sleep Waiting Time"]		= 5; -- The time that a player has to stand still for before they can fall asleep (seconds).
-config["Arrest Time"]				= 300; -- The time that a player is arrested for (seconds).
-config["Earning Interval"]			= 300; -- The interval that players receive money from their contraband (seconds).
-config["Search Warrant Expire Time"]= 60; -- The time that a player's search warrant expires (seconds) (set to 0 for never).
-config["Arrest Warrant Expire Time"]= 300; -- The time that a player's arrest warrant expires (seconds) (set to 0 for never).
+config["Walk Speed"] = 150; -- The speed that players walk at.
+config["Run Speed"] = 275; -- The speed that players run at.
+config["Incapacitated Speed"] = 100; -- The speed arrested/tied/carrying players walk/run at.
+config["Jump Power"] = 160; -- Player's jump power. Don't mess with it unless you know what you're doing
+config["Spawn Time"] = 30; -- The time that a player has to wait before they can spawn again (seconds).
+config["Bleed Time"] = 5; -- The time that a player bleeds for when they get damaged.
+config["Knock Out Time"] = 30; -- The time that a player gets knocked out for (seconds).
+config["Sleep Waiting Time"] = 5; -- The time that a player has to stand still for before they can fall asleep (seconds).
+config["Arrest Time"] = 300; -- The time that a player is arrested for (seconds).
+config["Earning Interval"] = 300; -- The interval that players receive money from their contraband (seconds).
+config["Search Warrant Expire Time"] = 60; -- The time that a player's search warrant expires (seconds) (set to 0 for never).
+config["Arrest Warrant Expire Time"] = 300; -- The time that a player's arrest warrant expires (seconds) (set to 0 for never).
 
 -- Unused entries
-config["Death Penalty"]				= 2; -- The percentage of money players lose when they die.
-config["Rope struggles"]			= 5 -- How many 'struggles' it takes for you to undo your rope
-config["Tying Struggles"]			= 1 -- How many struggles it takes to get out of being tied up
-config["Tying Struggles Timeout"]	= 30 -- How many seconds it takes for your struggle meter to fill
+config["Death Penalty"] = 2; -- The percentage of money players lose when they die.
+config["Rope struggles"] = 5 -- How many 'struggles' it takes for you to undo your rope
+config["Tying Struggles"] = 1 -- How many struggles it takes to get out of being tied up
+config["Tying Struggles Timeout"] = 30 -- How many seconds it takes for your struggle meter to fill
 
 -- Voice
-config["Local Voice"]				= true; -- Players can only hear a player's voice if they are near them.
-config["Talk Radius"]				= 256; -- The radius of each player that other players have to be in to hear them talk (units).
+config["Local Voice"] = true; -- Players can only hear a player's voice if they are near them.
+config["Talk Radius"] = 256; -- The radius of each player that other players have to be in to hear them talk (units).
 
 -- Damage
-config["Scale Ragdoll Damage"]		= 1; -- How much to scale ragdolled player damage by.
-config["Scale Head Damage"]			= 5; -- How much to scale head damage by.
-config["Scale Chest Damage"]		= 2; -- How much to scale chest damage by.
-config["Scale Limb Damage"]			= 0.75; -- How much to scale limb damage by.
-config["Anti propkill"]				= true -- Disables damage recieved from prop_physics', unless it's fall damage.
+config["Scale Ragdoll Damage"] = 1; -- How much to scale ragdolled player damage by.
+config["Scale Head Damage"] = 5; -- How much to scale head damage by.
+config["Scale Chest Damage"] = 2; -- How much to scale chest damage by.
+config["Scale Limb Damage"] = 0.75; -- How much to scale limb damage by.
+config["Anti propkill"] = true -- Disables damage recieved from prop_physics', unless it's fall damage.
 
 -- Other
-config["Website URL"]				= "www.ventmob.net"; -- The website URL drawn at the bottom of the screen.
-config["Cleanup Decals"]			= true; -- Whether or not to automatically cleanup decals every minute.
-config["Model Choices Timeout"]		= 30 -- Number of seconds to wait before reconnecting if model choices aren't sent.
-config["Autokick time"]				= 15 * 60 -- Number of seconds a player has to do something in to avoid being kicked
+config["Website URL"] = "www.ventmob.net"; -- The website URL drawn at the bottom of the screen.
+config["Cleanup Decals"] = true; -- Whether or not to automatically cleanup decals every minute.
+config["Model Choices Timeout"] = 30 -- Number of seconds to wait before reconnecting if model choices aren't sent.
+config["Autokick time"] = 15 * 60 -- Number of seconds a player has to do something in to avoid being kicked
 
 -- SWEP related
-config["Lockpick Break Chance"]		= 0.01; -- The probaility to add to the lockpick snapping on a hit for each lock successfully picked.
-config["Maximum Lockpick Hits"]		= 30; -- The maximum amount of hits a lock takes to pick
-config[TYPE_LARGE]					= 1 --Number of 'big' weapons that can be carried at once. Putting this above 1 will provide strange results, so don't.
-config[TYPE_SMALL]					= 2 --Number of 'small' weapons that can be carried at once
+config["Lockpick Break Chance"] = 0.01; -- The probaility to add to the lockpick snapping on a hit for each lock successfully picked.
+config["Maximum Lockpick Hits"] = 30; -- The maximum amount of hits a lock takes to pick
+config[TYPE_LARGE] = 1 -- Number of 'big' weapons that can be carried at once. Putting this above 1 will provide strange results, so don't.
+config[TYPE_SMALL] = 2 -- Number of 'small' weapons that can be carried at once
 
 -- Plugins
-config["Officials Contraband"]		= true; -- Whether city officials, i.e. City Admin, CP get contraband payments.
-config["Need Warrant"]				= false; -- Whether city officials need warrants to destroy contraband.
-config["Police Kill Drop"]			= true -- Whether or not weapons should drop when a player is killed by the police.
+config["Officials Contraband"] = true; -- Whether city officials, i.e. City Admin, CP get contraband payments.
+config["Need Warrant"] = false; -- Whether city officials need warrants to destroy contraband.
+config["Police Kill Drop"] = true -- Whether or not weapons should drop when a player is killed by the police.
 
-config["Hunger Minutes"]			= 30 -- The number of minutes it takes before your hunger is full.
-config["Hunger Damage"]				= 5 -- The amount of damage a second you are dealt while starving
-config["Hunger Death"]				= true -- Whether or not you can starve to death
+config["Hunger Minutes"] = 30 -- The number of minutes it takes before your hunger is full.
+config["Hunger Damage"] = 5 -- The amount of damage a second you are dealt while starving
+config["Hunger Death"] = true -- Whether or not you can starve to death
 
-config["Stamina Drain"]				= 0.35 -- The amount of stamina lost every 0.1 seconds while running
-config["Stamina Restore"]			= 0.15 -- The amount of stamina restored every 0.1 seconds while not running.
+config["Stamina Drain"] = 0.35 -- The amount of stamina lost every 0.1 seconds while running
+config["Stamina Restore"] = 0.15 -- The amount of stamina restored every 0.1 seconds while not running.
 
-config["Car Doors"]					= true -- whether or not you must be looking at a car door to gain entry
+config["Car Doors"] = true -- whether or not you must be looking at a car door to gain entry
 
 -- Props
-config["Prop Limit"]				= 30 -- The amount of props donators can spawn
-config["Builder Prop Limit"]		= 15 -- The amount of props builders can spawn
-config["Builder Prop Cost"]			= 100 -- The price of each prop a builder spawns
-config["Maximum Pickup Distance"]   = 500 -- The maximum distance a prop can be picked up from
+config["Prop Limit"] = 30 -- The amount of props donators can spawn
+config["Builder Prop Limit"] = 15 -- The amount of props builders can spawn
+config["Builder Prop Cost"] = 100 -- The price of each prop a builder spawns
+config["Maximum Pickup Distance"] = 500 -- The maximum distance a prop can be picked up from
 
 -- Job related
-config["Master Race"]				= true -- All group changes must go through one base class
-config["Minimum to demote"]			= 5 -- Minimum players in a gang before the leader can demote people from it
-config["Minimum to mutiny"]			= 4 -- Minimum players in a gang before the leader can be mutinied against
-config["Mutiny Percentage"]			= 0.75 -- Minimum percentage of positive mutinies
+config["Master Race"] = true -- All group changes must go through one base class
+config["Minimum to demote"] = 5 -- Minimum players in a gang before the leader can demote people from it
+config["Minimum to mutiny"] = 4 -- Minimum players in a gang before the leader can be mutinied against
+config["Mutiny Percentage"] = 0.75 -- Minimum percentage of positive mutinies
 
 -- Tying System
-config["Tying Timeout"]				= 5 -- How many seconds it takes to tie someone up
-config["UnTying Timeout"]			= 5 -- How many seconds it takes to untie someone
+config["Tying Timeout"] = 5 -- How many seconds it takes to tie someone up
+config["UnTying Timeout"] = 5 -- How many seconds it takes to untie someone
 
 -- Tables
-config["Spawnable Containers"]	={
-	["models/props/de_train/lockers_long.mdl"] 					= {100,"Row of lockers"},
-	["models/props_c17/furnituredrawer001a.mdl"] 				= {30,"Chest of Drawers"},
-	["models/props/de_inferno/furnituredrawer001a.mdl"] 		= {30,"Chest of Drawers"},
-	["models/props_lab/partsbin01.mdl"] 						= {10,"Chest of Drawers"},
-	["models/props_c17/furnituredrawer003a.mdl"] 				= {20,"Chest of Drawers"},
-	["models/props_lab/filecabinet02.mdl"] 						= {20,"Filing Cabinet"},
-	["models/props_wasteland/controlroom_filecabinet001a.mdl"]	= {20,"Filing Cabinet"},
-	["models/props_wasteland/controlroom_filecabinet002a.mdl"]	= {30,"Filing Cabinet"},
-	["models/props/cs_office/file_cabinet1.mdl"] 				= {20,"Filing Cabinet"},
-	["models/props/cs_office/file_cabinet1_group.mdl"] 			= {50,"Filing Cabinet"},
-	["models/props/cs_office/file_cabinet2.mdl"]	 			= {20,"Filing Cabinet"},
-	["models/props/cs_office/file_cabinet3.mdl"] 				= {15,"Filing Cabinet"},
-	["models/props/de_nuke/file_cabinet1_group.mdl"] 			= {50,"Filing Cabinet"},
-	["models/props_wasteland/controlroom_storagecloset001a.mdl"]= {60,"Storage Closet"},
-	["models/props_wasteland/controlroom_storagecloset001b.mdl"]= {60,"Storage Closet"},
-	["models/props_interiors/furniture_vanity01a.mdl"] 			= {5,"Dressing Table"},
-	["models/props/cs_militia/footlocker01_closed.mdl"] 		= {40,"Foot Locker"},
-	["models/props/de_prodigy/ammo_can_02.mdl"] 				= {20,"Foot Locker"},
-	["models/props_c17/briefcase001a.mdl"] 						= {20,"Briefcase"},
-	["models/props_junk/trashdumpster01a.mdl"] 					= {40,"Dumpster"},
-	["models/props_c17/furnituredresser001a.mdl"] 				= {40,"Wardrobe"},
-	["models/props_c17/suitcase001a.mdl"] 						= {20,"Suitcase"},
-	["models/props_c17/suitcase_passenger_physics.mdl"] 		= {10,"Suitcase"},
-	["models/props/de_train/lockers001a.mdl"] 					= {40,"Couple of Lockers"},
-	["models/props_c17/lockers001a.mdl"]						= {40,"Couple of Lockers"},
-	["models/props_interiors/furniture_cabinetdrawer01a.mdl"] 	= {20,"Cabinet"},
-	["models/props_interiors/furniture_cabinetdrawer02a.mdl"] 	= {20,"Dresser"},
-	["models/props_c17/furniturefridge001a.mdl"] 				= {30,"Fridge"},
-	["models/props_wasteland/kitchen_fridge001a.mdl"] 			= {60,"Fridge"},
-	["models/props/cs_militia/refrigerator01.mdl"] 				= {50,"Fridge"},
-	["models/props_foliage/tree_stump01.mdl"] 					= {40,"Stump"},
-	["models/props_c17/furnituredrawer002a.mdl"] 				= {10,"Table"},
-	["models/props_junk/trashbin01a.mdl"] 						= {10,"Bin"},
+config["Spawnable Containers"] = {
+	["models/props/de_train/lockers_long.mdl"] = {100, "Row of lockers"},
+	["models/props_c17/furnituredrawer001a.mdl"] = {30, "Chest of Drawers"},
+	["models/props/de_inferno/furnituredrawer001a.mdl"] = {30, "Chest of Drawers"},
+	["models/props_lab/partsbin01.mdl"] = {10, "Chest of Drawers"},
+	["models/props_c17/furnituredrawer003a.mdl"] = {20, "Chest of Drawers"},
+	["models/props_lab/filecabinet02.mdl"] = {20, "Filing Cabinet"},
+	["models/props_wasteland/controlroom_filecabinet001a.mdl"] = {
+		20,
+		"Filing Cabinet",
+	},
+	["models/props_wasteland/controlroom_filecabinet002a.mdl"] = {
+		30,
+		"Filing Cabinet",
+	},
+	["models/props/cs_office/file_cabinet1.mdl"] = {20, "Filing Cabinet"},
+	["models/props/cs_office/file_cabinet1_group.mdl"] = {50, "Filing Cabinet"},
+	["models/props/cs_office/file_cabinet2.mdl"] = {20, "Filing Cabinet"},
+	["models/props/cs_office/file_cabinet3.mdl"] = {15, "Filing Cabinet"},
+	["models/props/de_nuke/file_cabinet1_group.mdl"] = {50, "Filing Cabinet"},
+	["models/props_wasteland/controlroom_storagecloset001a.mdl"] = {
+		60,
+		"Storage Closet",
+	},
+	["models/props_wasteland/controlroom_storagecloset001b.mdl"] = {
+		60,
+		"Storage Closet",
+	},
+	["models/props_interiors/furniture_vanity01a.mdl"] = {5, "Dressing Table"},
+	["models/props/cs_militia/footlocker01_closed.mdl"] = {40, "Foot Locker"},
+	["models/props/de_prodigy/ammo_can_02.mdl"] = {20, "Foot Locker"},
+	["models/props_c17/briefcase001a.mdl"] = {20, "Briefcase"},
+	["models/props_junk/trashdumpster01a.mdl"] = {40, "Dumpster"},
+	["models/props_c17/furnituredresser001a.mdl"] = {40, "Wardrobe"},
+	["models/props_c17/suitcase001a.mdl"] = {20, "Suitcase"},
+	["models/props_c17/suitcase_passenger_physics.mdl"] = {10, "Suitcase"},
+	["models/props/de_train/lockers001a.mdl"] = {40, "Couple of Lockers"},
+	["models/props_c17/lockers001a.mdl"] = {40, "Couple of Lockers"},
+	["models/props_interiors/furniture_cabinetdrawer01a.mdl"] = {20, "Cabinet"},
+	["models/props_interiors/furniture_cabinetdrawer02a.mdl"] = {20, "Dresser"},
+	["models/props_c17/furniturefridge001a.mdl"] = {30, "Fridge"},
+	["models/props_wasteland/kitchen_fridge001a.mdl"] = {60, "Fridge"},
+	["models/props/cs_militia/refrigerator01.mdl"] = {50, "Fridge"},
+	["models/props_foliage/tree_stump01.mdl"] = {40, "Stump"},
+	["models/props_c17/furnituredrawer002a.mdl"] = {10, "Table"},
+	["models/props_junk/trashbin01a.mdl"] = {10, "Bin"},
 } -- Models that become containers when spawned
 
-config["Back Weapons"] = {
-	[TYPE_LARGE] = true
-} -- Which weapons go on your back when not deployed.
+config["Back Weapons"] = {[TYPE_LARGE] = true} -- Which weapons go on your back when not deployed.
 config["Weapon Timers"] = {
-	["deploytime"] = {
-		[TYPE_LARGE] = 2,
-		[TYPE_SMALL] = 1
-	},
-	["redeploytime"] = {
-		[TYPE_LARGE] = 30,
-		[TYPE_SMALL] = 20
-	},
-	["reholstertime"] = {
-		[TYPE_LARGE] = 10,
-		[TYPE_SMALL] = 5
-	},
+	["deploytime"] = {[TYPE_LARGE] = 2, [TYPE_SMALL] = 1},
+	["redeploytime"] = {[TYPE_LARGE] = 30, [TYPE_SMALL] = 20},
+	["reholstertime"] = {[TYPE_LARGE] = 10, [TYPE_SMALL] = 5},
 	["deploymessage"] = { -- 1 gun type, 2 gender
 		[TYPE_LARGE] = "pulls a %s off %s back",
-		[TYPE_SMALL] = "pulls a %s out of %s pocket"
+		[TYPE_SMALL] = "pulls a %s out of %s pocket",
 	},
-	["equiptime"] = {
-		[TYPE_LARGE] = 5,
-		[TYPE_SMALL] = 2
-	},
+	["equiptime"] = {[TYPE_LARGE] = 5, [TYPE_SMALL] = 2},
 	["Equip Message"] = {
 		["Start"] = "starts rummaging through %s backpack",
 		["Final"] = "pulls out a %s gun and puts %s backpack back on",
 		["Abort"] = "gives up and pulls %s backpack back on",
-		["Plugh"] = "slides the %s gun back into %s backpack and puts it back on"
+		["Plugh"] = "slides the %s gun back into %s backpack and puts it back on",
 		-- 1 gun type, 2 gender
 		-- [TYPE_LARGE] = "Pulls out a %s and puts %s backpack back on",
 		-- [TYPE_SMALL] = "Pulls out a %s and puts %s backpack back on"
 	},
-	["holstermessage"] = {	 -- 1 gun type, 2 gender
+	["holstermessage"] = { -- 1 gun type, 2 gender
 		[TYPE_LARGE] = "puts the %s back on %s back",
-		[TYPE_SMALL] = "puts the %s back in %s pocket"
-	}
+		[TYPE_SMALL] = "puts the %s back in %s pocket",
+	},
 } --
-config["Acceptable Datastreams"] = {
-	"WhatTheFuckAreYouDoing?!",
-	"cider_Laws"
-}
+config["Acceptable Datastreams"] = {"WhatTheFuckAreYouDoing?!", "cider_Laws"}
 config["sv_tags"] = {
 	"applejack", -- Please always leave this in
 	"rp",
@@ -189,19 +184,53 @@ config["sv_tags"] = {
 	"semi-serious",
 	"semi-srsrp",
 	"semi-srs",
-	"cider" -- Never forget your origins
+	"cider", -- Never forget your origins
 } -- tags you want added to the sv_tags convar
 config["Usable Commands"] = {
-	"demote","blacklist","unblacklist","giveaccess","takeaccess","giveitem","save","pm","job","clan","gender","laws","ooc","looc",
-	"knockout","knockoutall","wakeup","wakeupall","arrest","unarrest","spawn","awarrant","tie","untie","a","m","s"
+	"demote",
+	"blacklist",
+	"unblacklist",
+	"giveaccess",
+	"takeaccess",
+	"giveitem",
+	"save",
+	"pm",
+	"job",
+	"clan",
+	"gender",
+	"laws",
+	"ooc",
+	"looc",
+	"knockout",
+	"knockoutall",
+	"wakeup",
+	"wakeupall",
+	"arrest",
+	"unarrest",
+	"spawn",
+	"awarrant",
+	"tie",
+	"untie",
+	"a",
+	"m",
+	"s",
 }; -- Commands that players may use at any time
-config["Default Inventory"] = {
-	health_vial = 5,
-	chinese_takeout = 5
-}; -- The inventory that each player starts with.
+config["Default Inventory"] = {health_vial = 5, chinese_takeout = 5}; -- The inventory that each player starts with.
 config["Contraband"] = {
-	cider_drug_lab = {maximum = 5, money = 50, name = "Drug Lab", health = 100, energy = 5},
-	cider_money_printer = {maximum = 2, money = 150, name = "Money Printer", health = 100, energy = 5}
+	cider_drug_lab = {
+		maximum = 5,
+		money = 50,
+		name = "Drug Lab",
+		health = 100,
+		energy = 5,
+	},
+	cider_money_printer = {
+		maximum = 2,
+		money = 150,
+		name = "Money Printer",
+		health = 100,
+		energy = 5,
+	},
 }; -- The different types of contraband.
 config["Male Citizen Models"] = {
 	"models/player/Group01/male_01.mdl",
@@ -212,7 +241,7 @@ config["Male Citizen Models"] = {
 	"models/player/Group01/male_06.mdl",
 	"models/player/Group01/male_07.mdl",
 	"models/player/Group01/male_08.mdl",
-	"models/player/Group01/male_09.mdl"
+	"models/player/Group01/male_09.mdl",
 }; -- The male citizen models.
 config["Female Citizen Models"] = {
 	"models/player/Group01/female_01.mdl",
@@ -220,7 +249,7 @@ config["Female Citizen Models"] = {
 	"models/player/Group01/female_03.mdl",
 	"models/player/Group01/female_04.mdl",
 	"models/player/Group01/female_06.mdl",
-	"models/player/Group01/female_07.mdl"
+	"models/player/Group01/female_07.mdl",
 }; -- The male citizen models.
 config["Banned Props"] = {
 	"models/props_phx/empty_barrel.mdl",
@@ -289,7 +318,7 @@ config["Banned Props"] = {
 	"models/props_phx/amraam.mdl",
 	"models/props_mining/techgate01_outland03.mdl",
 	"models/props_mining/techgate01.mdl",
-	"models/props/cs_office/light_ceiling.mdl"
+	"models/props/cs_office/light_ceiling.mdl",
 
 }; -- Props that are not allowed to be spawned. (make sure they are all lower case!)
 config["Rules"] = [[

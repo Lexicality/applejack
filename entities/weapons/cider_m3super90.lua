@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 3;
 	SWEP.IconLetter = "k";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_m3super90", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_m3super90", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -24,7 +26,8 @@ SWEP.Category = "Cider";
 SWEP.PrintName = "M3 Super 90";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "A powerful shotgun which is great at short range.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -68,10 +71,9 @@ SWEP.DeltaSpray = 0.25;
 SWEP.IronSightsPos = Vector(5.7501, -4.1011, 3.3229);
 SWEP.IronSightsAng = Vector(0.3413, 0.0286, 0);
 --------------------
-SWEP.IronSightsPos = Vector (4.3372, -3.7733, 2.8422)
-SWEP.IronSightsAng = Vector (1.5857, -1.5918, 0)
+SWEP.IronSightsPos = Vector(4.3372, -3.7733, 2.8422)
+SWEP.IronSightsAng = Vector(1.5857, -1.5918, 0)
 --------------------
-
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = false;
@@ -81,7 +83,7 @@ SWEP.DrawSniperSights = false;
 SWEP.DrawRifleSights = false;
 
 -- Set some information about the model and visual effects.
-SWEP.ViewModel  = "models/weapons/v_shot_m3super90.mdl";
+SWEP.ViewModel = "models/weapons/v_shot_m3super90.mdl";
 SWEP.WorldModel = "models/weapons/w_shot_m3super90.mdl";
 SWEP.MuzzleEffect = "rg_muzzle_highcal";
 SWEP.ShellEffect = "rg_shelleject_shotgun";
@@ -101,16 +103,21 @@ SWEP.SemiRPM = 400;
 
 -- Called when the SWEP is reloaded.
 function SWEP:Reload()
-	if (CLIENT) then return end
+	if (CLIENT) then
+		return
+	end
 
 	-- Set our iron sights to be off.
 	self:SetIronsights(false);
 
 	-- Check if we are already reloading.
-	if ( self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
+	if (self.Weapon:GetNetworkedBool("reloading", false)) then
+		return;
+	end
 
 	-- Check if we can reload.
-	if (self.Weapon:Clip1() < self.Primary.ClipSize and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
+	if (self.Weapon:Clip1() < self.Primary.ClipSize and
+		self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
 		self.Weapon:SetNetworkedBool("reloading", true);
 		self.Weapon:SetVar("reloadtimer", CurTime() + 0.3);
 		self.Weapon:SendWeaponAnim(ACT_VM_RELOAD);
@@ -119,9 +126,10 @@ end
 
 -- Called every frame.
 function SWEP:Think()
-	if ( self.Weapon:GetNetworkedBool("reloading", false) ) then
-		if ( self.Weapon:GetVar("reloadtimer", 0) < CurTime() ) then
-			if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
+	if (self.Weapon:GetNetworkedBool("reloading", false)) then
+		if (self.Weapon:GetVar("reloadtimer", 0) < CurTime()) then
+			if (self.Weapon:Clip1() >= self.Primary.ClipSize or
+				self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
 				self.Weapon:SetNetworkedBool("reloading", false)
 
 				-- Return here because we've finished reloading.
@@ -134,17 +142,20 @@ function SWEP:Think()
 
 			-- Remove ammo from the owner.
 			self.Owner:RemoveAmmo(1, self.Primary.Ammo, false);
-			self.Weapon:SetClip1( self.Weapon:Clip1() + 1);
+			self.Weapon:SetClip1(self.Weapon:Clip1() + 1);
 
 			-- Check if we've finished reloading.
-			if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
+			if (self.Weapon:Clip1() >= self.Primary.ClipSize or
+				self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
 				self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH);
 			end
 		end
 	end
 
 	-- Check if the owner is a valid entity.
-	if ( IsValid(self.Owner) ) then self.previousOwner = self.Owner; end
+	if (IsValid(self.Owner)) then
+		self.previousOwner = self.Owner;
+	end
 end
 
 -- Define the shotgun fire mode.
@@ -155,13 +166,21 @@ SWEP.ShotgunRPM = 175;
 
 -- Called when the SWEP fires.
 SWEP.FireModes.Shotgun.FireFunction = function(self)
-	if ( not self:CanFire( self.Weapon:Clip1() ) or self.Weapon:GetNetworkedBool("reloading", false) ) then return; end
+	if (not self:CanFire(self.Weapon:Clip1()) or
+		self.Weapon:GetNetworkedBool("reloading", false)) then
+		return;
+	end
 
 	-- Check if we are not an NPC.
-	if (not self.OwnerIsNPC) then self:TakePrimaryAmmo(1); end
+	if (not self.OwnerIsNPC) then
+		self:TakePrimaryAmmo(1);
+	end
 
 	-- Shoot a cheap bullet and apply recoil to the SWEP.
-	self:RGShootBulletCheap(15, self.BulletSpeed, 0.075, 0, Vector(0,0,0), self.FireModes.Shotgun.NumBullets);
+	self:RGShootBulletCheap(
+		15, self.BulletSpeed, 0.075, 0, Vector(0, 0, 0),
+		self.FireModes.Shotgun.NumBullets
+	);
 	self:ApplyRecoil(6, 1);
 
 	-- Emit the weapon sound and set the next primary fire.

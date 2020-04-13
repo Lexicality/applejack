@@ -37,37 +37,47 @@ function PANEL:Init()
 	-- Loop through the categories.
 	for k, v in pairs(categories) do
 		if (k == "none") then
-			table.sort(v, function(a, b) return GM.Items[a].Cost > GM.Items[b].Cost end)
+			table.sort(
+				v, function(a, b)
+					return GM.Items[a].Cost > GM.Items[b].Cost
+				end
+			)
 			-- Loop through the items.
 			for k2, v2 in pairs(v) do
 				self.currentItem = v2;
 
 				-- Add the item to the item list.
-				self.itemsList:AddItem( vgui.Create("cider_Store_Item", self) );
+				self.itemsList:AddItem(vgui.Create("cider_Store_Item", self));
 			end
 		else
 			local c = GM:GetCategory(k)
 			if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 				self.headers[k] = vgui.Create("DCollapsibleCategory", self)
 				self.headers[k]:SetSize(cider.menu.width, 50); -- Keep the second number at 50
-				self.headers[k]:SetExpanded(gamemode.Call("PlayerCanManufactureCategory", lpl, k)) -- Expanded when popped up
-				self.headers[k]:SetLabel( c.Name )
-				self.headers[k]:SetTooltip( c.Description )
+				self.headers[k]:SetExpanded(
+					gamemode.Call("PlayerCanManufactureCategory", lpl, k)
+				) -- Expanded when popped up
+				self.headers[k]:SetLabel(c.Name)
+				self.headers[k]:SetTooltip(c.Description)
 				self.itemsList:AddItem(self.headers[k]);
 				local subitemsList = vgui.Create("DPanelList", self);
-				subitemsList:SetAutoSize( true )
+				subitemsList:SetAutoSize(true)
 				subitemsList:SetPadding(2);
 				subitemsList:SetSpacing(3);
-				self.headers[k]:SetContents( subitemsList )
+				self.headers[k]:SetContents(subitemsList)
 				-- Sort the items by cost.
-				table.sort(v, function(a, b) return GM.Items[a].Cost > GM.Items[b].Cost end)
+				table.sort(
+					v, function(a, b)
+						return GM.Items[a].Cost > GM.Items[b].Cost
+					end
+				)
 
 				-- Loop through the items.
 				for k2, v2 in pairs(v) do
 					self.currentItem = v2;
 
 					-- Add the item to the item list.
-					subitemsList:AddItem( vgui.Create("cider_Store_Item", self) );
+					subitemsList:AddItem(vgui.Create("cider_Store_Item", self));
 				end
 			end
 		end
@@ -77,7 +87,7 @@ function PANEL:Think()
 	local job = LocalPlayer():Team()
 	if job ~= self.team then
 		self.team = job
-		for k,v in pairs(self.headers) do
+		for k, v in pairs(self.headers) do
 			v:Toggle()
 			v:SetExpanded(gamemode.Call("PlayerCanManufactureCategory", lpl, k)) -- Expanded when popped up
 		end
@@ -109,9 +119,9 @@ function PANEL:Init()
 
 	-- Check if it is not a single batch.
 	if (item.Batch > 1) then
-		self.label:SetText(item.Batch.." "..item.Plural.." ($"..cost..")");
+		self.label:SetText(item.Batch .. " " .. item.Plural .. " ($" .. cost .. ")");
 	else
-		self.label:SetText(item.Batch.." "..item.Name.." ($"..cost..")");
+		self.label:SetText(item.Batch .. " " .. item.Name .. " ($" .. cost .. ")");
 	end
 
 	-- The description of the item.
@@ -134,10 +144,14 @@ function PANEL:Init()
 	end
 
 	-- Set the model of the spawn icon to the one of the item.
-	self.spawnIcon:SetModel(item.Model,item.Skin)
+	self.spawnIcon:SetModel(item.Model, item.Skin)
 	self.spawnIcon:SetToolTip()
-	self.spawnIcon.DoClick = function() return end
-	self.spawnIcon.OnMousePressed = function() return end
+	self.spawnIcon.DoClick = function()
+		return
+	end
+	self.spawnIcon.OnMousePressed = function()
+		return
+	end
 end
 
 -- Called when the layout should be performed.
@@ -147,7 +161,10 @@ function PANEL:PerformLayout()
 	self.label:SizeToContents();
 	self.description:SetPos(self.spawnIcon.x + self.spawnIcon:GetWide() + 8, 24);
 	self.description:SizeToContents();
-	self.button:SetPos( self.spawnIcon.x + self.spawnIcon:GetWide() + 8, self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall() );
+	self.button:SetPos(
+		self.spawnIcon.x + self.spawnIcon:GetWide() + 8,
+		self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall()
+	);
 end
 
 -- Register the panel.
@@ -166,7 +183,7 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
-	self.label:SetPos( (self:GetWide() / 2) - (self.label:GetWide() / 2), 5 );
+	self.label:SetPos((self:GetWide() / 2) - (self.label:GetWide() / 2), 5);
 	self.label:SizeToContents();
 end
 

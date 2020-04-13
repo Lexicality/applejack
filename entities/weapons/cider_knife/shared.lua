@@ -2,10 +2,12 @@
 -- "shared.lua"
 -- ~ Applejack ~
 --
-if (SERVER) then AddCSLuaFile("shared.lua"); end
+if (SERVER) then
+	AddCSLuaFile("shared.lua");
+end
 
 -- Set the icon letter of the SWEP.
-SWEP.IconLetter	= "j";
+SWEP.IconLetter = "j";
 
 -- Check if we're running on the client.
 if (CLIENT) then
@@ -16,14 +18,19 @@ if (CLIENT) then
 	SWEP.DrawWeaponInfoBox = true;
 
 	-- Add the kill icon font.
-	killicon.AddFont("cider_knife", "CSKillIcons", SWEP.IconLetter, Color(255, 245, 40, 255));
+	killicon.AddFont(
+		"cider_knife", "CSKillIcons", SWEP.IconLetter, Color(255, 245, 40, 255)
+	);
 end
 
 -- Called when the weapon selection should be drawn.
 function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
-	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + wide / 2, y + tall * 0.2, Color(255, 245, 10, 255), 1);
---	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-14, 14), Color(255, 210, 0, math.Rand(10, 120)), 1);
---	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-9, 9), Color(255, 210, 0, math.Rand(10, 120)), 1);
+	draw.SimpleText(
+		self.IconLetter, "CSSelectIcons", x + wide / 2, y + tall * 0.2,
+		Color(255, 245, 10, 255), 1
+	);
+	--	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-14, 14), Color(255, 210, 0, math.Rand(10, 120)), 1);
+	--	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-9, 9), Color(255, 210, 0, math.Rand(10, 120)), 1);
 end
 
 -- Set some shared information.
@@ -44,7 +51,7 @@ SWEP.WorldModel = "models/weapons/w_knife_t.mdl";
 -- Set some information for the primary fire.
 SWEP.Primary.Delay = 0.75;
 SWEP.Primary.Recoil = 0;
-SWEP.Primary.Damage	= 10;
+SWEP.Primary.Damage = 10;
 SWEP.Primary.NumShots = 1;
 SWEP.Primary.Cone = 0;
 SWEP.Primary.ClipSize = -1;
@@ -57,9 +64,9 @@ SWEP.Primary.Ammo = "none";
 SWEP.Secondary.Delay = 0.75;
 SWEP.Secondary.Recoil = 0;
 SWEP.Secondary.Damage = 0;
-SWEP.Secondary.NumShots	= 1;
-SWEP.Secondary.Cone	= 0;
-SWEP.Secondary.ClipSize	= -1;
+SWEP.Secondary.NumShots = 1;
+SWEP.Secondary.Cone = 0;
+SWEP.Secondary.ClipSize = -1;
 SWEP.Secondary.DefaultClip = -1;
 SWEP.Secondary.Automatic = true;
 SWEP.Secondary.Ammo = "none";
@@ -75,15 +82,17 @@ util.PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav");
 
 -- Called when the SWEP initializes.
 function SWEP:Initialize()
-	if (SERVER) then self:SetWeaponHoldType("melee"); end
+	if (SERVER) then
+		self:SetWeaponHoldType("melee");
+	end
 
 	-- A table to store the knife sounds.
-	self.hitSounds = { Sound("weapons/knife/knife_hitwall1.wav") };
+	self.hitSounds = {Sound("weapons/knife/knife_hitwall1.wav")};
 	self.fleshSounds = {
 		Sound("weapons/knife/knife_hit1.wav"),
 		Sound("weapons/knife/knife_hit2.wav"),
 		Sound("weapons/knife/knife_hit3.wav"),
-		Sound("weapons/knife/knife_hit4.wav")
+		Sound("weapons/knife/knife_hit4.wav"),
 	};
 end
 
@@ -108,9 +117,10 @@ function SWEP:PrimaryAttack()
 		shoot = true;
 
 		-- Check if we hit a valid entity.
-		if ( IsValid(trace.Entity) ) then
-			if (trace.Entity:IsPlayer() or trace.Entity:IsNPC() or trace.Entity:GetClass() == "prop_ragdoll") then
-				self.Owner:EmitSound( self.fleshSounds[ math.random(1, #self.fleshSounds) ] );
+		if (IsValid(trace.Entity)) then
+			if (trace.Entity:IsPlayer() or trace.Entity:IsNPC() or
+				trace.Entity:GetClass() == "prop_ragdoll") then
+				self.Owner:EmitSound(self.fleshSounds[math.random(1, #self.fleshSounds)]);
 				self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 
 				-- Check if we're running on the server.
@@ -119,14 +129,22 @@ function SWEP:PrimaryAttack()
 						local aimVectorOwner = self.Owner:GetAimVector();
 
 						-- Check if we hit a player.
-						if ( trace.Entity:IsPlayer() ) then
+						if (trace.Entity:IsPlayer()) then
 							if (trace.Entity:Tied()) then
-								self.Owner:Emote("skillfully slices through the ropes on " .. trace.Entity:Name() .. "'s wrists.");
+								self.Owner:Emote(
+									"skillfully slices through the ropes on " .. trace.Entity:Name() ..
+										"'s wrists."
+								);
 								trace.Entity:UnTie();
-								trace.Entity:Emote("shakes the remains of the rope from " .. trace.Entity._GenderWord .. " wrists and rubs them");
+								trace.Entity:Emote(
+									"shakes the remains of the rope from " .. trace.Entity._GenderWord ..
+										" wrists and rubs them"
+								);
 								return
-							elseif (trace.Entity:GetAimVector():DotProduct(aimVectorOwner) > 0.5) then damage = damage * 2; end
-						elseif ( trace.Entity:IsNPC() ) then
+							elseif (trace.Entity:GetAimVector():DotProduct(aimVectorOwner) > 0.5) then
+								damage = damage * 2;
+							end
+						elseif (trace.Entity:IsNPC()) then
 							local aimVectorNPC = trace.Entity:GetAimVector();
 
 							-- Check the dot product of the NPC's aim vector and the owner's aim vector.
@@ -139,27 +157,35 @@ function SWEP:PrimaryAttack()
 					end
 				end
 			elseif (trace.Entity:GetClass() == "prop_physics") or trace.Entity:IsDoor() then
-				self.Owner:EmitSound( self.hitSounds[ math.random(1, #self.hitSounds) ] );
+				self.Owner:EmitSound(self.hitSounds[math.random(1, #self.hitSounds)]);
 				self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 
 				-- Draw a decal at the hit position.
-				util.Decal("ManhackCut", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal);
+				util.Decal(
+					"ManhackCut", trace.HitPos + trace.HitNormal,
+					trace.HitPos - trace.HitNormal
+				);
 
 				-- We no longer want to shoot a bullet.
 				shoot = false;
 			else
-				self.Owner:EmitSound( self.hitSounds[ math.random(1, #self.hitSounds) ] );
+				self.Owner:EmitSound(self.hitSounds[math.random(1, #self.hitSounds)]);
 				self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 
 				-- Draw a decal at the hit position.
-				util.Decal("ManhackCut", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal);
+				util.Decal(
+					"ManhackCut", trace.HitPos + trace.HitNormal,
+					trace.HitPos - trace.HitNormal
+				);
 			end
 		elseif (trace.Hit) then
-			self.Owner:EmitSound( self.hitSounds[ math.random(1, #self.hitSounds) ] );
+			self.Owner:EmitSound(self.hitSounds[math.random(1, #self.hitSounds)]);
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 
 			-- Draw a decal at the hit position.
-			util.Decal("ManhackCut", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal);
+			util.Decal(
+				"ManhackCut", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal
+			);
 
 			-- We no longer want to shoot a bullet.
 			shoot = false;
@@ -182,9 +208,11 @@ function SWEP:PrimaryAttack()
 
 			-- Fire a bullet from the owner.
 			self.Owner:FireBullets(bullet);
-		elseif ( IsValid(trace.Entity) ) then
-			if ( IsValid( trace.Entity:GetPhysicsObject() ) ) then
-				trace.Entity:GetPhysicsObject():ApplyForceOffset(self.Owner:GetAimVector() * 500, trace.HitPos);
+		elseif (IsValid(trace.Entity)) then
+			if (IsValid(trace.Entity:GetPhysicsObject())) then
+				trace.Entity:GetPhysicsObject():ApplyForceOffset(
+					self.Owner:GetAimVector() * 500, trace.HitPos
+				);
 			end
 		end
 	else
@@ -197,4 +225,5 @@ function SWEP:PrimaryAttack()
 end
 
 -- The secondary attack function.
-function SWEP:SecondaryAttack() end
+function SWEP:SecondaryAttack()
+end

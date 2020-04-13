@@ -2,17 +2,19 @@
 -- ~ Item Metatable (shared) ~
 -- ~ Applejack ~
 --
-
 ---
 -- The shared item metatable
 -- @name meta
 -- @class table
 local meta = _R.Item;
 if (not meta) then
-	ErrorNoHalt("Applejack: Error setting up shared item metatable - Item metatable does not exist!");
+	ErrorNoHalt(
+
+		
+			"Applejack: Error setting up shared item metatable - Item metatable does not exist!"
+	);
 	return
 end
-
 
 ---
 -- Derives the item from the base supplied. Any unset fields on the item that are set on the
@@ -21,7 +23,7 @@ end
 --  bases, since they can't just include the files like gamemode root ones do.
 -- @param id The UniqueID of the item to derive from.
 function meta:Derive(id)
-	for k,v in pairs(GM.Items[id] or {}) do
+	for k, v in pairs(GM.Items[id] or {}) do
 		if (self[k] == nil) then
 			self[k] = v;
 		else
@@ -44,7 +46,7 @@ function meta:Register()
 	end
 	if (self.Base) then
 		if (type(self.Base) == "table") then
-			for _,id in ipairs(self.base) do
+			for _, id in ipairs(self.base) do
 				self:Derive(id);
 			end
 		else

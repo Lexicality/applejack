@@ -4,7 +4,10 @@
 --
 local meta = _R.Entity;
 if (not meta) then
-	error("["..os.date().."] Applejack Clientside Entity metatable: No metatable found!");
+	error(
+		"[" .. os.date() ..
+			"] Applejack Clientside Entity metatable: No metatable found!"
+	);
 end
 
 -- 'Is' functions
@@ -14,8 +17,11 @@ end
 -- @return True if it is, false if it isn't.
 function meta:IsDoor()
 	local class, model = self:GetClass(), self:GetModel();
-	return self._isDoor or class == "func_door" or class == "func_door_rotating" or class == "prop_door_rotating"
-		or class == "prop_dynamic" and (model:find("door") or model:find("gate")) and (self:LookupSequence("open") or 0) > 0 and (self:LookupSequence("close") or 0) > 0;
+	return self._isDoor or class == "func_door" or class == "func_door_rotating" or
+       		class == "prop_door_rotating" or class == "prop_dynamic" and
+       		(model:find("door") or model:find("gate")) and
+       		(self:LookupSequence("open") or 0) > 0 and
+       		(self:LookupSequence("close") or 0) > 0;
 end
 
 ---
@@ -29,7 +35,7 @@ end
 -- Checks to see if an entity is owned.
 -- @return True if it is, false if it isn't.
 function meta:IsOwned()
-	return self:GetNWString("DisplayName","Nobody") ~= "Nobody";
+	return self:GetNWString("DisplayName", "Nobody") ~= "Nobody";
 end
 
 ---
@@ -47,7 +53,6 @@ function meta:Locked()
 end
 
 -- 'Get' functions
-
 
 ---
 -- Gets the displayed owner's name
@@ -95,27 +100,27 @@ function meta:GetStatus()
 			if status == "" then
 				status = "This is locked"
 			else
-				status = status.." and it is locked"
+				status = status .. " and it is locked"
 			end
 		else
-			status = status.."(Locked)"
+			status = status .. "(Locked)"
 		end
 	end
 	if bit.band(dt, OBJ_SEALED) == OBJ_SEALED then
 		if p then
 			if status == "" then
 				status = "This is sealed shut"
-			elseif status:sub(-2,-1) == "ed" then
-				status = status.." and sealed shut"
+			elseif status:sub(-2, -1) == "ed" then
+				status = status .. " and sealed shut"
 			else
-				status = status..". It is sealed shut"
+				status = status .. ". It is sealed shut"
 			end
 		else
-			status = status.."(Sealed)"
+			status = status .. "(Sealed)"
 		end
 	end
 	if status ~= "" and p then
-		status = status.."."
+		status = status .. "."
 	end
 	return status
 end
@@ -147,7 +152,7 @@ function meta:DefaultESPPaint(lines, pos, dist, center)
 		lines:Add("Owner", owner, color_white, 3);
 	else
 		name = self:GetNWString("Name", "Entity");
-		name = (name:find"^[aeiouAEIOU]" and "An" or "A") .. " " .. name;
+		name = (name:find "^[aeiouAEIOU]" and "An" or "A") .. " " .. name;
 	end
 	lines:Add("Name", name, color_purpleblue, 1);
 	local status = self:GetStatus();

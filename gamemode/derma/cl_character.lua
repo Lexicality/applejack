@@ -35,10 +35,10 @@ function PANEL:Init()
 	if not lpl._ModelChoices then
 		lpl._ModelChoices = {}
 		for id, team in pairs(GM.Teams) do
-			for gender,models in pairs(team.Models) do
+			for gender, models in pairs(team.Models) do
 				lpl._ModelChoices[gender] = lpl._ModelChoices[gender] or {}
 				if #models ~= 1 then
-					lpl._ModelChoices[gender][id] = math.random(1,#models)
+					lpl._ModelChoices[gender][id] = math.random(1, #models)
 				else
 					lpl._ModelChoices[gender][id] = 1
 				end
@@ -49,11 +49,13 @@ end
 
 local thinktest = CurTime()
 function PANEL:Think()
-	if not reDraw then return; end
+	if not reDraw then
+		return;
+	end
 	reDraw = false
 	local pteam = lpl:Team();
 	local lgroup = team.Query(pteam, "Group");
-	--Wipe the itemlist so we can renew it
+	-- Wipe the itemlist so we can renew it
 	self.itemsList:Clear()
 
 	local header = vgui.Create("DCollapsibleCategory", self);
@@ -99,26 +101,29 @@ function PANEL:Think()
 	local subitemsList;
 	-- Loop through each of our groups in numerical order
 	for _, group in pairs(GM.Groups) do
-		if (group.Invisible) then continue; end
+		if (group.Invisible) then
+			continue;
+		end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
-		header:SetLabel( group.Name )
+		header:SetLabel(group.Name)
 		header:SetExpanded(lgroup == group)
-		header:SetToolTip( group.Description )
+		header:SetToolTip(group.Description)
 		self.itemsList:AddItem(header);
 		subitemsList = vgui.Create("DPanelList", self);
-		subitemsList:SetAutoSize( true )
+		subitemsList:SetAutoSize(true)
 		subitemsList:SetPadding(2);
 		subitemsList:SetSpacing(3);
-		header:SetContents( subitemsList )
+		header:SetContents(subitemsList)
 		header.ilist = subitemsList
 		-- Store the list of teams here sorted by their index.
 		local teams = {};
 
 		-- Loop through the teams in this group in order
 		for _, team in ipairs(group.Teams) do
-			--Check they can join the team
-			if (pteam == team.TeamID or gamemode.Call("PlayerCanJoinTeamShared", lpl, team.TeamID)) then
+			-- Check they can join the team
+			if (pteam == team.TeamID or
+				gamemode.Call("PlayerCanJoinTeamShared", lpl, team.TeamID)) then
 				-- Create the team panel.
 				local panel = vgui.Create("cider_Character_Team", self);
 				panel:SetTeam(team);
@@ -152,7 +157,7 @@ function PANEL:Init()
 	local label, button;
 
 	label = vgui.Create("DLabel", self);
-	label:SetContentAlignment( 6 );
+	label:SetContentAlignment(6);
 	-- label:SetAutoStretchVertical( true );
 	label:SetDark(true);
 	label:Dock(LEFT);
@@ -170,7 +175,7 @@ end
 function PANEL:SetContents(panel)
 	panel:SetParent(self);
 	panel:Dock(FILL);
-	panel:DockMargin( 8, 0, 8, 0 );
+	panel:DockMargin(8, 0, 8, 0);
 	self.contents = panel;
 	self:InvalidateLayout();
 end
@@ -223,12 +228,16 @@ end
 function PANEL:DoClick()
 	local menu = DermaMenu();
 
-	menu:AddOption("Male", function()
-		self:Command("male");
-	end);
-	menu:AddOption("Female", function()
-		self:Command("female");
-	end);
+	menu:AddOption(
+		"Male", function()
+			self:Command("male");
+		end
+	);
+	menu:AddOption(
+		"Female", function()
+			self:Command("female");
+		end
+	);
 
 	menu:Open();
 end
@@ -273,8 +282,10 @@ function PANEL:Init()
 	end
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 	self.spawnIcon:SetToolTip();
-	self.spawnIcon.DoClick = function() end;
-	self.spawnIcon.OnMousePressed = function() end;
+	self.spawnIcon.DoClick = function()
+	end;
+	self.spawnIcon.OnMousePressed = function()
+	end;
 
 end
 
@@ -319,18 +330,22 @@ function PANEL:Think()
 	local nump = team.NumPlayers(self.TeamID);
 	if (not self.nolimit and self.LastNump ~= nump) then
 		self.LastNump = nump;
-		self.label:SetText(self.Team.Name .. " (" .. nump .. "/" .. self.Team.SizeLimit .. ")");
+		self.label:SetText(
+			self.Team.Name .. " (" .. nump .. "/" .. self.Team.SizeLimit .. ")"
+		);
 		if (not self.NoButton and nump >= self.Team.SizeLimit) then
 			self.button:SetDisabled(true);
 			self.button:SetText("Full");
 		end
 	end
-	if (self.NoButton or not self.cd) then return; end
+	if (self.NoButton or not self.cd) then
+		return;
+	end
 	local c = nextChanges[self.TeamID];
 	local ct = CurTime();
 	if (c and c > ct) then
 		self.button:SetDisabled(true);
-		self.button:SetText("Wait "..string.ToMinutesSeconds(c - ct));
+		self.button:SetText("Wait " .. string.ToMinutesSeconds(c - ct));
 	else
 		self.cd = false;
 		self.button:SetDisabled(false);
@@ -345,7 +360,10 @@ function PANEL:PerformLayout()
 	self.label:SizeToContents();
 	self.description:SetPos(self.spawnIcon.x + self.spawnIcon:GetWide() + 8, 24);
 	self.description:SizeToContents();
-	self.button:SetPos( self.spawnIcon.x + self.spawnIcon:GetWide() + 8, self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall() )
+	self.button:SetPos(
+		self.spawnIcon.x + self.spawnIcon:GetWide() + 8,
+		self.spawnIcon.y + self.spawnIcon:GetTall() - self.button:GetTall()
+	)
 end
 
 -- Register the panel.

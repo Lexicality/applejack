@@ -2,18 +2,19 @@
 -- ~ Rope ~
 -- ~ Applejack ~
 --
-ITEM.Name			= "Spool of Rope";
-ITEM.Size			= 1;
-ITEM.Cost			= 200;
-ITEM.Model			= "models/props_lab/pipesystem03d.mdl";
-ITEM.Batch			= 10;
-ITEM.Store			= true;
-ITEM.Plural			= "Spools of Rope";
-ITEM.Description	= "Can be used for tying people up"; --Tie dem bitches up like da hoes they are
-ITEM.Base			= "item";
+ITEM.Name = "Spool of Rope";
+ITEM.Size = 1;
+ITEM.Cost = 200;
+ITEM.Model = "models/props_lab/pipesystem03d.mdl";
+ITEM.Batch = 10;
+ITEM.Store = true;
+ITEM.Plural = "Spools of Rope";
+ITEM.Description = "Can be used for tying people up"; -- Tie dem bitches up like da hoes they are
+ITEM.Base = "item";
 
 local function conditional(ply, victim, plypos, victimpos)
-	return ply:IsValid() and victim:IsValid() and ply:GetPos() == plypos and victim:GetPos() == victimpos;
+	return ply:IsValid() and victim:IsValid() and ply:GetPos() == plypos and
+       		victim:GetPos() == victimpos;
 end
 local function success(ply, victim)
 	victim:TieUp();
@@ -28,7 +29,8 @@ local function failure(ply, victim)
 		GAMEMODE.Items["rope"]:Make(victim:GetPos());
 		victim.tying.perpetrator = NULL;
 		SendUserMessage("MS CancelTie", ply);
-	end if (IsValid(ply)) then
+	end
+	if (IsValid(ply)) then
 		ply.tying.victim = NULL;
 		SendUserMessage("MS CancelTie", victim);
 	end
@@ -64,7 +66,12 @@ function ITEM:onUse(ply)
 		ply:Notify("They're already tied up!", NOTIFY_ERROR);
 		return false;
 	elseif (victim:Arrested()) then
-		ply:Notify("The person's large metal wrist ornaments prevent you from finding a place to put the rope.", NOTIFY_ERROR);
+		ply:Notify(
+
+			
+				"The person's large metal wrist ornaments prevent you from finding a place to put the rope.",
+				NOTIFY_ERROR
+		);
 		return false;
 	end
 	-- Gamemode tests
@@ -80,7 +87,10 @@ function ITEM:onUse(ply)
 	SendUserMessage("MS DoTie", ply);
 	SendUserMessage("MS BeTie", victim);
 	-- Set up a timer to validate it
-	timer.Conditional(ply:UniqueID() .. " Tying Timer", GM.Config["Tying Timeout"], conditional, success, failure, ply, victim, ply:GetPos(), victim:GetPos());
+	timer.Conditional(
+		ply:UniqueID() .. " Tying Timer", GM.Config["Tying Timeout"], conditional,
+		success, failure, ply, victim, ply:GetPos(), victim:GetPos()
+	);
 	-- Use up the item
 	return true;
 end

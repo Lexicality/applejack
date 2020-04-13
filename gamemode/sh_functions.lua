@@ -2,7 +2,6 @@
 -- ~ Custom Functions ~
 -- ~ Moonshine ~
 --
-
 -- Prereq
 AddCSLuaFile("sh_functions.lua");
 
@@ -23,14 +22,14 @@ end
 -- @param filename The file to check
 -- @return True if it is a valid file or false if it's a stray.
 function validfile(filename) -- A curse brought on by editing things in mac/linux - Unwanted files!
-	return filename:sub(1,1) ~= "." and not filename:find"~";
+	return filename:sub(1, 1) ~= "." and not filename:find "~";
 end
 
 ---
 -- Because sometimes things go wrong and I need to debug IsValid. (Doesn't happen much anymore tbh)
 -- @param object The object to check
 -- @return If the object is valid.
-function IsValid( object )
+function IsValid(object)
 	-- local object = object or nil
 	-- local etype = type(object);
 	-- if etype == "number" or etype == "function" or etype == "string" or etype == "boolean" or etype == "thread" then
@@ -45,8 +44,8 @@ end
 -- Checks if an entity is both valid and a player
 -- @param object The object in question
 -- @return True if it's valid+player, false otherwise.
-function IsPlayer( object )
-	return IsValid( object ) and object:IsPlayer();
+function IsPlayer(object)
+	return IsValid(object) and object:IsPlayer();
 end
 
 --
@@ -59,9 +58,8 @@ end
 -- @param places The number of places to round to
 -- @return The number, freshly rounded.
 function math.DecimalPlaces(num, places)
-	return math.Round(num * 10^places) / 10^places
+	return math.Round(num * 10 ^ places) / 10 ^ places
 end
-
 
 ---
 -- Extends the gamemode.Call function so that it always does the call,
@@ -72,7 +70,9 @@ end
 function gamemode.Call(name, ...)
 	local gm = gmod.GetGamemode() or GM or GAMEMODE or {};
 	if (not gm[name]) then
-		ErrorNoHalt("Hook called '",name,"' called that does not have a GM: function!\n");
+		ErrorNoHalt(
+			"Hook called '", name, "' called that does not have a GM: function!\n"
+		);
 		debug.Trace();
 	end
 	return hook.Call(name, gm, ...);
@@ -85,9 +85,12 @@ end
 -- @param pos The vector to check
 -- @return True if it is completely within the box, false otherwise.
 function util.IsWithinBox(topleft, bottomright, pos)
-	if not (pos.z < math.min(topleft.z, bottomright.z) or pos.z > math.max(topleft.z, bottomright.z) or
-			pos.x < math.min(topleft.x, bottomright.x) or pos.x > math.max(topleft.x, bottomright.x) or
-			pos.y < math.min(topleft.y, bottomright.y) or pos.y > math.max(topleft.y, bottomright.y)) then
+	if not (pos.z < math.min(topleft.z, bottomright.z) or pos.z >
+		math.max(topleft.z, bottomright.z) or pos.x <
+		math.min(topleft.x, bottomright.x) or pos.x >
+		math.max(topleft.x, bottomright.x) or pos.y <
+		math.min(topleft.y, bottomright.y) or pos.y >
+		math.max(topleft.y, bottomright.y)) then
 		return true;
 	end
 	return false;
@@ -101,7 +104,7 @@ function file.FolderExistsInLua(folder)
 	if (file.Exists(folder, "LUA")) then
 		return true;
 	end
-	local files, folders = file.Find(folder .. '/*', "LUA");
+	local files, folders = file.Find(folder .. "/*", "LUA");
 	return #files > 0 or #folders > 0;
 end
 
@@ -110,7 +113,7 @@ end
 -- @param ... The messsage to be error'd
 function Error(...)
 	local err = "";
-	for _, s in ipairs{...} do
+	for _, s in ipairs {...} do
 		err = err .. tostring(s);
 	end
 	error(err, 2);

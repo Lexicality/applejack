@@ -22,7 +22,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 
 	-- Check if the physics object is a valid entity.
-	if ( IsValid(physicsObject) ) then
+	if (IsValid(physicsObject)) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
@@ -30,7 +30,9 @@ end
 
 -- A function to set the door for the entity to breach.
 local function dobreach(self)
-	if not (IsValid(self) and IsValid(self._Door)) then return end
+	if not (IsValid(self) and IsValid(self._Door)) then
+		return
+	end
 end
 function ENT:SetDoor(door, trace, owner)
 	self._Door = door;
@@ -40,7 +42,7 @@ function ENT:SetDoor(door, trace, owner)
 
 	-- Set the position and angles of the entity.
 	self:SetPos(trace.HitPos);
-	self:SetAngles( trace.HitNormal:Angle() + Angle(-90, 0, 180) );
+	self:SetAngles(trace.HitNormal:Angle() + Angle(-90, 0, 180));
 
 	if door:GetClass() == "prop_door_rotating" then
 
@@ -48,13 +50,13 @@ function ENT:SetDoor(door, trace, owner)
 		local lpos = door:WorldToLocal(self:GetPos())
 		if lpos.x < 0 then
 			self:SetLocalPos(Vector(-1.5, 21.3057, -8.1018))
-			self:SetLocalAngles(Angle(-90,0,0))
+			self:SetLocalAngles(Angle(-90, 0, 0))
 		else
 			self:SetLocalPos(Vector(1.5, 21.3057, -8.1018))
-			self:SetLocalAngles(Angle(-90,-180,0))
+			self:SetLocalAngles(Angle(-90, -180, 0))
 		end
 	elseif door:GetClass() == "prop_dynamic" then
-		if ( IsValid( self:GetPhysicsObject() ) ) then
+		if (IsValid(self:GetPhysicsObject())) then
 			self:GetPhysicsObject():EnableMotion(false);
 		end
 	else
@@ -70,14 +72,18 @@ ENT.NextBeep = 0;
 ENT.NumBeeps = 0;
 ENT.FastBeeping = false;
 function ENT:Think()
-	if (not self.Beeping) then return; end
+	if (not self.Beeping) then
+		return;
+	end
 	if (not IsValid(self._Door)) then
 		self.Beeping = false;
 		self:Remove();
 		return;
 	end
 	local ctime = CurTime();
-	if (self.NextBeep > ctime) then return; end
+	if (self.NextBeep > ctime) then
+		return;
+	end
 	self:Beep();
 	self.NumBeeps = self.NumBeeps + 1;
 	if (self.NumBeeps == 5) then
@@ -95,12 +101,11 @@ function ENT:Think()
 	end
 end
 
-
 function ENT:Breach()
 	local event = ""
 	local addon = self._Door:GetDoorName()
 	if addon ~= "" then
-		addon = ": "..addon
+		addon = ": " .. addon
 	end
 	if self._Door:IsOwned() then
 		event = self._Door:GetPossessiveName()
@@ -108,7 +113,10 @@ function ENT:Breach()
 		event = "an unowned"
 	end
 	GM:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
-	GM:OpenDoor(self._Door, 0, true, self._Planter ~= NULL and gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door));
+	GM:OpenDoor(
+		self._Door, 0, true, self._Planter ~= NULL and
+			gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door)
+	);
 	if self._Door:GetClass() == "prop_door_rotating" then
 		self:BlowDoorOffItsHinges()
 	end
@@ -116,13 +124,17 @@ function ENT:Breach()
 	self:Remove();
 end
 
-local function dothrow(ent,backwards)
-	if not IsValid(ent) then return end
+local function dothrow(ent, backwards)
+	if not IsValid(ent) then
+		return
+	end
 	local pent = ent:GetPhysicsObject()
-	if not IsValid(pent) then return end
+	if not IsValid(pent) then
+		return
+	end
 	pent:ApplyForceCenter(backwards * 10000)
 end
-local function doremove(ent,door)
+local function doremove(ent, door)
 	if IsValid(ent) then
 		ent:Remove()
 	end
@@ -133,10 +145,10 @@ local function doremove(ent,door)
 end
 function ENT:BlowDoorOffItsHinges()
 	local backwards = self:GetUp() * -1 -- If you fuck with the model, this won't work
-	local pos   = self._Door:GetPos()
-	local ang   = self._Door:GetAngles()
+	local pos = self._Door:GetPos()
+	local ang = self._Door:GetAngles()
 	local model = self._Door:GetModel()
-	local skin  = self._Door:GetSkin()
+	local skin = self._Door:GetSkin()
 	self._Door:SetNotSolid(true)
 	self._Door:SetNoDraw(true)
 	local ent = ents.Create("prop_physics")
@@ -150,8 +162,8 @@ function ENT:BlowDoorOffItsHinges()
 	ent:Activate()
 	ent:SetPPOwner(NULL);
 	local door = self._Door
-	timer.Simple(0.1,dothrow,ent,backwards);
-	timer.Simple(GM.Config["Jam Time"],doremove,ent,door)
+	timer.Simple(0.1, dothrow, ent, backwards);
+	timer.Simple(GM.Config["Jam Time"], doremove, ent, door)
 end
 local beep = Sound("hl1/fvox/beep.wav")
 function ENT:Beep()
@@ -163,11 +175,14 @@ function ENT:Explode()
 	local effectData = EffectData();
 
 	-- Set the information for the effect.
-	effectData:SetStart( self:GetPos() );
-	effectData:SetOrigin( self:GetPos() );
+	effectData:SetStart(self:GetPos());
+	effectData:SetOrigin(self:GetPos());
 	effectData:SetScale(1);
 
 	-- Create the effect from the data.
 	util.Effect("Explosion", effectData);
-	util.BlastDamage(self._Planter ~= NULL and self._Planter or game.GetWorld(), self, self:GetPos(), 256, 100) -- Ouch!
+	util.BlastDamage(
+		self._Planter ~= NULL and self._Planter or game.GetWorld(), self,
+		self:GetPos(), 256, 100
+	) -- Ouch!
 end

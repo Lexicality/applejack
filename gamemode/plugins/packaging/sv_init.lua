@@ -2,32 +2,33 @@
 -- ~ Packaging Plugin ~
 -- ~ Applejack ~
 --
-
 -- Packaging plugin, to create disposable containers that automatically seal themselves after being spawned initially.
 -- (Does not work every time in actual application on the server =/)
 function PLUGIN:PlayerClosedContainerWindow(player)
-	if IsValid(player._UsingCrate) and cider.container.isContainer(player._UsingCrate) then -- If the player is using a crate then we want to seal it!
+	if IsValid(player._UsingCrate) and
+		cider.container.isContainer(player._UsingCrate) then -- If the player is using a crate then we want to seal it!
 		local crate = player._UsingCrate
 		crate._Sealed = true
-	--	crate:SetNWBool("cider_Sealed",true)
-		crate:SetDTInt(3, crate:GetDTInt(3) +  OBJ_SEALED);
+		--	crate:SetNWBool("cider_Sealed",true)
+		crate:SetDTInt(3, crate:GetDTInt(3) + OBJ_SEALED);
 		crate._InUse = nil
 		local phys = crate:GetPhysicsObject()
-			if IsValid(phys) then
+		if IsValid(phys) then
 			phys:EnableMotion(true)
 			phys:Wake()
 		end
-		player:Emote("seals the "..cider.container.getName(crate).." with some tape.");
+		player:Emote(
+			"seals the " .. cider.container.getName(crate) .. " with some tape."
+		);
 		player._UsingCrate = nil
 	end
 end
 
-
-function PLUGIN:CrateTime(player,item)
+function PLUGIN:CrateTime(player, item)
 	if player._UsingCrate then
 		return false
 	end
-	local crate = ents.Create"prop_physics"
+	local crate = ents.Create "prop_physics"
 	crate:SetModel(item.model)
 	local trace = player:GetEyeTraceNoCursor()
 	if player:GetPos():Distance(trace.HitPos) > 128 then
@@ -39,8 +40,8 @@ function PLUGIN:CrateTime(player,item)
 	elseif trace.Hit then
 		local Ang = trace.HitNormal:Angle()
 		Ang.pitch = Ang.pitch + 90
-		crate:SetPos( trace.HitPos - trace.HitNormal * crate:OBBMins().z )
-		crate:SetAngles( Ang )
+		crate:SetPos(trace.HitPos - trace.HitNormal * crate:OBBMins().z)
+		crate:SetAngles(Ang)
 	end
 	crate:SetPPOwner(ply);
 	crate:SetPPSpawner(ply);
@@ -54,13 +55,17 @@ function PLUGIN:CrateTime(player,item)
 	if IsValid(phys) then
 		phys:EnableMotion(false)
 	else
-		ErrorNoHalt("[",os.date(),"] Packaging Plugin:  Error while creating packaging with model ",item.model,", model has no physics!")
-		player:Notify("Physics error! Please report this immedidately.",1)
+		ErrorNoHalt(
+			"[", os.date(),
+			"] Packaging Plugin:  Error while creating packaging with model ",
+			item.model, ", model has no physics!"
+		)
+		player:Notify("Physics error! Please report this immedidately.", 1)
 		crate:Remove()
 		return false
 	end
-	cider.container.make(crate,item.capacity,item.name)
-	local contents,io,filter = cider.container.getContents(crate,player,true)
+	cider.container.make(crate, item.capacity, item.name)
+	local contents, io, filter = cider.container.getContents(crate, player, true)
 	local tab = {
 		contents = contents,
 		meta = {
@@ -68,23 +73,29 @@ function PLUGIN:CrateTime(player,item)
 			filter = filter, -- Only these can be put in here, if nil then ignore, but empty means nothing.
 			size = cider.container.getLimit(crate), -- Max space for the container
 			entindex = crate:EntIndex(), -- You'll probably want it for something
-			name = cider.container.getName(crate) or "Container"
-		}
+			name = cider.container.getName(crate) or "Container",
+		},
 	}
-	timer.Simple(0,datastream.StreamToClients, player, "cider_Container", tab);
---	datastream.StreamToClients( player, "cider_Container", tab );
+	timer.Simple(0, datastream.StreamToClients, player, "cider_Container", tab);
+	--	datastream.StreamToClients( player, "cider_Container", tab );
 	crate._InUse = player
 	player._UsingCrate = crate
 end
 
-function PLUGIN:PlayerCanUseContainer(player,container)
-	if container._InUse and container._InUse ~= player then return false end
+function PLUGIN:PlayerCanUseContainer(player, container)
+	if container._InUse and container._InUse ~= player then
+		return false
+	end
 end
 
-function PLUGIN:PlayerUpdateContainerContents(player, entity,item,amount,force)
-	if not entity._InUse then return end
-	if not( force or cider.container.canFit(entity,item,amount,player)) then
-		player:Notify("Cannot fit that item in!",1)-- This is to stop the menu from being force-closed.
+function PLUGIN:PlayerUpdateContainerContents(
+	player, entity, item, amount, force
+)
+	if not entity._InUse then
+		return
+	end
+	if not (force or cider.container.canFit(entity, item, amount, player)) then
+		player:Notify("Cannot fit that item in!", 1) -- This is to stop the menu from being force-closed.
 		return true
 	end
 end

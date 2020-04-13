@@ -11,28 +11,35 @@ SWEP.DrawAmmo = false;
 SWEP.IconLetter = "H"
 SWEP.DrawCrosshair = false;
 -- Bitchin smart lookin instructions o/
+-- TODO: Figure out how to un-mangle the instruction source
 local title_color = "<color=230,230,230,255>"
 local text_color = "<color=150,150,150,255>"
 local end_color = "</color>"
 SWEP.Instructions =
-	end_color..title_color.."Primary Fire:\t"..			end_color..text_color.." Punch / Throw\n"..
-	end_color..title_color.."Secondary Fire:\t"..		end_color..text_color.." Knock / Pick Up / Drop\n"..
-	end_color..title_color.."Sprint+Primary Fire:\t"..	end_color..text_color.." Lock\n"..
-	end_color..title_color.."Sprint+Secondary Fire:\t"..end_color..text_color.." Unlock";
+	end_color .. title_color .. "Primary Fire:\t" .. end_color .. text_color ..
+		" Punch / Throw\n" .. end_color .. title_color .. "Secondary Fire:\t" ..
+		end_color .. text_color .. " Knock / Pick Up / Drop\n" .. end_color ..
+		title_color .. "Sprint+Primary Fire:\t" .. end_color .. text_color ..
+		" Lock\n" .. end_color .. title_color .. "Sprint+Secondary Fire:\t" ..
+		end_color .. text_color .. " Unlock";
 SWEP.Purpose = "Picking stuff up, knocking on doors and punching people.";
 
-
 function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
-	draw.SimpleText(self.IconLetter, "CSSelectIcons", x + 0.59*wide, y + tall*0.2, Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
-	self:PrintWeaponInfo(x + wide + 20, y + tall*0.95, alpha)
+	draw.SimpleText(
+		self.IconLetter, "CSSelectIcons", x + 0.59 * wide, y + tall * 0.2,
+		Color(255, 220, 0, 255), TEXT_ALIGN_CENTER
+	)
+	self:PrintWeaponInfo(x + wide + 20, y + tall * 0.95, alpha)
 end
-killicon.AddFont( "cider_hands", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+killicon.AddFont(
+	"cider_hands", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+)
 
 local function wtfboom(_, tr, _)
 	local ed = EffectData();
-	ed:SetStart (tr.HitPos);
+	ed:SetStart(tr.HitPos);
 	ed:SetOrigin(tr.HitPos);
-	ed:SetScale (1);
+	ed:SetScale(1);
 	util.Effect("Explosion", ed);
 end
 
@@ -81,13 +88,13 @@ function SWEP:PrimaryAttack()
 	self:EmitSound("weapons/crossbow/hitbod2.wav");
 	-- Fire a bullet for impact effects
 	local bullet = {
-		Num = 1;
-		Src = tr.StartPos;
-		Dir = tr.Normal;
-		Spread = Vector(0,0,0);
-		Tracer = 0;
-		Force = 0;
-		Damage = 0;
+		Num = 1,
+		Src = tr.StartPos,
+		Dir = tr.Normal,
+		Spread = Vector(0, 0, 0),
+		Tracer = 0,
+		Force = 0,
+		Damage = 0,
 	}
 	-- Check if super punch mode is on
 	if (not tr.HitWorld and self:GetDTBool(1)) then

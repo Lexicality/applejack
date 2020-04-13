@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 4;
 	SWEP.IconLetter = "i";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_g3sg1", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_g3sg1", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -69,8 +71,8 @@ SWEP.DeltaSpray = 0.5;
 SWEP.IronSightsPos = Vector(5.4341, -6.4904, 2.0689);
 SWEP.IronSightsAng = Vector(3.6868, 1.1562, 0.9656);
 
-SWEP.IronSightsPos = Vector (5.3997, -6.5189, 2.0978)
-SWEP.IronSightsAng = Vector (1.0814, 0.4016, 0)
+SWEP.IronSightsPos = Vector(5.3997, -6.5189, 2.0978)
+SWEP.IronSightsAng = Vector(1.0814, 0.4016, 0)
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = true;

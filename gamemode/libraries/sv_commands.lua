@@ -5,12 +5,12 @@
 GM.Commands = {};
 
 local Types = {
-	["string"] = true; -- Do nothing
-	["number"] = true; -- tonumber(arg) or error
-	["bool"]   = true; -- tobool(arg);
-	["player"] = true; -- player.Get(arg) or error
-	["phrase"] = true; -- phrases[arg] or error
-	["..."]    = true; -- Every remaining argument is combined into a string seperated by spaces.
+	["string"] = true, -- Do nothing
+	["number"] = true, -- tonumber(arg) or error
+	["bool"] = true, -- tobool(arg);
+	["player"] = true, -- player.Get(arg) or error
+	["phrase"] = true, -- phrases[arg] or error
+	["..."] = true, -- Every remaining argument is combined into a string seperated by spaces.
 };
 
 ---
@@ -71,7 +71,7 @@ function GM:RegisterCommand(tab)
 		-- First, explode the types
 		local types = {};
 		for kind in string.gmatch(tab.Types, "[^%s]+") do
-			types[#types+1] = string.lower(kind);
+			types[#types + 1] = string.lower(kind);
 		end
 		-- Now explode the argument strings
 		local req, opt, tot = 0, 0, 0;
@@ -82,7 +82,12 @@ function GM:RegisterCommand(tab)
 				req = req + 1;
 				-- Catch a potential fuckup
 				if (opt ~= 0) then
-					error("Malformed argument string! You can only have optional arguments at the end of the call.", 2);
+					error(
+
+						
+							"Malformed argument string! You can only have optional arguments at the end of the call.",
+							2
+					);
 					-- If you've come here wondering what this means, you have put a required argument after an optional argument
 					--  This is a logical error and while I could potentially automatically fix it, that might cause probelms with
 					--  your internal logic. Better to design right in the first place, no? :o)
@@ -99,7 +104,7 @@ function GM:RegisterCommand(tab)
 			if (kind == "...") then
 				-- Vararg endings overrule anything else
 				tab.VarArg = tot;
-				break;
+				break
 			elseif (kind == "phrase") then
 				tab.Phrases = tab.Phrases or {};
 				local ps = {};
@@ -123,10 +128,13 @@ function GM:RegisterCommand(tab)
 	end
 	-- Standin
 	local args = tab.Arguments;
-	if (args ~= '') then
-		args = args .. ' ';
+	if (args ~= "") then
+		args = args .. " ";
 	end
-	GM:AddHelp(tab.Category, self.Config["Command Prefix"] .. tab.Command .. ' ' .. args .. '- ' .. tab.Help);
+	GM:AddHelp(
+		tab.Category, self.Config["Command Prefix"] .. tab.Command .. " " .. args ..
+			"- " .. tab.Help
+	);
 	-- TODO: Setup help files and send to client.
 end
 
@@ -142,14 +150,14 @@ end
 
 function GM:ParseCommand(text)
 	local args = {};
-	local varg      = 0;
-	local j         = 1;
-	local leng      = text:len();
-	local lastc     = '';
-	local quoting   = false;
-	local c         = 1;
-	local i         = 1;
-	local ctext     = "";
+	local varg = 0;
+	local j = 1;
+	local leng = text:len();
+	local lastc = "";
+	local quoting = false;
+	local c = 1;
+	local i = 1;
+	local ctext = "";
 	-- MsgN("Incoming Text:");
 	-- MsgN(text);
 	while (i <= leng) do
@@ -158,28 +166,28 @@ function GM:ParseCommand(text)
 		-- MsgC(Color(255,255,255), " '", ctext, "' ");
 		if (i == leng) then
 			-- MsgC(cg, "End of the message!");
-			if (ctext == '"') then
+			if (ctext == "\"") then
 				i = i - 1;
 			end
 			args[c] = text:sub(j, i);
-			break;
+			break
 		elseif (quoting) then
 			-- MsgC(cy, '-')
 			-- yn(ctext == ' ') yn(lastc == '"')
-			if (ctext == ' ' and lastc == '"') then
+			if (ctext == " " and lastc == "\"") then
 				quoting = false;
-				args[c] = text:sub(j, i-2);
+				args[c] = text:sub(j, i - 2);
 				-- MsgC(cg," New arg: '", args[c], "' ");
 				c = c + 1;
 				j = i + 1;
 			end
-		elseif (ctext == '"' and (i == 1 or lastc == ' ')) then
+		elseif (ctext == "\"" and (i == 1 or lastc == " ")) then
 			-- MsgC(cg, '+')
 			quoting = true;
 			j = i + 1;
 		else
-			if (ctext == ' ') then
-				args[c] = text:sub(j, i-1);
+			if (ctext == " ") then
+				args[c] = text:sub(j, i - 1);
 				-- MsgC(cg," New arg: '", args[c], "' ");
 				-- This is the first argument, and thus is the command.
 				if (c == 1) then
@@ -189,7 +197,7 @@ function GM:ParseCommand(text)
 					if (not cmd) then
 						-- MsgC(cr, "Unknown command :(");
 						-- Skip everything else, so the command handler can yell at them.
-						break;
+						break
 					end
 					--  Apply vargocity
 					if (cmd.VarArg) then
@@ -206,7 +214,7 @@ function GM:ParseCommand(text)
 		if (c == varg) then
 			args[c] = text:sub(i);
 			-- MsgN("vararg! Dumping the rest of the message as: '", args[#args], "'");
-			break;
+			break
 		end
 	end
 	-- MsgN();
@@ -222,13 +230,13 @@ function GM:PlayerSay(ply, text, public)
 		if (text == "") then
 			return "";
 		end
-		text = self.Config['Command Prefix'] .. "ooc " .. text;
+		text = self.Config["Command Prefix"] .. "ooc " .. text;
 	elseif (string.sub(text, 1, 3) == ".//") then
 		text = string.Trim(string.sub(text, 4));
 		if (text == "") then
 			return "";
 		end
-		text = self.Config['Command Prefix'] .. "looc " .. text;
+		text = self.Config["Command Prefix"] .. "looc " .. text;
 	end
 
 	-- Commands
@@ -239,13 +247,19 @@ function GM:PlayerSay(ply, text, public)
 		self:DoCommand(ply, args);
 	elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
 		if (ply:Arrested()) then
-			cider.chatBox.addInRadius(ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"])
+			cider.chatBox.addInRadius(
+				ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"]
+			)
 		elseif ply:Tied() then
-			cider.chatBox.addInRadius(ply, "tied", text, ply:GetPos(), self.Config["Talk Radius"])
+			cider.chatBox.addInRadius(
+				ply, "tied", text, ply:GetPos(), self.Config["Talk Radius"]
+			)
 		else
-			cider.chatBox.addInRadius(ply, "ic", text, ply:GetPos(), self.Config["Talk Radius"])
+			cider.chatBox.addInRadius(
+				ply, "ic", text, ply:GetPos(), self.Config["Talk Radius"]
+			)
 		end
-		GM:Log(EVENT_TALKING,"%s: %s",ply:Name(),text)
+		GM:Log(EVENT_TALKING, "%s: %s", ply:Name(), text)
 	end
 	return "";
 end
@@ -271,17 +285,22 @@ function GM:DoCommand(ply, args)
 	end
 	-- Access test
 	if (not ply:HasAccess(cmd.Access)) then
-		ply:Notify("You do not have the required access to use that command!", NOTIFY_ERROR);
+		ply:Notify(
+			"You do not have the required access to use that command!", NOTIFY_ERROR
+		);
 		return;
 	end
 	-- Numargs test
 	local nargs = #args;
 	if (nargs < cmd.rargs) then
 		ply:Notify("Not enough arguments specified!", NOTIFY_ERROR);
-		ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+		ply:Notify(
+			"Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " ..
+				cmd.Arguments, NOTIFY_CHAT
+		);
 		return;
 	end
-	--Parse t' args
+	-- Parse t' args
 	local pargs = {};
 	if (cmd.targs > 0) then
 		local t, arg;
@@ -289,7 +308,7 @@ function GM:DoCommand(ply, args)
 			arg = args[i];
 			if (not arg) then
 				-- I'm assuming all the required args are done by here. Something's gone wrong if they're not.
-				break;
+				break
 			end
 			arg = string.Trim(arg);
 			t = cmd.Types[i];
@@ -300,31 +319,49 @@ function GM:DoCommand(ply, args)
 			elseif (t == "number") then
 				local n = tonumber(arg);
 				if (not n) then
-					ply:Notify("Invalid number for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
-					ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+					ply:Notify(
+						"Invalid number for argument #" .. i .. ": " .. cmd.aargs[i] .. "!",
+						NOTIFY_ERROR
+					);
+					ply:Notify(
+						"Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " ..
+							cmd.Arguments, NOTIFY_CHAT
+					);
 					return;
 				end
 				pargs[i] = n;
 			elseif (t == "player") then
 				local pl = player.Get(arg);
 				if (not pl) then
-					ply:Notify("Cannot find player '" .. arg .. "' for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
-					ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+					ply:Notify(
+						"Cannot find player '" .. arg .. "' for argument #" .. i .. ": " ..
+							cmd.aargs[i] .. "!", NOTIFY_ERROR
+					);
+					ply:Notify(
+						"Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " ..
+							cmd.Arguments, NOTIFY_CHAT
+					);
 					return;
 				end
 				pargs[i] = pl;
 			elseif (t == "phrase") then
 				local w = string.lower(arg);
 				if (not cmd.Phrases[i][w]) then
-					ply:Notify("'" .. w .. "' is not a valid choice for argument #" .. i .. ": " .. cmd.aargs[i] .. "!", NOTIFY_ERROR);
-					ply:Notify("Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " .. cmd.Arguments, NOTIFY_CHAT);
+					ply:Notify(
+						"'" .. w .. "' is not a valid choice for argument #" .. i .. ": " ..
+							cmd.aargs[i] .. "!", NOTIFY_ERROR
+					);
+					ply:Notify(
+						"Usage: " .. self.Config["Command Prefix"] .. cmd.Command .. " " ..
+							cmd.Arguments, NOTIFY_CHAT
+					);
 					return;
 				end
 				pargs[i] = w;
 			elseif (t == "...") then
 				-- There is no way that this should be able to be *all* whitespace, so I won't check if it's empty.
 				pargs[i] = string.Trim(table.concat(args, " ", i));
-				break;
+				break
 			end
 		end
 	end
@@ -333,21 +370,26 @@ function GM:DoCommand(ply, args)
 		pargs[k] = tostring(v);
 	end
 	if (not stat) then
-		Error("[", os.date(), "] Moonshine: Command '", cmd.Command, ' "', table.concat(pargs, '" "'), "\" 's callback failed: ", res, "\n");
+		Error(
+			"[", os.date(), "] Moonshine: Command '", cmd.Command, " \"",
+			table.concat(pargs, "\" \""), "\" 's callback failed: ", res, "\n"
+		);
 	elseif (res == false) then
 		if (err and err ~= "") then
 			ply:Notify(err, NOTIFY_ERROR);
 		end
 		return;
 	end
-	local words = table.concat(pargs, '" "');
+	local words = table.concat(pargs, "\" \"");
 	if (words ~= "") then
-		words = ' "' .. words .. '"';
+		words = " \"" .. words .. "\"";
 	end
 	GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
 end
 
-concommand.Add("mshine", function(ply, _, _, command)
-	local args = GM:ParseCommand(command);
-	GM:DoCommand(ply, args);
-end);
+concommand.Add(
+	"mshine", function(ply, _, _, command)
+		local args = GM:ParseCommand(command);
+		GM:DoCommand(ply, args);
+	end
+);

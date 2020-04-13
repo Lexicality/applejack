@@ -2,9 +2,7 @@
 -- ~ MSAccessList ~
 -- ~ Moonshine ~
 --
-
 -- TODO: THIS IS NEVER USED AND PROBABLY DOESN'T WORK!!!
-
 -- Vars
 local menu;
 
@@ -32,19 +30,27 @@ local function UpdateMenu(data)
 end
 
 if (net) then
-	net.Receive("MS Access List", function()
-		CreateMenu(net.ReadTable());
-	end);
-	net.Receive("MS Access List update", function()
-		UpdateMenu(net.ReadTable());
-	end);
+	net.Receive(
+		"MS Access List", function()
+			CreateMenu(net.ReadTable());
+		end
+	);
+	net.Receive(
+		"MS Access List update", function()
+			UpdateMenu(net.ReadTable());
+		end
+	);
 else
-	datastream.Hook("MS Access List", function(_,_,_, data)
-		CreateMenu(data);
-	end);
-	datastream.Hook("MS Access List update", function(_,_,_, data)
-		UpdateMenu(data);
-	end);
+	datastream.Hook(
+		"MS Access List", function(_, _, _, data)
+			CreateMenu(data);
+		end
+	);
+	datastream.Hook(
+		"MS Access List update", function(_, _, _, data)
+			UpdateMenu(data);
+		end
+	);
 end
 
 ----------------------------------------
@@ -100,11 +106,11 @@ do
 		if (item.IsPlayer) then
 			name = item:GetName();
 			desc = "TODO! Details - Clan";
-			mdl  = item:GetModel();
+			mdl = item:GetModel();
 		else
 			name = item.Name;
 			desc = item.Description;
-			mdl  = item.Model;
+			mdl = item.Model;
 		end
 		panel:SetName(name);
 		panel:SetDescription(desc);
@@ -159,13 +165,9 @@ local function formatPlayerList(list)
 	local res = {};
 	local trans = {};
 	for _, group in pairs(GM.Groups) do
-		local data = {
-			SortWeight = group.SortWeight;
-		};
+		local data = {SortWeight = group.SortWeight};
 		for _, team in pairs(group.Teams) do
-			local arf = {
-				SortWeight = team.SortWeight;
-			};
+			local arf = {SortWeight = team.SortWeight};
 			data[team.Name] = arf;
 			trans[team.TeamID] = arf;
 		end
@@ -225,11 +227,11 @@ local function preparePlayerData(PlayerList)
 		-- Generate the group category if it doesn't exist
 		if (not GroupData) then
 			GroupData = {
-				SortWeight = Group.SortWeight;
+				SortWeight = Group.SortWeight,
 				Unaffiliated = {
 					-- Plunge to the bottom
-					SortWeight = 10;
-				};
+					SortWeight = 10,
+				},
 			};
 			ItemData[Group.Name] = GroupData;
 		end
@@ -240,18 +242,14 @@ local function preparePlayerData(PlayerList)
 			GangData = GroupData[Gang.Name];
 			if (not GangData) then
 				-- Generate the gang subcategory
-				GangData = {
-					SortWeight = Gang.SortWeight;
-				};
+				GangData = {SortWeight = Gang.SortWeight};
 				GroupData[Gang.Name] = GangData;
 			end
 		else
 			GangData = Group.Unaffiliated;
 		end
 		-- Finally get around to making the team subcategory
-		local TeamData = {
-			SortWeight = Team.SortWeight;
-		};
+		local TeamData = {SortWeight = Team.SortWeight};
 		GangData[Team.Name] = TeamData;
 		-- And for the porpoises of actually getting the players in,
 		--  alias the category table as a TeamID Subtable
@@ -275,21 +273,15 @@ local function formatTeamList(list)
 	local trans = {};
 
 	for _, group in pairs(GM.Groups) do
-		local gangs = {
-			SortWeight = group.SortWeight;
-		};
+		local gangs = {SortWeight = group.SortWeight};
 		for _, gang in (data.Gangs) do
-			local teams = {
-				SortWeight = gang.SortWeight;
-			};
+			local teams = {SortWeight = gang.SortWeight};
 			for _, team in pairs(gang.Teams) do
 				trans[team.TeamID] = teams;
 			end
 			gangs[gang.Name] = teams;
 		end
-		teams = {
-			SortWeight = 10;
-	}
+		teams = {SortWeight = 10}
 		for _, team in pairs(group.Teams) do
 			if (not trans[team.TeamID]) then
 				trans[team.TeamID] = teams;
@@ -354,11 +346,11 @@ function prepareTeamData(TeamList)
 		-- Generate the group category if it doesn't exist
 		if (not GroupData) then
 			GroupData = {
-				SortWeight = Group.SortWeight;
+				SortWeight = Group.SortWeight,
 				Unaffiliated = {
 					-- Plunge to the bottom
-					SortWeight = 10;
-				};
+					SortWeight = 10,
+				},
 			};
 			ItemData[Group.Name] = GroupData;
 		end
@@ -369,9 +361,7 @@ function prepareTeamData(TeamList)
 			GangData = GroupData[Gang.Name];
 			if (not GangData) then
 				-- Generate the gang subcategory
-				GangData = {
-					SortWeight = Gang.SortWeight;
-				};
+				GangData = {SortWeight = Gang.SortWeight};
 				GroupData[Gang.Name] = GangData;
 			end
 		else
@@ -395,9 +385,7 @@ local function formatGangList(list)
 	end
 	local res = {};
 	for _, group in pairs(GM.Groups) do
-		local data = {
-			SortWeight = group.SortWeight;
-		};
+		local data = {SortWeight = group.SortWeight};
 		for _, gang in pairs(group.Gangs) do
 			if (gangs[gang.GangID]) then
 				table.insert(data, gang);
@@ -427,7 +415,7 @@ function pepareGangData(GangList)
 	end
 	-- Have a category for every group, even if nothing's in it
 	for _, GroupData in pairs(GM.Groups) do
-		local Group = { SortWeight = GroupData.SortWeight; }
+		local Group = {SortWeight = GroupData.SortWeight}
 		if (GroupIDs[GroupData.ID]) then
 			table.insert(Group, GroupData);
 		end

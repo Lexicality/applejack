@@ -11,7 +11,7 @@ if ScrW() > width then
 else
 	cider.menu.width = ScrW()
 end
-cider.menu.height = ScrH()-40;
+cider.menu.height = ScrH() - 40;
 
 -- Define a new panel.
 local PANEL = {};
@@ -26,15 +26,17 @@ function PANEL:Init()
 	-- Create the close button.
 	self.close = vgui.Create("DButton", self);
 	self.close:SetText("Close");
-	self.close.DoClick = function(self) cider.menu.toggle(); end
+	self.close.DoClick = function(self)
+		cider.menu.toggle();
+	end
 
 	-- Create the tabs property sheet.
 	self.tabs = vgui.Create("DPropertySheet", self);
 	local function addTab(name, panel, icon)
 		local data = {
-			Name  = name;
-			Panel = vgui.Create(panel);
-			Icon  = "icon16/" .. icon .. ".png"
+			Name = name,
+			Panel = vgui.Create(panel),
+			Icon = "icon16/" .. icon .. ".png",
 		};
 		self.tabs:AddSheet(data.Name, data.Panel, data.Icon);
 		cider.menu.tabs[name] = data;
@@ -42,14 +44,14 @@ function PANEL:Init()
 
 	-- Add the sheets for the other menus to the property sheet.
 	addTab("Character", "cider_Character", "user");
-	addTab("Help",      "cider_Help",      "page");
-	addTab("Laws",      "cider_Laws",      "world");
-	addTab("Rules",     "cider_Rules",     "exclamation");
+	addTab("Help", "cider_Help", "page");
+	addTab("Laws", "cider_Laws", "world");
+	addTab("Rules", "cider_Rules", "exclamation");
 	addTab("Inventory", "cider_Inventory", "application_view_tile");
-	addTab("Store",     "cider_Store",     "box");
+	addTab("Store", "cider_Store", "box");
 	addTab("Changelog", "cider_Changelog", "plugin");
-	addTab("Donate",    "cider_Donate",    "heart");
-	addTab("Credits",   "cider_Credits",   "group");
+	addTab("Donate", "cider_Donate", "heart");
+	addTab("Credits", "cider_Credits", "group");
 end
 
 -- Called when the layout should be performed.

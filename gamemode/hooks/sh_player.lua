@@ -2,7 +2,6 @@
 -- ~ Shared Player Hooks ~
 -- ~ Applejack ~
 --
-
 ---
 -- Called when a player attempts to join a team (server) or the job list is updated (client)
 -- @param ply The player in question
@@ -12,8 +11,8 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 	local tdata = team.Get(target);
 	if (not tdata or tdata.Invisible) then
 		return false, "Invalid team!";
-	--elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
-	--    return false, "That team is full!";
+		-- elseif (team.NumPlayers(tdata.TeamID) >= tdata.SizeLimit) then
+		--    return false, "That team is full!";
 	end
 
 	local mdata = ply:GetTeam();
@@ -22,9 +21,10 @@ function GM:PlayerCanJoinTeamShared(ply, target)
 		return true; -- If they're not in a cider team we shouldn't block them from joining one.
 	end
 	local tlevel, mlevel = tdata.GroupLevel, mdata.GroupLevel;
-	if(tdata.Group ~= mdata.Group) then -- We're moving between groups
+	if (tdata.Group ~= mdata.Group) then -- We're moving between groups
 		-- While not immediately apprent, this returns true if they are switching from level 1 to level 1 and takes advantage of the fact that the message is not displayed if 'true' is returned.
-		return (tlevel == mlevel and mlevel == GROUP_BASE), "You can only swap groups from the base!";
+		return (tlevel == mlevel and mlevel == GROUP_BASE),
+       		"You can only swap groups from the base!";
 	end
 	if (tlevel == GROUP_BASE) then -- We're trying to drop ourselves to the base. This is fine.
 		return true;
@@ -50,12 +50,14 @@ function GM:PlayerCanDemote(ply, target)
 	if target:Team() == TEAM_DEFAULT then
 		return false, "You cannot demote players from the default team!";
 	elseif (target:Arrested() or target:Tied()) then
-		return false, "You cannot demote "..target:Name().." right now!";
+		return false, "You cannot demote " .. target:Name() .. " right now!";
 	elseif ply:IsModerator() then
 		return true
 	end
 	local tdata, mdata = target:GetTeam(), ply:GetTeam();
-	if (not (tdata and mdata)) then return false; end
+	if (not (tdata and mdata)) then
+		return false;
+	end
 	if (mdata.GroupLevel ~= GROUP_GANGBOSS) then
 		return false, "Only the leader can demote players from their gang.";
 	elseif (mdata.Gang ~= tdata.Gang) then
@@ -79,7 +81,9 @@ end
 -- @return True if they can, false if they can't.
 function GM:PlayerCanManufactureCategory(ply, category)
 	local t = ply:GetTeam();
-	if (not t) then return false; end
+	if (not t) then
+		return false;
+	end
 	for _, cat in pairs(t.CanMake) do
 		if (cat == category) then
 			return true;

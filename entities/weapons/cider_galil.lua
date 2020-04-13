@@ -12,7 +12,9 @@ if (CLIENT) then
 	SWEP.CSMuzzleFlashes = true;
 	SWEP.CustomCrosshair = false -- = true;
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_galil", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_galil", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -27,7 +29,8 @@ SWEP.ViewModelFlip = false;
 SWEP.PrintName = "Galil";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "Less powerful than the AK47 but with a faster firerate.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -71,8 +74,8 @@ SWEP.DeltaSpray = 0.25;
 SWEP.IronSightsPos = Vector(-5.15, -3, 2.37);
 SWEP.IronSightsAng = Vector(-0.4, 0, 0);
 --------------------
-SWEP.IronSightsPos = Vector (-5.1379, -2.58, 2.2395)
-SWEP.IronSightsAng = Vector (0.0254, 0.0961, 0)
+SWEP.IronSightsPos = Vector(-5.1379, -2.58, 2.2395)
+SWEP.IronSightsAng = Vector(0.0254, 0.0961, 0)
 --------------------
 
 SWEP.IronSightZoom = 1;

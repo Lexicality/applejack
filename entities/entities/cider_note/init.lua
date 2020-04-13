@@ -18,7 +18,7 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 
 	-- Check if the physics object is a valid entity.
-	if ( IsValid(physicsObject) ) then
+	if (IsValid(physicsObject)) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
@@ -31,7 +31,7 @@ function ENT:SetText(text)
 
 	local words = text:sub(pos, pos + linelength);
 	while (words ~= "") do
-		lines[#lines+1] = words;
+		lines[#lines + 1] = words;
 		pos = pos + linelength + 1;
 		words = text:sub(pos, pos + linelength);
 	end
@@ -45,12 +45,14 @@ end
 ENT.NextFade = 0;
 function ENT:Think()
 	local time = CurTime()
-	if (self.NextFade > time) then return; end
-	local r,g,b,a = self:GetColor();
+	if (self.NextFade > time) then
+		return;
+	end
+	local r, g, b, a = self:GetColor();
 	a = a - 1
 	if (a > 0) then
 		self.NextFade = time + GM.Config["Note Fade Speed"];
-		self:SetColor(r,g,b,a);
+		self:SetColor(r, g, b, a);
 	else
 		self:Remove();
 	end

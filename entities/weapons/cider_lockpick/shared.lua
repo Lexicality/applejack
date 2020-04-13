@@ -13,13 +13,16 @@ else
 	SWEP.DrawCrosshair = true;
 
 	function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
-		draw.SimpleText(self.IconLetter, "HL2WeaponIcons", x + 0.5*wide, y --[[+ tall*0.2]], Color(255, 220, 0, 255), TEXT_ALIGN_CENTER )
-		self:PrintWeaponInfo(x + wide + 20, y + tall*0.95, alpha)
+		draw.SimpleText(
+			self.IconLetter, "HL2WeaponIcons", x + 0.5 * wide, y --[[+ tall*0.2]] ,
+			Color(255, 220, 0, 255), TEXT_ALIGN_CENTER
+		)
+		self:PrintWeaponInfo(x + wide + 20, y + tall * 0.95, alpha)
 	end
 end
 
 -- Define some shared variables.
-SWEP.Author	= "Lexi";
+SWEP.Author = "Lexi";
 SWEP.Instructions = "Primary Fire: Attempt to pick Lock.";
 SWEP.Contact = "";
 SWEP.Purpose = "Unlocking locked things";
@@ -43,9 +46,7 @@ SWEP.Primary.Ammo = "";
 SWEP.Secondary.ClipSize = -1;
 SWEP.Secondary.DefaultClip = 0;
 SWEP.Secondary.Automatic = false;
-SWEP.Secondary.Ammo	= "";
-
-
+SWEP.Secondary.Ammo = "";
 
 local fiddlesounds = {
 	-- Metal thump noises
@@ -80,9 +81,7 @@ local unlocksounds = {
 	"physics/metal/weapon_impact_hard2.wav",
 }
 
-local breaksounds = {
-	"physics/plastic/plastic_box_break1.wav"
-}
+local breaksounds = {"physics/plastic/plastic_box_break1.wav"}
 local thumpsounds = {
 	"physics/flesh/flesh_impact_bullet1.wav",
 	"physics/flesh/flesh_impact_bullet2.wav",
@@ -112,7 +111,7 @@ function SWEP:Initialize()
 end
 
 -- Allows me to send the client sounds
-function SWEP:DoSound(tabn,sn)
+function SWEP:DoSound(tabn, sn)
 	local tab;
 	if (tabn == 0) then
 		tab = fiddlesounds;
@@ -124,12 +123,12 @@ function SWEP:DoSound(tabn,sn)
 		tab = thumpsounds;
 	end
 	if (not tab) then
-		error("Invalid table specified: " .. tabn,2);
+		error("Invalid table specified: " .. tabn, 2);
 	elseif (not sn) then
 		sn = math.random(#tab);
 	end
 	if (SERVER and IsValid(self.Owner)) then
-		umsg.Start("dosnd",self.Owner);
+		umsg.Start("dosnd", self.Owner);
 		umsg.Char(tabn);
 		umsg.Char(sn);
 		umsg.End();

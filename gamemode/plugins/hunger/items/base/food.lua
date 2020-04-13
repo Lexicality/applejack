@@ -2,14 +2,13 @@
 -- ~ Base food ~
 -- ~ Applejack ~
 --
-
 -- hurk
 ITEM:Derive("item");
-ITEM.Batch			= 5;
-ITEM.Size			= 1;
-ITEM.Hunger			= 0
-ITEM.Equippable		= true
-ITEM.Equipword		= "eat"
+ITEM.Batch = 5;
+ITEM.Size = 1;
+ITEM.Hunger = 0
+ITEM.Equippable = true
+ITEM.Equipword = "eat"
 -- Called when a player drops the item.
 function ITEM:onUse(ply)
 	if (ply._Hunger.amount < 25) then

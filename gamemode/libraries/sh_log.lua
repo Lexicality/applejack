@@ -6,14 +6,11 @@ local GM = GM or GAMEMODE; -- eeeh
 
 ---
 -- The various log categories and information about them, indexed by name
-GM.LogCategoryData = {
-}
+GM.LogCategoryData = {}
 
 ---
 -- The various log categories and information about them, indexed by ID.
-GM.LogCategories = {
-
-}
+GM.LogCategories = {}
 -- The current category index
 local index = 0;
 
@@ -28,7 +25,7 @@ function GM:RegisterLogCategory(name, description, access, color)
 		name = name,
 		description = description,
 		access = access,
-		color = color
+		color = color,
 	}
 	self.LogCategoryData[name] = category;
 	index = index + 1;
@@ -51,7 +48,7 @@ function GM:RegisterLogCategegoryMaster(name, description, color)
 	self.LogCategoryData[name] = {
 		name = name,
 		description = description,
-		color = color
+		color = color,
 	}
 	if (SERVER) then
 		umsg.PoolString(name);
@@ -69,14 +66,19 @@ end
 function GM:RegisterLogSubCategory(master, access)
 	local data = self.LogCategoryData[master];
 	if (not data) then
-		error("["..os.date().."] Applejack Logging Library: Unknown master category '"..tostring(master).."' provided to RegisterLogSubCategory!",2);
+		error(
+
+			
+				"[" .. os.date() .. "] Applejack Logging Library: Unknown master category '" ..
+					tostring(master) .. "' provided to RegisterLogSubCategory!", 2
+		);
 	end
 	index = index + 1;
 	self.LogCategories[index] = {
 		name = master,
 		description = data.description,
 		color = data.color,
-		access = access
+		access = access,
 	}
 	return index;
 end
@@ -84,14 +86,14 @@ end
 -- Prints the new log entry to the console
 local function doprint(name, msg, ...)
 	-- Create our log text
-	local text = string.format("[%s] "..msg, name, ...);
+	local text = string.format("[%s] " .. msg, name, ...);
 	if (name == "Errors") then -- Throw errors as actual errors.
-		ErrorNoHalt("["..os.date().."]",text,"\n");
+		ErrorNoHalt("[" .. os.date() .. "]", text, "\n");
 		return;
 	end
 	if (SERVER) then
 		-- Neatly work with Source's logging system.
-		ServerLog(text.."\n");
+		ServerLog(text .. "\n");
 		-- Listen servers don't need the serverside messages because they get the clientside ones.
 		if (GM:IsListenServer()) then
 			return;
@@ -113,14 +115,17 @@ if (SERVER) then
 		data = self.LogCategories[category];
 		-- Ensure we have a valid category
 		if (not data) then
-			error("["..os.date().."] Applejack Logging Library: Unknown category '"..tostring(category).."'!",2);
+			error(
+				"[" .. os.date() .. "] Applejack Logging Library: Unknown category '" ..
+					tostring(category) .. "'!", 2
+			);
 		end
 		-- Print the data to the server console
 		doprint(data.name, event, ...);
 		-- Ensure every argument is a string for the umsgs
 		tosend = {};
-		for _,value in pairs{...} do
-			tosend[#tosend+1] = tostring(value);
+		for _, value in pairs {...} do
+			tosend[#tosend + 1] = tostring(value);
 		end
 		filtr = RecipientFilter();
 		i = 0;
@@ -139,43 +144,48 @@ if (SERVER) then
 		end
 		-- Send the event to
 		umsg.Start("LogEvent", filtr)
-			umsg.Short(category);
-			umsg.String( event );
-			umsg.Short( #tosend);
-			if (#tosend > 0) then
-				for i = 1, #tosend do
-					umsg.String(tosend[i]);
-				end
+		umsg.Short(category);
+		umsg.String(event);
+		umsg.Short(#tosend);
+		if (#tosend > 0) then
+			for i = 1, #tosend do
+				umsg.String(tosend[i]);
 			end
+		end
 		umsg.End();
 	end
 else
 	---
 	-- All the stored log entries (clientside)
-	GM.LogEntries = {
-		All = {},
-	};
-	concommand.Add("cider_dumplog", function()
-		file.Write("cider_logdump_"..os.date()..".txt", util.TableToKeyValues(GM.LogEntries)); --Very ugly dump, consider making it prettier in the future
-	end)
-	usermessage.Hook("LogEvent",function(msg)
-		local category = msg:ReadShort();
-		local event = msg:ReadString();
-		local length = msg:ReadShort();
-		local args = {};
-		if (length > 0) then
-			for i = 1, length do
-				args[i] = msg:ReadString();
+	GM.LogEntries = {All = {}};
+	concommand.Add(
+		"cider_dumplog", function()
+			file.Write(
+				"cider_logdump_" .. os.date() .. ".txt",
+				util.TableToKeyValues(GM.LogEntries)
+			); -- Very ugly dump, consider making it prettier in the future
+		end
+	)
+	usermessage.Hook(
+		"LogEvent", function(msg)
+			local category = msg:ReadShort();
+			local event = msg:ReadString();
+			local length = msg:ReadShort();
+			local args = {};
+			if (length > 0) then
+				for i = 1, length do
+					args[i] = msg:ReadString();
+				end
 			end
+			local text = string.format(event, unpack(args));
+			local name = GM.LogCategories[category].name;
+			if (not GM.LogEntries[name]) then
+				GM.LogEntries[name] = {};
+				GM.LogEntries.newCategory = true;
+			end
+			table.insert(GM.LogEntries[name], text);
+			table.insert(GM.LogEntries["All"], text);
+			doprint(name, text);
 		end
-		local text = string.format(event,unpack(args));
-		local name = GM.LogCategories[category].name;
-		if (not GM.LogEntries[name]) then
-			GM.LogEntries[name] = {};
-			GM.LogEntries.newCategory = true;
-		end
-		table.insert(GM.LogEntries[name ], text);
-		table.insert(GM.LogEntries["All"], text);
-		doprint(name, text);
-	end)
+	)
 end

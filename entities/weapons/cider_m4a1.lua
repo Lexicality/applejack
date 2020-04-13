@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 1;
 	SWEP.IconLetter = "w";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_m4a1", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_m4a1", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -24,7 +26,8 @@ SWEP.Category = "Cider";
 SWEP.PrintName = "M4A1";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "A powerful rifle with a silencer attachment.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Primary Fire: Attach/Detach the silencer.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Primary Fire: Attach/Detach the silencer.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -71,8 +74,8 @@ SWEP.IronSightsPos = Vector(5.8309, -6.4258, 1.0894);
 SWEP.IronSightsAng = Vector(3.6868, 1.1562, 4.8196);
 
 --------------------
-SWEP.IronSightsPos = Vector (6.2192, -1.7849, 0.893)
-SWEP.IronSightsAng = Vector (3.5076, 2.5838, 4.4109)
+SWEP.IronSightsPos = Vector(6.2192, -1.7849, 0.893)
+SWEP.IronSightsAng = Vector(3.5076, 2.5838, 4.4109)
 --------------------
 
 SWEP.IronSightZoom = 1;

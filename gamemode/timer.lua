@@ -2,15 +2,15 @@
 -- ~ Shared Timer Module ~
 -- ~ Moonshine ~
 --
-local CurTime				= CurTime
-local UnPredictedCurTime	= UnPredictedCurTime
-local unpack				= unpack
-local pairs					= pairs
-local table					= table
-local pcall					= pcall
-local ErrorNoHalt			= ErrorNoHalt
-local hook					= hook
-local tostring				= tostring
+local CurTime = CurTime
+local UnPredictedCurTime = UnPredictedCurTime
+local unpack = unpack
+local pairs = pairs
+local table = table
+local pcall = pcall
+local ErrorNoHalt = ErrorNoHalt
+local hook = hook
+local tostring = tostring
 
 -- This is a rewrite of Garry's timer module.
 -- It's pretty good, but it occasionally produces minor errors, which break all
@@ -20,17 +20,17 @@ oldtimer = timer
 timer = {}
 
 -- Enums
-local KILLED	= -2
-local PAUSED	= -1
-local STOPPED	= 0
-local RUNNING	= 1
+local KILLED = -2
+local PAUSED = -1
+local STOPPED = 0
+local RUNNING = 1
 
 -- Timer Holders
-local timers			= {}
-local simpletimers		= {}
+local timers = {}
+local simpletimers = {}
 local conditionaltimers = {}
-local todeleten			= {}
-local todeletec			= {}
+local todeleten = {}
+local todeletec = {}
 
 -- Internal Functions
 
@@ -57,9 +57,9 @@ end
 ---
 -- Desc: Create a new timer, destroying any existing ones.
 -- Args: name, delay, repititons, function to call at the end, arguments.
-function timer.Create(name,...)
-	timer.Destroy(name,true)
-	timer.Adjust(name,...)
+function timer.Create(name, ...)
+	timer.Destroy(name, true)
+	timer.Adjust(name, ...)
 	timer.Start(name)
 end
 
@@ -68,35 +68,38 @@ end
 -- Args: Name
 function timer.Start(name)
 	local timer = getTimer(name)
-	if not timer then return false end
-	timer.n		 = 0
+	if not timer then
+		return false
+	end
+	timer.n = 0
 	timer.status = RUNNING
-	timer.last	 = CurTime()
+	timer.last = CurTime()
 	return true
 end
 
 ---
 -- Desc: Adjust a timer
 -- Args: name, delay, repititons, [function to call at the end], arguments.
-function timer.Adjust(name,delay,reps,func,...)
+function timer.Adjust(name, delay, reps, func, ...)
 	local arg = {...};
 	local timer = getTimer(name)
 	if not timer then
-		timers[name] = {
-			status = STOPPED;
-		}
+		timers[name] = {status = STOPPED}
 		timer = timers[name]
 	elseif timer.failure then
-		return timer.AdjustConditional(name,delay,reps,func,...)
+		return timer.AdjustConditional(name, delay, reps, func, ...)
 	end
 	if delay then
 		timer.delay = delay
-	end if reps then
-		timer.reps 	= reps
-	end if func then
-		timer.func	= func
-	end if #arg > 0 then
-		timer.args	= arg;
+	end
+	if reps then
+		timer.reps = reps
+	end
+	if func then
+		timer.func = func
+	end
+	if #arg > 0 then
+		timer.args = arg;
 	elseif not timer.args then
 		timer.args = {};
 	end
@@ -108,7 +111,9 @@ end
 -- Args: name
 function timer.Pause(name)
 	local timer = getTimer(name)
-	if not timer or timer.status ~= RUNNING then return false end
+	if not timer or timer.status ~= RUNNING then
+		return false
+	end
 	timer.diff = CurTime() - timer.last
 	timer.status = PAUSED
 	return true
@@ -119,7 +124,9 @@ end
 -- Args: name
 function timer.UnPause(name)
 	local timer = getTimer(name)
-	if not timer or timer.status ~= PAUSED then return false end
+	if not timer or timer.status ~= PAUSED then
+		return false
+	end
 	timer.diff = nil
 	timer.status = RUNNING
 	return true
@@ -145,7 +152,9 @@ end
 -- Args: Name
 function timer.Stop(name)
 	local timer = getTimer(name)
-	if not timer or timer.status == STOPPED then return false end
+	if not timer or timer.status == STOPPED then
+		return false
+	end
 	timer.status = STOPPED
 	-- if timer.failure then
 	-- 	timer.failure(unpack(table.Add(timer.args,{...})))
@@ -160,19 +169,21 @@ local nextrep = 0 -- Fer the conditionals
 function timer.Check()
 	local time = CurTime()
 	-- Delete unwanted timers before they can hurt again
-	for _,name in pairs(todeleten) do
+	for _, name in pairs(todeleten) do
 		timers[name] = nil
 	end
 	-- Normal Timers
-	for name,data in pairs(timers) do
+	for name, data in pairs(timers) do
 		if data.status == PAUSED then
 			data.last = time - data.diff
 		elseif data.status == RUNNING and data.last + data.delay <= time then
-			data.last	= time
-			data.n		= data.n + 1
-			local res,err = pcall(data.func,unpack(data.args or {}))
+			data.last = time
+			data.n = data.n + 1
+			local res, err = pcall(data.func, unpack(data.args or {}))
 			if not res then
-				ErrorNoHalt("Error in timer '"..tostring(name).."': "..tostring(err).."\n")
+				ErrorNoHalt(
+					"Error in timer '" .. tostring(name) .. "': " .. tostring(err) .. "\n"
+				)
 			end
 			if data.n >= data.reps and data.reps ~= 0 then
 				timer.Stop(name)
@@ -180,68 +191,83 @@ function timer.Check()
 		end
 	end
 	-- Simple timers
-	for id,data in pairs(simpletimers) do
+	for id, data in pairs(simpletimers) do
 		if data.fin <= time then
-			local res, err = pcall(data.func,unpack(data.args))
+			local res, err = pcall(data.func, unpack(data.args))
 			if not res then
-				ErrorNoHalt("Timer Error: "..tostring(err).."\n")
+				ErrorNoHalt("Timer Error: " .. tostring(err) .. "\n")
 			end
 			simpletimers[id] = nil
 		end
 	end
 	-- Delete unwanted conditional timers before they can be called.
-	for _,name in pairs(todeletec) do
+	for _, name in pairs(todeletec) do
 		conditionaltimers[name] = nil
 	end
 	-- Conditional timers are only called every 0.1 seconds.
-	if nextrep > time then return end
+	if nextrep > time then
+		return
+	end
 	nextrep = time + 0.1
 	-- Conditional Timers
-	for name,data in pairs(conditionaltimers) do
+	for name, data in pairs(conditionaltimers) do
 		if data.status == RUNNING then
 			data.n = data.n + 1
-			local res,err = pcall(data.conditional,unpack(data.args))
+			local res, err = pcall(data.conditional, unpack(data.args))
 			if not res then
-				ErrorNoHalt("Error in conditional timer '"..tostring(name).."' conditional func: "..tostring(err).."\n")
+				ErrorNoHalt(
+
+					
+						"Error in conditional timer '" .. tostring(name) .. "' conditional func: " ..
+							tostring(err) .. "\n"
+				)
 			elseif err == false then
-				local res,err = pcall(data.failure,unpack(data.args))
+				local res, err = pcall(data.failure, unpack(data.args))
 				if not res then
-					ErrorNoHalt("Error in conditional timer '"..tostring(name).."' failure func: "..tostring(err).."\n")
+					ErrorNoHalt(
+						"Error in conditional timer '" .. tostring(name) .. "' failure func: " ..
+							tostring(err) .. "\n"
+					)
 				end
 				timer.Stop(name)
 			elseif err == "skip" then
 				data.n = data.n - 1
 			end
 			if data.n >= data.reps then
-				local res,err = pcall(data.success,unpack(data.args))
+				local res, err = pcall(data.success, unpack(data.args))
 				if not res then
-					ErrorNoHalt("Error in conditional timer '"..tostring(name).."' success func: "..tostring(err).."\n")
+					ErrorNoHalt(
+						"Error in conditional timer '" .. tostring(name) .. "' success func: " ..
+							tostring(err) .. "\n"
+					)
 				end
 				timer.Stop(name)
 			end
 		end
 	end
 end
-hook.Add("Think","Moonshine Timer Checker",timer.Check);
+hook.Add("Think", "Moonshine Timer Checker", timer.Check);
 
 ---
 -- Desc: Destroy a timer, removing all traces of it.
 -- Args: name, [delete now]
 -- Note: If 'delete now' is not specified, the timer will be deleted on the next think.
-function timer.Destroy(name,now)
+function timer.Destroy(name, now)
 	local timer = getTimer(name)
-	if not timer then return false end
+	if not timer then
+		return false
+	end
 	if timer.failure then -- Conditional timer
 		if now then
 			conditionaltimers[name] = nil
 		else -- This is to prevent various odd errors that occasionally pop up
-			table.insert(todeletec,name)
+			table.insert(todeletec, name)
 		end
 	else
 		if now then
 			timers[name] = nil
 		else
-			table.insert(todeleten,name)
+			table.insert(todeleten, name)
 		end
 	end
 	return true
@@ -251,12 +277,10 @@ timer.Remove = timer.Destroy;
 ---
 -- Desc: Create a simple "create and forget" timer
 -- Args: Delay, function, vararg...
-function timer.Simple(delay,func,...)
-	table.insert(simpletimers,{
-		fin = UnPredictedCurTime() + delay;
-		func = func;
-		args = {...};
-	})
+function timer.Simple(delay, func, ...)
+	table.insert(
+		simpletimers, {fin = UnPredictedCurTime() + delay, func = func, args = {...}}
+	)
 	return true
 end
 
@@ -268,9 +292,9 @@ end
 -- 		If it returns 'skip', 0.1 seconds will be added to the time remaining.
 -- 		The arguments passed at the end will be given to all functions.
 -- 		(Also note that the arguments are not in the definition. They are all required, however.)
-function timer.Conditional(name,...)
-	timer.Destroy(name,true)
-	timer.AdjustConditional(name,...)
+function timer.Conditional(name, ...)
+	timer.Destroy(name, true)
+	timer.AdjustConditional(name, ...)
 	timer.Start(name)
 	return true
 end
@@ -278,25 +302,27 @@ end
 ---
 -- Desc: Adjust a conditional timer.
 -- Args: Name, Seconds, [Condition function], [Success function], [Failure function], vararg...
-function timer.AdjustConditional(name,seconds,conditional,success,failure,...)
+function timer.AdjustConditional(
+	name, seconds, conditional, success, failure, ...
+)
 	local timer = getTimer(name)
 	if not timer then
-		timer = {
-			status = STOPPED,
-		}
+		timer = {status = STOPPED}
 		conditionaltimers[name] = timer;
 	end
-	timer.reps				= math.Round(seconds*10)
+	timer.reps = math.Round(seconds * 10)
 	if conditional then
-		timer.conditional	= conditional
-	end if success then
-		timer.success		= success
-	end if failure then
-		timer.failure		= failure
+		timer.conditional = conditional
+	end
+	if success then
+		timer.success = success
+	end
+	if failure then
+		timer.failure = failure
 	end
 	local arg = {...};
 	if #arg > 0 then
-		timer.args			= arg
+		timer.args = arg
 	end
 end
 
@@ -306,12 +332,14 @@ end
 -- Note: This function will cause a conditional timer to act as if the condition function returned false.
 -- 		Additional argumenets passed will be passed to the failure function.
 -- 		Do not call this from a conditional timer, it will have unpredictable results.
-function timer.Violate(name,...)
+function timer.Violate(name, ...)
 	local Timer = getTimer(name)
-	if not Timer then return false end
-	local res,err = pcall(Timer.failure,unpack(table.Add(Timer.args,{...})))
+	if not Timer then
+		return false
+	end
+	local res, err = pcall(Timer.failure, unpack(table.Add(Timer.args, {...})))
 	if not res then
-		error("Error violating timer '"..tostring(name).."': "..tostring(err),2)
+		error("Error violating timer '" .. tostring(name) .. "': " .. tostring(err), 2)
 	end
 	timer.Stop(name)
 	return true

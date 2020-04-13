@@ -3,7 +3,7 @@
 -- ~ Applejack ~
 --
 local PANEL = {};
-local width,height = ScrW()*0.75,ScrH()*0.75
+local width, height = ScrW() * 0.75, ScrH() * 0.75
 local accessmenu
 local localPlayerPosition
 local CurTab
@@ -20,11 +20,11 @@ local function CheckPos()
 end
 -- Called when the panel is initialized.
 function PANEL:Init()
---	self:StretchToParent(0,0,width/2+10,0)
-	self:SetSize(width/2 -10, height - 55);
-	--local p = self:GetParent()
-	--self:SetSize(p:GetWide()/2 -10, p:GetTall() - 600);
-	--self:SetWide(width/2 -10)
+	--	self:StretchToParent(0,0,width/2+10,0)
+	self:SetSize(width / 2 - 10, height - 55);
+	-- local p = self:GetParent()
+	-- self:SetSize(p:GetWide()/2 -10, p:GetTall() - 600);
+	-- self:SetWide(width/2 -10)
 
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
@@ -42,7 +42,7 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
---	self:StretchToParent(0, 22, 0, 0);
+	--	self:StretchToParent(0, 22, 0, 0);
 	self.itemsList:StretchToParent(0, 0, 0, 0);
 end
 
@@ -65,7 +65,7 @@ local function handlePlys(self)
 		res = GM:GetGroup(GroupID);
 		-- if (res.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
-		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetSize(width / 2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
 		header:SetToolTip(res.Description);
 		self.itemsList:AddItem(header);
@@ -78,7 +78,7 @@ local function handlePlys(self)
 			res = team.Get(TeamID);
 			-- if (res.Invisible) then continue; end
 			header = vgui.Create("DCollapsibleCategory", self);
-			header:SetSize(width/2, 50); -- Keep the second number at 50
+			header:SetSize(width / 2, 50); -- Keep the second number at 50
 			header:SetLabel(res.Name);
 			header:SetToolTip(res.Description);
 			sublist:AddItem(header);
@@ -125,9 +125,11 @@ local function handleTeams(self)
 	end
 	for GroupID, teams in SortedPairs(self.inventory) do
 		res = GM:GetGroup(GroupID);
-		if (res.Invisible) then continue; end
+		if (res.Invisible) then
+			continue;
+		end
 		header = vgui.Create("DCollapsibleCategory", self)
-		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetSize(width / 2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
 		header:SetToolTip(res.Description);
 		self.itemsList:AddItem(header);
@@ -137,7 +139,9 @@ local function handleTeams(self)
 		sublist:SetSpacing(3);
 		header:SetContents(sublist);
 		for _, team in SortedPairs(teams) do
-			if (team.Invisible) then continue; end
+			if (team.Invisible) then
+				continue;
+			end
 			item = vgui.Create("Accessmenu Item", self);
 			item:SetName(team.Name);
 			item:SetDescription(team.Description);
@@ -163,9 +167,11 @@ local function handleGangs(self)
 	end
 	for GroupID, gangs in SortedPairs(self.inventory) do
 		res = GM:GetGroup(GroupID);
-		if (res.Invisible) then continue; end
+		if (res.Invisible) then
+			continue;
+		end
 		header = vgui.Create("DCollapsibleCategory", self)
-		header:SetSize(width/2, 50); -- Keep the second number at 50
+		header:SetSize(width / 2, 50); -- Keep the second number at 50
 		header:SetLabel(res.Name);
 		header:SetToolTip(res.Description);
 		self.itemsList:AddItem(header);
@@ -175,7 +181,9 @@ local function handleGangs(self)
 		sublist:SetSpacing(3);
 		header:SetContents(sublist);
 		for _, gang in SortedPairs(gangs) do
-			if (gang.Invisible) then continue; end
+			if (gang.Invisible) then
+				continue;
+			end
 			item = vgui.Create("Accessmenu Item", self);
 			item:SetName(gang.Name);
 			item:SetDescription(gang.Description);
@@ -195,7 +203,9 @@ end
 
 -- Called every frame.
 function PANEL:Think()
-	if (not self.updatePanel) then return; end
+	if (not self.updatePanel) then
+		return;
+	end
 	self.updatePanel = false;
 
 	-- Clear the current list of items.
@@ -223,7 +233,7 @@ local PANEL = {};
 -- Called when the panel is initialized.
 function PANEL:Init()
 	-- Set the size and position of the panel.
-	self:SetSize(width/2, 75);
+	self:SetSize(width / 2, 75);
 	self:SetPos(1, 5);
 	self.name = vgui.Create("DLabel", self);
 	self.name:SetDark(true);
@@ -231,8 +241,10 @@ function PANEL:Init()
 	self.description:SetDark(true);
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 	self.spawnIcon:SetToolTip();
-	self.spawnIcon.DoClick = function() end;
-	self.spawnIcon.OnMousePressed = function() end;
+	self.spawnIcon.DoClick = function()
+	end;
+	self.spawnIcon.OnMousePressed = function()
+	end;
 end
 
 function PANEL:SetName(name)
@@ -263,7 +275,9 @@ local function btn(self)
 	RunConsoleCommand("mshine", "access", self.action, self.me.idkind, self.me.id);
 end
 function PANEL:SetButton(bool)
-	if (not bool) then return; end
+	if (not bool) then
+		return;
+	end
 	self.button = vgui.Create("DButton", self);
 	local action = self:GetParent().action
 	self.button:SetText(action);
@@ -294,7 +308,7 @@ end
 vgui.Register("Accessmenu Item", PANEL, "DPanel");
 
 -- Register the panel.
---vgui.Register("cider_Container_Item", PANEL, "DPanel");
+-- vgui.Register("cider_Container_Item", PANEL, "DPanel");
 -- Define a new panel.
 local PANEL = {};
 
@@ -313,7 +327,7 @@ end
 function PANEL:PerformLayout()
 
 	-- Set the position of the label.
-	self.spaceUsed:SetPos( (self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5 );
+	self.spaceUsed:SetPos((self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5);
 	self.spaceUsed:SetText(self.word);
 	self.spaceUsed:SizeToContents();
 end
@@ -325,27 +339,27 @@ local PANEL = {};
 
 -- Called when the panel is initialized.
 function PANEL:Init()
-	self.noaccess			= vgui.Create("Accessmenu List",self)
-	self.access				= vgui.Create("Accessmenu List",self)
-	self.noaccess.action	= "Give"
-	self.noaccess.name		= "Choices"
-	self.access.action		= "Take"
-	self.access.name		= "Access List"
+	self.noaccess = vgui.Create("Accessmenu List", self)
+	self.access = vgui.Create("Accessmenu List", self)
+	self.noaccess.action = "Give"
+	self.noaccess.name = "Choices"
+	self.access.action = "Take"
+	self.access.name = "Access List"
 
 end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
 
-	--self:SetSize(width,height)
-	self:StretchToParent(0,22.5,0,0)
-	--self:SetPos((ScrW() - width)/2,(ScrH() - height)/2)
+	-- self:SetSize(width,height)
+	self:StretchToParent(0, 22.5, 0, 0)
+	-- self:SetPos((ScrW() - width)/2,(ScrH() - height)/2)
 	-- Set the position of both lists
 	self.noaccess:SetPos(0, 0);
 	self.access:SetPos(0 + self.noaccess:GetWide() + 4, 0);
 end
 -- Register the panel.
-vgui.Register("Accessmenu Pane", PANEL)--, "DPanel");
+vgui.Register("Accessmenu Pane", PANEL) -- , "DPanel");
 -- Define a new panel.
 local PANEL = {};
 
@@ -365,41 +379,48 @@ function PANEL:Init()
 		-- Disable the screen clicker.
 		gui.EnableScreenClicker(false);
 	end
-	self.sheets = vgui.Create("DPropertySheet",self)
-	self.players = vgui.Create("Accessmenu Pane",self.sheets)
-	self.jobs = vgui.Create("Accessmenu Pane",self.sheets)
-	self.gangs = vgui.Create("Accessmenu Pane",self.sheets)
-	self.sheets:AddSheet("Players",	self.players,nil,false,true,nil)
-	self.sheets:AddSheet("Jobs",	self.jobs	,nil,false,true,nil)
-	self.sheets:AddSheet("Gangs",	self.gangs	,nil,false,true,nil)
-	self.texbox	= vgui.Create("DTextEntry",	self)
-	self.setbut = vgui.Create("DButton",	self)
+	self.sheets = vgui.Create("DPropertySheet", self)
+	self.players = vgui.Create("Accessmenu Pane", self.sheets)
+	self.jobs = vgui.Create("Accessmenu Pane", self.sheets)
+	self.gangs = vgui.Create("Accessmenu Pane", self.sheets)
+	self.sheets:AddSheet("Players", self.players, nil, false, true, nil)
+	self.sheets:AddSheet("Jobs", self.jobs, nil, false, true, nil)
+	self.sheets:AddSheet("Gangs", self.gangs, nil, false, true, nil)
+	self.texbox = vgui.Create("DTextEntry", self)
+	self.setbut = vgui.Create("DButton", self)
 	self.setbut:SetText("Set Name")
 	local function setName()
 		val = self.texbox:GetValue()
-		if not val or val == "" then return end
-		RunConsoleCommand("mshine", "entity", "rename", val:sub(1,32));
+		if not val or val == "" then
+			return
+		end
+		RunConsoleCommand("mshine", "entity", "rename", val:sub(1, 32));
 		self.texbox:SetText("")
 		self.texbox:KillFocus()
 	end
 	self.texbox.OnEnter = setName
 	self.setbut.DoClick = setName
-	self.selbut = vgui.Create("DButton",	self)
+	self.selbut = vgui.Create("DButton", self)
 	self.selbut:SetText("Sell")
 	self.selbut.DoClick = function()
 		local menu = DermaMenu();
 
 		-- Add an option for yes and no.
-		menu:AddOption("No", function() end);
-		menu:AddOption("Yes", function()
-			RunConsoleCommand("mshine", "entity", "sell");
-			accessmenu:Close();
-			accessmenu:Remove();
-			gui.EnableScreenClicker(false);
-		end);
+		menu:AddOption(
+			"No", function()
+			end
+		);
+		menu:AddOption(
+			"Yes", function()
+				RunConsoleCommand("mshine", "entity", "sell");
+				accessmenu:Close();
+				accessmenu:Remove();
+				gui.EnableScreenClicker(false);
+			end
+		);
 
 		-- Open the menu.
-		menu:Open() ;
+		menu:Open();
 	end
 	-- Capture the position of the local player.
 	localPlayerPosition = LocalPlayer():GetPos();
@@ -409,19 +430,19 @@ end
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
 
-	self:SetSize			(width,											height)
-	self:SetPos				((ScrW() - width)/2,			   (ScrH() - height)/2)
-	 self.close:SetSize		(48, 												16)
-	self.selbut:SetSize		(48,												16)
-	self.setbut:SetSize		(60,												16)
-	self.texbox:SetSize		(self:GetWide()/ 4,									16)
-	self.texbox:SetPos		(self:GetWide()/ 2 + 2, 							27)
-	self.setbut:SetPos		(self:GetWide()/ 2 + 2 + self.texbox:GetWide() + 5,	27)
-	self.selbut:SetPos		(self:GetWide() - self.selbut:GetWide() - 10,		27)
-	self.close:SetPos		(self:GetWide() - self.close:GetWide() - 10,		3 )
-	self.texbox:SetVisible	(false												  )
-	self.setbut:SetVisible	(false												  )
-	self.selbut:SetVisible	(false												  )
+	self:SetSize(width, height)
+	self:SetPos((ScrW() - width) / 2, (ScrH() - height) / 2)
+	self.close:SetSize(48, 16)
+	self.selbut:SetSize(48, 16)
+	self.setbut:SetSize(60, 16)
+	self.texbox:SetSize(self:GetWide() / 4, 16)
+	self.texbox:SetPos(self:GetWide() / 2 + 2, 27)
+	self.setbut:SetPos(self:GetWide() / 2 + 2 + self.texbox:GetWide() + 5, 27)
+	self.selbut:SetPos(self:GetWide() - self.selbut:GetWide() - 10, 27)
+	self.close:SetPos(self:GetWide() - self.close:GetWide() - 10, 3)
+	self.texbox:SetVisible(false)
+	self.setbut:SetVisible(false)
+	self.selbut:SetVisible(false)
 	if accessmenu.owned then
 		if accessmenu.name then
 			self.texbox:RequestFocus()
@@ -434,10 +455,10 @@ function PANEL:PerformLayout()
 	else
 	end
 	self.sheets:SetPos(8, 25)
-	self.sheets:StretchToParent(8,25,8,8)
+	self.sheets:StretchToParent(8, 25, 8, 8)
 	self.sheets:InvalidateLayout()
 	-- Check if the local player's position is different from our captured one.
-	if ( LocalPlayer():GetPos() ~= localPlayerPosition or not LocalPlayer():Alive() ) then
+	if (LocalPlayer():GetPos() ~= localPlayerPosition or not LocalPlayer():Alive()) then
 		self:Close();
 		self:Remove();
 
@@ -461,7 +482,9 @@ local function gsort(a, b)
 	return a.GangID < b.GangID;
 end
 local function UpdateContainer(decoded)
-	if not accessmenu then return end
+	if not accessmenu then
+		return
+	end
 	accessmenu:SetTitle(decoded.title)
 	local paccess = {}
 	local taccess = {}
@@ -492,7 +515,9 @@ local function UpdateContainer(decoded)
 			if (res) then
 				table.insert(paccess[res.Group.GroupID][res.TeamID], key);
 			else
-				ErrorNoHalt("I don't know what team ", tostring(key), " is in! (", key:Team(), ").\n");
+				ErrorNoHalt(
+					"I don't know what team ", tostring(key), " is in! (", key:Team(), ").\n"
+				);
 			end
 			done[key] = true;
 		else
@@ -502,7 +527,7 @@ local function UpdateContainer(decoded)
 				table.insert(taccess[res.Group.GroupID], res);
 			elseif (kind == "Group") then
 				res = GM:GetGroup(id);
-				--gaccess[res.GroupID][0] = res;
+				-- gaccess[res.GroupID][0] = res;
 				gyes[res.GroupID] = res;
 			elseif (kind == "Gang") then
 				res = GM:GetGang(id);
@@ -527,7 +552,7 @@ local function UpdateContainer(decoded)
 	end
 	for _, res in pairs(GM.Groups) do
 		if (not done[res]) then
-			--gnoaccess[res.GroupID][0] = res;
+			-- gnoaccess[res.GroupID][0] = res;
 			gno[res.GroupID] = res;
 		end
 	end
@@ -567,24 +592,24 @@ local function UpdateContainer(decoded)
 		gnoaccess[id][0] = res;
 	end
 	-- Gief content
-	accessmenu.players.noaccess.inventory	= pnoaccess
-	accessmenu.players.access.inventory		= paccess
-	accessmenu.jobs.noaccess.inventory		= tnoaccess
-	accessmenu.jobs.access.inventory		= taccess
-	accessmenu.gangs.noaccess.inventory		= gnoaccess
-	accessmenu.gangs.access.inventory		= gaccess
+	accessmenu.players.noaccess.inventory = pnoaccess
+	accessmenu.players.access.inventory = paccess
+	accessmenu.jobs.noaccess.inventory = tnoaccess
+	accessmenu.jobs.access.inventory = taccess
+	accessmenu.gangs.noaccess.inventory = gnoaccess
+	accessmenu.gangs.access.inventory = gaccess
 	-- wedraww
-	accessmenu.players.noaccess.updatePanel	= true
-	accessmenu.players.access.updatePanel	= true
-	accessmenu.jobs.noaccess.updatePanel	= true
-	accessmenu.jobs.access.updatePanel		= true
-	accessmenu.gangs.noaccess.updatePanel	= true
-	accessmenu.gangs.access.updatePanel		= true
+	accessmenu.players.noaccess.updatePanel = true
+	accessmenu.players.access.updatePanel = true
+	accessmenu.jobs.noaccess.updatePanel = true
+	accessmenu.jobs.access.updatePanel = true
+	accessmenu.gangs.noaccess.updatePanel = true
+	accessmenu.gangs.access.updatePanel = true
 	-- who's whom.
-	accessmenu.players.noaccess.isply		= true
-	accessmenu.players.access.isply			= true
-	accessmenu.jobs.noaccess.isteam			= true
-	accessmenu.jobs.access.isteam			= true
+	accessmenu.players.noaccess.isply = true
+	accessmenu.players.access.isply = true
+	accessmenu.jobs.noaccess.isteam = true
+	accessmenu.jobs.access.isteam = true
 	accessmenu.owned = tobool(decoded.owned)
 	if accessmenu.owned then
 		accessmenu.sellable = decoded.owned.sellable
@@ -593,14 +618,18 @@ local function UpdateContainer(decoded)
 	accessmenu:InvalidateLayout()
 	accessmenu.Buttoned = false
 end
-function NewContainer( handle, id, encoded, decoded )
-	if accessmenu then accessmenu:Remove() end
-	accessmenu = vgui.Create"Accessmenu"
+function NewContainer(handle, id, encoded, decoded)
+	if accessmenu then
+		accessmenu:Remove()
+	end
+	accessmenu = vgui.Create "Accessmenu"
 	gui.EnableScreenClicker(true);
 	accessmenu:MakePopup()
 	UpdateContainer(decoded)
 end
-datastream.Hook( "Access Menu", NewContainer );
-datastream.Hook( "Access Menu Update", function(handle, id, encoded, decoded)
-	UpdateContainer(decoded)
-end)
+datastream.Hook("Access Menu", NewContainer);
+datastream.Hook(
+	"Access Menu Update", function(handle, id, encoded, decoded)
+		UpdateContainer(decoded)
+	end
+)

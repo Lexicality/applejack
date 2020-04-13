@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 1;
 	SWEP.IconLetter = "b";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_ak47", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_ak47", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -24,7 +26,8 @@ SWEP.Category = "Cider";
 SWEP.PrintName = "AK47";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "A very powerful rifle which is great at long range.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -65,8 +68,8 @@ SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
-SWEP.IronSightsPos = Vector (6.1353, -3.04, 2.2783)
-SWEP.IronSightsAng = Vector (2.4374, -0.0488, 0)
+SWEP.IronSightsPos = Vector(6.1353, -3.04, 2.2783)
+SWEP.IronSightsAng = Vector(2.4374, -0.0488, 0)
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = false;

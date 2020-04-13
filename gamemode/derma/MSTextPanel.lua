@@ -7,9 +7,9 @@ local PANEL = {};
 function PANEL:Init()
 	self.items = {};
 	-- Turn engine drawing back on
-	self:SetPaintBackgroundEnabled( true )
-	self:SetPaintBorderEnabled( true )
-	self:SetPaintBackground( true )
+	self:SetPaintBackgroundEnabled(true)
+	self:SetPaintBorderEnabled(true)
+	self:SetPaintBackground(true)
 end
 
 function PANEL:Empty()
@@ -23,11 +23,8 @@ function PANEL:SplitIntoSections(text)
 	local currSection = nil;
 	for _, line in ipairs(string.Split(text, "\n")) do
 		if (line ~= "") then
-			if (line:sub(1,1) == "[" and line:sub(-1) == "]") then
-				currSection = {
-					title = line:sub(2, -2);
-					text  = {};
-				};
+			if (line:sub(1, 1) == "[" and line:sub(-1) == "]") then
+				currSection = {title = line:sub(2, -2), text = {}};
 				table.insert(sections, currSection);
 			elseif (not currSection) then
 				error("Text does not start with a header entry!", 2);
@@ -62,7 +59,6 @@ end
 
 vgui.Register("MSTextPanel", PANEL, "DScrollPanel");
 
-
 local PANEL = {};
 
 function PANEL:Init()
@@ -70,20 +66,20 @@ function PANEL:Init()
 end
 
 function PANEL:AddLine(line)
-	local sizer = vgui.Create( "DSizeToContents", self );
-	sizer:SetSizeX( false );
-	sizer:Dock( TOP );
-	sizer:DockPadding( 0, 0, 0, 0 );
+	local sizer = vgui.Create("DSizeToContents", self);
+	sizer:SetSizeX(false);
+	sizer:Dock(TOP);
+	sizer:DockPadding(0, 0, 0, 0);
 	sizer:InvalidateLayout();
 	local label = vgui.Create("DLabel", sizer);
 
-	label:SetDark( true );
-	label:SetWrap( true );
-	label:SetTextInset( 0, 0 );
-	label:SetText( line );
-	label:SetContentAlignment( 7 );
-	label:SetAutoStretchVertical( true );
-	label:DockMargin( 8, 0, 8, 8 );
+	label:SetDark(true);
+	label:SetWrap(true);
+	label:SetTextInset(0, 0);
+	label:SetText(line);
+	label:SetContentAlignment(7);
+	label:SetAutoStretchVertical(true);
+	label:DockMargin(8, 0, 8, 8);
 	label:Dock(TOP);
 
 	sizer.label = label;

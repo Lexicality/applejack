@@ -3,20 +3,22 @@
 -- ~ Applejack ~
 --
 local PANEL = {};
-local width,height = ScrW()*0.75,ScrH()*0.75
-local containermenu,targetEntity,lpl
+local width, height = ScrW() * 0.75, ScrH() * 0.75
+local containermenu, targetEntity, lpl
 
 local function closeMenu()
 	if containermenu then
 		containermenu:Close()
 		containermenu:Remove()
 		gui.EnableScreenClicker(false)
-		RunConsoleCommand"MommyIAmDoneWithTheContainerNow"
+		RunConsoleCommand "MommyIAmDoneWithTheContainerNow"
 	end
 end
-usermessage.Hook("cider_CloseContainerMenu",closeMenu)
+usermessage.Hook("cider_CloseContainerMenu", closeMenu)
 local function CheckPos()
-	if not IsValid(lpl) then lpl = LocalPlayer() end
+	if not IsValid(lpl) then
+		lpl = LocalPlayer()
+	end
 	if not (lpl:Alive() and lpl:GetEyeTraceNoCursor().Entity == targetEntity) then
 		closeMenu()
 		return false
@@ -25,7 +27,7 @@ local function CheckPos()
 end
 -- Called when the panel is initialized.
 function PANEL:Init()
-	self:SetSize(width/2 -12, height - 40);
+	self:SetSize(width / 2 - 12, height - 40);
 
 	-- Create a panel list to store the items.
 	self.itemsList = vgui.Create("DPanelList", self);
@@ -43,12 +45,12 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
---	self:StretchToParent(0, 22, 0, 0);
+	--	self:StretchToParent(0, 22, 0, 0);
 	self.itemsList:StretchToParent(0, 0, 0, 0);
 end
 
 -- Called every frame.
-local item,cat;
+local item, cat;
 function PANEL:Think()
 	if (self.updatePanel) then
 		self.updatePanel = false;
@@ -59,9 +61,9 @@ function PANEL:Think()
 		info.mSpace = self.mSpace
 		info.word = self.name
 		info.inventory = self.inventory
-		self.itemsList:AddItem( info);
-			-- Create a table to store the categories.
-		local categories = { none = {} };
+		self.itemsList:AddItem(info);
+		-- Create a table to store the categories.
+		local categories = {none = {}};
 
 		-- Loop through the items.
 		for k, v in pairs(self.inventory) do
@@ -83,26 +85,26 @@ function PANEL:Think()
 				-- Loop through the items.
 				for k2, v2 in pairs(v) do
 					self.currentItem = v2;
-					self.itemsList:AddItem( vgui.Create("cider_Container_Item", self) ) ;
+					self.itemsList:AddItem(vgui.Create("cider_Container_Item", self));
 				end
 			else
 				local c = GM:GetCategory(k)
 				if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 					local header = vgui.Create("DCollapsibleCategory", self)
 					header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
-					header:SetLabel( c.Name )
-					header:SetToolTip( c.Description )
+					header:SetLabel(c.Name)
+					header:SetToolTip(c.Description)
 					self.itemsList:AddItem(header);
 					local subitemsList = vgui.Create("DPanelList", self);
-					subitemsList:SetAutoSize( true )
+					subitemsList:SetAutoSize(true)
 					subitemsList:SetPadding(2);
 					subitemsList:SetSpacing(3);
-					header:SetContents( subitemsList )
+					header:SetContents(subitemsList)
 					-- Loop through the items.
 					for k2, v2 in pairs(v) do
 						self.currentItem = v2;
 						-- Add the item to the item list.
-						subitemsList:AddItem( vgui.Create("cider_Container_Item", self) ) ;
+						subitemsList:AddItem(vgui.Create("cider_Container_Item", self));
 					end
 				end
 			end
@@ -122,7 +124,7 @@ local PANEL = {};
 local word;
 function PANEL:Init()
 	-- Set the size and position of the panel.
-	self:SetSize(width/2, 75);
+	self:SetSize(width / 2, 75);
 	self:SetPos(1, 5);
 
 	-- Set the item that we are.
@@ -131,14 +133,14 @@ function PANEL:Init()
 	local amount = self:GetParent().inventory[self.item]
 	local notake = false
 	local item = GM.Items[self.item]
-	if amount < 0 or item.Size < 0 	then
+	if amount < 0 or item.Size < 0 then
 		notake = true
 		amount = math.abs(amount)
 	end
 	-- Create a label for the name.
 	self.name = vgui.Create("DLabel", self);
 	word = (amount > 1) and item.Plural or item.Name;
-	self.name:SetText(amount.." "..word.." (Size: "..item.Size..")");
+	self.name:SetText(amount .. " " .. word .. " (Size: " .. item.Size .. ")");
 	self.name:SizeToContents();
 	self.name:SetDark(true);
 
@@ -152,19 +154,22 @@ function PANEL:Init()
 	self.spawnIcon = vgui.Create("SpawnIcon", self);
 
 	-- Set the model of the spawn icon to the one of the item.
-	self.spawnIcon:SetModel(item.Model,item.Skin)
-
+	self.spawnIcon:SetModel(item.Model, item.Skin)
 
 	self.spawnIcon:SetToolTip();
-	self.spawnIcon.DoClick = function() return; end
-	self.spawnIcon.OnMousePressed = function() return; end
+	self.spawnIcon.DoClick = function()
+		return;
+	end
+	self.spawnIcon.OnMousePressed = function()
+		return;
+	end
 	self.itemFunctions = {};
 
 	-- Check to see if the item has an on use callback.
 	if not notake and bit.band(self.action, containermenu.meta.io) == self.action then
 		if self.action == CAN_PUT then
 			if not containermenu.meta.filter or containermenu.meta.filter[self.item] then
-				table.insert(self.itemFunctions, "Put" )
+				table.insert(self.itemFunctions, "Put")
 			end
 		else
 			table.insert(self.itemFunctions, "Take")
@@ -173,58 +178,79 @@ function PANEL:Init()
 
 	-- Create the table to store the item buttons.
 	self.itemButton = {};
-	--TODO: Deal with this horrible mess of inline functions
+	-- TODO: Deal with this horrible mess of inline functions
 	local function menus(self)
-		if not CheckPos() then return end
-		if containermenu.Buttoned then return end -- If a button has been pressed, we can't do anything until sent an update.
+		if not CheckPos() then
+			return
+		end
+		if containermenu.Buttoned then
+			return
+		end -- If a button has been pressed, we can't do anything until sent an update.
 		if amount < 2 then
-			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1);
+			RunConsoleCommand(
+				"mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1
+			);
 			containermenu.Buttoned = true
 			return
 		end
 		local menu = DermaMenu();
 		-- Add an option for yes and no.
-		menu:AddOption("1", function()
-			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1);
-			-- Close the main menu.
-			containermenu.Buttoned = true
-		end);
-		menu:AddOption("All", function()
-			RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), amount);
-			-- Close the main menu.
-			containermenu.Buttoned = true
-		end);
-		menu:AddOption("Amount",function()
-				local EditPanel = vgui.Create( "DFrame" )
-				EditPanel:SetPos( (ScrW()- 50)/2,(ScrH() -38)/2 )
-				EditPanel:SetSize( 100 ,76 )
-				EditPanel:SetTitle( "Amount" )
-				EditPanel:SetVisible( true )
-				EditPanel:SetDraggable( true )
-				EditPanel:ShowCloseButton( true )
+		menu:AddOption(
+			"1", function()
+				RunConsoleCommand(
+					"mshine", "container", item.UniqueID, string.lower(self:GetValue()), 1
+				);
+				-- Close the main menu.
+				containermenu.Buttoned = true
+			end
+		);
+		menu:AddOption(
+			"All", function()
+				RunConsoleCommand(
+					"mshine", "container", item.UniqueID, string.lower(self:GetValue()), amount
+				);
+				-- Close the main menu.
+				containermenu.Buttoned = true
+			end
+		);
+		menu:AddOption(
+			"Amount", function()
+				local EditPanel = vgui.Create("DFrame")
+				EditPanel:SetPos((ScrW() - 50) / 2, (ScrH() - 38) / 2)
+				EditPanel:SetSize(100, 76)
+				EditPanel:SetTitle("Amount")
+				EditPanel:SetVisible(true)
+				EditPanel:SetDraggable(true)
+				EditPanel:ShowCloseButton(true)
 				EditPanel:MakePopup()
 				--	y = 28
-				local box = vgui.Create("DTextEntry",EditPanel)
-				box:SetPos(10,28)
-				box:SetSize(EditPanel:GetWide()-20,16)
+				local box = vgui.Create("DTextEntry", EditPanel)
+				box:SetPos(10, 28)
+				box:SetSize(EditPanel:GetWide() - 20, 16)
 				box:RequestFocus()
 				local func = function()
 					val = tonumber(box:GetValue())
-					if (not val) or string.sub(val,1,1) == "-" then return end
-					RunConsoleCommand("mshine", "container", item.UniqueID, string.lower(self:GetValue()), math.floor(val));
+					if (not val) or string.sub(val, 1, 1) == "-" then
+						return
+					end
+					RunConsoleCommand(
+						"mshine", "container", item.UniqueID, string.lower(self:GetValue()),
+						math.floor(val)
+					);
 					EditPanel:Close()
 					-- Close the main menu.
 					containermenu.Buttoned = true
 				end
 				box.OnEnter = func
-				button = vgui.Create("DButton",EditPanel)
+				button = vgui.Create("DButton", EditPanel)
 				button:SetText(self:GetValue())
 				button.DoClick = func
-				button:SetPos(EditPanel:GetWide()-button:GetWide()-10,46)
-		end)
+				button:SetPos(EditPanel:GetWide() - button:GetWide() - 10, 46)
+			end
+		)
 
 		-- Open the menu.
-		menu:Open() ;
+		menu:Open();
 
 	end
 
@@ -274,7 +300,7 @@ function PANEL:Init()
 	-- Create the space used label.
 	self.word = self.word or "argh"
 	self.spaceUsed = vgui.Create("DLabel", self);
-	self.spaceUsed:SetText(self.word.." Space Used: MMMMM/MMMMM");
+	self.spaceUsed:SetText(self.word .. " Space Used: MMMMM/MMMMM");
 	self.spaceUsed:SizeToContents();
 	self.spaceUsed:SetDark(true);
 end
@@ -283,8 +309,13 @@ end
 function PANEL:PerformLayout()
 
 	-- Set the position of the label.
-	self.spaceUsed:SetPos( (self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5 );
-	self.spaceUsed:SetText(self.word.." Space Used: "..cider.inventory.getSize(self.inventory).."/"..self.mSpace);
+	self.spaceUsed:SetPos((self:GetWide() / 2) - (self.spaceUsed:GetWide() / 2), 5);
+	self.spaceUsed:SetText(
+
+		
+			self.word .. " Space Used: " .. cider.inventory.getSize(self.inventory) ..
+				"/" .. self.mSpace
+	);
 	self.spaceUsed:SizeToContents();
 end
 
@@ -306,8 +337,8 @@ function PANEL:Init()
 
 	-- Capture the position of the local player.
 	localPlayerPosition = LocalPlayer():GetPos();
-	self.pInventory = vgui.Create("cider_Container_Inventory",self)
-	self.cInventory = vgui.Create("cider_Container_Inventory",self)
+	self.pInventory = vgui.Create("cider_Container_Inventory", self)
+	self.cInventory = vgui.Create("cider_Container_Inventory", self)
 	self.pInventory.action = CAN_PUT
 	self.pInventory.name = "Your Inventory"
 	self.cInventory.action = CAN_TAKE
@@ -318,8 +349,8 @@ end
 -- Called when the layout should be performed.
 function PANEL:PerformLayout()
 
-	self:SetSize(width,height)
-	self:SetPos((ScrW() - width)/2,(ScrH() - height)/2)
+	self:SetSize(width, height)
+	self:SetPos((ScrW() - width) / 2, (ScrH() - height) / 2)
 	-- self:SetSize(8 + self.InventoryList:GetWide() + 8 + self.containerList:GetWide() + 8, 28 + self.InventoryList:GetTall() + 8 + self.textEntry:GetTall() + 8);
 	-- self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2);
 	self.close:SetSize(48, 16);
@@ -335,7 +366,9 @@ end
 -- Register the panel.
 vgui.Register("cider_Container", PANEL, "DFrame");
 local function UpdateContainer(decoded)
-	if not containermenu then return end
+	if not containermenu then
+		return
+	end
 	containermenu.meta = decoded.meta
 	targetEntity = Entity(decoded.meta.entindex)
 	if not IsValid(targetEntity) then
@@ -347,7 +380,7 @@ local function UpdateContainer(decoded)
 	local pinventory = table.Copy(cider.inventory.stored);
 	local cinventory = decoded.contents
 	local m = LocalPlayer()._Money
-	pinventory["money"] =  m > 0 and m or nil
+	pinventory["money"] = m > 0 and m or nil
 	containermenu.pInventory.inventory = pinventory
 	containermenu.cInventory.inventory = cinventory
 	containermenu.cInventory.mSpace = containermenu.meta.size
@@ -356,16 +389,23 @@ local function UpdateContainer(decoded)
 	containermenu.cInventory.updatePanel = true
 	containermenu.Buttoned = false
 end
-hook.Add("Tick","Hackily keep the money counter up to date",function()
-	if not (containermenu and containermenu.pInventory and containermenu.pInventory.inventory) then return end
-	CheckPos()
-	local m = LocalPlayer()._Money
-	m = m > 0 and m or nil
-	if containermenu.pInventory.inventory["money"] == m then return end
-	containermenu.pInventory.inventory["money"] = m
-	containermenu.pInventory.updatePanel = true
-end)
-local function NewContainer( handle, id, encoded, decoded )
+hook.Add(
+	"Tick", "Hackily keep the money counter up to date", function()
+		if not (containermenu and containermenu.pInventory and
+			containermenu.pInventory.inventory) then
+			return
+		end
+		CheckPos()
+		local m = LocalPlayer()._Money
+		m = m > 0 and m or nil
+		if containermenu.pInventory.inventory["money"] == m then
+			return
+		end
+		containermenu.pInventory.inventory["money"] = m
+		containermenu.pInventory.updatePanel = true
+	end
+)
+local function NewContainer(handle, id, encoded, decoded)
 	--[[
 	local tab = {
 		contents = {
@@ -388,13 +428,17 @@ local function NewContainer( handle, id, encoded, decoded )
 	--]]
 	-- decoded.meta.cantake = bit.band(CAN_TAKE, decoded.meta.io) == CAN_TAKE
 	-- decoded.meta.canput  = bit.band(CAN_PUT,  decoded.meta.io) == CAN_PUT
-	if containermenu then containermenu:Remove() end
-	containermenu = vgui.Create"cider_Container"
+	if containermenu then
+		containermenu:Remove()
+	end
+	containermenu = vgui.Create "cider_Container"
 	gui.EnableScreenClicker(true);
 	containermenu:MakePopup()
 	UpdateContainer(decoded)
 end
-datastream.Hook( "cider_Container", NewContainer );
-datastream.Hook( "cider_Container_Update", function(handle, id, encoded, decoded)
-	UpdateContainer(decoded)
-end)
+datastream.Hook("cider_Container", NewContainer);
+datastream.Hook(
+	"cider_Container_Update", function(handle, id, encoded, decoded)
+		UpdateContainer(decoded)
+	end
+)

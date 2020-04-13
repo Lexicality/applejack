@@ -21,17 +21,17 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 
 	-- Check if the physics object is a valid entity.
-	if ( IsValid(physicsObject) ) then
+	if (IsValid(physicsObject)) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
 end
 
 -- A function to set the item of the entity
-umsg.PoolString"item";
-function ENT:SetItem(item,amount)
+umsg.PoolString "item";
+function ENT:SetItem(item, amount)
 	self.item = item;
-	self:SetNWString("item",item.UniqueID);
+	self:SetNWString("item", item.UniqueID);
 	self.dt.amount = amount or 1
 	self:SetModel(item.Model);
 	if (item.Skin) then
@@ -62,7 +62,10 @@ function ENT:Use(activator, caller)
 	end
 	if (activator:KeyDown(IN_SPEED) and self.item.Equippable) then
 		if (not activator:IsAdmin() and (activator._NextUseItem or 0) > CurTime()) then
-			activator:Notify("You cannot use another item for "..math.ceil( activator._NextUseItem - CurTime() ).." second(s)!", 1);
+			activator:Notify(
+				"You cannot use another item for " ..
+					math.ceil(activator._NextUseItem - CurTime()) .. " second(s)!", 1
+			);
 			return false;
 		elseif (activator:InVehicle() and self.item.NoVehicles) then
 			activator:Notify("You cannot use this item here!", 1);
@@ -76,7 +79,10 @@ function ENT:Use(activator, caller)
 		end
 		cider.inventory.update(activator, self.item.UniqueID, 1, true);
 		if (self.item:Use(activator)) then
-			GM:Log(EVENT_PICKUP,"%s picked up and used a %s.",activator:Name(),self.item.Name);
+			GM:Log(
+				EVENT_PICKUP, "%s picked up and used a %s.", activator:Name(),
+				self.item.Name
+			);
 			self:UpdateAmount(-1);
 		else
 			cider.inventory.update(activator, self.item.UniqueID, -1, true);
@@ -84,17 +90,20 @@ function ENT:Use(activator, caller)
 		return;
 	end
 	local picked = 0;
-	if (self.item.Size == 0 or cider.inventory.canFit(activator, self.item.Size * self.dt.amount)) then
-		local a,b = cider.inventory.update(activator, self.item.UniqueID, self.dt.amount);
+	if (self.item.Size == 0 or
+		cider.inventory.canFit(activator, self.item.Size * self.dt.amount)) then
+		local a, b = cider.inventory.update(
+			activator, self.item.UniqueID, self.dt.amount
+		);
 		if (not a) then
 			activator:Notify(b, 1);
 			return;
 		end
 		picked = self.dt.amount;
 	else
-		local s,f
+		local s, f
 		for i = 1, self.dt.amount do
-			s,f = cider.inventory.update(activator, self.item.UniqueID, 1);
+			s, f = cider.inventory.update(activator, self.item.UniqueID, 1);
 			if (not s) then
 				activator:Notify(f, 1);
 				break
@@ -104,9 +113,12 @@ function ENT:Use(activator, caller)
 	end
 	if (picked > 0) then
 		if (picked == 1) then
-			GM:Log(EVENT_PICKUP,"%s picked up a %s.",activator:Name(),self.item.Name);
+			GM:Log(EVENT_PICKUP, "%s picked up a %s.", activator:Name(), self.item.Name);
 		else
-			GM:Log(EVENT_PICKUP,"%s picked up %i %s.",activator:Name(),picked,self.item.Plural);
+			GM:Log(
+				EVENT_PICKUP, "%s picked up %i %s.", activator:Name(), picked,
+				self.item.Plural
+			);
 		end
 		self:UpdateAmount(-picked);
 	end

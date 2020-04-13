@@ -23,21 +23,21 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 
 	-- Check if the physics object is a valid entity.
-	if ( IsValid(physicsObject) ) then
+	if (IsValid(physicsObject)) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
 end
 
 -- A function to set the door for the entity to breach.
-function ENT:SetDoor(door, trace,owner)
+function ENT:SetDoor(door, trace, owner)
 	self._Door = door;
 	self._Door:DeleteOnRemove(self);
 	self._Planter = owner
 
 	-- Set the position and angles of the entity.
 	self:SetPos(trace.HitPos);
-	self:SetAngles( trace.HitNormal:Angle() + Angle(0, 0, 0) );
+	self:SetAngles(trace.HitNormal:Angle() + Angle(0, 0, 0));
 
 	if door:GetClass() == "prop_door_rotating" then
 
@@ -45,26 +45,28 @@ function ENT:SetDoor(door, trace,owner)
 		local lpos = door:WorldToLocal(self:GetPos())
 		if lpos.x < 0 then
 			self:SetLocalPos(Vector(-1.3, 42.8091, 4.5221))
-			self:SetLocalAngles(Angle(0,180,0))
+			self:SetLocalAngles(Angle(0, 180, 0))
 		else
-			self:SetLocalPos(Vector( 1.3, 42.8091, 4.5221))
-			self:SetLocalAngles(Angle(0,-180,0))
+			self:SetLocalPos(Vector(1.3, 42.8091, 4.5221))
+			self:SetLocalAngles(Angle(0, -180, 0))
 		end
 	elseif door:GetClass() == "prop_dynamic" then
-		if ( IsValid( self:GetPhysicsObject() ) ) then
+		if (IsValid(self:GetPhysicsObject())) then
 			self:GetPhysicsObject():EnableMotion(false);
 		end
 	else
-		self:SetParent(door)--constraint.Weld(door, self, 0, 0);
+		self:SetParent(door) -- constraint.Weld(door, self, 0, 0);
 	end
 	self:SetHealth(50);
-	self._Door:SetNWBool("Padlocked",true)
+	self._Door:SetNWBool("Padlocked", true)
 end
 
---Called when the entity takes damage.
+-- Called when the entity takes damage.
 function ENT:OnTakeDamage(damageInfo)
-	if self.broken then return end
-	self:SetHealth( math.max(self:Health() - damageInfo:GetDamage(), 0) );
+	if self.broken then
+		return
+	end
+	self:SetHealth(math.max(self:Health() - damageInfo:GetDamage(), 0));
 	-- Check if the entity has run out of health.
 	if (self:Health() <= 0) then
 		if IsValid(self._Door) then
@@ -80,18 +82,21 @@ function ENT:OnTakeDamage(damageInfo)
 				if self._Door._isDoor then
 					addon = self._Door:GetDoorName()
 					if addon ~= "" then
-						addon = ": "..addon
+						addon = ": " .. addon
 					end
 				else
-					local name = hook.Call("GetEntityName",GAMEMODE,self._Door)
+					local name = hook.Call("GetEntityName", GAMEMODE, self._Door)
 					if name and name ~= "" then
-						addon = ": "..name
+						addon = ": " .. name
 					end
 				end
 
-				GM:Log(EVENT_EVENT,"%s destroyed the padlock on %s %s%s.",damageInfo:GetAttacker():GetName(),event,entname,addon)
+				GM:Log(
+					EVENT_EVENT, "%s destroyed the padlock on %s %s%s.",
+					damageInfo:GetAttacker():GetName(), event, entname, addon
+				)
 			end
-			self._Door:SetNWBool("Padlocked",false)
+			self._Door:SetNWBool("Padlocked", false)
 		end
 		self:FallOff();
 	end
@@ -109,11 +114,20 @@ function ENT:FallOff()
 	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	self:SetModel("models/props_wasteland/prison_padlock001b.mdl")
 	self.broken = true
-	timer.Simple(20,function() if IsValid(self) then self:Remove() end end)
+	timer.Simple(
+		20, function()
+			if IsValid(self) then
+				self:Remove()
+			end
+		end
+	)
 end
-hook.Add("PenetrationDamage","PadlockUnpenetrator",function(_trace,di,weaponentity,atk)
-	if _trace.Entity:GetClass() == "cider_padlock" then
-		di:SetDamage(0)
-		return
+hook.Add(
+	"PenetrationDamage", "PadlockUnpenetrator",
+	function(_trace, di, weaponentity, atk)
+		if _trace.Entity:GetClass() == "cider_padlock" then
+			di:SetDamage(0)
+			return
+		end
 	end
-end)
+)

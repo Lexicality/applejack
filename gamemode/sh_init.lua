@@ -9,11 +9,11 @@ _R = debug.getregistry();
 --
 include("sh_functions.lua");
 
-GM.Name = "Applejack Beta"--"Applejack - Cider Core";
+GM.Name = "Applejack Beta" -- "Applejack - Cider Core";
 GM.Email = "mwaness@gmail.com";
 GM.Author = "Lexi, original gamemode by kuromeku";
 GM.Website = "http://www.ventmob.com";
-GM.LuaFolder = string.sub(GM.Folder,11,-1)
+GM.LuaFolder = string.sub(GM.Folder, 11, -1)
 includecs("timer.lua");
 -- Derive the gamemode from sandbox.
 DeriveGamemode("Sandbox");
@@ -28,7 +28,9 @@ includecs("sh_enumerations.lua");
 includecs("sh_config.lua");
 
 -- Check if we're running on the server.
-if (SERVER) then include("sv_config.lua"); end
+if (SERVER) then
+	include("sv_config.lua");
+end
 
 -- This needs to be here
 function GM:LibrariesLoaded()
@@ -37,38 +39,40 @@ end
 -- Moonshine style loading function to generically load the libraries, metatables and anything else you want that uses that sorta ting.
 local function doload(path, name, plural) -- path must be the relative path from the Applejack/gamemode/ folder
 	if (path:sub(-1) ~= "/") then
-		path = path.."/";
+		path = path .. "/";
 	end
-	MsgN("Applejack: Loading "..plural);
+	MsgN("Applejack: Loading " .. plural);
 	local count = 0;
 	local subd, fname;
-	for k, v in pairs( file.Find(GM.LuaFolder.."/gamemode/"..path.."*.lua", "LUA") ) do
+	for k, v in pairs(
+		file.Find(GM.LuaFolder .. "/gamemode/" .. path .. "*.lua", "LUA")
+	) do
 		if (validfile(v)) then
 			subd = v:sub(1, 3);
-			fname = v:sub(4,-5);
+			fname = v:sub(4, -5);
 			if (subd == "sh_") then
-				includecs(path..v);
-				MsgN(" Loaded the shared "..fname.." "..name..".");
+				includecs(path .. v);
+				MsgN(" Loaded the shared " .. fname .. " " .. name .. ".");
 				count = count + 1;
 			elseif (SERVER) then
 				if (subd == "sv_") then
-					include(path..v);
-					MsgN(" Loaded the serverside "..fname.." "..name..".");
+					include(path .. v);
+					MsgN(" Loaded the serverside " .. fname .. " " .. name .. ".");
 					count = count + 1;
 				elseif (subd == "cl_") then
-					AddCSLuaFile(path..v);
+					AddCSLuaFile(path .. v);
 				end
 			elseif (subd == "cl_") then
-				include(path..v);
+				include(path .. v);
 				count = count + 1;
-				MsgN(" Loaded the clientsideside "..fname.." "..name..".");
+				MsgN(" Loaded the clientsideside " .. fname .. " " .. name .. ".");
 			end
 		end
 	end
-	MsgN("Applejack: Loaded "..count.." "..plural..".\n")
+	MsgN("Applejack: Loaded " .. count .. " " .. plural .. ".\n")
 end
-doload("libraries/",     "Library",   "Libraries");
-doload("metatables/",  "Metatable",  "Metatables");
+doload("libraries/", "Library", "Libraries");
+doload("metatables/", "Metatable", "Metatables");
 doload("hooks/", "Hook Library", "Hook Libraries");
 gamemode.Call("LibrariesLoaded");
 
@@ -84,33 +88,34 @@ end
 GM:LoadPlugins()
 GM:LoadItems();
 
---This stuff needs to be after plugins but before everything else
+-- This stuff needs to be after plugins but before everything else
 includecs("sh_events.lua")
 GM:LoadTeams();
 
-
 -- Loop through derma panels and include them.
-for k, v in pairs( file.Find(GM.LuaFolder.."/gamemode/derma/*.lua", "LUA") ) do
+for k, v in pairs(file.Find(GM.LuaFolder .. "/gamemode/derma/*.lua", "LUA")) do
 	if (validfile(v)) then
 		if (CLIENT) then
-			include("derma/"..v);
+			include("derma/" .. v);
 		else
-			AddCSLuaFile("derma/"..v);
+			AddCSLuaFile("derma/" .. v);
 		end
 	end
 end
 
---A few things need to be shared
+-- A few things need to be shared
 
 -- Called when a bullet tries to ricochet
-function GM:CanRicochet(trace,force,swep)
+function GM:CanRicochet(trace, force, swep)
 	return force > 5
 end
 -- Called when a bullet tries to penetrate
-function GM:CanPenetrate(trace,force,swep)
+function GM:CanPenetrate(trace, force, swep)
 	return force > 7.5
 end
 
-function GM:ShouldCollide(one,two)
-	return not (IsValid(one) and IsValid(two) and one:GetClass() == "cider_item" and two:GetClass() == "cider_item");
+function GM:ShouldCollide(one, two)
+	return
+		not (IsValid(one) and IsValid(two) and one:GetClass() == "cider_item" and
+			two:GetClass() == "cider_item");
 end

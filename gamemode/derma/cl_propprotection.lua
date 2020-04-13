@@ -24,11 +24,7 @@ local function adminPanel(panel)
 		-- Deal with our secret cvars.
 		do
 			-- Note to self: Remember to update these if you change the serverside confif (ha ha ha)
-			local config = {
-				enabled = 1;
-				cleanup = 1;
-				delay = 120;
-			}
+			local config = {enabled = 1, cleanup = 1, delay = 120}
 			local function serverCallback(cvar, _, new)
 				RunConsoleCommand("_" .. cvar, new);
 			end
@@ -40,7 +36,10 @@ local function adminPanel(panel)
 						config[var] = num;
 					end
 				else
-					ErrorNoHalt("Just got an unknown change callback from ", cvar, " changing to '", new, "' from '", prev, "'!\n")
+					ErrorNoHalt(
+						"Just got an unknown change callback from ", cvar, " changing to '", new,
+						"' from '", prev, "'!\n"
+					)
 				end
 			end
 			for key in pairs(config) do
@@ -51,18 +50,24 @@ local function adminPanel(panel)
 					cvars.AddChangeCallback(cvar, serverCallback);
 				else
 					-- I'm not 100% sure what to do here. D:
-					ErrorNoHalt("Could not find convar ", cvar, " for prop protection config!\n");
+					ErrorNoHalt(
+						"Could not find convar ", cvar, " for prop protection config!\n"
+					);
 				end
 				-- Create the dummy client convars for the panel
 				CreateClientConVar("_" .. cvar, config[key], false, false);
 				cvars.AddChangeCallback("_" .. cvar, clientCallback);
 			end
 
-			concommand.Add("_ms_ppconfig", function()
-				if (not lpl:IsSuperAdmin()) then return; end
-				-- Oh hey. A legitimate use for datastream!
-				datastream.StreamToServer("ppconfig", config);
-			end);
+			concommand.Add(
+				"_ms_ppconfig", function()
+					if (not lpl:IsSuperAdmin()) then
+						return;
+					end
+					-- Oh hey. A legitimate use for datastream!
+					datastream.StreamToServer("ppconfig", config);
+				end
+			);
 		end
 		-- That mess out of the way, let's do the settings panel
 
@@ -86,7 +91,7 @@ local function adminPanel(panel)
 	panel:Help(" ");
 	panel:Button("All Disconnected Players", "mshine", "ppcleardisconnected");
 	-- TODO: Make this exist
-	--panel:Button("Everyone", "mshine", "ppcleareveryone");
+	-- panel:Button("Everyone", "mshine", "ppcleareveryone");
 end
 
 local lView;
@@ -100,9 +105,11 @@ do -- Add
 		menu:AddOption("Cancel");
 		for _, ply in pairs(player.GetAll()) do
 			if (ply ~= lpl) then
-				menu:AddOption(ply:Name(), function()
-					RunConsoleCommand("mshine", "ppfriends", "add", ply:UniqueID());
-				end)
+				menu:AddOption(
+					ply:Name(), function()
+						RunConsoleCommand("mshine", "ppfriends", "add", ply:UniqueID());
+					end
+				)
 			end
 		end
 		menu:Open();
@@ -157,54 +164,55 @@ local function clientPanel(panel)
 	panel:AddPanel(view);
 	view:AddColumn("Name");
 	view:AddColumn("UniqueID");
-	--view:SetTall(10);
+	-- view:SetTall(10);
 	panel:Button("Remove Friend").DoClick = delButton;
 	panel:Button("Clear Friends").DoClick = clrButton;
 end
 
-usermessage.Hook("MS PPUpdate", function(msg)
-	local action = msg:ReadChar();
-	if (action == 1) then
-		-- Add
-		lView:AddRow(msg:ReadString(), msg:ReadLong());
-	elseif (action == 2) then
-		-- Remove
-		local uid = msg:ReadLong();
-		local liens = lView:GetLines();
-		for lineID, line in pairs(lView:GetLines()) do
-			-- | Name | UID |
-			if (tonumber(line:GetColumnText(2)) == uid) then
-				lView:RemoveLine(lineID);
-				return;
+usermessage.Hook(
+	"MS PPUpdate", function(msg)
+		local action = msg:ReadChar();
+		if (action == 1) then
+			-- Add
+			lView:AddRow(msg:ReadString(), msg:ReadLong());
+		elseif (action == 2) then
+			-- Remove
+			local uid = msg:ReadLong();
+			local liens = lView:GetLines();
+			for lineID, line in pairs(lView:GetLines()) do
+				-- | Name | UID |
+				if (tonumber(line:GetColumnText(2)) == uid) then
+					lView:RemoveLine(lineID);
+					return;
+				end
 			end
-		end
-	elseif (action == 3) then
-		-- Clear
-		lView:Clear();
-	elseif (action == 0) then
-		-- FUN TIME
-		local count;
-		-- Online people
-		count = msg:ReadShort();
-		if (count > 0) then
-			local ply;
-			for i = 1, count do
-				ply = msg:ReadEntity();
-				if (ply:IsValid()) then
-					lView:AddLine(ply:Name(), ply:UniqueID());
+		elseif (action == 3) then
+			-- Clear
+			lView:Clear();
+		elseif (action == 0) then
+			-- FUN TIME
+			local count;
+			-- Online people
+			count = msg:ReadShort();
+			if (count > 0) then
+				local ply;
+				for i = 1, count do
+					ply = msg:ReadEntity();
+					if (ply:IsValid()) then
+						lView:AddLine(ply:Name(), ply:UniqueID());
+					end
+				end
+			end
+			-- Offline people
+			count = msg:ReadShort();
+			if (count > 0) then
+				for i = 1, count do
+					lView:AddLine(msg:ReadString(), msg:ReadLong());
 				end
 			end
 		end
-		-- Offline people
-		count = msg:ReadShort();
-		if (count > 0) then
-			for i = 1, count do
-				lView:AddLine(msg:ReadString(), msg:ReadLong());
-			end
-		end
 	end
-end)
-
+)
 
 ----------
 -- Hoox --
@@ -222,8 +230,14 @@ local function SpawnMenuOpen()
 	end
 end
 local function PopulateToolMenu()
-	spawnmenu.AddToolMenuOption("Utilities", "Prop Protection", "Admin",  "Admin",  "", "", adminPanel );
-	spawnmenu.AddToolMenuOption("Utilities", "Prop Protection", "Client", "Client", "", "", clientPanel);
+	spawnmenu.AddToolMenuOption(
+		"Utilities", "Prop Protection", "Admin", "Admin", "", "", adminPanel
+	);
+	spawnmenu.AddToolMenuOption(
+		"Utilities", "Prop Protection", "Client", "Client", "", "", clientPanel
+	);
 end
 hook.Add("SpawnMenuOpen", "PP Post Init Spawnmenu Rebuild", SpawnMenuOpen);
-hook.Add("PopulateToolMenu", "Applejack Prop Protection Population", PopulateToolMenu);
+hook.Add(
+	"PopulateToolMenu", "Applejack Prop Protection Population", PopulateToolMenu
+);

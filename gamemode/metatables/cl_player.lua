@@ -4,7 +4,10 @@
 --
 local meta = _R.Player;
 if (not meta) then
-	error("["..os.date().."] Applejack Clientside Player metatable: No metatable found!");
+	error(
+		"[" .. os.date() ..
+			"] Applejack Clientside Player metatable: No metatable found!"
+	);
 end
 
 function meta:ESPPaint(lines, pos, dist, centre, ragdoll)
@@ -34,7 +37,9 @@ function meta:ESPPaint(lines, pos, dist, centre, ragdoll)
 	if (details ~= "") then
 		lines:Add("Details", "Details: " .. details, color_white, 5);
 	end
-	if (not center) then return; end
+	if (not center) then
+		return;
+	end
 
 	local clan = self:GetNWString("Clan");
 	if (clan ~= "") then

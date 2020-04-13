@@ -10,9 +10,9 @@ ENT.Spawnable = false;
 ENT.AdminSpawnable = false;
 
 function ENT:SetupDataTables()
-	self:DTVar("Int",0,"amount");
+	self:DTVar("Int", 0, "amount");
 end
 
 function ENT:GetItem()
-	return GAMEMODE.Items[self:GetNWString"item"];
+	return GAMEMODE.Items[self:GetNWString "item"];
 end

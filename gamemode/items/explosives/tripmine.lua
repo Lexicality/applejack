@@ -2,22 +2,23 @@
 -- ~ TreepMine ~
 -- ~ Applejack ~
 --
-ITEM.Name			= "Tripmine";
-ITEM.Size			= 2;
-ITEM.Cost			= 5000;
-ITEM.Model			= "models/weapons/w_slam.mdl";
-ITEM.Batch			= 10;
-ITEM.Store			= true;
-ITEM.Plural			= "Tripmines";
-ITEM.Description	= "Will explode if someone passes through it's beam.";
-ITEM.Base			= "item"
-ITEM.NoVehicles		= true;
+ITEM.Name = "Tripmine";
+ITEM.Size = 2;
+ITEM.Cost = 5000;
+ITEM.Model = "models/weapons/w_slam.mdl";
+ITEM.Batch = 10;
+ITEM.Store = true;
+ITEM.Plural = "Tripmines";
+ITEM.Description = "Will explode if someone passes through it's beam.";
+ITEM.Base = "item"
+ITEM.NoVehicles = true;
 
 -- Called when a player uses the item.
 function ITEM:onUse(ply)
-	local trace	= ply:GetEyeTraceNoCursor();
-	if (not (trace.Hit and trace.HitWorld and trace.HitPos:Distance(ply:GetPos()) <= 128)) then
-		ply:Notify("You must place a tripmine on a wall close to you!",1);
+	local trace = ply:GetEyeTraceNoCursor();
+	if (not (trace.Hit and trace.HitWorld and trace.HitPos:Distance(ply:GetPos()) <=
+		128)) then
+		ply:Notify("You must place a tripmine on a wall close to you!", 1);
 		return false;
 	end
 	local ent = ents.Create("npc_tripmine");
@@ -28,6 +29,6 @@ function ITEM:onUse(ply)
 	ent:Spawn();
 	ent:SetPPOwner(ply);
 	ent:SetPPSpawner(ply);
-	ent.PhysgunDisabled	= true;
-	ent.m_tblToolsAllowed	= {};
+	ent.PhysgunDisabled = true;
+	ent.m_tblToolsAllowed = {};
 end

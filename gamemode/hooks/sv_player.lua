@@ -2,7 +2,6 @@
 -- ~ Serverside Player Hooks ~
 -- ~ Applejack ~
 --
-
 ---
 -- @name GM
 -- @class table
@@ -78,7 +77,7 @@ end
 function GM:PlayerUnBlacklisted(ply, kind, thing, unblacklister)
 	if (kind == "cat" and thing == CATEGORY_WEAPONS) then -- If they've been unblacklisted from using weapons category, we need to unblacklist them from every other one too.
 		ply:UnBlacklist(kind, CATEGORY_ILLEGAL_WEAPONS);
-		ply:UnBlacklist(kind, CATEGORY_POLICE_WEAPONS );
+		ply:UnBlacklist(kind, CATEGORY_POLICE_WEAPONS);
 	end
 end
 
@@ -100,37 +99,43 @@ end
 -- Called when a player arrests another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerArrest(ply, victim) end
+function GM:PlayerArrest(ply, victim)
+end
 
 ---
 -- Called when a player unarrests another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerUnarrest(ply, victim) end
+function GM:PlayerUnarrest(ply, victim)
+end
 
 ---
 -- Called when a player warrants another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerWarrant(ply, victim, class) end
+function GM:PlayerWarrant(ply, victim, class)
+end
 
 ---
 -- Called when a player unwarrants another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerUnwarrant(ply, victim) end
+function GM:PlayerUnwarrant(ply, victim)
+end
 
 ---
 -- Called when a player ties up another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerTied(ply, victim) end
+function GM:PlayerTied(ply, victim)
+end
 
 ---
 -- Called when a player unties another player.
 -- @param ply The player that did it
 -- @param victim The player that it was done to
-function GM:PlayerUnTied(ply, victim) end
+function GM:PlayerUnTied(ply, victim)
+end
 
 ---
 -- Called when a player tries to tie another player up
@@ -159,7 +164,7 @@ end
 -- @param door The door the player wants to buy
 -- @return true if they can, false if they can't.
 function GM:PlayerCanOwnDoor(ply, door)
-	return door._isDoor and not( door._Sealed or door:IsOwned())
+	return door._isDoor and not (door._Sealed or door:IsOwned())
 end
 ---
 -- Called when a player attempts to view an ent's access data.
@@ -175,7 +180,7 @@ end
 -- @param ent The entity the player is trying to set on
 -- @return True if they can, false if they can't.
 function GM:PlayerCanSetEntName(ply, ent, name)
-	return ent._isDoor --and name and name ~= "" and not name:find("Sale"));
+	return ent._isDoor -- and name and name ~= "" and not name:find("Sale"));
 end
 
 ---
@@ -184,7 +189,7 @@ end
 -- @param door The door in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanJamDoor(ply, door)
-	return tobool(string.find(door:GetClass(),"func_door"));
+	return tobool(string.find(door:GetClass(), "func_door"));
 end
 
 ---
@@ -194,7 +199,7 @@ end
 -- @param silent Wether to be quiet about it or not
 -- @return True if they can, false if they can't.
 function GM:PlayerCanHolster(ply, class, silent)
-	if (ply._SpawnWeapons[ class]) then
+	if (ply._SpawnWeapons[class]) then
 		if (not silent) then
 			ply:Notify("You cannot holster this weapon!", 1);
 		end
@@ -226,7 +231,9 @@ end
 -- @return True if they can, false if they can't.
 function GM:PlayerCanUseItem(ply, id)
 	item = self.Items[id];
-	if (not item) then return false; end
+	if (not item) then
+		return false;
+	end
 	if (item.Category) then
 		local cat = item.Category;
 		local team = ply:GetTeam();
@@ -239,7 +246,9 @@ function GM:PlayerCanUseItem(ply, id)
 				table.Add(cantuse, team.Group.CantUse);
 			end
 			if (table.HasValue(cantuse, cat)) then -- Is it set that our team can't use this category? (ie police can't use illegals)
-				ply:Notify(team.Name .. "s cannot use " .. self:GetCategory(cat).Name .. "!", 1);
+				ply:Notify(
+					team.Name .. "s cannot use " .. self:GetCategory(cat).Name .. "!", 1
+				);
 				return false;
 			end
 		elseif (ply:Blacklisted("cat", cat) > 0) then -- Are we blacklisted from this category?
@@ -252,8 +261,10 @@ function GM:PlayerCanUseItem(ply, id)
 		return false;
 	end
 	-- TODO: Why is this needed? I don't think it is tbh
-	if ( ply._SpawnWeapons[item.UniqueID] ) then -- Did we spawn with this weapon?
-		if (not silent) then ply:Notify("You cannot use this weapon!", 1) end
+	if (ply._SpawnWeapons[item.UniqueID]) then -- Did we spawn with this weapon?
+		if (not silent) then
+			ply:Notify("You cannot use this weapon!", 1)
+		end
 		return false
 	end
 	return true;
@@ -309,10 +320,15 @@ end
 -- @param ply The player in question
 -- @param ent The contraband the player just destroyed
 function GM:PlayerDestroyedContraband(ply, ent)
-	local contra = self.Config['Contraband'][ent:GetClass()];
-	if (not contra) then return end
+	local contra = self.Config["Contraband"][ent:GetClass()];
+	if (not contra) then
+		return
+	end
 	ply:GiveMoney(contra.money);
-	ply:Notify("You earned $" .. contra.money .. " for destroying that " .. contra.name .. "!", 0);
+	ply:Notify(
+		"You earned $" .. contra.money .. " for destroying that " .. contra.name ..
+			"!", 0
+	);
 
 	local pl = ent:GetPlayer();
 	local name;
@@ -334,7 +350,7 @@ function GM:PlayerCanRamDoor(ply, door)
 		ply:Notify("You cannot ram this door!", 1);
 		return false;
 	elseif (door:IsOwned()) then
-		for _,pl in pairs(door:GetAllAccessors()) do
+		for _, pl in pairs(door:GetAllAccessors()) do
 			if (pl:Warranted() or pl == ply) then
 				return true;
 			end
@@ -355,7 +371,8 @@ end
 -- @param door The door in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanUseDoor(ply, door)
-	if (door._Jammed or door._Sealed or ply:GetPos():Distance(ply:GetEyeTraceNoCursor().HitPos) > 128) then
+	if (door._Jammed or door._Sealed or
+		ply:GetPos():Distance(ply:GetEyeTraceNoCursor().HitPos) > 128) then
 		return false;
 	end
 	return not tobool(door._Locked);
@@ -367,7 +384,8 @@ end
 -- @param ent The container in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanUseContainer(ply, ent)
-	return (ply:GetEyeTraceNoCursor().HitPos:Distance(ply:EyePos()) < 129 and not (ent._Locked or ent._Sealed));
+	return (ply:GetEyeTraceNoCursor().HitPos:Distance(ply:EyePos()) < 129 and
+       		not (ent._Locked or ent._Sealed));
 end
 
 ---
@@ -400,10 +418,12 @@ function GM:PlayerUpdatedContainerContents(ply, ent, itemid, amount, force)
 	if (math.abs(amount) > 1) then
 		iname = "some " .. item.Plural;
 	else
-		iname = (item.Name:sub(1,1):lower():find"[aeio]" and "an " or "a ") .. item.Name;
+		iname = (item.Name:sub(1, 1):lower():find "[aeio]" and "an " or "a ") ..
+        			item.Name;
 	end
-	ename = ent:GetNWString("Name","container")
-	oname = ent:IsOwned() and ent:GetPossessiveName() or ename:sub(1,1):find"[aeiou]" and "an" or "a"
+	ename = ent:GetNWString("Name", "container")
+	oname = ent:IsOwned() and ent:GetPossessiveName() or
+        		ename:sub(1, 1):find "[aeiou]" and "an" or "a"
 	if (amount < 0) then
 		amount = -amount;
 		word = "%s took %i %s from %s %s";
@@ -412,7 +432,10 @@ function GM:PlayerUpdatedContainerContents(ply, ent, itemid, amount, force)
 		word = "%s put %i %s into %s %s";
 		ply:Emote("puts " .. iname .. " into the " .. ename .. ".");
 	end
-	GM:Log(EVENT_ENTITY, word, ply:Name(), amount, (amount > 1 and item.Plural or item.Name), oname, ename);
+	GM:Log(
+		EVENT_ENTITY, word, ply:Name(), amount,
+		(amount > 1 and item.Plural or item.Name), oname, ename
+	);
 end
 
 ---
@@ -421,7 +444,9 @@ end
 -- @param ent The entity in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanLockpick(ply, ent)
-	return IsValid(ent) and ((ent:IsOwnable() and not (ent._Jammed or ent._Sealed)) or (ent:IsPlayer() and ent:Arrested()));
+	return IsValid(ent) and
+       		((ent:IsOwnable() and not (ent._Jammed or ent._Sealed)) or
+       			(ent:IsPlayer() and ent:Arrested()));
 end
 
 ---
@@ -468,11 +493,13 @@ end
 -- @param oldteam The id of the old team
 -- @param newteam The id of the new team
 function GM:PlayerChangedTeams(ply, oldteam, newteam)
-	if (not IsValid(ply)) then return; end
+	if (not IsValid(ply)) then
+		return;
+	end
 	local tab = {};
 	for ent in pairs(GM.OwnableEntities) do
 		if (ent:IsValid() and ent:HasAccess(ply)) then
-			tab[#tab+1] = ent;
+			tab[#tab + 1] = ent;
 		end
 	end
 	umsg.Start("AccessReset", ply);
@@ -543,9 +570,9 @@ function GM:PlayerCanSayOOC(ply, text)
 	elseif ((ply._NextOOC or 0) > CurTime()) then -- Prevent OOC spam
 		timeleft = ply._NextOOC - CurTime();
 		if (timeleft > 60) then
-			timeleft = string.ToMinutesSeconds(math.ceil(timeleft)).." minute(s)";
+			timeleft = string.ToMinutesSeconds(math.ceil(timeleft)) .. " minute(s)";
 		else
-			timeleft = math.ceil(timeleft).." second(s)";
+			timeleft = math.ceil(timeleft) .. " second(s)";
 		end
 		ply:Notify("You must wait " .. timeleft .. " before using OOC again!", 1);
 		return false;
@@ -573,17 +600,19 @@ end
 function GM:PlayerCanUseCommand(ply, cmd, args)
 	-- Stop the player using the command if they're blacklisted from it
 	if (ply:Blacklisted("cmd", command) > 0) then
-		ply:BlacklistAlert("cmd",command,command);
+		ply:BlacklistAlert("cmd", command, command);
 		return false;
 	end
 	-- Some commands need to be usable when they normally wouldn't be.
-	if (cmd == "sleep" and ply:Alive() and not ply:Arrested() and ply._Sleeping) --So they can wake up
-	or ((cmd == "dropmoney" or cmd == "givemoney") and ply:Alive() and not ply:KnockedOut()) -- So you can bribe your way out of being arrested/tied up
-	or ((cmd == "me" or cmd == "y" or cmd == "w") and ply:Alive() and not (ply:KnockedOut() and not ply._Tripped)) -- So you can emote while arrested/tripped
+	if (cmd == "sleep" and ply:Alive() and not ply:Arrested() and ply._Sleeping) -- So they can wake up
+	or ((cmd == "dropmoney" or cmd == "givemoney") and ply:Alive() and
+		not ply:KnockedOut()) -- So you can bribe your way out of being arrested/tied up
+	or ((cmd == "me" or cmd == "y" or cmd == "w") and ply:Alive() and
+		not (ply:KnockedOut() and not ply._Tripped)) -- So you can emote while arrested/tripped
 	or (cmd == "team" and not (ply:Arrested() or ply:Tied())) -- So you can't change job while arrested or tied, but can while dead or unconsious
 	or table.HasValue(self.Config["Usable Commands"], cmd) then -- Or if it's one of the persistant commands
 		return true;
-	else --Otherwise, check the defeaults
+	else -- Otherwise, check the defeaults
 		return gamemode.Call("PlayerCanDoSomething", ply);
 	end
 end

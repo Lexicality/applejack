@@ -2,7 +2,6 @@
 -- ~ Serverside Doors Library ~
 -- ~ Moonshine ~
 --
-
 ---
 -- Used for saving and restoring the ownership of doors built in to a map using the SQLite db.
 doors = {}

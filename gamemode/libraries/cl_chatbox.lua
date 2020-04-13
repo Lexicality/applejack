@@ -2,11 +2,10 @@
 -- "cl_chatbox.lua"
 -- Cider (Roleplay)
 --
-
 -- FUCKING EVOLVE.
 function chat.AddText(...)
 	local str = "[Evolve] ";
-	for _, word in pairs{...} do
+	for _, word in pairs {...} do
 		if (type(word) == "Player") then
 			str = str .. word:Name();
 		elseif (type(word) == "string") then
@@ -17,11 +16,14 @@ function chat.AddText(...)
 end
 
 -- Called when a player begins typing.
-function GM:StartChat(team) return true; end
+function GM:StartChat(team)
+	return true;
+end
 
 -- Called when a player says something or a message is received from the server.
 function GM:ChatText(index, name, text, filter)
-	if ( filter == "none" or filter == "joinleave" or (filter == "chat" and name == "Console") ) then
+	if (filter == "none" or filter == "joinleave" or
+		(filter == "chat" and name == "Console")) then
 		cider.chatBox.chatText(index, name, text, filter);
 	end
 
@@ -29,8 +31,10 @@ function GM:ChatText(index, name, text, filter)
 	return true;
 end
 
-function GM:OnAchievementAchieved( ply, achid )
-	cider.chatBox.chatText(ply:EntIndex(), ply:Name(), achievements.GetName( achid ), "achievement");
+function GM:OnAchievementAchieved(ply, achid)
+	cider.chatBox.chatText(
+		ply:EntIndex(), ply:Name(), achievements.GetName(achid), "achievement"
+	);
 end
 
 cider.chatBox = {};
@@ -41,13 +45,10 @@ CreateClientConVar("cider_chatbox_ic", "0", true, true);
 CreateClientConVar("cider_chatbox_joinleave", "0", true, true);
 
 -- Create the font used for all text.
-surface.CreateFont("cider_chatBox_MainText", {
-	font		= "Tahoma";
-	size		= 14;
-	weight		= 600;
-	antialias	= true;
-	additive	= false;
-});
+surface.CreateFont(
+	"cider_chatBox_MainText",
+	{font = "Tahoma", size = 14, weight = 600, antialias = true, additive = false}
+);
 
 -- Create a table to store the messages, derma, and join spam attempts.
 cider.chatBox.maximumLines = 8;
@@ -61,24 +62,28 @@ cider.chatBox.history.messages = {};
 cider.chatBox.history.position = 0;
 
 -- Hook into when a player message is sent from the server.
-usermessage.Hook("cider.chatBox.playerMessage", function(msg)
-	local player = msg:ReadEntity();
-	local filter = msg:ReadString();
-	local text = msg:ReadString();
-	-- Check to see if the player is a player.
-	if ( player:IsPlayer() ) then
-		cider.chatBox.chatText(player:EntIndex(), player:Name(), text, filter);
+usermessage.Hook(
+	"cider.chatBox.playerMessage", function(msg)
+		local player = msg:ReadEntity();
+		local filter = msg:ReadString();
+		local text = msg:ReadString();
+		-- Check to see if the player is a player.
+		if (player:IsPlayer()) then
+			cider.chatBox.chatText(player:EntIndex(), player:Name(), text, filter);
+		end
 	end
-end)
+)
 
 -- Hook into when a message is sent from the server.
-usermessage.Hook("cider.chatBox.message", function(msg)
-	local filter = msg:ReadString();
-	local text = msg:ReadString();
+usermessage.Hook(
+	"cider.chatBox.message", function(msg)
+		local filter = msg:ReadString();
+		local text = msg:ReadString();
 
-	-- Chat Text.
-	cider.chatBox.chatText(nil, nil, text, filter);
-end);
+		-- Chat Text.
+		cider.chatBox.chatText(nil, nil, text, filter);
+	end
+);
 -- Get the position of the chat area.
 function cider.chatBox.getPosition()
 	local x, y = 30, ScrH() - (ScrH() / 4);
@@ -110,23 +115,26 @@ function cider.chatBox.getY()
 end
 
 -- Get the spacing between messages.
-function cider.chatBox.getSpacing() return 20; end
+function cider.chatBox.getSpacing()
+	return 20;
+end
 
 -- Return a table of wrapped text (thanks to SamuraiMushroom for this function).
 function cider.chatBox.wrapText(text, font, width, overhead, base)
 	surface.SetFont(font);
 
 	-- Save the original width for the next line and take the overhead from the width.
-	local original = width; width = width - (overhead or 0);
+	local original = width;
+	width = width - (overhead or 0);
 
 	-- Check to see if the width of the text is greater than the width we specified.
-	if (surface.GetTextSize( string.gsub(text, "&", "U") ) > width) then
+	if (surface.GetTextSize(string.gsub(text, "&", "U")) > width) then
 		local length = 0;
 		local exploded = {};
 		local seperator = "";
 
 		-- Check if the text has any spaces in it.
-		if ( string.find(text, " ") ) then
+		if (string.find(text, " ")) then
 			exploded = string.Explode(" ", text);
 			seperator = " ";
 		else
@@ -142,20 +150,20 @@ function cider.chatBox.wrapText(text, font, width, overhead, base)
 			local block = table.concat(exploded, seperator, 1, i);
 
 			-- Set the length to be the length of this block of text.
-			length = surface.GetTextSize( string.gsub(block, "&", "U") );
+			length = surface.GetTextSize(string.gsub(block, "&", "U"));
 
 			-- Increase the iterator so that we can move on to the next block of text.
 			i = i + 1;
 		end
 
 		-- Insert the first line into our out table.
-		table.insert( base, table.concat(exploded, seperator, 1, i - 2) );
+		table.insert(base, table.concat(exploded, seperator, 1, i - 2));
 
 		-- Get the second line of the text which we may need to wrap again.
 		text = table.concat(exploded, seperator, i - 1);
 
 		-- Check to see if the size of the second line is greater than our specified width.
-		if (surface.GetTextSize( string.gsub(text, "&", "U") ) > original) then
+		if (surface.GetTextSize(string.gsub(text, "&", "U")) > original) then
 			cider.chatBox.wrapText(text, font, original, nil, base);
 		else
 			table.insert(base, text);
@@ -183,56 +191,71 @@ function cider.chatBox.createDermaButtons()
 		cider.chatBox.derma.buttons = {};
 
 		-- Create a derma button to scroll up the chat box.
-		cider.chatBox.createDermaButton("Up", "+", 434, 16, "Scroll up the message area.", function()
-			cider.chatBox.history.position = cider.chatBox.history.position - 1;
-		end, function(self)
-			if (cider.chatBox.history.messages[cider.chatBox.history.position - cider.chatBox.maximumLines]) then
-				self:SetDisabled(false);
-			else
-				self:SetDisabled(true);
+		cider.chatBox.createDermaButton(
+			"Up", "+", 434, 16, "Scroll up the message area.", function()
+				cider.chatBox.history.position = cider.chatBox.history.position - 1;
+			end, function(self)
+				if (cider.chatBox.history.messages[cider.chatBox.history.position -
+					cider.chatBox.maximumLines]) then
+					self:SetDisabled(false);
+				else
+					self:SetDisabled(true);
+				end
 			end
-		end);
+		);
 
 		-- Create a derma button to scroll down the chat box.
-		cider.chatBox.createDermaButton("Down", "-", 454, 16, "Scroll down the message area.", function()
-			cider.chatBox.history.position = cider.chatBox.history.position + 1;
-		end, function(self)
-			if (cider.chatBox.history.messages[cider.chatBox.history.position + 1]) then
-				self:SetDisabled(false);
-			else
-				self:SetDisabled(true);
+		cider.chatBox.createDermaButton(
+			"Down", "-", 454, 16, "Scroll down the message area.", function()
+				cider.chatBox.history.position = cider.chatBox.history.position + 1;
+			end, function(self)
+				if (cider.chatBox.history.messages[cider.chatBox.history.position + 1]) then
+					self:SetDisabled(false);
+				else
+					self:SetDisabled(true);
+				end
 			end
-		end);
+		);
 
 		-- Create a derma button to go to the bottom of the chat box.
-		cider.chatBox.createDermaButton("Bottom", "*", 474, 16, "Goto the bottom of the message area.", function()
-			cider.chatBox.history.position = #cider.chatBox.history.messages;
-		end, function(self)
-			if (cider.chatBox.history.position < #cider.chatBox.history.messages) then
-				self:SetDisabled(false);
-			else
-				self:SetDisabled(true);
+		cider.chatBox.createDermaButton(
+			"Bottom", "*", 474, 16, "Goto the bottom of the message area.", function()
+				cider.chatBox.history.position = #cider.chatBox.history.messages;
+			end, function(self)
+				if (cider.chatBox.history.position < #cider.chatBox.history.messages) then
+					self:SetDisabled(false);
+				else
+					self:SetDisabled(true);
+				end
 			end
-		end);
+		);
 
 		-- Create a derma button for the filters.
-		cider.chatBox.createDermaButton("Filters", "Filters", 494, 80, "Enable or disable message filters.", function()
-			local IsVisible = cider.chatBox.derma.filters:IsVisible();
+		cider.chatBox.createDermaButton(
+			"Filters", "Filters", 494, 80, "Enable or disable message filters.",
+			function()
+				local IsVisible = cider.chatBox.derma.filters:IsVisible();
 
-			-- Check Is Visible.
-			if (IsVisible) then
-				cider.chatBox.derma.filters:SetVisible(false);
-			else
-				cider.chatBox.derma.filters:SetVisible(true);
+				-- Check Is Visible.
+				if (IsVisible) then
+					cider.chatBox.derma.filters:SetVisible(false);
+				else
+					cider.chatBox.derma.filters:SetVisible(true);
+				end
+			end, function(self)
 			end
-		end, function(self) end);
+		);
 	end
 end
 
 -- Create a derma button parented to the chat panel.
-function cider.chatBox.createDermaButton(name, text, x, width, toolTip, doClick, think)
+function cider.chatBox.createDermaButton(
+	name, text, x, width, toolTip, doClick, think
+)
 	if (not cider.chatBox.derma.buttons[name]) then
-		cider.chatBox.derma.buttons[name] = vgui.Create("DButton", cider.chatBox.derma.panel);
+		cider.chatBox.derma.buttons[name] = vgui.Create(
+			"DButton", cider.chatBox.derma.panel
+		);
 		cider.chatBox.derma.buttons[name]:SetText(text);
 		cider.chatBox.derma.buttons[name]:SetSize(width, 16);
 		cider.chatBox.derma.buttons[name]:SetPos(x, 4);
@@ -244,11 +267,15 @@ end
 
 -- Create the derma check boxes.
 function cider.chatBox.createDermaCheckBoxes()
-	if (not cider.chatBox.derma.checkBoxes) then cider.chatBox.derma.checkBoxes = {} end
+	if (not cider.chatBox.derma.checkBoxes) then
+		cider.chatBox.derma.checkBoxes = {}
+	end
 end
 
 -- Create a derma check box parented to the chat panel.
-function cider.chatBox.createDermaCheckBox(name, conVar, x, toolTip, label, parent, y)
+function cider.chatBox.createDermaCheckBox(
+	name, conVar, x, toolTip, label, parent, y
+)
 	if (not cider.chatBox.derma.checkBoxes[name]) then
 		parent = parent or cider.chatBox.derma.panel;
 		y = y or 4;
@@ -278,26 +305,29 @@ end
 -- Create the derma text entry parented to the chat panel.
 function cider.chatBox.createDermaTextEntry()
 	if (not cider.chatBox.derma.textEntry) then
-		cider.chatBox.derma.textEntry = vgui.Create("DTextEntry", cider.chatBox.derma.panel);
+		cider.chatBox.derma.textEntry = vgui.Create(
+			"DTextEntry", cider.chatBox.derma.panel
+		);
 		cider.chatBox.derma.textEntry:SetPos(34, 4);
 		cider.chatBox.derma.textEntry:SetSize(396, 16);
-		cider.chatBox.derma.textEntry.OnEnter = function()
-			local message = cider.chatBox.derma.textEntry:GetValue();
+		cider.chatBox.derma.textEntry.OnEnter =
+			function()
+				local message = cider.chatBox.derma.textEntry:GetValue();
 
-			-- Check if the message is valid.
-			if (message and message ~= "") then
-				cider.chatBox.history.position = #cider.chatBox.history.messages;
+				-- Check if the message is valid.
+				if (message and message ~= "") then
+					cider.chatBox.history.position = #cider.chatBox.history.messages;
 
-				-- Send our message to the server to validate it.
-				RunConsoleCommand( "say", string.Replace(message, "\"", "$q"), nil );
+					-- Send our message to the server to validate it.
+					RunConsoleCommand("say", string.Replace(message, "\"", "$q"), nil);
 
-				-- Set the text to an empty string to reset it.
-				cider.chatBox.derma.textEntry:SetText("");
+					-- Set the text to an empty string to reset it.
+					cider.chatBox.derma.textEntry:SetText("");
+				end
+
+				-- Hide the derma chat panel.
+				cider.chatBox.derma.panel.hide();
 			end
-
-			-- Hide the derma chat panel.
-			cider.chatBox.derma.panel.hide();
-		end
 
 		-- Called every frame.
 		function cider.chatBox.derma.textEntry:Think()
@@ -329,22 +359,35 @@ function cider.chatBox.createDermaFilters()
 			local cornerSize = 4;
 
 			-- Draw a rounded box which the filter check boxes will go on.
-			draw.RoundedBox(cornerSize, 0, 0, self:GetWide(), self:GetTall(), backgroundColor);
+			draw.RoundedBox(
+				cornerSize, 0, 0, self:GetWide(), self:GetTall(), backgroundColor
+			);
 		end
 
 		-- Called every frame.
 		function cider.chatBox.derma.filters:Think()
-			local x = cider.chatBox.derma.panel.x + cider.chatBox.derma.panel:GetWide() + 4;
-			local y = cider.chatBox.derma.panel.y + cider.chatBox.derma.panel:GetTall() - self:GetTall();
+			local x = cider.chatBox.derma.panel.x + cider.chatBox.derma.panel:GetWide() +
+          				4;
+			local y = cider.chatBox.derma.panel.y + cider.chatBox.derma.panel:GetTall() -
+          				self:GetTall();
 
 			-- Set the position of the filters box.
 			self:SetPos(x, y);
 		end
 
 		-- Create the derma check boxes parented to the filters panel.
-		cider.chatBox.createDermaCheckBox("OOC", "cider_chatbox_ooc", 8, "Filter out-of-character messages.", "Filter OOC", cider.chatBox.derma.filters, 8);
-		cider.chatBox.createDermaCheckBox("IC", "cider_chatbox_ic", 8, "Filter in-character messages.", "Filter IC", cider.chatBox.derma.filters, 28);
-		cider.chatBox.createDermaCheckBox("Join/Leave", "cider_chatbox_joinleave", 8, "Filter join/leave messages.", "Filter Join/Leave", cider.chatBox.derma.filters, 48);
+		cider.chatBox.createDermaCheckBox(
+			"OOC", "cider_chatbox_ooc", 8, "Filter out-of-character messages.",
+			"Filter OOC", cider.chatBox.derma.filters, 8
+		);
+		cider.chatBox.createDermaCheckBox(
+			"IC", "cider_chatbox_ic", 8, "Filter in-character messages.", "Filter IC",
+			cider.chatBox.derma.filters, 28
+		);
+		cider.chatBox.createDermaCheckBox(
+			"Join/Leave", "cider_chatbox_joinleave", 8, "Filter join/leave messages.",
+			"Filter Join/Leave", cider.chatBox.derma.filters, 48
+		);
 	end
 end
 
@@ -370,7 +413,7 @@ function cider.chatBox.createDermaPanel()
 
 			-- Call a hook so plugins can get when the chat box is opened.
 			RunConsoleCommand("started_typing");
-			hook.Call("OpenChatBox",GAMEMODE);
+			hook.Call("OpenChatBox", GAMEMODE);
 		end
 
 		-- A function to hide the chat panel.
@@ -388,7 +431,7 @@ function cider.chatBox.createDermaPanel()
 
 			-- Call a hook so plugins can get when the chat box is closed.
 			RunConsoleCommand("finished_typing");
-			hook.Call("CloseChatBox",GAMEMODE);
+			hook.Call("CloseChatBox", GAMEMODE);
 		end
 
 		-- Called every time the panel should be painted.
@@ -399,7 +442,9 @@ function cider.chatBox.createDermaPanel()
 			local textColor = Color(255, 255, 255, 255);
 
 			-- Draw a rounded box for the text entry to go on.
-			draw.RoundedBox(cornerSize, 0, 0, self:GetWide(), self:GetTall(), backgroundColor);
+			draw.RoundedBox(
+				cornerSize, 0, 0, self:GetWide(), self:GetTall(), backgroundColor
+			);
 
 			-- Set the font of the text.
 			surface.SetFont("cider_chatBox_MainText");
@@ -412,14 +457,20 @@ function cider.chatBox.createDermaPanel()
 				width = surface.GetTextSize("Say Team");
 
 				-- Draw text to tell us that we're sending a message to our team.
-				draw.SimpleText("Say Team", "cider_chatBox_MainText", 5, 13, Color(0, 0, 0, 255), 0, 1);
-				draw.SimpleText("Say Team", "cider_chatBox_MainText", 4, 12, titleColor, 0, 1);
+				draw.SimpleText(
+					"Say Team", "cider_chatBox_MainText", 5, 13, Color(0, 0, 0, 255), 0, 1
+				);
+				draw.SimpleText(
+					"Say Team", "cider_chatBox_MainText", 4, 12, titleColor, 0, 1
+				);
 
 				-- Set the position and size of the text entry.
 				cider.chatBox.derma.textEntry:SetPos(74, 4);
 				cider.chatBox.derma.textEntry:SetSize(356, 16);
 			else
-				draw.SimpleText("Say", "cider_chatBox_MainText", 5, 13, Color(0, 0, 0, 255), 0, 1);
+				draw.SimpleText(
+					"Say", "cider_chatBox_MainText", 5, 13, Color(0, 0, 0, 255), 0, 1
+				);
 				draw.SimpleText("Say", "cider_chatBox_MainText", 4, 12, titleColor, 0, 1);
 
 				-- Set the position and size of the text entry.
@@ -428,7 +479,9 @@ function cider.chatBox.createDermaPanel()
 			end
 
 			-- Draw a colon after the chat prefix.
-			draw.SimpleText(":", "cider_chatBox_MainText", 5 + width, 13, Color(0, 0, 0, 255), 0, 1);
+			draw.SimpleText(
+				":", "cider_chatBox_MainText", 5 + width, 13, Color(0, 0, 0, 255), 0, 1
+			);
 			draw.SimpleText(":", "cider_chatBox_MainText", 4 + width, 12, textColor, 0, 1);
 		end
 
@@ -440,7 +493,9 @@ function cider.chatBox.createDermaPanel()
 			cider.chatBox.derma.panel:SetPos(x, y + 6);
 
 			-- Check if the main panel is visible.
-			if (self:IsVisible() and input.IsKeyDown(KEY_ESCAPE)) then cider.chatBox.derma.panel.hide(); end
+			if (self:IsVisible() and input.IsKeyDown(KEY_ESCAPE)) then
+				cider.chatBox.derma.panel.hide();
+			end
 		end
 
 		-- Create the scroll panel.
@@ -455,7 +510,8 @@ function cider.chatBox.createDermaPanel()
 			-- Check if the chat panel is visible.
 			if (isVisible) then
 				if (delta > 0) then
-					if (cider.chatBox.history.messages[cider.chatBox.history.position - cider.chatBox.maximumLines]) then
+					if (cider.chatBox.history.messages[cider.chatBox.history.position -
+						cider.chatBox.maximumLines]) then
 						cider.chatBox.history.position = cider.chatBox.history.position - 1;
 					end
 				else
@@ -472,7 +528,7 @@ end
 function cider.chatBox.playerBindPress(player, bind, press)
 	if (bind == "toggleconsole") then
 		cider.chatBox.derma.panel.hide();
-	elseif ( (bind == "messagemode" or bind == "messagemode2") and press ) then
+	elseif ((bind == "messagemode" or bind == "messagemode2") and press) then
 		cider.chatBox.derma.panel.show();
 
 		-- Return true because we don't want it to perform the default action.
@@ -481,7 +537,10 @@ function cider.chatBox.playerBindPress(player, bind, press)
 end
 
 -- Add the hook.
-hook.Add("PlayerBindPress", "cider.chatBox.playerBindPress", cider.chatBox.playerBindPress);
+hook.Add(
+	"PlayerBindPress", "cider.chatBox.playerBindPress",
+	cider.chatBox.playerBindPress
+);
 
 -- Add a new message to the message queue.
 function cider.chatBox.messageAdd(title, name, text, filtered, icon)
@@ -518,7 +577,9 @@ function cider.chatBox.messageAdd(title, name, text, filtered, icon)
 	cider.chatBox.printConsole(message);
 
 	-- Check if the message is filtered.
-	if (filtered) then return; end
+	if (filtered) then
+		return;
+	end
 
 	-- Check the position of the history to see if it's the latest one.
 	if (cider.chatBox.history.position == #cider.chatBox.history.messages) then
@@ -546,18 +607,30 @@ function cider.chatBox.printConsole(message)
 	local total = "";
 
 	-- Check if we have an icon specified.
-	if (message.icon) then total = total.."("..message.icon[2]..") "; end
-	if (message.title) then total = total..message.title.text.." "; end
-	if (message.name) then total = total..message.name.text..": "; end
+	if (message.icon) then
+		total = total .. "(" .. message.icon[2] .. ") ";
+	end
+	if (message.title) then
+		total = total .. message.title.text .. " ";
+	end
+	if (message.name) then
+		total = total .. message.name.text .. ": ";
+	end
 
 	-- Loop through the message's blocks.
 	for k, v in pairs(message.blocks) do
 		local space = " ";
 
 		-- Check if we're at the last key, if we're breaking, and if we're a text type.
-		if (k == #message.blocks) then space = ""; end
-		if (v.newline) then space = ""; end
-		if (v.class == "Text") then total = total..v.text..space; end
+		if (k == #message.blocks) then
+			space = "";
+		end
+		if (v.newline) then
+			space = "";
+		end
+		if (v.class == "Text") then
+			total = total .. v.text .. space;
+		end
 
 		-- Check if we're breaking.
 		if (v.newline) then
@@ -569,7 +642,9 @@ function cider.chatBox.printConsole(message)
 	end
 
 	-- Check if our total is not an empty string.
-	if (total ~= "") then print(total); end
+	if (total ~= "") then
+		print(total);
+	end
 end
 
 -- Extract classes.
@@ -580,23 +655,33 @@ function cider.chatBox.extractClasses(message)
 	surface.SetFont("cider_chatBox_MainText");
 
 	-- Check if we have an icon specified.
-	if (message.icon) then width = width + 16 + surface.GetTextSize(" "); end
-	if (message.title) then width = width + surface.GetTextSize( string.gsub(message.title.text.." ", "&", "U") ); end
-	if (message.name) then width = width + surface.GetTextSize( string.gsub(message.name.text.." ", "&", "U") ); end
+	if (message.icon) then
+		width = width + 16 + surface.GetTextSize(" ");
+	end
+	if (message.title) then
+		width = width +
+        			surface.GetTextSize(string.gsub(message.title.text .. " ", "&", "U"));
+	end
+	if (message.name) then
+		width = width +
+        			surface.GetTextSize(string.gsub(message.name.text .. " ", "&", "U"));
+	end
 
 	-- Create a table to store the wrapped text and then get the wrapped text.
 	local wrapped = {};
 
 	-- Wrap the text into our table.
-	cider.chatBox.wrapText(message.text, "cider_chatBox_MainText", 576, width, wrapped);
+	cider.chatBox.wrapText(
+		message.text, "cider_chatBox_MainText", 576, width, wrapped
+	);
 
 	-- Loop through the wrapped text.
 	for k, v in pairs(wrapped) do
 		if (v ~= "") then
 			if (k == #wrapped) then
-				table.insert( message.blocks, {class = "Text", text = v} );
+				table.insert(message.blocks, {class = "Text", text = v});
 			else
-				table.insert( message.blocks, {class = "Text", text = v, newline = true} );
+				table.insert(message.blocks, {class = "Text", text = v, newline = true});
 
 				-- Increase the number of lines.
 				message.lines = message.lines + 1;
@@ -643,7 +728,9 @@ hook.Add("Think", "cider.chatBox.think", cider.chatBox.think);
 
 -- Called when the HUD should be painted.
 function cider.chatBox.hudPaint()
-	if (not IsValid(cider.chatBox.derma.panel)) then return; end
+	if (not IsValid(cider.chatBox.derma.panel)) then
+		return;
+	end
 	local x, y = cider.chatBox.getPosition();
 
 	-- Set the font of the text.
@@ -663,20 +750,26 @@ function cider.chatBox.hudPaint()
 
 		-- Loop through our maximum number of history messages.
 		for i = 0, (cider.chatBox.maximumLines - 1) do
-			table.insert(messages, cider.chatBox.history.messages[cider.chatBox.history.position - i]);
+			table.insert(
+				messages, cider.chatBox.history.messages[cider.chatBox.history.position - i]
+			);
 		end
 	else
 		if (#cider.chatBox.history.messages > 100) then
 			local amount = #cider.chatBox.history.messages - 100;
 
 			-- Loop through the amount of histroy messages that we are over by.
-			for i = 1, amount do table.remove(cider.chatBox.history.messages, 1); end
+			for i = 1, amount do
+				table.remove(cider.chatBox.history.messages, 1);
+			end
 		end
 	end
 
 	-- Loop through our messages.
 	for k, v in pairs(messages) do
-		if (messages[k - 1]) then y = y - messages[k - 1].spacing; end
+		if (messages[k - 1]) then
+			y = y - messages[k - 1].spacing;
+		end
 
 		-- Get whether our chat panel is visible.
 		local isVisible = cider.chatBox.derma.panel:IsVisible();
@@ -685,7 +778,9 @@ function cider.chatBox.hudPaint()
 		if (not isVisible and k == 1) then
 			y = y - ((cider.chatBox.getSpacing() + v.spacing) * (v.lines - 1)) + 14;
 		else
-			if (k == 1) then y = y + 2; end
+			if (k == 1) then
+				y = y + 2;
+			end
 
 			-- Increase y by our spacing multiplied by the lines we have.
 			y = y - ((cider.chatBox.getSpacing() + v.spacing) * v.lines);
@@ -697,7 +792,7 @@ function cider.chatBox.hudPaint()
 
 		-- Check if the player is a icon.
 		if (v.icon) then
-			surface.SetMaterial( Material( v.icon[1] ) );
+			surface.SetMaterial(Material(v.icon[1]));
 			surface.SetDrawColor(255, 255, 255, v.alpha);
 			surface.DrawTexturedRect(messageX, messageY - 1, 16, 16);
 
@@ -707,14 +802,21 @@ function cider.chatBox.hudPaint()
 
 		-- Check if we have a title specified.
 		if (v.title) then
-			local width = surface.GetTextSize( string.gsub(v.title.text, "&", "U") );
+			local width = surface.GetTextSize(string.gsub(v.title.text, "&", "U"));
 
 			-- Get the title color for our text.
-			local titleColor = Color(v.title.color.r, v.title.color.g, v.title.color.b, v.alpha);
+			local titleColor = Color(
+				v.title.color.r, v.title.color.g, v.title.color.b, v.alpha
+			);
 
 			-- Draw our text with the necessary settings.
-			draw.SimpleText(v.title.text, "cider_chatBox_MainText", messageX + 1, messageY + 1, Color(0, 0, 0, v.alpha), 0, 0);
-			draw.SimpleText(v.title.text, "cider_chatBox_MainText", messageX, messageY, titleColor, 0, 0);
+			draw.SimpleText(
+				v.title.text, "cider_chatBox_MainText", messageX + 1, messageY + 1,
+				Color(0, 0, 0, v.alpha), 0, 0
+			);
+			draw.SimpleText(
+				v.title.text, "cider_chatBox_MainText", messageX, messageY, titleColor, 0, 0
+			);
 
 			-- Increase our x position with our space size.
 			messageX = messageX + width + space;
@@ -722,14 +824,21 @@ function cider.chatBox.hudPaint()
 
 		-- Check if we have a name specified.
 		if (v.name) then
-			local width = surface.GetTextSize( string.gsub(v.name.text, "&", "U") );
+			local width = surface.GetTextSize(string.gsub(v.name.text, "&", "U"));
 
 			-- Get the color of the name.
-			local nameColor = Color(v.name.color.r, v.name.color.g, v.name.color.b, v.alpha);
+			local nameColor = Color(
+				v.name.color.r, v.name.color.g, v.name.color.b, v.alpha
+			);
 
 			-- Draw our text with the necessary settings.
-			draw.SimpleText(v.name.text, "cider_chatBox_MainText", messageX + 1, messageY + 1, Color(0, 0, 0, v.alpha), 0, 0);
-			draw.SimpleText(v.name.text, "cider_chatBox_MainText", messageX, messageY, nameColor, 0, 0);
+			draw.SimpleText(
+				v.name.text, "cider_chatBox_MainText", messageX + 1, messageY + 1,
+				Color(0, 0, 0, v.alpha), 0, 0
+			);
+			draw.SimpleText(
+				v.name.text, "cider_chatBox_MainText", messageX, messageY, nameColor, 0, 0
+			);
 
 			-- Increase our x position with our width.
 			messageX = messageX + width;
@@ -738,8 +847,14 @@ function cider.chatBox.hudPaint()
 			local width = surface.GetTextSize(":");
 
 			-- Draw our text with the necessary settings.
-			draw.SimpleText(":", "cider_chatBox_MainText", messageX + 1, messageY + 1, Color(0, 0, 0, v.alpha), 0, 0);
-			draw.SimpleText(":", "cider_chatBox_MainText", messageX, messageY, Color(255, 255, 255, v.alpha), 0, 0);
+			draw.SimpleText(
+				":", "cider_chatBox_MainText", messageX + 1, messageY + 1,
+				Color(0, 0, 0, v.alpha), 0, 0
+			);
+			draw.SimpleText(
+				":", "cider_chatBox_MainText", messageX, messageY,
+				Color(255, 255, 255, v.alpha), 0, 0
+			);
 
 			-- Increase our x position with our space size.
 			messageX = messageX + width + space;
@@ -751,21 +866,30 @@ function cider.chatBox.hudPaint()
 		-- Loop through our blocks.
 		for k2, v2 in pairs(v.blocks) do
 			if (v2.class == "Text") then
-				local width = surface.GetTextSize( string.gsub(v2.text, "&", "U") );
+				local width = surface.GetTextSize(string.gsub(v2.text, "&", "U"));
 
 				-- Draw our text with the necessary settings.
-				draw.SimpleText(v2.text, "cider_chatBox_MainText", messageX + 1, messageY + 1, Color(0, 0, 0, v.alpha), 0, 0);
-				draw.SimpleText(v2.text, "cider_chatBox_MainText", messageX, messageY, textColor, 0, 0);
+				draw.SimpleText(
+					v2.text, "cider_chatBox_MainText", messageX + 1, messageY + 1,
+					Color(0, 0, 0, v.alpha), 0, 0
+				);
+				draw.SimpleText(
+					v2.text, "cider_chatBox_MainText", messageX, messageY, textColor, 0, 0
+				);
 
 				-- Increase our x position with our space size.
 				messageX = messageX + width + space;
 			end
 
 			-- Check if the width is greater than the width of the box.
-			if (messageX - 8 > box.width) then box.width = messageX - 8; end
+			if (messageX - 8 > box.width) then
+				box.width = messageX - 8;
+			end
 
 			-- Check if our y position is greater than the height of the box.
-			if (cider.chatBox.getY() - y > box.height) then box.height = cider.chatBox.getY() - y; end
+			if (cider.chatBox.getY() - y > box.height) then
+				box.height = cider.chatBox.getY() - y;
+			end
 
 			-- Check if we need to create a new line here.
 			if (v2.newline) then
@@ -796,22 +920,28 @@ function cider.chatBox.explodeByTags(variable, seperator, open, close)
 		-- Check to see if we're currently handling a tag.
 		if (not tag) then
 			if (character == open) then
-				current = current..character; tag = true;
+				current = current .. character;
+				tag = true;
 			elseif (character == Seperator) then
-				results[#results + 1] = current; current = "";
+				results[#results + 1] = current;
+				current = "";
 			else
-				current = current..character;
+				current = current .. character;
 			end
 		else
-			current = current..character;
+			current = current .. character;
 
 			-- Check to see if this character is the close tag.
-			if (character == close) then tag = false; end
+			if (character == close) then
+				tag = false;
+			end
 		end
 	end
 
 	-- Check to see if the current current is not an empty string.
-	if (current ~= "") then results[#results + 1] = current; end
+	if (current ~= "") then
+		results[#results + 1] = current;
+	end
 
 	-- Return our new exploded results as a table.
 	return results;
@@ -824,20 +954,21 @@ function cider.chatBox.chatText(index, name, text, filter)
 	local filtered = false;
 
 	-- Check if it is a valid filter.
-	if (filter == "arrested" or filter == "yell"
-	 or filter == "whisper" or filter == "me"
-	 or filter == "advert" or filter == "request"
-	 or filter == "radio" or filter == "loudradio"
-	 or filter == "tied" or filter == "action") then
+	if (filter == "arrested" or filter == "yell" or filter == "whisper" or filter ==
+		"me" or filter == "advert" or filter == "request" or filter == "radio" or
+		filter == "loudradio" or filter == "tied" or filter == "action") then
 		filter = "ic";
-	elseif (filter == "ooc" or filter == "looc" or filter == "pm" or filter == "notify") then
+	elseif (filter == "ooc" or filter == "looc" or filter == "pm" or filter ==
+		"notify") then
 		filter = "ooc";
 	end
 
 	-- Check if a convar exists for this filter.
-	if (ConVarExists("cider_chatbox_"..filter) and GetConVarNumber("cider_chatbox_"..filter) == 1) then
+	if (ConVarExists("cider_chatbox_" .. filter) and
+		GetConVarNumber("cider_chatbox_" .. filter) == 1) then
 		filtered = true;
-	elseif filter == "ic" and not (LocalPlayer():Alive() or LocalPlayer()._Sleeping) then --Kant stop the music.
+	elseif filter == "ic" and
+		not (LocalPlayer():Alive() or LocalPlayer()._Sleeping) then -- Kant stop the music.
 		return
 	end
 
@@ -848,19 +979,19 @@ function cider.chatBox.chatText(index, name, text, filter)
 	text = string.Replace(text, " ' ", "'");
 
 	-- Check if the player is a valid entity.
-	if ( IsValid(player) ) then
+	if (IsValid(player)) then
 		local teamIndex = player:Team();
 		local teamColor = team.GetColor(teamIndex);
 		local icon = nil;
 
 		-- Check if the player is a super admin.
-		if ( player:IsSuperAdmin() ) then
+		if (player:IsSuperAdmin()) then
 			icon = {"icon16/shield.png", "^"};
-		elseif ( player:IsAdmin() ) then
+		elseif (player:IsAdmin()) then
 			icon = {"icon16/star.png", "*"};
-		elseif ( player:IsModerator() ) then
+		elseif (player:IsModerator()) then
 			icon = {"icon16/emoticon_smile.png", ":)"};
-		elseif ( player:GetNetworkedBool("Donator") ) then
+		elseif (player:GetNetworkedBool("Donator")) then
 			icon = {"icon16/heart.png", "<3"};
 		end
 
@@ -868,52 +999,106 @@ function cider.chatBox.chatText(index, name, text, filter)
 		if (class == "chat") then
 			cider.chatBox.messageAdd(nil, {name, teamColor}, {text}, filtered);
 		elseif (class == "ic") then
-			cider.chatBox.messageAdd(nil, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				nil, nil, {name .. ": " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "me") then
-			cider.chatBox.messageAdd(nil, nil, { "*** "..name.." "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				nil, nil, {"*** " .. name .. " " .. text, Color(255, 255, 150, 255)},
+				filtered
+			);
 		elseif (class == "action" and name == nil) then
-			cider.chatBox.messageAdd(nil,nil,{"*** "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				nil, nil, {"*** " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "action") then
-			cider.chatBox.messageAdd({"(Action: "..name..")", Color(255, 75, 75, 255)},nil,{"*** "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Action: " .. name .. ")", Color(255, 75, 75, 255)}, nil,
+				{"*** " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "advert") then
-			cider.chatBox.messageAdd( {"(Advert)"}, nil, { text, Color(200, 150, 225, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Advert)"}, nil, {text, Color(200, 150, 225, 255)}, filtered
+			);
 		elseif (class == "yell") then
-			cider.chatBox.messageAdd( {"(Yell)"}, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Yell)"}, nil, {name .. ": " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "whisper") then
-			cider.chatBox.messageAdd( {"(Whisper)"}, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Whisper)"}, nil, {name .. ": " .. text, Color(255, 255, 150, 255)},
+				filtered
+			);
 		elseif (class == "looc") then
-			cider.chatBox.messageAdd( {"(Local OOC)", Color(255, 75, 75, 255) }, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Local OOC)", Color(255, 75, 75, 255)}, nil,
+				{name .. ": " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "arrested") then
-			cider.chatBox.messageAdd( {"(Arrested)"}, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Arrested)"}, nil, {name .. ": " .. text, Color(255, 255, 150, 255)},
+				filtered
+			);
 		elseif (class == "tied") then
-			cider.chatBox.messageAdd( {"(Tied)"}, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Tied)"}, nil, {name .. ": " .. text, Color(255, 255, 150, 255)}, filtered
+			);
 		elseif (class == "broadcast") then
-			cider.chatBox.messageAdd( {"(Broadcast)"}, nil, { name..": "..text, Color(255, 75, 75, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Broadcast)"}, nil, {name .. ": " .. text, Color(255, 75, 75, 255)},
+				filtered
+			);
 		elseif (class == "request") then
-			cider.chatBox.messageAdd( {"(Request)"}, nil, { name..": "..text, Color(125, 200, 255, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Request)"}, nil, {name .. ": " .. text, Color(125, 200, 255, 255)},
+				filtered
+			);
 		elseif (class == "radio") then
-			cider.chatBox.messageAdd( {"(Radio)"}, nil, { name..": "..text, Color(150, 225, 75, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Radio)"}, nil, {name .. ": " .. text, Color(150, 225, 75, 255)}, filtered
+			);
 		elseif (class == "loudradio") then
-			cider.chatBox.messageAdd( {"(Radio)"}, nil, { name..": "..text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Radio)"}, nil, {name .. ": " .. text, Color(255, 255, 150, 255)},
+				filtered
+			);
 		elseif (class == "pm") then
-			cider.chatBox.messageAdd( {"(OOC)", Color(255, 75, 75, 255) },{"(PM)"}, { name..": "..text, Color(255, 150, 125, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(OOC)", Color(255, 75, 75, 255)}, {"(PM)"},
+				{name .. ": " .. text, Color(255, 150, 125, 255)}, filtered
+			);
 		elseif (class == "achievement") then
-			cider.chatBox.messageAdd( {"(Achievement)", Color(255, 75, 75, 255) },{ name, teamColor}, { "just earned the achievement '"..text.."'!", Color( 230, 230, 230 ) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Achievement)", Color(255, 75, 75, 255)}, {name, teamColor},
+				{"just earned the achievement '" .. text .. "'!", Color(230, 230, 230)},
+				filtered
+			);
 		elseif (class == "ooc") then
-			cider.chatBox.messageAdd( {"(OOC)", Color(255, 75, 75, 255) }, { name, teamColor}, {text}, filtered, icon);
+			cider.chatBox.messageAdd(
+				{"(OOC)", Color(255, 75, 75, 255)}, {name, teamColor}, {text}, filtered,
+				icon
+			);
 		elseif (class == "phone") then
 			local uniqueID = player:UniqueID();
 			local length = string.len(uniqueID);
-			local phoneNumber = string.sub(uniqueID, 1, math.floor(length / 2)) .. "-" .. string.sub(uniqueID, math.floor(length / 2 + 1));
+			local phoneNumber = string.sub(uniqueID, 1, math.floor(length / 2)) .. "-" ..
+                    				string.sub(uniqueID, math.floor(length / 2 + 1));
 
-			cider.chatBox.messageAdd( {"(Phone)"}, nil, { phoneNumber..": "..text, Color(137, 183, 159, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				{"(Phone)"}, nil, {phoneNumber .. ": " .. text, Color(137, 183, 159, 255)},
+				filtered
+			);
 		end
 	else
 		if (name == "Console" and class == "chat") then
-			if string.find(text,"@@@@@@") then return false end
-			cider.chatBox.messageAdd( {"(OOC)"}, {"Console", Color(150, 150, 150, 255) }, {text}, filtered);
+			if string.find(text, "@@@@@@") then
+				return false
+			end
+			cider.chatBox.messageAdd(
+				{"(OOC)"}, {"Console", Color(150, 150, 150, 255)}, {text}, filtered
+			);
 		elseif (class == "joinleave") then
-			text = text..".";
+			text = text .. ".";
 
 			-- Check if we find brackets in the text.
 			if (string.find(text, "%(") and string.find(text, "%)")) then
@@ -921,24 +1106,34 @@ function cider.chatBox.chatText(index, name, text, filter)
 				text = string.gsub(text, "%.%)", ")");
 
 				-- Add the edited message.
-				cider.chatBox.messageAdd(nil, nil, {text, Color(255, 75, 75, 255) }, filtered);
+				cider.chatBox
+					.messageAdd(nil, nil, {text, Color(255, 75, 75, 255)}, filtered);
 			else
-				if (not cider.chatBox.joinSpam[text] or CurTime() > cider.chatBox.joinSpam[text]) then
-					cider.chatBox.messageAdd(nil, nil, {text, Color(175, 255, 125, 255) }, filtered);
+				if (not cider.chatBox.joinSpam[text] or CurTime() >
+					cider.chatBox.joinSpam[text]) then
+					cider.chatBox.messageAdd(
+						nil, nil, {text, Color(175, 255, 125, 255)}, filtered
+					);
 
 					-- Set the next available join for this player to be 5 seconds from now.
 					cider.chatBox.joinSpam[text] = CurTime() + 5;
 				end
 			end
 		elseif (class == "notify") then
-			cider.chatBox.messageAdd(nil, nil, {text, Color(255, 100, 200, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				nil, nil, {text, Color(255, 100, 200, 255)}, filtered
+			);
 		else
-			cider.chatBox.messageAdd(nil, nil, {text, Color(255, 255, 150, 255) }, filtered);
+			cider.chatBox.messageAdd(
+				nil, nil, {text, Color(255, 255, 150, 255)}, filtered
+			);
 		end
 	end
 end
 
 -- Create all the derma panels.
-hook.Add("InitPostEntity", "Chatbox Derma", function()
-	cider.chatBox.createDermaAll();
-end);
+hook.Add(
+	"InitPostEntity", "Chatbox Derma", function()
+		cider.chatBox.createDermaAll();
+	end
+);

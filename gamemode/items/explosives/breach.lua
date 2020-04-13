@@ -2,20 +2,21 @@
 -- ~ Breach ~
 -- ~ Applejack ~
 --
-ITEM.Name			= "Breach";
-ITEM.Plural			= "Breaches";
-ITEM.Size			= 2;
-ITEM.Cost			= 3000;
-ITEM.Model			= "models/weapons/w_c4_planted.mdl";
-ITEM.Batch			= 10;
-ITEM.Store			= true;
-ITEM.Description	= "Will blow a door open if it is planted on one and destroyed.";
-ITEM.Base			= "item";
-ITEM.NoVehicles		= true;
+ITEM.Name = "Breach";
+ITEM.Plural = "Breaches";
+ITEM.Size = 2;
+ITEM.Cost = 3000;
+ITEM.Model = "models/weapons/w_c4_planted.mdl";
+ITEM.Batch = 10;
+ITEM.Store = true;
+ITEM.Description =
+	"Will blow a door open if it is planted on one and destroyed.";
+ITEM.Base = "item";
+ITEM.NoVehicles = true;
 
 function ITEM:onUse(ply)
-	local trace	= ply:GetEyeTraceNoCursor();
-	local door	= trace.Entity;
+	local trace = ply:GetEyeTraceNoCursor();
+	local door = trace.Entity;
 	if (not door:IsDoor()) then
 		ply:Notify("That is not a valid door!", 1);
 	elseif (door:GetPos():Distance(ply:GetPos()) > 128) then

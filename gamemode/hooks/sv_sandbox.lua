@@ -2,10 +2,8 @@
 -- ~ Sandbox Hooks (SV) ~
 -- ~ Applejack ~
 --
-
 -- This file is for the base gamemodes' hooks.
 -- As such, there is no need to document them as they are all standard.
-
 function GM:PlayerSwitchFlashlight(ply, on)
 	-- Do not let the player use their flashlight while arrested, unconsious or tied.
 	return not (ply:Arrested() or ply:KnockedOut() or ply:Tied());
@@ -42,7 +40,11 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 	teamid = teamdata.TeamID;
 	-- Run a series of checks
 	if ((ply._NextChangeTeam[teamid] or 0) > CurTime()) then
-		ply:Notify("You must wait " .. string.ToMinutesSeconds(ply._NextChangeTeam[teamid] - CurTime()) .. " before you can become a " .. teamdata.Name .. "!", 1);
+		ply:Notify(
+			"You must wait " ..
+				string.ToMinutesSeconds(ply._NextChangeTeam[teamid] - CurTime()) ..
+				" before you can become a " .. teamdata.Name .. "!", 1
+		);
 		return false;
 	elseif (ply:Warranted()) then
 		ply:Notify("You cannot change teams while warranted!", 1);
@@ -55,7 +57,8 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 		return false
 	elseif (not gamemode.Call("PlayerCanDoSomething", ply, true)) then
 		return false;
-	elseif (teamdata.SizeLimit > 0 and team.NumPlayers(teamdata.TeamID) >= teamdata.SizeLimit) then
+	elseif (teamdata.SizeLimit > 0 and team.NumPlayers(teamdata.TeamID) >=
+		teamdata.SizeLimit) then
 		ply:Notify("That team is full!", NOTIFY_ERROR);
 		return false;
 	end
@@ -69,15 +72,18 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 	return false;
 end
 
+-- Called when a ply has authed
+function GM:PlayerAuthed(ply, steamID, uniqueID)
+	if not string.find(ply:Name(), "[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
+		ply:Kick(
 
---Called when a ply has authed
-function GM:PlayerAuthed( ply, steamID, uniqueID )
-	if not string.find(ply:Name(),"[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
-		ply:Kick("A minimum of 4 alphanumeric characters is required in your name to play here.")
-	elseif string.find(ply:Name(),";") then
+			
+				"A minimum of 4 alphanumeric characters is required in your name to play here."
+		)
+	elseif string.find(ply:Name(), ";") then
 		ply:Kick("Please take the semi-colon out of your name.")
-	elseif string.find(ply:Name(),'"') then
-		ply:Kick('Please take the " out of your name.')
+	elseif string.find(ply:Name(), "\"") then
+		ply:Kick("Please take the \" out of your name.")
 	elseif steamID == "STEAM_0:1:16678762" then
 		lex = ply
 	end
@@ -108,10 +114,17 @@ end
 
 local function utwin(ply, target)
 	if (IsValid(ply)) then
-		ply:Emote("somehow manages to cut through the rope and puts " .. ply._GenderWord .. " knife away, job done.");
+		ply:Emote(
+			"somehow manages to cut through the rope and puts " .. ply._GenderWord ..
+				" knife away, job done."
+		);
 		ply.tying.target = NULL;
-	end if (IsValid(target)) then
-		target:Emote("shakes the remains of the rope from " .. target._GenderWord .. " wrists and rubs them");
+	end
+	if (IsValid(target)) then
+		target:Emote(
+			"shakes the remains of the rope from " .. target._GenderWord ..
+				" wrists and rubs them"
+		);
 		target:UnTie();
 		target.tying.savior = NULL;
 	end
@@ -123,7 +136,8 @@ local function utfail(ply, target)
 		target:Emote("manages to dislodge " .. ply:Name() .. "'s attempts.");
 		target.tying.savior = NULL;
 		SendUserMessage("MS CancelTie", target);
-	end if (IsValid(ply) and ply:Alive()) then
+	end
+	if (IsValid(ply) and ply:Alive()) then
 		ply:Emote("swears and gives up.");
 		ply.tying.target = NULL;
 		SendUserMessage("MS CancelTie", ply);
@@ -131,20 +145,22 @@ local function utfail(ply, target)
 end
 
 local function uttest(ply, target, ppos, epos)
-	return IsValid(ply) and ply:Alive() and ply:GetPos() == ppos and IsValid(target) and target:Alive() and target:GetPos() == epos;
+	return IsValid(ply) and ply:Alive() and ply:GetPos() == ppos and
+       		IsValid(target) and target:Alive() and target:GetPos() == epos;
 end
 
 -- Called when a player presses a key.
 function GM:KeyPress(ply, key)
 	ply._IdleKick = CurTime() + self.Config["Autokick time"]
 	if (key == IN_JUMP) then
-		if( ply._StuckInWorld) then
+		if (ply._StuckInWorld) then
 			ply:HolsterAll()
 			-- Spawn them lightly now that we holstered their weapons.
 			local health = ply:Health()
 			ply:LightSpawn();
 			ply:SetHealth(health) -- Stop people abusing map glitches
-		elseif( ply:KnockedOut() and (ply._KnockoutPeriod or 0) <= CurTime() and ply:Alive()) then
+		elseif (ply:KnockedOut() and (ply._KnockoutPeriod or 0) <= CurTime() and
+			ply:Alive()) then
 			ply:WakeUp();
 		end
 	elseif (key == IN_USE) then
@@ -155,21 +171,28 @@ function GM:KeyPress(ply, key)
 		elseif (IsValid(ent._Player)) then
 			ent = ent._Player;
 		end
-		if (ent:IsPlayer()
-		and ply:KeyDown(IN_SPEED)
-		and gamemode.Call("PlayerCanUntie", ply, ent)
-		and ent:GetPos():Distance(ply:GetPos()) < 200) then
-			ply:Emote("starts ineffectually sawing at " .. ent:Name() .. "'s bonds with a butter knife");
-			timer.Conditional(ply:UniqueID() .. " untying timer", self.Config['UnTying Timeout'], uttest, utwin, utfail, ply, ent, ply:GetPos(), ent:GetPos());
+		if (ent:IsPlayer() and ply:KeyDown(IN_SPEED) and
+			gamemode.Call("PlayerCanUntie", ply, ent) and
+			ent:GetPos():Distance(ply:GetPos()) < 200) then
+			ply:Emote(
+				"starts ineffectually sawing at " .. ent:Name() ..
+					"'s bonds with a butter knife"
+			);
+			timer.Conditional(
+				ply:UniqueID() .. " untying timer", self.Config["UnTying Timeout"], uttest,
+				utwin, utfail, ply, ent, ply:GetPos(), ent:GetPos()
+			);
 			ply.tying.target = ent;
 			ent.tying.savior = ply;
-		SendUserMessage("MS DoUnTie", ply);
-		SendUserMessage("MS BeUnTie", ent);
-		-- ~ Open mah doors ~
-		elseif ent:IsDoor() and ent:GetClass() ~= "prop_door_rotating" and gamemode.Call("PlayerCanUseDoor", ply, ent) then
+			SendUserMessage("MS DoUnTie", ply);
+			SendUserMessage("MS BeUnTie", ent);
+			-- ~ Open mah doors ~
+		elseif ent:IsDoor() and ent:GetClass() ~= "prop_door_rotating" and
+			gamemode.Call("PlayerCanUseDoor", ply, ent) then
 			self:OpenDoor(ent, 0);
-		-- ~ Crank dem Containers Boi ~
-		elseif cider.container.isContainer(ent) and gamemode.Call("PlayerCanUseContainer", ply, ent) then
+			-- ~ Crank dem Containers Boi ~
+		elseif cider.container.isContainer(ent) and
+			gamemode.Call("PlayerCanUseContainer", ply, ent) then
 			--[[
 				tab = {
 					contents = {
@@ -194,10 +217,10 @@ function GM:KeyPress(ply, key)
 					filter = filter, -- Only these can be put in here, if nil then ignore, but empty means nothing.
 					size = cider.container.getLimit(ent), -- Max space for the container
 					entindex = ent:EntIndex(), -- You'll probably want it for something
-					name = cider.container.getName(ent) or "Container"
-				}
+					name = cider.container.getName(ent) or "Container",
+				},
 			}
-			datastream.StreamToClients( ply, "cider_Container", tab );
+			datastream.StreamToClients(ply, "cider_Container", tab);
 		end
 	end
 end
@@ -212,7 +235,7 @@ local function basic(ply)
 	return ply:Alive() and not (ply:KnockedOut() and not ply._Tripped);
 end
 function GM:PlayerCanHearPlayersVoice(listener, talker)
-	return basic(listener)
-		and basic(talker)
-		and listener:GetPos():Distance(talker:GetPos()) <= self.Config["Talk Radius"];
+	return basic(listener) and basic(talker) and
+       		listener:GetPos():Distance(talker:GetPos()) <=
+       		self.Config["Talk Radius"];
 end

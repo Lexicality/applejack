@@ -9,14 +9,15 @@
 --     *SIGH*
 -- ~]
 --
-ITEM.Name			= "UMP 45";
-ITEM.Size			= 2;
-ITEM.Cost			= 14000;
-ITEM.Model			= "models/weapons/w_smg_ump45.mdl";
-ITEM.Batch			= 10;
-ITEM.Store			= true;
-ITEM.Plural			= "UMP 45s";
-ITEM.Description	= "A small sub-machine gun with a medium fire rate but high damage.";
-ITEM.Ammo			= "smg1"
-ITEM.WeaponType		= TYPE_LARGE;
-ITEM.Base			= "weapon";
+ITEM.Name = "UMP 45";
+ITEM.Size = 2;
+ITEM.Cost = 14000;
+ITEM.Model = "models/weapons/w_smg_ump45.mdl";
+ITEM.Batch = 10;
+ITEM.Store = true;
+ITEM.Plural = "UMP 45s";
+ITEM.Description =
+	"A small sub-machine gun with a medium fire rate but high damage.";
+ITEM.Ammo = "smg1"
+ITEM.WeaponType = TYPE_LARGE;
+ITEM.Base = "weapon";

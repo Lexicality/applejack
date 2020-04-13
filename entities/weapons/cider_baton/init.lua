@@ -32,9 +32,10 @@ function SWEP:GetTarget()
 			if (IsValid(tr.Entity)) then
 				ent = tr.Entity;
 				-- Have we hit a chair (ie a passenger)
-				if (ent:IsVehicle() and ent:GetClass() == "prop_vehicle_prisoner_pod" and IsValid(ent:GetDriver())) then
+				if (ent:IsVehicle() and ent:GetClass() == "prop_vehicle_prisoner_pod" and
+					IsValid(ent:GetDriver())) then
 					ent = ent:GetDriver();
-				-- Have we hit the driver? (I doubt it, it's bloody hard to hit the driver)
+					-- Have we hit the driver? (I doubt it, it's bloody hard to hit the driver)
 				elseif (not (ent:IsPlayer() and ent:InVehicle())) then
 					return false;
 				end
@@ -43,12 +44,12 @@ function SWEP:GetTarget()
 	end
 	-- Make sure we don't try to get players or admins in noclip.
 	-- Unhelpfully people in vehicles are techincally in noclip too, so deal with that.
-	if (ent:IsPlayer() and not (ent:Alive() and (ent:GetMoveType() ~= MOVETYPE_NOCLIP or ent:InVehicle()))) then
+	if (ent:IsPlayer() and
+		not (ent:Alive() and (ent:GetMoveType() ~= MOVETYPE_NOCLIP or ent:InVehicle()))) then
 		return false;
 	end
 	return ent;
 end
-
 
 -- Called when the player attempts to primary fire, in this case knockout/wakeup and sometimes maim.
 function SWEP:PrimaryAttack()
@@ -56,7 +57,9 @@ function SWEP:PrimaryAttack()
 
 	-- Grab our victim and give up if we don't like them.
 	local ply = self:GetTarget();
-	if (not ply) then return false; end
+	if (not ply) then
+		return false;
+	end
 
 	-- Sometimes careless officers hit things that aren't people
 	if (not ply:IsPlayer()) then
@@ -65,7 +68,7 @@ function SWEP:PrimaryAttack()
 		if (GM.Config["Contraband"][ent:GetClass()]) then
 			ent:TakeDamage(ent:Health(), self.Owner, self.Owner);
 		end
-	-- If the player has their use modifier on, then generate assault lawsuits.
+		-- If the player has their use modifier on, then generate assault lawsuits.
 	elseif (self.Owner:KeyDown(IN_USE)) then
 		-- Hooks hooks, good for your heart, the more you use, the less people have to modify your code.
 		if (not gamemode.Call("PlayerCanStun", self.Owner, ply)) then
@@ -74,8 +77,10 @@ function SWEP:PrimaryAttack()
 		-- Violence time.
 		ply:TakeDamage(10, self.Owner, self.Owner);
 		-- Knock the victim back a little
-		ply:SetLocalVelocity(256 * (ply:GetPos() - self.Owner:GetPos()):GetNormalized());
-	-- Wake up the slumbering.
+		ply:SetLocalVelocity(
+			256 * (ply:GetPos() - self.Owner:GetPos()):GetNormalized()
+		);
+		-- Wake up the slumbering.
 	elseif (ply:KnockedOut()) then
 		-- Check they're allowed to.
 		if (not gamemode.Call("PlayerCanWakeUp", self.Owner, ply)) then
@@ -85,7 +90,7 @@ function SWEP:PrimaryAttack()
 		ply:WakeUp();
 		GM:Log(EVENT_POLICEEVENT, "%s woke up %s.", self.Owner:Name(), ply:Name());
 		gamemode.Call("PlayerWokenUp", ply, self.Owner);
-	-- And stun the unslumbering.
+		-- And stun the unslumbering.
 	elseif (gamemode.Call("PlayerCanKnockOut", self.Owner, ply)) then
 		-- Save us from some rather annoying glitches
 		if (ply:InVehicle()) then
@@ -107,14 +112,18 @@ function SWEP:SecondaryAttack()
 
 	-- Grab our victim and give up if we don't like them.
 	local ply = self:GetTarget();
-	if (not ply) then return false; end
+	if (not ply) then
+		return false;
+	end
 
 	-- Sometimes careless officers hit things that aren't people
 	if (not ply:IsPlayer()) then
 		local ent = ply;
 		-- Secondary fire + door = instaboom. (Woo some more)
 		if (ent:IsDoor() and gamemode.Call("PlayerCanRamDoor", self.Owner, ent)) then
-			GM:OpenDoor(ent, 0.25, true, gamemode.Call("PlayerCanJamDoor", self.Owner, ent));
+			GM:OpenDoor(
+				ent, 0.25, true, gamemode.Call("PlayerCanJamDoor", self.Owner, ent)
+			);
 		end
 	elseif (ply:Arrested()) then
 		if (not gamemode.Call("PlayerCanUnArrest", self.Owner, ply)) then

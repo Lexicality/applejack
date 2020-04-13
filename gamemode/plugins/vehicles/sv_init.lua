@@ -2,7 +2,9 @@
 -- ~ Vehicles Plugin / SV ~
 -- ~ Applejack ~
 --
-if (PLUGIN.Abort) then return end
+if (PLUGIN.Abort) then
+	return
+end
 
 local function getnewpos(pos, ang, apos)
 	return pos + ang:Forward() * apos.x + ang:Right() * apos.y + ang:Up() * apos.z;
@@ -10,24 +12,27 @@ end
 
 local carz = {};
 GM:RegisterCommand{
-	Command     = "cleancars";
-	Access      = "a";
-	Help        = "Remove all currently spawned cars";
+	Command = "cleancars",
+	Access = "a",
+	Help = "Remove all currently spawned cars",
 	function(ply)
-		for _,ent in pairs(carz) do
+		for _, ent in pairs(carz) do
 			if (IsValid(ent)) then
 				ent:Remove();
 			end
 			carz[_] = nil;
 		end
-	end
+	end,
 };
 
-vu_enablehorn = CreateConVar( "vu_enablehorn", "1")
+vu_enablehorn = CreateConVar("vu_enablehorn", "1")
 function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
-	local ent = ents.Create( class )
+	local ent = ents.Create(class)
 	if (not IsValid(ent)) then
-		error("["..os.date().."] Applejack Vehicles Plugin: could not spawn a "..class.."!");
+		error(
+			"[" .. os.date() .. "] Applejack Vehicles Plugin: could not spawn a " ..
+				class .. "!"
+		);
 	end
 
 	ent:SetModel(model);
@@ -40,9 +45,9 @@ function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
 		end
 	end
 
-	if ( vtable.Members ) then
-		table.Merge( ent, vtable.Members )
-		duplicator.StoreEntityModifier( ent, "VehicleMemDupe", vtable.Members );
+	if (vtable.Members) then
+		table.Merge(ent, vtable.Members)
+		duplicator.StoreEntityModifier(ent, "VehicleMemDupe", vtable.Members);
 	end
 
 	ent:Spawn();
@@ -51,26 +56,30 @@ function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
 	local p = ent:GetPhysicsObject();
 	if (not IsValid(p)) then
 		ent:Remove();
-		player:Notify("You cannot spawn that car at this time.",1);
-		error("No physics for model '"..model.."'! ("..ITEM.name..","..player:Name()..")");
+		player:Notify("You cannot spawn that car at this time.", 1);
+		error(
+			"No physics for model '" .. model .. "'! (" .. ITEM.name .. "," ..
+				player:Name() .. ")"
+		);
 	elseif (p:IsPenetrating()) then
 		player:Notify("You cannot spawn your car there!", 1);
 		ent:Remove();
 		return NULL;
 	end
 
-	ent.VehicleName  = vname;
+	ent.VehicleName = vname;
 	ent.VehicleTable = vtable;
-	ent.NoClear		 = true;
+	ent.NoClear = true;
 	-- We need to override the class in the case of the Jeep, because it
 	-- actually uses a different class than is reported by GetClass
-	ent.ClassOverride= class;
-	gamemode.Call( "PlayerSpawnedVehicle", player, ent );
+	ent.ClassOverride = class;
+	gamemode.Call("PlayerSpawnedVehicle", player, ent);
 	return ent;
 end
 
-local sky, ang, spawnstep = Vector(0,0,100000), Angle(0,0,0), Vector(0,0,20);
-local toolfunc = function( self, ply, trace, mode )
+local sky, ang, spawnstep = Vector(0, 0, 100000), Angle(0, 0, 0),
+                            Vector(0, 0, 20);
+local toolfunc = function(self, ply, trace, mode)
 	return ply:IsSuperAdmin() or mode == "remover" and ply:IsAdmin();
 end
 function PLUGIN:SpawnCar(ply, item)
@@ -78,66 +87,87 @@ function PLUGIN:SpawnCar(ply, item)
 		return false;
 	end
 	if (IsValid(ply._Vehicle)) then
-		ply:Notify("You may not have two cars out at once. Go find your "..ply._Vehicle.RPName.."!", 1);
+		ply:Notify(
+
+			
+				"You may not have two cars out at once. Go find your " ..
+					ply._Vehicle.RPName .. "!", 1
+		);
 		return false;
 	elseif ((ply._NextVehicleSpawn or 0) > CurTime()) then
-		ply:Notify("You must wait another "..string.ToMinutesSeconds(ply._NextVehicleSpawn-CurTime()).." minutes before you can spawn your car again.", 1);
+		ply:Notify(
+			"You must wait another " ..
+				string.ToMinutesSeconds(ply._NextVehicleSpawn - CurTime()) ..
+				" minutes before you can spawn your car again.", 1
+		);
 		return false;
 	end
 
 	local car = list.Get"Vehicles"[item.VehicleName];
 	if (not car) then
-		ply:Notify("Invalid car referenced!",1);
-		error("["..os.date().."] Applejack Vehicles Plugin: Error spawning a "..item.Name..": Invalid vehicle type specified: '"..item.VehicleName.."'.");
+		ply:Notify("Invalid car referenced!", 1);
+		error(
+			"[" .. os.date() .. "] Applejack Vehicles Plugin: Error spawning a " ..
+				item.Name .. ": Invalid vehicle type specified: '" .. item.VehicleName ..
+				"'."
+		);
 	end
 	local name = car.RPName or car.Name;
-	local tr = ply:GetEyeTraceNoCursor() ;
-	local trace = util.QuickTrace( tr.HitPos, sky );
+	local tr = ply:GetEyeTraceNoCursor();
+	local trace = util.QuickTrace(tr.HitPos, sky);
 	if (trace.Hit and not trace.HitSky) then
-		ply:Notify("You must spawn your "..car.Name.." under open sky!", 1);
+		ply:Notify("You must spawn your " .. car.Name .. " under open sky!", 1);
 		return false;
 	end
 	ang.yaw = ply:GetAngles().yaw + 180;
 
-	local ent = self:MakeVehicle( ply, tr.HitPos + spawnstep, ang, car.Model, car.Class, item.VehicleName, car );
+	local ent = self:MakeVehicle(
+		ply, tr.HitPos + spawnstep, ang, car.Model, car.Class, item.VehicleName, car
+	);
 	if (not IsValid(ent)) then
 		return;
 	end
-	--ent:SetPPOwner(ply);
+	-- ent:SetPPOwner(ply);
 	ent:SetPPOwner(NULL);
 	ent.CanTool = toolfunc;
 	ent._LockpickHits = GM.Config["Maximum Lockpick Hits"] * 2 + 5; -- Thus making cars a hell of a lot harder to pick. ;D
 	ent:Lock();
 	ply._Vehicle = ent;
-	table.insert(carz,ent);
+	table.insert(carz, ent);
 	return ent;
 end
 
 function PLUGIN:PlayerSpawnedVehicle(ply, car)
 	local pos, ang = car:GetPos(), car:GetAngles();
 	car:SetUseType(SIMPLE_USE);
-	if (not car.VehicleTable) then return end
+	if (not car.VehicleTable) then
+		return
+	end
 	local tab = car.VehicleTable;
 	if (tab.Ownable) then
 		car:MakeOwnable();
 		car:GiveToPlayer(ply);
-	end if (tab.Skin) then
+	end
+	if (tab.Skin) then
 		car:SetSkin(tab.Skin);
 	end
-	if (tab.Color) then --Allows the more recent cars (TDM etc) to be spawned in with a colour
+	if (tab.Color) then -- Allows the more recent cars (TDM etc) to be spawned in with a colour
 		car:SetColor(tab.Color);
 	end
 	car.RPName = tab.RPName or tab.Name;
-	car:SetNWString("Vehicle RP Name",car.RPName);
-	car:SetNWString("Vehicle Name",car.VehicleName);
+	car:SetNWString("Vehicle RP Name", car.RPName);
+	car:SetNWString("Vehicle Name", car.VehicleName);
 	if (tab.Passengers) then
 		local data = list.Get"Vehicles"[tab.SeatType];
 		if (not data) then
-			error("Invalid SeatType definition '"..tab.SeatType.."' in "..tab.Name.."!");
+			error(
+				"Invalid SeatType definition '" .. tab.SeatType .. "' in " .. tab.Name ..
+					"!"
+			);
 		end
 		local seat;
-		for i,v in ipairs(tab.Passengers) do
-			seat = ents.Create"prop_vehicle_prisoner_pod";
+		for i, v in ipairs(tab.Passengers) do
+			seat = ents.Create "prop_vehicle_prisoner_pod";
 			if (not IsValid(seat)) then
 				error("Canont spawn seat entity!")
 			end
@@ -151,12 +181,12 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 			seat:Fire("lock", "", 0);
 			seat:SetCollisionGroup(COLLISION_GROUP_WORLD);
 			if (tab.HideSeats) then
-				seat:SetColor(Color(255,255,255, 0));
-				seat:SetRenderMode( RENDERMODE_TRANSALPHA );
-			end;
+				seat:SetColor(Color(255, 255, 255, 0));
+				seat:SetRenderMode(RENDERMODE_TRANSALPHA);
+			end
 			if (data.Members) then
 				table.Merge(seat, data.Members);
-			end;
+			end
 			if (data.KeyValues) then
 				for k, v in pairs(data.KeyValues) do
 					seat:SetKeyValue(k, v);
@@ -172,9 +202,9 @@ function PLUGIN:PlayerSpawnedVehicle(ply, car)
 	end
 end
 
-function PLUGIN:CanManufactureCar(ply,item)
+function PLUGIN:CanManufactureCar(ply, item)
 	if ((ply.cider._Inventory[item.UniqueID] or 0) >= 1) then
-		ply:Notify("You cannot own more than 1 "..item.Name.."!", 1);
+		ply:Notify("You cannot own more than 1 " .. item.Name .. "!", 1);
 	elseif (not cider.inventory.canFit(ply, item.Size)) then
 		ply:Notify("You do not have enough inventory space to buy this!", 1);
 	else
@@ -185,13 +215,15 @@ end
 
 function PLUGIN:ManufactureCar(ply, ent, item)
 	cider.inventory.update(ply, item.UniqueID, 1);
-	ply:Notify("Your "..item.Name.." has been delivered to your inventory.", 2);
+	ply:Notify("Your " .. item.Name .. " has been delivered to your inventory.", 2);
 	ent:Remove();
 end
 
 function PLUGIN:SellCar(ply, item)
 	if (IsValid(ply._Vehicle) and ply._Vehicle.VehicleName == item.VehicleName) then
-		ply:Notify("You cannot sell your "..item.Name.." while it is still spawned!", 1);
+		ply:Notify(
+			"You cannot sell your " .. item.Name .. " while it is still spawned!", 1
+		);
 		return false;
 	end
 	return true;
@@ -199,27 +231,30 @@ end
 
 function PLUGIN:PickupCar(ply, item)
 	if (not (ply:InVehicle() and ply:GetVehicle() == ply._Vehicle)) then
-		ply:Notify("You must be in your "..item.Name.." to pick it up!", 1);
+		ply:Notify("You must be in your " .. item.Name .. " to pick it up!", 1);
 		return false;
 	end
 	ply:ExitVehicle();
 	ply._Vehicle:Remove();
 	ply._NextVehicleSpawn = CurTime() + 300;
-	GM:Log(EVENT_ITEM,"%s put their %s back into their inventory.",ply:Name(),item.Name);
+	GM:Log(
+		EVENT_ITEM, "%s put their %s back into their inventory.", ply:Name(),
+		item.Name
+	);
 	return true;
 end
 
-local ignores	= {"predicted_viewmodel","physgun_beam","keyframe_rope"};
-local function checkpos(ply,car,pos)
-	enttab = ents.FindInSphere(pos,16);
+local ignores = {"predicted_viewmodel", "physgun_beam", "keyframe_rope"};
+local function checkpos(ply, car, pos)
+	enttab = ents.FindInSphere(pos, 16);
 	for k, ent in ipairs(enttab) do
 		if (ent:IsWeapon()) then
 			enttab[k] = nil;
 		else
-			for _,v in ipairs(ignores) do
+			for _, v in ipairs(ignores) do
 				if (ent:GetClass() == v) then
 					enttab[k] = nil;
-					break;
+					break
 				end
 			end
 		end
@@ -227,11 +262,11 @@ local function checkpos(ply,car,pos)
 	if (table.Count(enttab) == 0 and util.IsInWorld(pos) and car:VisibleVec(pos)) then
 		return pos
 	elseif (ply:HasAccess("D")) then
-		ply:ConCommand("drawcross "..pos.x.." "..pos.y.." "..pos.z)
+		ply:ConCommand("drawcross " .. pos.x .. " " .. pos.y .. " " .. pos.z)
 	end
 end
 
-local exits		= {"exit1", "exit2", "exit3", "exit4", "exit5", "exit6"};
+local exits = {"exit1", "exit2", "exit3", "exit4", "exit5", "exit6"};
 local function doexit(ply, icar)
 	local car = icar or ply:GetVehicle();
 	if (not IsValid(car)) then
@@ -254,12 +289,12 @@ local function doexit(ply, icar)
 		ply:ExitVehicle();
 	end
 	if (ply:InVehicle()) then -- You'd think this was unnecessary, but shit happens. :/
-		timer.Simple(0,doexit,ply,car);
-		error(tostring(ply).." has not left their vehicle. Retrying in one frame.");
+		timer.Simple(0, doexit, ply, car);
+		error(tostring(ply) .. " has not left their vehicle. Retrying in one frame.");
 	end
 	local tab = car.VehicleTable;
 	if (not tab) then -- If there is no vehicle table, then it's been hard spawned by a noob.
-		error("Vehicle spawned without a vehicle table: "..tostring(car));
+		error("Vehicle spawned without a vehicle table: " .. tostring(car));
 	end
 	local exitpos
 	if (tab.Customexits) then
@@ -273,7 +308,7 @@ local function doexit(ply, icar)
 			end
 		end
 	end
-	for _,v in ipairs(exits) do
+	for _, v in ipairs(exits) do
 		exitpos = car:GetAttachment(car:LookupAttachment(v));
 		if (exitpos and exitpos.Pos) then
 			exitpos = checkpos(ply, car, exitpos.Pos);
@@ -291,28 +326,32 @@ function PLUGIN:PlayerUse(ply, ent)
 	elseif (ply:InVehicle() or ply:KnockedOut()) then
 		return false;
 	elseif (ply:Blacklisted("cat", CATEGORY_VEHICLES) > 0) then
-		ply:BlacklistAlert("cat", CATEGORY_VEHICLES, GAMEMODE:GetCategory(CATEGORY_VEHICLES).Name);
+		ply:BlacklistAlert(
+			"cat", CATEGORY_VEHICLES, GAMEMODE:GetCategory(CATEGORY_VEHICLES).Name
+		);
 		return false;
 	end
 	local ang = ent:GetAngles();
 	if (ent._Locked) then
 		if (math.abs(ang.r) > 10) then
-			ang.r,ang.p = 0,0;
+			ang.r, ang.p = 0, 0;
 			ent:SetAngles(ang);
 			ent:Spawn();
 		end
 		return false;
 	end
 	local tab = ent.VehicleTable
-	if (not tab) then return end
+	if (not tab) then
+		return
+	end
 	if (GM.Config["Car Doors"] and tab.Doors) then
 		local pos = ent:WorldToLocal(ply:GetEyeTrace().HitPos);
 		local success;
-		for _,door in ipairs(tab.Doors) do
-			local a,b,c = door.topleft, door.bottomright, pos
-			if not (c.z < math.min(a.z,b.z) or c.z > math.max(a.z,b.z) or
-					c.x < math.min(a.x,b.x) or c.x > math.max(a.x,b.x) or
-					c.y < math.min(a.y,b.y) or c.y > math.max(a.y,b.y)) then
+		for _, door in ipairs(tab.Doors) do
+			local a, b, c = door.topleft, door.bottomright, pos
+			if not (c.z < math.min(a.z, b.z) or c.z > math.max(a.z, b.z) or c.x <
+				math.min(a.x, b.x) or c.x > math.max(a.x, b.x) or c.y < math.min(a.y, b.y) or
+				c.y > math.max(a.y, b.y)) then
 				success = true;
 				break
 			end
@@ -320,15 +359,16 @@ function PLUGIN:PlayerUse(ply, ent)
 		if (not success) then
 			return false;
 		end
-	end if (tab.Passengers) then
+	end
+	if (tab.Passengers) then
 		if (not IsValid(ent:GetDriver())) then
 			return true; -- No one's driving? Let's get in!
 		end
-		for _,v in ipairs(tab.Passengers) do
+		for _, v in ipairs(tab.Passengers) do
 			if (IsValid(v.Ent) and not IsValid(v.Ent:GetDriver())) then
-				v.Ent:Fire("unlock","",0);
+				v.Ent:Fire("unlock", "", 0);
 				ply:EnterVehicle(v.Ent);
-				v.Ent:Fire("lock","",10);
+				v.Ent:Fire("lock", "", 10);
 				return true; -- odd \hit happens if we don't do this. :/
 			end
 		end
@@ -336,9 +376,11 @@ function PLUGIN:PlayerUse(ply, ent)
 	end
 end
 
-local function repositionplayer(ply,car)
+local function repositionplayer(ply, car)
 	ply:SetParent();
-	ply:SetPos(getnewpos(car:GetPos(), car:GetAngles(), car.VehicleTable.AdjustSitPos));
+	ply:SetPos(
+		getnewpos(car:GetPos(), car:GetAngles(), car.VehicleTable.AdjustSitPos)
+	);
 	ply:SetParent(car);
 end
 
@@ -396,37 +438,45 @@ function PLUGIN:KeyPress(ply, key)
 	end
 end
 
-concommand.Add("HonkHorn", function(ply)
-	ply._NextHonk = ply._NextHonk or CurTime();
-	if (ply._NextHonk > CurTime()) then
-		return false;
-	elseif (not ply:IsSuperAdmin()) then
-		ply._NextHonk = CurTime() + 5;
-	end
-	if (ply:InVehicle() and vu_enablehorn:GetInt() ~= 0) then
-		local car = ply:GetVehicle();
-		if (car.VehicleTable and car.VehicleTable.Horn) then
-			car:EmitSound(car.VehicleTable.Horn.Sound, 100, car.VehicleTable.Horn.Pitch);
+concommand.Add(
+	"HonkHorn", function(ply)
+		ply._NextHonk = ply._NextHonk or CurTime();
+		if (ply._NextHonk > CurTime()) then
+			return false;
+		elseif (not ply:IsSuperAdmin()) then
+			ply._NextHonk = CurTime() + 5;
+		end
+		if (ply:InVehicle() and vu_enablehorn:GetInt() ~= 0) then
+			local car = ply:GetVehicle();
+			if (car.VehicleTable and car.VehicleTable.Horn) then
+				car:EmitSound(car.VehicleTable.Horn.Sound, 100, car.VehicleTable.Horn.Pitch);
+			end
 		end
 	end
-end);
+);
 
-concommand.Add("LockCar", function(ply)
-	if (ply:InVehicle() and ply:GetVehicle():HasAccess(ply)) then
-		ply:GetVehicle():Lock();
-		ply:EmitSound("doors/door_latch3.wav");
+concommand.Add(
+	"LockCar", function(ply)
+		if (ply:InVehicle() and ply:GetVehicle():HasAccess(ply)) then
+			ply:GetVehicle():Lock();
+			ply:EmitSound("doors/door_latch3.wav");
+		end
 	end
-end);
+);
 
-concommand.Add("UnLockCar", function(ply)
-	if (ply:InVehicle() and ply:GetVehicle():HasAccess(ply)) then
-		ply:GetVehicle():UnLock();
-		ply:EmitSound("doors/door_latch3.wav");
+concommand.Add(
+	"UnLockCar", function(ply)
+		if (ply:InVehicle() and ply:GetVehicle():HasAccess(ply)) then
+			ply:GetVehicle():UnLock();
+			ply:EmitSound("doors/door_latch3.wav");
+		end
 	end
-end);
+);
 
-hook.Add("PlayerDisconnected", "Ajack Vehicle PlayerDisconnected",function(ply)
-	if (IsValid(ply._Vehicle)) then
-		ply._Vehicle:Remove();
+hook.Add(
+	"PlayerDisconnected", "Ajack Vehicle PlayerDisconnected", function(ply)
+		if (IsValid(ply._Vehicle)) then
+			ply._Vehicle:Remove();
+		end
 	end
-end);
+);

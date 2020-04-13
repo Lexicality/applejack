@@ -2,14 +2,16 @@
 -- ~ Serverside Player metatable ~
 -- ~ Applejack ~
 --
-
 ---
 -- The serverside player metatable
 -- @name meta
 -- @class table
 local meta = _R.Player;
 if (not meta) then
-	error("["..os.date().."] Applejack Serverside Player metatable: No metatable found!");
+	error(
+		"[" .. os.date() ..
+			"] Applejack Serverside Player metatable: No metatable found!"
+	);
 end
 
 ---------------------
@@ -23,7 +25,7 @@ function meta:AddPPFriend(ply)
 	if (not IsPlayer(ply)) then
 		return;
 	end
-	local uid  = ply:UniqueID();
+	local uid = ply:UniqueID();
 	local name = ply:Name();
 	self._ppFriends[uid] = name;
 	umsg.Start("MS PPUpdate", self);
@@ -40,7 +42,7 @@ function meta:RemovePPFriend(ply)
 	if (not IsPlayer(ply)) then
 		return;
 	end
-	local uid =  ply:UniqueID();
+	local uid = ply:UniqueID();
 	self._ppFriends[uid] = nil;
 	umsg.Start("MS PPUpdate", self);
 	umsg.Char(2);
@@ -72,7 +74,7 @@ if (not meta.oAddCount) then
 end
 function meta:AddCount(name, ent)
 	ent:SetPPOwner(self);
-	return self:oAddCount(name,ent);
+	return self:oAddCount(name, ent);
 end
 
 ---
@@ -81,11 +83,13 @@ end
 -- @param ent The entity to remove
 function meta:TakeCount(name, ent)
 	local tab = g_SBoxObjects[self:UniqueID()];
-	if (not ( tab and tab[name])) then return end
+	if (not (tab and tab[name])) then
+		return
+	end
 	for k, e in pairs(tab[name]) do
 		if (e == ent) then
 			table.remove(tab[name], k);
-			break;
+			break
 		end
 	end
 	self:GetCount(name);
@@ -93,12 +97,9 @@ function meta:TakeCount(name, ent)
 	ent:SetPPSpawner(NULL);
 end
 
-
-
 ----------------------------
 -- General Player Library --
 ----------------------------
-
 
 ----------------------------
 --  Set / Unset Functions --
@@ -108,10 +109,10 @@ end
 -- Give a player access to a the flag(s) specified
 -- @param flaglist A list of flags with no spaces or delimiters
 function meta:GiveAccess(flaglist)
-	local flag,access;
+	local flag, access;
 	access = self.cider._Access;
 	for i = 1, flaglist:len() do
-		flag = flaglist:sub(i,i);
+		flag = flaglist:sub(i, i);
 		if (not access:find(flag)) then
 			access = access .. flag;
 		end
@@ -126,11 +127,10 @@ function meta:TakeAccess(flaglist)
 	local access;
 	access = self.cider._Access;
 	for i = 1, flaglist:len() do
-		access = access:gsub(flaglist:sub(i,i), "");
+		access = access:gsub(flaglist:sub(i, i), "");
 	end
 	self.cider._Access = access;
 end
-
 
 ---
 -- Blacklist a player from performing a specific activity
@@ -149,7 +149,7 @@ function meta:Blacklist(kind, thing, time, reason, blacklister)
 	blacklist[thing] = {
 		time = os.time() + time * 60,
 		reason = reason,
-		admin = blacklister
+		admin = blacklister,
 	}
 	self.cider._Blacklist[kind] = blacklist;
 end
@@ -185,7 +185,7 @@ function meta:GiveDoor(door, name, unsellable)
 	end
 	door:UnLock();
 	door:EmitSound("doors/door_latch3.wav");
-	self:AddCount("doors",door)
+	self:AddCount("doors", door)
 end
 
 ---
@@ -209,7 +209,9 @@ function meta:TakeDoor(door, norefund)
 end
 
 local function jobtimer(ply)
-	if (not IsValid(ply)) then return end
+	if (not IsValid(ply)) then
+		return
+	end
 	ply:Notify("You have reached the timelimit for this job!", 1);
 	ply:Demote();
 end
@@ -227,7 +229,7 @@ function meta:JoinTeam(tojoin)
 	tojoin = team.Get(tojoin);
 	if (not tojoin) then
 		return false, "That is not a valid team!";
-	elseif (self:Blacklisted("team",tojoin.TeamID) > 0) then
+	elseif (self:Blacklisted("team", tojoin.TeamID) > 0) then
 		self:BlacklistAlert("team", tojoin.TeamID, tojoin.name);
 		return false;
 	end
@@ -239,11 +241,14 @@ function meta:JoinTeam(tojoin)
 			self._StoredWeapons[class] = nil;
 		end
 		-- Prevent weapons holstering twice
-		timer.Violate(self:UniqueID().." holster");
+		timer.Violate(self:UniqueID() .. " holster");
 		-- Prevent hopping back and forth
 		self._NextChangeTeam[oldteam.TeamID] = CurTime() + oldteam.Cooldown;
 		-- Spam about it
-		GM:Log(EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), oldteam.Name, tojoin.Name);
+		GM:Log(
+			EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), oldteam.Name,
+			tojoin.Name
+		);
 		-- Tell the client they can't join this team again.
 		timer.Simple(0, TeamChange, self, oldteam.TeamID);
 	else
@@ -255,16 +260,18 @@ function meta:JoinTeam(tojoin)
 	if ((self._JobTimeExpire or 0) > CurTime()) then
 		self._JobTimeExpire = 0;
 		self._JobTimeLimit = 0;
-		timer.Stop("Job Timelimit: "..self:UniqueID());
-	end if (tojoin.TimeLimit ~= 0) then
+		timer.Stop("Job Timelimit: " .. self:UniqueID());
+	end
+	if (tojoin.TimeLimit ~= 0) then
 		self._JobTimeExpire = tojoin.TimeLimit + CurTime();
 		self._JobTimeLimit = tojoin.TimeLimit;
-		timer.Create("Job Timelimit: "..self:UniqueID(), self._JobTimeLimit, 1, jobtimer, self);
+		timer.Create(
+			"Job Timelimit: " .. self:UniqueID(), self._JobTimeLimit, 1, jobtimer, self
+		);
 	end
 	-- Change our salary.
 	self._Salary = tojoin.Salary;
 	gamemode.Call("PlayerAdjustSalary", self);
-
 
 	-- Some tidying up
 	-- Unwarrant the player.
@@ -307,13 +314,17 @@ function meta:Warrant(class, time)
 	gamemode.Call("PlayerWarranted", self, class, time);
 	self._Warranted = class;
 	self:SetNWString("Warrant", class);
-	local expires = time or (class == "arrest" and GM.Config["Arrest Warrant Expire Time"] or GM.Config["Search Warrant Expire Time"]);
+	local expires = time or
+                		(class == "arrest" and GM.Config["Arrest Warrant Expire Time"] or
+                			GM.Config["Search Warrant Expire Time"]);
 	-- Prevents any unplesant bugs due to user error.
 	if expires <= 0 then
 		expires = 0.1
 	end
 	self:SetCSVar(CLASS_LONG, "_WarrantExpireTime", CurTime() + expires);
-	timer.Create("Warrant Expire: "..self:UniqueID(), expires, 1, warranttimer, self, class);
+	timer.Create(
+		"Warrant Expire: " .. self:UniqueID(), expires, 1, warranttimer, self, class
+	);
 end
 
 ---
@@ -322,18 +333,18 @@ function meta:UnWarrant()
 	gamemode.Call("PlayerUnwarranted", self);
 	self._Warranted = nil;
 	self:SetNWString("Warrant", "");
-	timer.Stop("Warrant Expire: "..self:UniqueID());
+	timer.Stop("Warrant Expire: " .. self:UniqueID());
 end
 
-local uptr,downtr = Vector(0,0,256), Vector(0,0,-1024);
+local uptr, downtr = Vector(0, 0, 256), Vector(0, 0, -1024);
 local function dobleed(ply)
-	if (not IsValid(ply)) then return end
+	if (not IsValid(ply)) then
+		return
+	end
 	local pos = ply:GetPos();
-	local tr = util.TraceLine({
-		start = pos + uptr,
-		endpos = pos + downtr,
-		filter = ply,
-	});
+	local tr = util.TraceLine(
+		{start = pos + uptr, endpos = pos + downtr, filter = ply}
+	);
 	util.Decal("Blood", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal);
 end
 
@@ -341,13 +352,15 @@ end
 -- Causes the player to leave a trail of blood behind them
 -- @param time How many seconds they should bleed for. 0 or nil for infinite bleeding.
 function meta:Bleed(time)
-	timer.Start("Bleeding: "..self:UniqueID(), 0.25, (seconds or 0) * 4, dobleed, self);
+	timer.Start(
+		"Bleeding: " .. self:UniqueID(), 0.25, (seconds or 0) * 4, dobleed, self
+	);
 end
 
 ---
 -- Stops the player bleeding immediately.
 function meta:StopBleeding()
-	timer.Stop("Bleeding: "..self:UniqueID());
+	timer.Stop("Bleeding: " .. self:UniqueID());
 end
 
 local function doforce(ragdoll, velocity)
@@ -365,12 +378,14 @@ end
 -- @param time How long to force them down for. Nil or 0 allows them up instantly.
 -- @param velocity What velocity to give to the ragdoll on spawning
 function meta:KnockOut(time, velocity)
-	if (self:KnockedOut()) then return end -- Don't knock us out if we're out already
+	if (self:KnockedOut()) then
+		return
+	end -- Don't knock us out if we're out already
 	if (self:InVehicle()) then -- This shit goes crazy if you ragdoll in a car. Do not do it.
 		self:ExitVehicle();
 	end
 	-- Grab the player's current bone matrix so the ragdoll spawns as a natural continuation
-	local bones,ragdoll, model, angles;
+	local bones, ragdoll, model, angles;
 	bones = {};
 	for i = 0, 70 do
 		bones[i] = self:GetBoneMatrix(i);
@@ -399,27 +414,30 @@ function meta:KnockOut(time, velocity)
 		ragdoll:SetBoneMatrix(i, matrix);
 	end
 	-- Try to send it flying in the same direction as us.
-	timer.Create("Ragdoll Force Application "..self:UniqueID(), 0.05, 5, doforce, ragdoll, (velocity or self:GetVelocity()) * 2);
+	timer.Create(
+		"Ragdoll Force Application " .. self:UniqueID(), 0.05, 5, doforce, ragdoll,
+		(velocity or self:GetVelocity()) * 2
+	);
 
 	-- Make it look even more like us.
-	ragdoll:SetSkin		(self:GetSkin()		);
-	ragdoll:SetColor	(self:GetColor()	);
-	ragdoll:SetMaterial	(self:GetMaterial()	);
+	ragdoll:SetSkin(self:GetSkin());
+	ragdoll:SetColor(self:GetColor());
+	ragdoll:SetMaterial(self:GetMaterial());
 	if (self:IsOnFire()) then
 		ragdoll:Ignite(16, 0);
 	end
 
 	-- Allow other parts of the script to associate it with us.
-	ragdoll:SetNWEntity ("Player", self		);
+	ragdoll:SetNWEntity("Player", self);
 	ragdoll._Player = self;
 
 	-- Allow other parts of the script to associate us with it
 	self.ragdoll = {
-		entity	= ragdoll;
-		health	= self:Health();
-		model	= self:GetModel();
-		skin	= self:GetSkin();
-		team	= self:Team();
+		entity = ragdoll,
+		health = self:Health(),
+		model = self:GetModel(),
+		skin = self:GetSkin(),
+		team = self:Team(),
 	};
 
 	-- We've got some stuff to perform if this isn't a corpse.
@@ -461,7 +479,9 @@ end
 -- Wakes a player up (unragdolls them) immediately
 -- @param reset If set, do not give the player back the things they had when they were knocked out.
 function meta:WakeUp(reset)
-	if (not self.ragdoll) then return end
+	if (not self.ragdoll) then
+		return
+	end
 	-- If the player is on a different team to the one they were on when they were knocked out, respawn them. TODO: Why do this?
 	if (self:Team() ~= self.ragdoll.team) then
 		self.ragdoll.team = self:Team();
@@ -501,7 +521,7 @@ function meta:WakeUp(reset)
 	-- Reset the various knockout state vars
 	self._Stunned = false;
 	self._Tripped = false;
-	self._Sleeping= false;
+	self._Sleeping = false;
 
 	-- Set some infos for everyone else
 	self:SetNWBool("KnockedOut", false);
@@ -549,7 +569,7 @@ end
 ---
 -- incapacitates a player - drops their movement speed, prevents them from jumping or doing most things.
 function meta:Incapacitate()
-	self:SetRunSpeed( GM.Config["Incapacitated Speed"]);
+	self:SetRunSpeed(GM.Config["Incapacitated Speed"]);
 	self:SetWalkSpeed(GM.Config["Incapacitated Speed"]);
 	self:SetJumpPower(0);
 	self:SetNWBool("Incapacitated", true);
@@ -561,17 +581,19 @@ function meta:Recapacitate()
 	if (not gamemode.Call("PlayerCanBeRecapacitated", self)) then
 		return false;
 	end
-	self:SetRunSpeed( GM.Config["Run Speed" ]);
+	self:SetRunSpeed(GM.Config["Run Speed"]);
 	self:SetWalkSpeed(GM.Config["Walk Speed"]);
 	self:SetJumpPower(GM.Config["Jump Power"]);
-	self:SetNWBool   ("Incapacitated",  false);
+	self:SetNWBool("Incapacitated", false);
 	return true;
 end
 
 ---
 -- Ties a player up so they cannot do anything but walk about
-function meta:TieUp ()
-	if (self:Tied()) then return end
+function meta:TieUp()
+	if (self:Tied()) then
+		return
+	end
 	self:Incapacitate();
 	self:TakeWeapons();
 	self:SetNWBool("Tied", true);
@@ -582,7 +604,9 @@ end
 -- Unties a player so that they can do things again
 -- @param reset If true, do not give the player their weapons back
 function meta:UnTie(reset)
-	if (not reset and not self:Tied()) then return end
+	if (not reset and not self:Tied()) then
+		return
+	end
 	self:SetNWBool("Tied", false);
 	if (not reset) then
 		self:Recapacitate();
@@ -591,7 +615,9 @@ function meta:UnTie(reset)
 end
 
 local function arresttimer(ply)
-	if (not IsValid(ply)) then return end
+	if (not IsValid(ply)) then
+		return
+	end
 	ply:UnArrest(true);
 	ply:Notify("Your arrest time has finished!");
 	ply:Spawn(); -- Let the player out of jail
@@ -600,12 +626,19 @@ end
 -- Arrest a player so they cannot do most things, then unarrest them a bit later
 -- @param time Optional - Specify how many seconds the player should be arrested for. Will default to the player's ._ArrestTime var
 function meta:Arrest(time)
-	if (self:Arrested()) then return end
+	if (self:Arrested()) then
+		return
+	end
 	gamemode.Call("PlayerArrested", self);
 	self.cider._Arrested = true;
 	self:SetNWBool("Arrested", true);
-	timer.Create("UnArrest: "..self:UniqueID(), time or self._ArrestTime, 1, arresttimer, self);
-	self:SetCSVar(CLASS_LONG, "_UnarrestTime", CurTime() + (time or self._ArrestTime));
+	timer.Create(
+		"UnArrest: " .. self:UniqueID(), time or self._ArrestTime, 1, arresttimer,
+		self
+	);
+	self:SetCSVar(
+		CLASS_LONG, "_UnarrestTime", CurTime() + (time or self._ArrestTime)
+	);
 	self:Incapacitate();
 	self:TakeWeapons(true);
 	self:StripAmmo();
@@ -616,12 +649,14 @@ end
 ---
 -- Unarrest an arrested player before their timer has run out.
 function meta:UnArrest(reset)
-	if (not self:Arrested()) then return end
+	if (not self:Arrested()) then
+		return
+	end
 	gamemode.Call("PlayerUnArrested", self);
 	self.cider._Arrested = false;
 	self:SetNWBool("Arrested", false);
 	self:SetCSVar(CLASS_LONG, "_UnarrestTime", 0);
-	timer.Stop("UnArrest: "..self:UniqueID());
+	timer.Stop("UnArrest: " .. self:UniqueID());
 	if (not reset) then
 		self:Recapacitate();
 		self:ReturnWeapons();
@@ -636,9 +671,13 @@ local function handleKnownKey(ply, k, v)
 	elseif (a == "number") then
 		ply.cider[k] = tonumber(v) or 0;
 	elseif (a == "GLON") then
-		local s,r = pcall(util.JSONToTable, v);
+		local s, r = pcall(util.JSONToTable, v);
 		if not s then
-			ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..r.."'\n");
+			ErrorNoHalt(
+				"[" .. os.date() .. "] Error decoding " .. ply:Name() .. "'s '" .. k ..
+					"' table with string '" .. tostring(v):sub(1, 20) ..
+					"...'. GLON Returned '" .. r .. "'\n"
+			);
 		else
 			ply.cider[k] = r or {};
 		end
@@ -651,7 +690,7 @@ end
 
 -- Called if a player has saved data
 local function loadCallback(ply, data)
-	for k,v in pairs(data) do
+	for k, v in pairs(data) do
 		if (player.loadIgnoreKeys[k]) then
 			-- Nothing
 		elseif (player.loadKnownKeys[k]) then
@@ -659,10 +698,14 @@ local function loadCallback(ply, data)
 		else
 			if (tonumber(v)) then
 				ply.cider[k] = tonumber(v);
-			elseif (v:sub(1,1):byte() == 2) then
-				local a,b = pcall(util.JSONToTable, v);
+			elseif (v:sub(1, 1):byte() == 2) then
+				local a, b = pcall(util.JSONToTable, v);
 				if not a then
-					ErrorNoHalt("["..os.date().."] Error decoding "..ply:Name().."'s '"..k.."' table with string '"..tostring(v):sub(1,20).."...'. GLON Returned '"..b.."'\n");
+					ErrorNoHalt(
+						"[" .. os.date() .. "] Error decoding " .. ply:Name() .. "'s '" .. k ..
+							"' table with string '" .. tostring(v):sub(1, 20) ..
+							"...'. GLON Returned '" .. b .. "'\n"
+					);
 				else
 					ply.cider[k] = b or {};
 				end
@@ -673,7 +716,7 @@ local function loadCallback(ply, data)
 			end
 		end
 	end
-	GM:Log(EVENT_DEBUG,"Loading of %s's data complete.",ply:Name())
+	GM:Log(EVENT_DEBUG, "Loading of %s's data complete.", ply:Name())
 	gamemode.Call("PlayerDataLoaded", ply, true);
 end
 
@@ -686,9 +729,10 @@ end
 
 local getloaddataquery
 do
-	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] .. " WHERE _UniqueID = %u"
+	local query = "SELECT * FROM " .. GM.Config["MySQL Table"] ..
+              		" WHERE _UniqueID = %u"
 	local function onError(query, err)
-		GM:Log(EVENT_ERROR,"SQL Error loading %q's data: %s", query.name, err);
+		GM:Log(EVENT_ERROR, "SQL Error loading %q's data: %s", query.name, err);
 		timer.Simple(30, timerfunc, query.ply);
 	end
 	local function onData(query, data)
@@ -717,10 +761,10 @@ do
 	function getloaddataquery(ply)
 		local query = GM.Database:query(string.format(query, ply:UniqueID()));
 		query.name = ply:Name();
-		query.ply  = ply;
+		query.ply = ply;
 		query.onSuccess = onSuccess;
 		query.onError = onError;
-		query.onData    = onData;
+		query.onData = onData;
 		query:start();
 		return query;
 	end
@@ -738,14 +782,14 @@ function meta:LoadData()
 		_Money = GM.Config["Default Money"],
 		_Access = GM.Config["Default Access"],
 		_Donator = 0,
-		_SteamID = self:SteamID();
-		_UniqueID = tonumber(self:UniqueID());
+		_SteamID = self:SteamID(),
+		_UniqueID = tonumber(self:UniqueID()),
 		_Arrested = false,
 		_Inventory = {},
 		_Blacklist = {},
 	}
 	if (not GM:CanQueryDB()) then
-		GM:Log(EVENT_ERROR,"Can't load %q's data as the DB is offline!", self:Name());
+		GM:Log(EVENT_ERROR, "Can't load %q's data as the DB is offline!", self:Name());
 		timer.Simple(30, timerfunc, self);
 		return;
 	end
@@ -753,23 +797,26 @@ function meta:LoadData()
 end
 
 -- Returns the SQL ready keys and values from the player's .cider table in two tables
-local format = '"%s"';
+local format = "\"%s\"";
 local function getKVs(ply, is_insert)
 	local keys, values = {}, {};
 	local value, kind;
-	for k,v in pairs(ply.cider) do
+	for k, v in pairs(ply.cider) do
 		value = nil;
-		kind  = type(v);
+		kind = type(v);
 		if (player.saveIgnoreKeys[k]) then
 			value = false;
 		elseif (not is_insert and player.updateIgnoreKeys[k]) then
-				value = false;
+			value = false;
 		elseif (player.saveFunctions[k]) then
 			value = player.saveFunctions[k](ply, v);
 		elseif (kind == "table") then
 			local s, r = pcall(util.TableToJSON, v);
 			if (not s) then
-				ErrorNoHalt("["..os.date().."] Error encoding "..ply:Name().."'s '"..k.."' table: "..r.."\n");
+				ErrorNoHalt(
+					"[" .. os.date() .. "] Error encoding " .. ply:Name() .. "'s '" .. k ..
+						"' table: " .. r .. "\n"
+				);
 			else
 				value = r;
 			end
@@ -792,7 +839,8 @@ local function getKVs(ply, is_insert)
 end
 
 -- Creates a CREATE query to make a new entry in the SQL DB and returns it
-local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] .. " (%s) VALUES(%s)";
+local createqueryformat = "INSERT INTO " .. GM.Config["MySQL Table"] ..
+                          	" (%s) VALUES(%s)";
 local function createCreateQuery(ply)
 	local keys, vals = getKVs(ply, true);
 	keys = table.concat(keys, ", ");
@@ -801,9 +849,10 @@ local function createCreateQuery(ply)
 end
 
 -- Creates an UPDATE query and returns it
-local updatequeryformat = "UPDATE "..GM.Config["MySQL Table"].." SET %s WHERE _UniqueID = %u";
+local updatequeryformat = "UPDATE " .. GM.Config["MySQL Table"] ..
+                          	" SET %s WHERE _UniqueID = %u";
 local function createUpdateQuery(ply)
-	local keys,values = getKVs(ply);
+	local keys, values = getKVs(ply);
 	local q = "";
 	for i = 1, #keys do
 		q = q .. string.format("%s = %s, ", keys[i], values[i]);
@@ -814,13 +863,13 @@ end
 local getsavedataquery
 do
 	local function onError(query, err)
-		GM:Log(EVENT_ERROR,"SQL Error in %q's save: %s", query.name, err);
+		GM:Log(EVENT_ERROR, "SQL Error in %q's save: %s", query.name, err);
 	end
 	local function onSuccess(query)
-		GM:Log(EVENT_SQLDEBUG,"SQL Statement successful for %q", query.name);
+		GM:Log(EVENT_SQLDEBUG, "SQL Statement successful for %q", query.name);
 	end
 	function getsavedataquery(q, n)
-		GM:Log(EVENT_SQLDEBUG,"SQL Statement for %q: %s", n, q);
+		GM:Log(EVENT_SQLDEBUG, "SQL Statement for %q: %s", n, q);
 		local query = GM.Database:query(q);
 		query.onError = onError;
 		query.onSuccess = onSuccess;
@@ -834,9 +883,11 @@ end
 -- Save a player's data to the SQL server in a threaded query.
 -- @param create Whether to create a new entry or do a normal update.
 function meta:SaveData(create)
-	if (not self._Initialized) then return; end
+	if (not self._Initialized) then
+		return;
+	end
 	if (not GM:CanQueryDB()) then
-		GM:Log(EVENT_ERROR,"Can't save %q's data as the DB is offline!", self:Name());
+		GM:Log(EVENT_ERROR, "Can't save %q's data as the DB is offline!", self:Name());
 		return;
 	end
 	gamemode.Call("PlayerSaveData", self);
@@ -858,12 +909,12 @@ function meta:HasAccess(flaglist, any)
 	access = self.cider._Access;
 	daccess = GM.Config["Default Access"];
 	for i = 1, flaglist:len() do
-		flag = flaglist:sub(i,i);
-		if (flag == GM.Config["Base Access"]
-		or GM.FlagFunctions[flag] and GM.FlagFunctions[flag](self)
-		or daccess:find(flag)
-		or access:find(flag)) then
-			if (any) then return true; end -- If 'any' is selected, then return true whenever we get a match
+		flag = flaglist:sub(i, i);
+		if (flag == GM.Config["Base Access"] or GM.FlagFunctions[flag] and
+			GM.FlagFunctions[flag](self) or daccess:find(flag) or access:find(flag)) then
+			if (any) then
+				return true;
+			end -- If 'any' is selected, then return true whenever we get a match
 		elseif (not any) then -- If 'any' is not selected we don't get a match, return false.
 			return false;
 		end
@@ -879,7 +930,7 @@ end
 -- @param thing What specific activity. For instance if the kind was 'cmd', the thing could be 'unblacklist'.
 -- @return 0 if the player is not blacklisted, otherwise the time in seconds, the reason and the name of the blacklister.
 function meta:Blacklisted(kind, thing)
-	local blacklist,time;
+	local blacklist, time;
 	blacklist = self.cider._Blacklist[kind];
 	if (not (blacklist and blacklist[thing])) then
 		return 0;
@@ -921,7 +972,7 @@ end
 -- @param massLimit The maximum mass the entity may possess.
 -- @param sizeLimit The maximum size the entity may be in the X, Y or Z planes. (Diagonal lengths ignored)
 -- @return True if they can pick it up, false if they can't.
-function meta:CanPickupObject( pObject, massLimit, sizeLimit )
+function meta:CanPickupObject(pObject, massLimit, sizeLimit)
 	if (pObject == NULL) then
 		return false, "Object is NULL";
 	elseif (pObject:GetMoveType() ~= MOVETYPE_VPHYSICS) then
@@ -951,8 +1002,8 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
 		objectMass = objectMass + pList:GetMass();
 		if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
 			return false, "The map maker has asked that you not be able to pick this up.";
-		-- elseif ( pList:IsHinged() ) then -- Not possible now
-		-- 	return false;
+			-- elseif ( pList:IsHinged() ) then -- Not possible now
+			-- 	return false;
 		elseif (not pList:IsMoveable()) then
 			checkEnable = true;
 		end
@@ -1002,14 +1053,14 @@ function meta:SayRadio(words)
 	-- Compile a list of those who can't hear the voice
 	local nohear = {}
 	-- Loop through every recipient and add the message to their chatbox
-	for _,ply in pairs(recipients) do
+	for _, ply in pairs(recipients) do
 		cider.chatBox.add(ply, self, "radio", words);
 		nohear[ply] = true;
 	end
 
 	-- Tell everyone nearby that we just said a waydio
 	local pos = self:GetPos();
-	for _,ply in pairs(player.GetAll()) do
+	for _, ply in pairs(player.GetAll()) do
 		if (not nohear[ply] and ply:GetPos():Distance(pos) <= GM.Config["Talk Radius"]) then
 			cider.chatBox.add(ply, self, "loudradio", words);
 		end
@@ -1020,7 +1071,9 @@ end
 -- Adds an emote to the chatbox coming from the player
 -- @param words What the emote should say
 function meta:Emote(words)
-	cider.chatBox.addInRadius(self, "me", words, self:GetPos(), GM.Config["Talk Radius"]);
+	cider.chatBox.addInRadius(
+		self, "me", words, self:GetPos(), GM.Config["Talk Radius"]
+	);
 end
 
 ---
@@ -1042,7 +1095,8 @@ function meta:HolsterAll()
 	for _, weapon in pairs(self:GetWeapons()) do
 		class = weapon:GetClass();
 		if (GM.Items[class]) then
-			if (gamemode.Call("PlayerCanHolster", self, class, true) and cider.inventory.update(self, class, 1)) then
+			if (gamemode.Call("PlayerCanHolster", self, class, true) and
+				cider.inventory.update(self, class, 1)) then
 				self:StripWeapon(class);
 			elseif (gamemode.Call("PlayerCanDrop", self, class, true)) then
 				GM.Items[class]:Make(self:GetPos(), 1);
@@ -1062,8 +1116,8 @@ function meta:Notify(message, level)
 		return;
 	end
 	umsg.Start("Notification", self);
-		umsg.String(message);
-		umsg.Char(level);
+	umsg.String(message);
+	umsg.Char(level);
 	umsg.End();
 end
 
@@ -1074,8 +1128,7 @@ function meta:LightSpawn()
 	self:Spawn();
 end
 
-
-local angle_zero = Angle(0,0,0);
+local angle_zero = Angle(0, 0, 0);
 ---
 -- Sets a variable clientside on the player. Will not send the same value twice.
 -- @param class One of the CLASS_ enums indicating the kind of variable
@@ -1099,5 +1152,10 @@ function meta:BlacklistAlert(kind, thing, name)
 	else
 		time = time .. " minutes";
 	end
-	self:Notify("You have been blacklisted from using " .. tostring(name) .. " by " .. admin .. " for " .. time .. " for '" .. reason .. "'!");
+	self:Notify(
+
+		
+			"You have been blacklisted from using " .. tostring(name) .. " by " .. admin ..
+				" for " .. time .. " for '" .. reason .. "'!"
+	);
 end

@@ -12,9 +12,9 @@ function ITEM:onUse(ply)
 	else
 		pos.z = pos.z + 16;
 	end
-	local ent = ents.Create("npc_"..self.UniqueID);
+	local ent = ents.Create("npc_" .. self.UniqueID);
 	if (not ent) then
-		error("Applejack: Could not create npc with id "..self.UniqueID);
+		error("Applejack: Could not create npc with id " .. self.UniqueID);
 	end
 	ent:SetPos(pos);
 	ent:Spawn();

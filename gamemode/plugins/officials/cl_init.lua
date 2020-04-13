@@ -16,7 +16,8 @@ local function spawnImmunity(hudBox)
 		lpl._SpawnImmunityTime = 0;
 		return -1;
 	end
-	return "You have spawn immunity for: "..timeleft.." second" .. (timeleft > 1 and "s" or "");
+	return "You have spawn immunity for: " .. timeleft .. " second" ..
+       		(timeleft > 1 and "s" or "");
 end
 GM:AddDynamicHUDBox(spawnImmunity, nil) -- TODO: Silkicon for spawn immunity.
 
@@ -32,7 +33,9 @@ local last = false;
 function PLUGIN:Think()
 	local LD = live();
 	if (LD ~= last and LD == true) then
-		GM:AddPermaNotification("A lockdown is in progress. Please return to your home.", live, color_red);
+		GM:AddPermaNotification(
+			"A lockdown is in progress. Please return to your home.", live, color_red
+		);
 		last = LD;
 	end
 end

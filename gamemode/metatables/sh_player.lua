@@ -2,14 +2,15 @@
 -- ~ Shared Player metatable ~
 -- ~ Applejack ~
 --
-
 ---
 -- The shared player metatable
 -- @name meta
 -- @class table
 local meta = _R.Player;
 if (not meta) then
-	error("["..os.date().."] Applejack Shared Player metatable: No metatable found!");
+	error(
+		"[" .. os.date() .. "] Applejack Shared Player metatable: No metatable found!"
+	);
 end
 
 ---
@@ -44,21 +45,21 @@ end
 -- Checks if the player has been ragdolled
 -- @return true if they are, false if they're not.
 function meta:KnockedOut()
-	return self:GetNWBool"KnockedOut";
+	return self:GetNWBool "KnockedOut";
 end
 
 ---
 -- Checks if the player has been tied up
 -- @return true if they are, false if they're not.
 function meta:Tied()
-	return self:GetNWBool"Tied";
+	return self:GetNWBool "Tied";
 end
 
 ---
 -- Checks if the player has been arrested
 -- @return true if they are, false if they're not.
 function meta:Arrested()
-	return self:GetNWBool"Arrested";
+	return self:GetNWBool "Arrested";
 end
 
 ---
@@ -74,7 +75,6 @@ end
 function meta:GetWarrant()
 	return self:GetNWString("Warrant");
 end
-
 
 ---
 -- Get the data table for the player's current team

@@ -57,19 +57,19 @@ function SWEP:PrimaryAttack()
 	end
 	-- Stamina
 	if (stamina and not self:GetDTBool(0)) then
-		self.Owner._Stamina = math.Clamp(self.Owner._Stamina - 20,0,100)
+		self.Owner._Stamina = math.Clamp(self.Owner._Stamina - 20, 0, 100)
 	end
 	-- Smack
 	self:EmitSound("weapons/crossbow/hitbod2.wav");
 	-- Fire a bullet for impact effects
 	local bullet = {
-		Num = 1;
-		Src = tr.StartPos;
-		Dir = tr.Normal;
-		Spread = Vector(0,0,0);
-		Tracer = 0;
-		Force = 0;
-		Damage = 0;
+		Num = 1,
+		Src = tr.StartPos,
+		Dir = tr.Normal,
+		Spread = Vector(0, 0, 0),
+		Tracer = 0,
+		Force = 0,
+		Damage = 0,
 	}
 	-- Check if super punch mode is on
 	if (not tr.HitWorld and self:GetDTBool(0)) then
@@ -82,7 +82,8 @@ function SWEP:PrimaryAttack()
 	end
 	-- We have hit an entity. Beat it's pasty ass into the ground
 	-- Don't let people punch each other to death
-	if ((ent._Player or ent:IsPlayer()) and not self:GetDTBool(0) and ent:Health() <= 15) then
+	if ((ent._Player or ent:IsPlayer()) and not self:GetDTBool(0) and ent:Health() <=
+		15) then
 		-- Re stun (OH WAIT STUN ISN'T PROGRESSIVE EVEN THOUGH IT SHOULD BE >:c)
 		local pl = ent;
 		if (IsValid(ent._Player)) then
@@ -154,9 +155,9 @@ function SWEP:SecondaryAttack()
 	end
 end
 
-
 function SWEP:Reload()
-	if (not (self.Owner:IsAdmin() and self.Owner:KeyDown(IN_SPEED)) or self.Primary.NextSwitch > CurTime()) then
+	if (not (self.Owner:IsAdmin() and self.Owner:KeyDown(IN_SPEED)) or
+		self.Primary.NextSwitch > CurTime()) then
 		return false;
 	elseif (self:GetDTBool(0)) then
 		self.Primary.PunchAcceleration = 100
@@ -189,7 +190,7 @@ function SWEP:PickUp(ent, tr)
 	-- TODO: What happens if you pickup a ragdoll?
 	--       If it doesn't work, then make a small prop, weld that to the physbone and then pickup that.
 	self.PickupAttempt = ent;
-	--self.Owner:PickupObject(ent);
+	-- self.Owner:PickupObject(ent);
 end
 
 function SWEP:Think()
@@ -197,9 +198,10 @@ function SWEP:Think()
 		if (self.Owner:KeyDown(IN_ATTACK2)) then
 			-- While the guy holds the right mouse button down, they'll drop the object instantly.
 			return;
-		elseif (IsValid(self.PickupAttempt) and not self.PickupAttempt:IsPlayerHolding()) then
+		elseif (IsValid(self.PickupAttempt) and
+			not self.PickupAttempt:IsPlayerHolding()) then
 			self.Owner:PickupObject(self.PickupAttempt);
-			if ( self.PickupAttempt:IsPlayerHolding() ) then
+			if (self.PickupAttempt:IsPlayerHolding()) then
 				self:SetDTBool(1, true);
 			end
 		else

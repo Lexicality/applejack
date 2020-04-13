@@ -13,7 +13,9 @@ if (CLIENT) then
 	SWEP.SlotPos = 3;
 	SWEP.IconLetter = "x";
 	SWEP.DrawWeaponInfoBox = true;
-	killicon.AddFont( "cider_mp5", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+	killicon.AddFont(
+		"cider_mp5", "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255)
+	)
 end
 
 -- Set the base and category.
@@ -24,7 +26,8 @@ SWEP.Category = "Cider";
 SWEP.PrintName = "MP5";
 SWEP.Author = "kuromeku";
 SWEP.Purpose = "A small sub-machine gun with a fast fire rate.";
-SWEP.Instructions = "Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
+SWEP.Instructions =
+	"Primary Fire: Shoot.\nUse + Secondary Fire: Change the fire mode.";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 SWEP.Weight = 5;
@@ -68,10 +71,9 @@ SWEP.DeltaSpray = 0.25;
 SWEP.IronSightsPos = Vector(4.7456, -4.1011, 1.7288);
 SWEP.IronSightsAng = Vector(2.0327, -0.1475, 0.2779);
 --------------------
-SWEP.IronSightsPos = Vector (4.7431, -3.1151, 1.8602)
-SWEP.IronSightsAng = Vector (1.3507, -0.1619, 0)
+SWEP.IronSightsPos = Vector(4.7431, -3.1151, 1.8602)
+SWEP.IronSightsAng = Vector(1.3507, -0.1619, 0)
 --------------------
-
 
 SWEP.IronSightZoom = 1;
 SWEP.UseScope = false;

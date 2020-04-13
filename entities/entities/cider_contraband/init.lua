@@ -23,20 +23,20 @@ function ENT:Initialize()
 	local physicsObject = self:GetPhysicsObject();
 
 	-- Check if the physics object is a valid entity.
-	if ( IsValid(physicsObject) ) then
+	if (IsValid(physicsObject)) then
 		physicsObject:Wake();
 		physicsObject:EnableMotion(true);
 	end
 
 	-- Get the contraband table.
-	local contraband = GM.Config["Contraband"][ self:GetClass() ];
+	local contraband = GM.Config["Contraband"][self:GetClass()];
 
 	-- Check if the contraband table is valid.
 	if (contraband) then
 		self:SetHealth(contraband.health);
 		self.dt.energy = contraband.energy;
 	else
-		timer.Simple(0,self.Remove,self);
+		timer.Simple(0, self.Remove, self);
 	end
 end
 
@@ -53,14 +53,14 @@ function ENT:OnTakeDamage(damageInfo)
 	local killer = damageInfo:GetInflictor();
 
 	-- Check if the player can destroy the contraband.
-	if ( IsValid(killer) and killer:IsPlayer()
-	and hook.Call("PlayerCanDestroyContraband", GAMEMODE, killer, self) ) then
-		self:SetHealth( math.max(self:Health() - damageInfo:GetDamage(), 0) );
+	if (IsValid(killer) and killer:IsPlayer() and
+		hook.Call("PlayerCanDestroyContraband", GAMEMODE, killer, self)) then
+		self:SetHealth(math.max(self:Health() - damageInfo:GetDamage(), 0));
 
 		-- Check if the entity has run out of health.
 		if (self:Health() <= 0) then
-			if ( IsValid(killer) and killer:IsPlayer() )then
-				hook.Call("PlayerDestroyedContraband",GAMEMODE, killer, self)
+			if (IsValid(killer) and killer:IsPlayer()) then
+				hook.Call("PlayerDestroyedContraband", GAMEMODE, killer, self)
 			end
 
 			-- Explode the contraband and then remove it.
@@ -75,8 +75,8 @@ function ENT:Explode()
 	local effectData = EffectData();
 
 	-- Set the information for the effect.
-	effectData:SetStart( self:GetPos() );
-	effectData:SetOrigin( self:GetPos() );
+	effectData:SetStart(self:GetPos());
+	effectData:SetOrigin(self:GetPos());
 	effectData:SetScale(2);
 
 	-- Create the effect from the data.
@@ -92,7 +92,7 @@ function ENT:Use(player, caller)
 		local effectData = EffectData();
 
 		-- Set the information for the effect.
-		effectData:SetOrigin( self:GetPos() );
+		effectData:SetOrigin(self:GetPos());
 		effectData:SetMagnitude(2);
 		effectData:SetScale(2);
 		effectData:SetRadius(2);

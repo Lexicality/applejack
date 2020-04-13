@@ -10,10 +10,8 @@ umsg.PoolString("dosnd");
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay);
 
-
 	-- Set the animation of the owner to one of them attacking.
 	-- self.Owner:SetAnimation(PLAYER_ATTACK1);
-
 
 	local tr = self.Owner:GetEyeTrace();
 	local owner = self.Owner;
@@ -52,7 +50,9 @@ function SWEP:PrimaryAttack()
 	if (math.random() < owner._LockpickChance) then
 		-- Tell the world with text'n'noise
 		self:DoSound(2)
-		owner:Emote("manages to snap "..owner._GenderWord.." lockpick off in the lock.");
+		owner:Emote(
+			"manages to snap " .. owner._GenderWord .. " lockpick off in the lock."
+		);
 		-- Reset the lock
 		ent._LockpickingCount = 0;
 		-- Reset the break chance
@@ -62,30 +62,42 @@ function SWEP:PrimaryAttack()
 		owner:SelectWeapon("cider_hands");
 		-- End the picking
 		return;
-	-- Check if we have NOT managed to pick the lock
+		-- Check if we have NOT managed to pick the lock
 	elseif (math.random() > ent._LockpickingCount) then
 		-- Make a fiddling with the lock sound
 		self:DoSound(0)
 		return;
 	end
 	-- We have successfully picked the lock! Tell people.
-	owner:Emote("opens the lock with a final thrust, slightly damaging " .. owner._GenderWord .." lockpick")
+	owner:Emote(
+
+		
+			"opens the lock with a final thrust, slightly damaging " .. owner._GenderWord ..
+				" lockpick"
+	)
 	self:DoSound(1)
 	-- Reset the lock
 	ent._LockpickingCount = 0;
 	-- Add to the lockpicker's pick break chance and tell them.
-	owner._LockpickChance = owner._LockpickChance + GM.Config["Lockpick Break Chance"];
+	owner._LockpickChance = owner._LockpickChance +
+                        		GM.Config["Lockpick Break Chance"];
 	-- Since we can now pick the cuffs on players to unarrest them, we need to treat them differently.
 	if (ent:IsPlayer()) then
 		ent:UnArrest();
-		ent:Emote("pulls off the unlocked handcuffs and throws them away hard enough to break them.");
-		GM:Log(EVENT_EVENT, "%s picked the lock on %s handcuffs", ply:Name(), ent:Name());
+		ent:Emote(
+
+			
+				"pulls off the unlocked handcuffs and throws them away hard enough to break them."
+		);
+		GM:Log(
+			EVENT_EVENT, "%s picked the lock on %s handcuffs", ply:Name(), ent:Name()
+		);
 		return;
 	end
-	--Actually unlock it the entity
+	-- Actually unlock it the entity
 	ent:UnLock();
 	-- ent:EmitSound("doors/door_latch3.wav");
-	local event, addon, entname = "","",ent._eName or "entity";
+	local event, addon, entname = "", "", ent._eName or "entity";
 	if (ent:IsOwned()) then
 		event = ent:GetPossessiveName();
 	else
@@ -94,13 +106,16 @@ function SWEP:PrimaryAttack()
 	if (ent._isDoor) then
 		addon = ent:GetDoorName();
 		if (addon ~= "") then
-			addon = ": "..addon;
+			addon = ": " .. addon;
 		end
 	else
 		local name = gamemode.Call("GetEntityName", ent);
 		if (name and name ~= "") then
-			addon = ": "..name;
+			addon = ": " .. name;
 		end
 	end
-	GM:Log(EVENT_EVENT, "%s picked the lock on %s %s%s.", owner:GetName(), event, entname, addon);
+	GM:Log(
+		EVENT_EVENT, "%s picked the lock on %s %s%s.", owner:GetName(), event,
+		entname, addon
+	);
 end

@@ -4,7 +4,10 @@
 --
 local meta = _R.Entity;
 if (not meta) then
-	error("["..os.date().."] Applejack Serverside Entity metatable: No metatable found!");
+	error(
+		"[" .. os.date() ..
+			"] Applejack Serverside Entity metatable: No metatable found!"
+	);
 end
 
 -- Locals
@@ -12,7 +15,7 @@ end
 -- This makes sure an entity is actually ownable before running stuff on it.
 local function cm(ent)
 	if (not ent._Owner) then
-		error("Tried to use a nonownable entity!",3);
+		error("Tried to use a nonownable entity!", 3);
 	end
 end
 
@@ -47,7 +50,6 @@ local function setname(ent, name)
 	ent:SetNWString("DisplayName", name);
 end
 
-
 -- Updates the owner + name
 local function newowner(ent, owner, name, slave)
 	ent._Owner.owner = owner;
@@ -73,19 +75,27 @@ end
 
 -- Notify multiple players that their access has been changed
 local function multiaccesschange(ent, plys, stat)
-	if (not IsValid(ent)) then return end
+	if (not IsValid(ent)) then
+		return
+	end
 	cm(ent);
-	if (#plys == 0) then return; end
+	if (#plys == 0) then
+		return;
+	end
 	local filter = RecipientFilter();
 	for _, ply in pairs(plys) do
-		if (IsValid(ply)) then filter:AddPlayer(ply); end
+		if (IsValid(ply)) then
+			filter:AddPlayer(ply);
+		end
 	end
 	acc(ent, filter, stat);
 end
 
 -- Notify a player that their access has been changed
 local function accesschange(ent, ply, stat)
-	if (not IsValid(ent)) then return end
+	if (not IsValid(ent)) then
+		return
+	end
 	cm(ent);
 	acc(ent, ply, stat);
 end
@@ -97,8 +107,11 @@ end
 -- @return True if it is, false if it isn't.
 function meta:IsDoor()
 	local class, model = self:GetClass(), self:GetModel();
-	return self._isDoor or class == "func_door" or class == "func_door_rotating" or class == "prop_door_rotating"
-		or class == "prop_dynamic" and (model:find("door") or model:find("gate")) and (self:LookupSequence("open") or 0) > 0 and (self:LookupSequence("close") or 0) > 0;
+	return self._isDoor or class == "func_door" or class == "func_door_rotating" or
+       		class == "prop_door_rotating" or class == "prop_dynamic" and
+       		(model:find("door") or model:find("gate")) and
+       		(self:LookupSequence("open") or 0) > 0 and
+       		(self:LookupSequence("close") or 0) > 0;
 end
 
 ---
@@ -126,18 +139,17 @@ function meta:HasAccess(ply)
 		error("bad argument #1 to 'HasAccess' (Player expected, got NULL)", 2);
 	end
 	local data = team.Get(ply:Team());
-	local access, owner = self._Owner.access,self._Owner.owner;
+	local access, owner = self._Owner.access, self._Owner.owner;
 	if (owner == ply or access[ply]) then
 		return true;
 	elseif (not data) then
 		return false;
 	end
-	local tid, gid, ggid =
-		"Team: "  ..  data.TeamID,
-		"Group: " ..  data.Group.GroupID,
-		"Gang: "  .. (data.Gang and data.Gang.GangID or -1);
-	return  (owner == tid or owner == gid or owner == ggid) or
-			(access[tid] or access[gid] or access[ggid]);
+	local tid, gid, ggid = "Team: " .. data.TeamID,
+                       	"Group: " .. data.Group.GroupID,
+                       	"Gang: " .. (data.Gang and data.Gang.GangID or -1);
+	return (owner == tid or owner == gid or owner == ggid) or
+       		(access[tid] or access[gid] or access[ggid]);
 end
 
 -- 'Set'/'Get' functions
@@ -156,19 +168,19 @@ function meta:GetAllAccessors()
 	for data in pairs(working) do
 		kind = type(data);
 		if (kind == "Player") then
-			ret[#ret+1] = data;
+			ret[#ret + 1] = data;
 		elseif (kind == "string") then
-			table.Add(ret,getplys(data));
+			table.Add(ret, getplys(data));
 		end
 	end
 	working = {};
-	for _,ply in pairs(ret) do
+	for _, ply in pairs(ret) do
 		working[ply] = true;
 	end
 	ret = {};
 	for ply in pairs(working) do
 		if (IsValid(ply)) then
-			ret[#ret+1] = ply;
+			ret[#ret + 1] = ply;
 		end
 	end
 	return ret;
@@ -205,7 +217,8 @@ function meta:GetPossessiveName()
 		elseif (type(owner) == "string") then
 			local data = getobj(owner);
 			if (data) then
-				name = data.PossessiveString and string.format(data.PossessiveString, data.Name) or data.Name;
+				name = data.PossessiveString and
+       					string.format(data.PossessiveString, data.Name) or data.Name;
 			end
 		end
 	end
@@ -232,7 +245,6 @@ function meta:GetDoorName()
 	end
 	return dispname;
 end
-
 
 meta.OriginalGetOwner = meta.GetOwner;
 ---
@@ -263,17 +275,26 @@ function meta:SetMaster(ent)
 	local data = self._Owner
 	if (not IsValid(ent)) then
 		ent = self:GetMaster()
-		if (not ent) then return; end
+		if (not ent) then
+			return;
+		end
 		ent._Owner.slaves[self] = nil;
 		data.master = NULL;
 		data.access = {};
 		self:ClearOwnershipData();
 		return;
 	elseif (not ent:IsOwnable()) then
-		error("bad argument #1 to 'SetMaster' (Ownable Entity expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'SetMaster' (Ownable Entity expected, got something else)",
+				2
+		);
 	end
 	ent = ent:GetMaster() or ent;
-	if (ent == self or self:GetMaster() == ent) then return; end
+	if (ent == self or self:GetMaster() == ent) then
+		return;
+	end
 	for slave in pairs(data.slaves) do
 		if (IsValid(slave)) then
 			slave:SetMaster(ent);
@@ -305,7 +326,7 @@ function meta:GetSlaves()
 	local tab = {};
 	for slave in pairs(self._Owner.slaves) do
 		if (IsValid(slave)) then
-			tab[#tab+1] = slave;
+			tab[#tab + 1] = slave;
 		else
 			self._Owner.slaves[slave] = nil;
 		end
@@ -378,14 +399,16 @@ end
 ---
 -- Makes an entity ownable so it can be owned by players / teams
 function meta:MakeOwnable()
-	if (self:IsPlayer() or self:IsOwnable()) then return; end
-	self._Owner 	= {
-		name		= "Nobody";
-		access  	= {};
-		owner   	= NULL;
-		slaves  	= {};
-		master 		= NULL;
-		lockbuddies = {};
+	if (self:IsPlayer() or self:IsOwnable()) then
+		return;
+	end
+	self._Owner = {
+		name = "Nobody",
+		access = {},
+		owner = NULL,
+		slaves = {},
+		master = NULL,
+		lockbuddies = {},
 	};
 	if (self:IsDoor()) then
 		self._isDoor = true;
@@ -416,7 +439,9 @@ end
 -- Tells the current owner that they are no longer the owner.
 local function deown(self)
 	local owner = self._Owner.owner;
-	if (not owner or owner == NULL) then return; end
+	if (not owner or owner == NULL) then
+		return;
+	end
 	local kind = type(owner);
 	if (kind == "Player") then
 		accesschange(self, owner, false);
@@ -437,7 +462,9 @@ function meta:GiveAccessToPlayer(ply)
 	if (not IsValid(ply)) then
 		error("bad argument #1 to 'GiveAccessToPlayer' (Player expected, got NULL)", 2);
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access[ply] = true;
 	accesschange(self, ply, true);
 end
@@ -448,13 +475,17 @@ end
 function meta:TakeAccessFromPlayer(ply)
 	cm(self)
 	if (not IsValid(ply)) then
-		error("bad argument #1 to 'TakeAccessFromPlayer' (Player expected, got NULL)", 2);
+		error(
+			"bad argument #1 to 'TakeAccessFromPlayer' (Player expected, got NULL)", 2
+		);
 	end
 	if (self._Owner.owner == ply) then
 		self = self:GetMaster() or self;
 		return self:ClearOwnershipData();
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access[ply] = nil;
 	if (not self:HasAccess(ply)) then
 		accesschange(self, ply, false);
@@ -488,9 +519,16 @@ function meta:GiveAccessToTeam(id)
 	cm(self);
 	local data = team.Get(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveAccessToTeam' (TeamID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'GiveAccessToTeam' (TeamID expected, got something else)",
+				2
+		);
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access["Team: " .. data.TeamID] = true;
 	multiaccesschange(self, team.GetPlayers(data.TeamID), true);
 end
@@ -502,19 +540,26 @@ function meta:TakeAccessFromTeam(id)
 	cm(self);
 	local data = team.Get(id);
 	if (not data) then
-		error("bad argument #1 to 'TakeAccessFromTeam' (TeamID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'TakeAccessFromTeam' (TeamID expected, got something else)",
+				2
+		);
 	end
 	id = "Team: " .. data.TeamID;
 	if (self._Owner.owner == id) then
 		self = self:GetMaster() or self;
 		return self:ClearOwnershipData();
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access[id] = nil;
 	local bereft = {};
-	for _,ply in pairs(team.GetPlayers(data.TeamID)) do
+	for _, ply in pairs(team.GetPlayers(data.TeamID)) do
 		if (not self:HasAccess(ply)) then
-			bereft[#bereft+1] = ply;
+			bereft[#bereft + 1] = ply;
 		end
 	end
 	if (#bereft > 0) then
@@ -529,7 +574,9 @@ function meta:GiveToTeam(id)
 	cm(self);
 	local data = team.Get(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveToTeam' (TeamID expected, got something else)", 2);
+		error(
+			"bad argument #1 to 'GiveToTeam' (TeamID expected, got something else)", 2
+		);
 	end
 	self = self:GetMaster() or self;
 	deown(self);
@@ -538,7 +585,6 @@ function meta:GiveToTeam(id)
 end
 
 meta.TakeFromTeam = meta.TakeAccessFromTeam;
-
 
 --
 -- Gangs
@@ -551,9 +597,16 @@ function meta:GiveAccessToGang(id)
 	cm(self);
 	local data = GM:GetGang(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveAccessToGang' (GangID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'GiveAccessToGang' (GangID expected, got something else)",
+				2
+		);
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access["Gang: " .. data.GangID] = true;
 	multiaccesschange(self, GM:GetGangMembers(data.GangID), true);
 end
@@ -565,19 +618,26 @@ function meta:TakeAccessFromGang(id)
 	cm(self);
 	local data = GM:GetGang(id);
 	if (not data) then
-		error("bad argument #1 to 'TakeAccessFromGang' (GangID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'TakeAccessFromGang' (GangID expected, got something else)",
+				2
+		);
 	end
 	id = "Gang: " .. data.GangID;
 	if (self._Owner.owner == id) then
 		self = self:GetMaster() or self;
 		return self:ClearOwnershipData();
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access[id] = nil;
 	local bereft = {};
-	for _,ply in pairs(GM:GetGangMembers(data.GangID)) do
+	for _, ply in pairs(GM:GetGangMembers(data.GangID)) do
 		if (not self:HasAccess(ply)) then
-			bereft[#bereft+1] = ply;
+			bereft[#bereft + 1] = ply;
 		end
 	end
 	if (#bereft > 0) then
@@ -592,7 +652,9 @@ function meta:GiveToGang(id)
 	cm(self);
 	local data = GM:GetGang(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveToGang' (GangID expected, got something else)", 2);
+		error(
+			"bad argument #1 to 'GiveToGang' (GangID expected, got something else)", 2
+		);
 	end
 	self = self:GetMaster() or self;
 	deown(self);
@@ -613,9 +675,16 @@ function meta:GiveAccessToGroup(id)
 	cm(self);
 	local data = GM:GetGroup(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveAccessToGroup' (GroupID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'GiveAccessToGroup' (GroupID expected, got something else)",
+				2
+		);
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access["Group: " .. data.GroupID] = true;
 	multiaccesschange(self, GM:GetGroupMembers(data.GroupID), true);
 end
@@ -627,19 +696,26 @@ function meta:TakeAccessFromGroup(id)
 	cm(self);
 	local data = GM:GetGroup(id);
 	if (not data) then
-		error("bad argument #1 to 'TakeAccessFromGroup' (GroupID expected, got something else)", 2);
+		error(
+
+			
+				"bad argument #1 to 'TakeAccessFromGroup' (GroupID expected, got something else)",
+				2
+		);
 	end
 	id = "Group: " .. data.GroupID;
 	if (self._Owner.owner == id) then
 		self = self:GetMaster() or self;
 		return self:ClearOwnershipData();
 	end
-	if (not self:IsOwned()) then return; end
+	if (not self:IsOwned()) then
+		return;
+	end
 	self._Owner.access[id] = nil;
 	local bereft = {};
-	for _,ply in pairs(GM:GetGroupMembers(data.GroupID)) do
+	for _, ply in pairs(GM:GetGroupMembers(data.GroupID)) do
 		if (not self:HasAccess(ply)) then
-			bereft[#bereft+1] = ply;
+			bereft[#bereft + 1] = ply;
 		end
 	end
 	if (#bereft > 0) then
@@ -654,7 +730,9 @@ function meta:GiveToGroup(id)
 	cm(self);
 	local data = GM:GetGroup(id);
 	if (not data) then
-		error("bad argument #1 to 'GiveToGroup' (GroupID expected, got something else)", 2);
+		error(
+			"bad argument #1 to 'GiveToGroup' (GroupID expected, got something else)", 2
+		);
 	end
 	self = self:GetMaster() or self;
 	deown(self);
@@ -663,7 +741,6 @@ function meta:GiveToGroup(id)
 end
 
 meta.TakeFromGroup = meta.TakeAccessFromGroup;
-
 
 ---------------------
 -- Prop Protection --
@@ -677,12 +754,12 @@ meta.TakeFromGroup = meta.TakeAccessFromGroup;
 function meta:SetPPOwner(target)
 	self._pp = self._pp or {};
 	if (IsPlayer(target)) then
-		self._pp.Owner     = target;
-		self._pp.OwnerUID  = target:UniqueID();
+		self._pp.Owner = target;
+		self._pp.OwnerUID = target:UniqueID();
 		self._pp.OwnerName = target:Name();
 	else
-		self._pp.Owner     = game.GetWorld();
-		self._pp.OwnerUID  = "WORLD";
+		self._pp.Owner = game.GetWorld();
+		self._pp.OwnerUID = "WORLD";
 		self._pp.OwnerName = "The World";
 	end
 end
@@ -693,10 +770,10 @@ end
 function meta:SetPPSpawner(target)
 	self._pp = self._pp or {};
 	if (IsPlayer(target)) then
-		self._pp.Spawner     = target;
+		self._pp.Spawner = target;
 		self._pp.SpawnerName = target:Name();
 	else
-		self._pp.Spawner     = game.GetWorld();
+		self._pp.Spawner = game.GetWorld();
 		self._pp.SpawnerName = "The World";
 	end
 end

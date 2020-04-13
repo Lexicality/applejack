@@ -2,32 +2,34 @@
 -- "cl_init.lua"
 -- ~ Applejack ~
 --
-
---Take some shit out of _G for speed
-local	ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util =
-		ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util
+-- Take some shit out of _G for speed
+local ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt,
+	Color, hook, ScrW, ScrH, tonumber, util = ents, player, pairs, ipairs, draw,
+                                           math, string, CurTime, ErrorNoHalt,
+                                           Color, hook, ScrW, ScrH, tonumber,
+                                           util
 -- Define a fuckton of colours for efficient GC
---Solid Colours
-color_green =			Color(050, 255, 050)
-color_red =				Color(255, 050, 050)
-color_orange =			Color(255, 125, 000)
-color_brightgreen =		Color(125, 255, 050)
-color_purpleblue =		Color(125, 050, 255)
-color_purple = 			Color(150, 075, 200)
-color_lightblue =		Color(075, 150, 255)
-color_pink =			Color(255, 075, 150)
-color_darkgray =		Color(025, 025, 025)
-color_lightgray =		Color(150, 150, 150)
-color_yellow =			Color(250, 230, 070)
-color_blue =			Color(015, 045, 230)
---Alpha'd
-color_red_alpha =		Color(255, 050, 050, 200)
-color_orange_alpha =	Color(240, 190, 060, 200)
-color_lightblue_alpha =	Color(100, 100, 255, 200)
-color_darkgray_alpha =	Color(025, 025, 025, 150)
-color_black_alpha =		Color(000, 000, 000, 200)
-lpl = 					NULL
-local startupmenu = 	CreateClientConVar("mshine_startupmenu", "1", true)
+-- Solid Colours
+color_green = Color(050, 255, 050)
+color_red = Color(255, 050, 050)
+color_orange = Color(255, 125, 000)
+color_brightgreen = Color(125, 255, 050)
+color_purpleblue = Color(125, 050, 255)
+color_purple = Color(150, 075, 200)
+color_lightblue = Color(075, 150, 255)
+color_pink = Color(255, 075, 150)
+color_darkgray = Color(025, 025, 025)
+color_lightgray = Color(150, 150, 150)
+color_yellow = Color(250, 230, 070)
+color_blue = Color(015, 045, 230)
+-- Alpha'd
+color_red_alpha = Color(255, 050, 050, 200)
+color_orange_alpha = Color(240, 190, 060, 200)
+color_lightblue_alpha = Color(100, 100, 255, 200)
+color_darkgray_alpha = Color(025, 025, 025, 150)
+color_black_alpha = Color(000, 000, 000, 200)
+lpl = NULL
+local startupmenu = CreateClientConVar("mshine_startupmenu", "1", true)
 
 include("sh_init.lua");
 include("scoreboard/scoreboard.lua");
@@ -40,26 +42,36 @@ GM.ammoCount = {};
 -- Detect when the local player is created and store it in a global.
 -- I'm not convinced this is the most sensible behavior, but it's heavily ingrained
 --  in the gamemode, and I can't be bothered correcting it.
-hook.Add("OnEntityCreated", "LocalPlayer Detector", function()
-	lpl = LocalPlayer();
-	if (IsValid(lpl)) then
-		gamemode.Call("LocalPlayerCreated", lpl);
-		hook.Remove("OnEntityCreated", "LocalPlayer Detector");
+hook.Add(
+	"OnEntityCreated", "LocalPlayer Detector", function()
+		lpl = LocalPlayer();
+		if (IsValid(lpl)) then
+			gamemode.Call("LocalPlayerCreated", lpl);
+			hook.Remove("OnEntityCreated", "LocalPlayer Detector");
+		end
 	end
-end)
+)
 
 function GM:LocalPlayerCreated(ply)
 	-- Clean up people's consoles for them.
 	if (GetConVarString("con_filter_text_out") == "") then
-		print("All messages with the word 'vertex' in them have been filtered from your console.");
-		print("If you do not want this to happen, place +con_filter_text_out \"diabled\" in your launcher options.");
+		print(
+
+			
+				"All messages with the word 'vertex' in them have been filtered from your console."
+		);
+		print(
+
+			
+				"If you do not want this to happen, place +con_filter_text_out \"diabled\" in your launcher options."
+		);
 		RunConsoleCommand("con_filter_enable", 1);
 		RunConsoleCommand("con_filter_text_out", "vertex");
 	end
 end
 
 function GM:Initialize()
-	ErrorNoHalt(os.date().." - Finished connecting\n")
+	ErrorNoHalt(os.date() .. " - Finished connecting\n")
 	GM = self;
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
@@ -70,17 +82,20 @@ function GM:ForceDermaSkin()
 end
 
 -- Override the weapon pickup function.
-function GM:HUDWeaponPickedUp() end
+function GM:HUDWeaponPickedUp()
+end
 
 -- Override the item pickup function.
-function GM:HUDItemPickedUp() end
+function GM:HUDItemPickedUp()
+end
 
 -- Override the ammo pickup function.
-function GM:HUDAmmoPickedUp() end
+function GM:HUDAmmoPickedUp()
+end
 
 -- Called when all of the map entities have been initialized.
 function GM:InitPostEntity()
-	timer.Simple(0,hook.Call,"LoadData",self); -- Tell plugins to load their datas a frame after this.
+	timer.Simple(0, hook.Call, "LoadData", self); -- Tell plugins to load their datas a frame after this.
 	self.Inited = true;
 	-- Call the base class function.
 	return self.BaseClass:InitPostEntity()
@@ -88,7 +103,7 @@ end
 
 -- Called when a player presses a bind.
 function GM:PlayerBindPress(player, bind, press)
-	if ( not self.playerInitialized and string.find(bind, "+jump") ) then
+	if (not self.playerInitialized and string.find(bind, "+jump")) then
 		RunConsoleCommand("retry");
 	end
 	-- Call the base class function.
@@ -103,22 +118,22 @@ end
 
 -- Get the bouncing position of the screen's center.
 function GM:GetScreenCenterBounce(bounce)
-	return ScrW() / 2, (ScrH() / 2) + 32 + ( math.sin( CurTime() ) * (bounce or 8) );
+	return ScrW() / 2, (ScrH() / 2) + 32 + (math.sin(CurTime()) * (bounce or 8));
 end
 
 -- Give the player a first-person view of their corpse
-function GM:CalcView( pl, origin, angles, fov )
+function GM:CalcView(pl, origin, angles, fov)
 	-- Get their ragdoll
 	local ragdoll = pl:GetRagdollEntity();
 	-- Check if it's valid
 	if (not IsValid(ragdoll)) then
-		return self.BaseClass:CalcView(pl,origin,angles,fov);
+		return self.BaseClass:CalcView(pl, origin, angles, fov);
 	end
-	--find the eyes
-	local eyes = ragdoll:GetAttachment( ragdoll:LookupAttachment( "eyes" ) );
+	-- find the eyes
+	local eyes = ragdoll:GetAttachment(ragdoll:LookupAttachment("eyes"));
 	-- setup our view
 	if (not eyes) then
-		return self.BaseClass:CalcView(pl,origin,angles,fov);
+		return self.BaseClass:CalcView(pl, origin, angles, fov);
 	end
 	-- TODO: See if this does anything
 	return self.BaseClass:CalcView(pl, eyes.Pos, eyes.Ang, 90);
@@ -133,16 +148,16 @@ function GM:RenderScreenspaceEffects()
 	-- Check if the player is low on health or stunned.
 	if lpl._Stunned then
 		color = 0.4
-		DrawMotionBlur(0.1,1,0)
+		DrawMotionBlur(0.1, 1, 0)
 	elseif (lpl:Health() < 50 and not lpl._HideHealthEffects) then
-		if ( lpl:Alive() ) then
-			color = math.Clamp(color - ( ( 50 - lpl:Health() ) * 0.025 ), 0, color);
+		if (lpl:Alive()) then
+			color = math.Clamp(color - ((50 - lpl:Health()) * 0.025), 0, color);
 		else
 			color = 1.13;
 			addr = 1
 		end
 		-- Draw the motion blur.
-		DrawMotionBlur(math.Clamp(1 - ( ( 50 - lpl:Health() ) * 0.025 ), 0.1, 1), 1, 0);
+		DrawMotionBlur(math.Clamp(1 - ((50 - lpl:Health()) * 0.025), 0.1, 1), 1, 0);
 	end
 
 	-- Set some color modify settings.
@@ -183,7 +198,7 @@ function GM:HUDDrawScoreBoard() -- TODO: Find a better hook for this?
 
 	-- Blank out the screen while players load.
 
-	draw.RoundedBox( 2, 0, 0, ScrW(), ScrH(), color_black );
+	draw.RoundedBox(2, 0, 0, ScrW(), ScrH(), color_black);
 
 	-- Set the font of the text to Chat Font.
 	surface.SetFont("ChatFont");
@@ -195,23 +210,31 @@ function GM:HUDDrawScoreBoard() -- TODO: Find a better hook for this?
 	local x, y = self:GetScreenCenterBounce();
 
 	-- Draw a rounded box for the loading text to go on.
-	draw.RoundedBox( 2, (ScrW() / 2) - (width / 2) - 8, (ScrH() / 2) - 8, width + 16, 30, color_darkgray );
+	draw.RoundedBox(
+		2, (ScrW() / 2) - (width / 2) - 8, (ScrH() / 2) - 8, width + 16, 30,
+		color_darkgray
+	);
 
 	-- Draw the loading text in the middle of the screen.
 	draw.DrawText("Loading!", "ChatFont", ScrW() / 2, ScrH() / 2, color_white, 1, 1);
 
 	-- Let them know how to rejoin if they are stuck.
-	draw.DrawText("Press 'Jump' to rejoin if you are stuck on this screen!", "ChatFont", ScrW() / 2, ScrH() / 2 + 32, Color(255, 50, 25, 255), 1, 1);
+	draw.DrawText(
+		"Press 'Jump' to rejoin if you are stuck on this screen!", "ChatFont",
+		ScrW() / 2, ScrH() / 2 + 32, Color(255, 50, 25, 255), 1, 1
+	);
 end
 
 -- Draw Information.
-function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shadow)
+function GM:DrawInformation(
+	text, font, x, y, color, alpha, left, callback, shadow
+)
 	surface.SetFont(font);
 
 	-- Get the width and height of the text.
 	local width, height = surface.GetTextSize(text);
 	-- Copy the colour so any modifications to it don't happen
-	local color_ = Color(color.r, color.g, color.b, color.a );
+	local color_ = Color(color.r, color.g, color.b, color.a);
 
 	if alpha then
 		color_.a = alpha
@@ -235,7 +258,9 @@ function GM:DrawInformation(text, font, x, y, color, alpha, left, callback, shad
 end
 
 -- Stop players bypassing my post proccesses with theirs
-function GM:PostProcessPermitted() return LocalPlayer():IsAdmin() end
+function GM:PostProcessPermitted()
+	return LocalPlayer():IsAdmin()
+end
 
 -- Shit but required for now (ick)
 
@@ -246,55 +271,63 @@ local function iHasInitializedyay()
 			cider.menu.toggle()
 		end
 	else
-		timer.Simple(0.2,iHasInitializedyay)
+		timer.Simple(0.2, iHasInitializedyay)
 	end
 end
 -- Hook into when the player has initialized.
 usermessage.Hook("cider.player.initialized", iHasInitializedyay);
-	-- umsg.Start("cider_ModelChoices")
-	-- umsg.Short(#player._ModelChoices)
-	-- for name,gender in pairs(player._ModelChoices) do
-	-- 	umsg.String(name)
-	-- 	umsg.Short(#gender)
-	-- 	for team,choice in ipairs(gender) do
-	-- 		umsg.Short(team)
-	-- 		umsg.Short(choice)
-	-- 	end
-	-- end
-	-- umsg.End()
-	local errors = 0
-	local maxerrors = GM.Config["Model Choices Timeout"]
-	local function CheckForInitalised(tab)
+-- umsg.Start("cider_ModelChoices")
+-- umsg.Short(#player._ModelChoices)
+-- for name,gender in pairs(player._ModelChoices) do
+-- 	umsg.String(name)
+-- 	umsg.Short(#gender)
+-- 	for team,choice in ipairs(gender) do
+-- 		umsg.Short(team)
+-- 		umsg.Short(choice)
+-- 	end
+-- end
+-- umsg.End()
+local errors = 0
+local maxerrors = GM.Config["Model Choices Timeout"]
+local function CheckForInitalised(tab)
 
-		if errors >= maxerrors then
-			ErrorNoHalt"Something is very wrong - reconnecting!"
-			RunConsoleCommand("retry");
-		elseif errors == maxerrors/2 then
-			ErrorNoHalt("Critical error! You have ".. maxerrors/2 .." seconds before your client reconnects!\n")
-			ErrorNoHalt("LocalPlayer() is not a valid entity after "..errors.." seconds of gameplay!")
-			ErrorNoHalt("LocalPlayer(): "..tostring(LocalPlayer()).."\n")
-			ErrorNoHalt("---------------------------\n")
-		end
-		if not IsValid(LocalPlayer()) then
-			errors = errors + 1
+	if errors >= maxerrors then
+		ErrorNoHalt "Something is very wrong - reconnecting!"
+		RunConsoleCommand("retry");
+	elseif errors == maxerrors / 2 then
+		ErrorNoHalt(
+			"Critical error! You have " .. maxerrors / 2 ..
+				" seconds before your client reconnects!\n"
+		)
+		ErrorNoHalt(
+			"LocalPlayer() is not a valid entity after " .. errors ..
+				" seconds of gameplay!"
+		)
+		ErrorNoHalt("LocalPlayer(): " .. tostring(LocalPlayer()) .. "\n")
+		ErrorNoHalt("---------------------------\n")
+	end
+	if not IsValid(LocalPlayer()) then
+		errors = errors + 1
 		--	ErrorNoHalt("LocalPlayer is invalid! ("..errors.."/"..maxerrors..")\n")
-			return timer.Simple(1,CheckForInitalised,tab)
-		end
-		--if errors > 0 then ErrorNoHalt"Nevermind it works now...\n" end
-		LocalPlayer()._ModelChoices = tab
+		return timer.Simple(1, CheckForInitalised, tab)
 	end
-usermessage.Hook("cider_ModelChoices",function(msg)
-	local tab = {}
-	local length = msg:ReadShort() or 0
-	for i=1, length do
-		local gender = msg:ReadString() or ""
-		tab[gender] = {}
-		local leng = msg:ReadShort()
-		for j = 1, leng do
-			tab[gender][msg:ReadShort() or 0] = msg:ReadShort() or 0
+	-- if errors > 0 then ErrorNoHalt"Nevermind it works now...\n" end
+	LocalPlayer()._ModelChoices = tab
+end
+usermessage.Hook(
+	"cider_ModelChoices", function(msg)
+		local tab = {}
+		local length = msg:ReadShort() or 0
+		for i = 1, length do
+			local gender = msg:ReadString() or ""
+			tab[gender] = {}
+			local leng = msg:ReadShort()
+			for j = 1, leng do
+				tab[gender][msg:ReadShort() or 0] = msg:ReadShort() or 0
+			end
 		end
+		CheckForInitalised(tab)
 	end
-	CheckForInitalised(tab)
-end)
+)
 
-hook.Remove( "GUIMousePressed", "PropertiesClick")
+hook.Remove("GUIMousePressed", "PropertiesClick")
