@@ -1,8 +1,7 @@
---[[
-	~ Sniper Ammo ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Sniper Ammo ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Penetration Rounds";
 ITEM.Size			= 1;
 ITEM.Cost			= 1500;

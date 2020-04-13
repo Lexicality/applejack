@@ -1,8 +1,7 @@
---[[
-	~ Money Printer ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Money Printer ~
+-- ~ Applejack ~
+--
 if (not GM.Config["Contraband"]["cider_drug_lab"]) then return end
 
 

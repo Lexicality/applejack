@@ -1,7 +1,7 @@
---[[
-Name: "shared.lua".
-	~ Applejack ~
---]]
+--
+-- "shared.lua"
+-- ~ Applejack ~
+--
 
 -- Define some shared variables.
 SWEP.Author	= "Lexi";

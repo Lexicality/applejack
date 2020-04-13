@@ -1,8 +1,7 @@
- --[[
-~ Wine of the Unholy~
-~ Applejack ~
---]]
-
+--
+-- ~ Wine of the Unholy~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Wine of the Unholy";
 ITEM.Cost        = 6666;
 ITEM.Model       = "models/props_c17/pottery07a.mdl";

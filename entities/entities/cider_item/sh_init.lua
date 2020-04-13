@@ -1,8 +1,7 @@
---[[
-	~ Shared Init - Item ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Shared Init - Item ~
+-- ~ Applejack ~
+--
 ENT.Type = "anim";
 ENT.Base = "base_gmodentity";
 ENT.PrintName = "Item";

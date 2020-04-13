@@ -1,8 +1,7 @@
---[[
-	~ White Golf ~
-	~ Applejack ~
---]]
-
+--
+-- ~ White Golf ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "White Golf";
 ITEM.Plural			= "White Golves";
 ITEM.Cost			= 75000;

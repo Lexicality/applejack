@@ -1,8 +1,7 @@
---[[
-	~ 'Anonymous' Plugin ~
-	~ Applejack ~
---]]
-
+--
+-- ~ 'Anonymous' Plugin ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Anonymous";
 
 -- Prevent players being told who killed what.

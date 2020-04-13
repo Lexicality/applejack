@@ -1,9 +1,7 @@
---[[
-	~ Dark Damaged Cardboard Box ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Dark Damaged Cardboard Box ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Damaged Dark Cardboard Box";
 ITEM.Cost			= 95;
 ITEM.Model			= "models/props_junk/cardboard_box002b.mdl";

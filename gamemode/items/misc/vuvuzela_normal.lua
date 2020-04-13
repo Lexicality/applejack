@@ -1,9 +1,7 @@
---[[
-	~ Vuvuzela ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Vuvuzela ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Vuvuzela";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

@@ -1,7 +1,7 @@
---[[
-	~ Serveride Entity Hooks ~
-	~ Applejack ~
---]]
+--
+-- ~ Serveride Entity Hooks ~
+-- ~ Applejack ~
+--
 
 ---
 -- @name GM

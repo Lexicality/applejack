@@ -1,7 +1,7 @@
---[[
-	~ Baton ~ Clientside ~
-	~ Applejack ~
---]]
+--
+-- ~ Baton ~ Clientside ~
+-- ~ Applejack ~
+--
 include("shared.lua");
 
 SWEP.PrintName = "Baton";

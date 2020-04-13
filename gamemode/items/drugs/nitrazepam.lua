@@ -1,9 +1,7 @@
---[[
-	~ Nitrazepam ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Nitrazepam ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Nitrazepam";
 ITEM.Size			= 1;
 ITEM.Cost			= 60;

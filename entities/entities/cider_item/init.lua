@@ -1,8 +1,7 @@
---[[
-	~ Serverside Init - Item ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Serverside Init - Item ~
+-- ~ Applejack ~
+--
 include("sh_init.lua");
 
 -- Add the files that need to be sent to the client.

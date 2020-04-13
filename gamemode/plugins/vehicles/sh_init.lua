@@ -1,7 +1,7 @@
---[[
-	~ Vehicles Plugin / SH ~
-	~ Applejack ~
---]]
+--
+-- ~ Vehicles Plugin / SH ~
+-- ~ Applejack ~
+--
 local PLUGIN = PLUGIN or GAMEMODE:GetPlugin("Vehicles") or {}; -- Allows this file to be hot reloaded (which needs to be done a lot when editing car data)
 local nocarmaps = {"rp_tb_city45_v02"}
 if (table.HasValue(nocarmaps,game.GetMap():lower())) then
@@ -14,9 +14,7 @@ function PLUGIN:PlayerCanManufactureCategory(ply, category)
 		return true;
 	end
 end
---[[
-	Credit goes to NoVa for VU-Mod, which I have sliced and diced and rewritten and prodded into this.
---]]
+-- Credit goes to NoVa for VU-Mod, which I have sliced and diced and rewritten and prodded into this.
 local function HandleRollercoasterAnimation( vehicle, player )
 	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER )
 end
@@ -24,7 +22,7 @@ end
 local cat = "Applejack Vehicles";
 local class = "prop_vehicle_jeep";
 
---[[ ORDINARY CARS ]]--
+-- ORDINARY CARS
 list.Set( "Vehicles", "Jeep", {
 	Name = "2 Seater Jeep",
 	Class = "prop_vehicle_jeep_old",
@@ -199,7 +197,7 @@ if 	util.IsValidModel( "models/vehicle.mdl" ) then
 	});
 end
 
---[[ Varient vehicles - IE Those with skins ]]--
+-- Varient vehicles - IE Those with skins
 local v;
 v = {
 	-- Required information
@@ -300,7 +298,7 @@ v.Skin		= 1;
 v.KeyValues.vehiclescript = "scripts/vehicles/golf_blue.txt";
 list.Set( "Vehicles", "Golf_Blue", v )
 
---[[ Seats ]]--
+-- Seats
 local seatkv = {vehiclescript	=	"scripts/vehicles/prisoner_pod.txt",
 				 limitview		=	"0"}
 local seatview = { ThirdPerson = { Out = 80 , Up = 25 }, FirstPerson = Vector(0,0,0)};

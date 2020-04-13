@@ -1,8 +1,7 @@
---[[
-	~ Clientside Entity Library ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Clientside Entity Library ~
+-- ~ Applejack ~
+--
 GM.AccessableEntities = {};
 local queue = {};
 local function entgranted(ent, access)

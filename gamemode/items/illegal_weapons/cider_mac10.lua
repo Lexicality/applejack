@@ -1,9 +1,7 @@
---[[
-	~ Mac 10 ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Mac 10 ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Mac 10";
 ITEM.Size			= 1;
 ITEM.Cost			= 12000;

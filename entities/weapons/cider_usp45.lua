@@ -1,8 +1,7 @@
---[[
-	~ USP .45 SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ USP .45 SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo = true;

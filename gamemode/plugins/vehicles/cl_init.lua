@@ -1,8 +1,7 @@
---[[
-	~ Vehicles Plugin / CL ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Vehicles Plugin / CL ~
+-- ~ Applejack ~
+--
 include("sh_init.lua");
 local gpstext =			Color(255,220,0,255)
 local divider = 		Color(255,220,0,50)
@@ -48,28 +47,26 @@ local pointscard = {
 function PLUGIN:LoadData()
 	RunConsoleCommand( "gmod_vehicle_viewmode", 0);
 end
---[[
-local function traceview(start, endpos, filter)
-	local tr = util.TraceLine{ start = start, endpos = endpos, filter = filter}
-	return tr.HitPos;
-end
-usermessage.Hook("ClearViewMod",function()
-	lpl.ViewMod = {};
-end);
-usermessage.Hook("ViewModFP",function(msg)
-	lpl.ViewMod.FirstPos = msg:ReadVector();
-end);
-usermessage.Hook("ViewModTP",function(msg)
-	local num = msg:ReadChar();
-	local enttab = {};
-	for i = 1,num do
-		table.insert(enttab,msg:ReadEntity());
-	end
-	lpl.ViewMod.Filter = enttab;
-	lpl.ViewMod.ThirdOut = msg:ReadShort();
-	lpl.ViewMod.ThirdUp = msg:ReadShort();
-end);
---]]
+-- local function traceview(start, endpos, filter)
+-- 	local tr = util.TraceLine{ start = start, endpos = endpos, filter = filter}
+-- 	return tr.HitPos;
+-- end
+-- usermessage.Hook("ClearViewMod",function()
+-- 	lpl.ViewMod = {};
+-- end);
+-- usermessage.Hook("ViewModFP",function(msg)
+-- 	lpl.ViewMod.FirstPos = msg:ReadVector();
+-- end);
+-- usermessage.Hook("ViewModTP",function(msg)
+-- 	local num = msg:ReadChar();
+-- 	local enttab = {};
+-- 	for i = 1,num do
+-- 		table.insert(enttab,msg:ReadEntity());
+-- 	end
+-- 	lpl.ViewMod.Filter = enttab;
+-- 	lpl.ViewMod.ThirdOut = msg:ReadShort();
+-- 	lpl.ViewMod.ThirdUp = msg:ReadShort();
+-- end);
 local views,lastname;
 
 function PLUGIN:CalcView(ply, origin, angles, fov)
@@ -101,20 +98,18 @@ function PLUGIN:CalcView(ply, origin, angles, fov)
 		return view;
 	end
 
---[[
-	if (not (ply:InVehicle() and ply.ViewMod)) then return end
-	local view,viewmod = {angles = angles, fov = fov},ply.ViewMod;
-	if (gmod_vehicle_viewmode:GetInt() == 1) then
-		if (viewmod.ThirdOut and viewmod.ThirdUp) then
-			view.origin = traceview(ply:GetVehicle():GetPos(), origin - angles:Forward() * viewmod.ThirdOut + angles:Up() * viewmod.ThirdUp, viewmod.Filter);
-			return view;
-		end
-	elseif (viewmod.FirstPos) then
-		local pos = viewmod.FirstPos
-		view.origin = origin + angles:Forward() * pos.x + angles:Right() * pos.y + angles:Up() * pos.z;
-		return view;
-	end
---]]
+	-- if (not (ply:InVehicle() and ply.ViewMod)) then return end
+	-- local view,viewmod = {angles = angles, fov = fov},ply.ViewMod;
+	-- if (gmod_vehicle_viewmode:GetInt() == 1) then
+	-- 	if (viewmod.ThirdOut and viewmod.ThirdUp) then
+	-- 		view.origin = traceview(ply:GetVehicle():GetPos(), origin - angles:Forward() * viewmod.ThirdOut + angles:Up() * viewmod.ThirdUp, viewmod.Filter);
+	-- 		return view;
+	-- 	end
+	-- elseif (viewmod.FirstPos) then
+	-- 	local pos = viewmod.FirstPos
+	-- 	view.origin = origin + angles:Forward() * pos.x + angles:Right() * pos.y + angles:Up() * pos.z;
+	-- 	return view;
+	-- end
 end
 
 local AntiCmdSpam = CurTime()

@@ -1,8 +1,7 @@
---[[
-	~ Large Crate ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Large Crate ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Large Crate";
 ITEM.Size			= 2;
 ITEM.Cost			= 500;

@@ -1,9 +1,7 @@
---[[
-	~ Fasht Headcrab ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Fasht Headcrab ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Fast Headcrab";
 ITEM.Plural			= "Fast Headcrabs";
 ITEM.Size			= 5;

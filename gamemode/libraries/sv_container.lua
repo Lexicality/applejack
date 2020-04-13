@@ -1,12 +1,13 @@
---[[
-Name: "sv_container.lua".
-	~ Applejack ~
---]]
+--
+-- "sv_container.lua"
+-- ~ Applejack ~
+--
 cider.container = {};
 
---[[
-	We use hooks here to allow plugins to create their own fake containers that include player specific content, like for instance a banking system.
-]]
+--
+-- We use hooks here to allow plugins to create their own fake containers that
+-- include player specific content, like for instance a banking system.
+--
 
 --Make an entity into a container
 function cider.container.make(entity, size, name, initialContents)

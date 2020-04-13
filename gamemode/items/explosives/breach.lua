@@ -1,8 +1,7 @@
---[[
-	~ Breach ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Breach ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Breach";
 ITEM.Plural			= "Breaches";
 ITEM.Size			= 2;

@@ -1,9 +1,7 @@
---[[
-	~ USP45 ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ USP45 ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "USP .45";
 ITEM.Size			= 1;
 ITEM.Cost			= 8000;

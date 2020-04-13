@@ -1,8 +1,7 @@
---[[
-Name: "cl_credits.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_credits.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 
 PANEL.credits = [[

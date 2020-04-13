@@ -1,9 +1,7 @@
---[[
-	~ Padlock ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Padlock ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Padlock";
 ITEM.Size			= 2;
 ITEM.Cost			= 250;

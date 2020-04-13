@@ -1,8 +1,7 @@
---[[
-Name: "sh_laws.lua".
-	~ Applejack ~
---]]
-
+--
+-- "sh_laws.lua"
+-- ~ Applejack ~
+--
 cider.laws = {};
 cider.laws.stored = {
 	"No Running",

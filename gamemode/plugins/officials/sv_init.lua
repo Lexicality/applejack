@@ -1,7 +1,7 @@
---[[
-Name: "sv_init.lua".
-	~ Applejack ~
---]]
+--
+-- "sv_init.lua"
+-- ~ Applejack ~
+--
 
 -- Settup function
 function PLUGIN:LoadData()

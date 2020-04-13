@@ -1,8 +1,7 @@
---[[
-	~ Double Cheese Burger ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Double Cheese Burger ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Double Cheese Burger";
 ITEM.Cost        = 40;
 ITEM.Model       = "models/foodnhouseholditems/burger.mdl";

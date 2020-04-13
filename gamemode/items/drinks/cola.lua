@@ -1,8 +1,7 @@
---[[
-~ Cola ~
-~ Applejack ~
---]]
-
+--
+-- ~ Cola ~
+-- ~ Applejack ~
+--
 ITEM.Name= "Bottle of Cola";
 ITEM.Cost= 10;
 ITEM.Model= "models/FoodNHouseholdItems/cola.mdl";

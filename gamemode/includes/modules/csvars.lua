@@ -1,4 +1,4 @@
---[[ 
+--[[
     ~ CSVars ~
     Copyright (c) 2011 Lexi Robinson
 
@@ -16,7 +16,7 @@
     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
---]]
+--]] --
 
 -- Server functions
 local umsg, pairs, error, SERVER, tostring = umsg, pairs, error, SERVER, tostring;
@@ -80,7 +80,7 @@ if (SERVER) then
             umsg[name](value);
         umsg.End();
     end
-    
+
     ---
     -- Sets a variable clientside on the player. Will not send the value if a player already has it
     -- @param ply The player to set the var on
@@ -93,7 +93,7 @@ if (SERVER) then
         handle(ply, class, key, value);
         end
     end
-    
+
     ---
     -- Sets a variable clientside on all players. *Will* send the value even if a client already has it.
     -- @param class One of the CLASS_ enums indicating the kind of variable
@@ -105,8 +105,8 @@ if (SERVER) then
             ply.CSVars[key] = value;
         end
     end
-    
-    
+
+
 else
     vars = {}
     local hooks = {};
@@ -120,7 +120,7 @@ else
         hooks[key] = hooks[key] or {};
         hooks[key][name] = func;
     end
-    
+
     ---
     -- Removes a perviously active hook
     -- @param key The name of the CSVar the hook was on on
@@ -133,7 +133,7 @@ else
     local function singleVar(msg)
         local class = msg:ReadChar();
         local key = msg:ReadString();
-        
+
         local name = inverted[class];
         if (not name) then
             ErrorNoHalt("Unknown class sent for CSVar '",key,"': ", class, "!");
@@ -162,7 +162,7 @@ else
     end
     usermessage.Hook("CSVar", singleVar);
     usermessage.Hook("MassCSVars", massVars);
-    
+
     ---
     -- Called when the player's object is created and assigned to the global lpl
     function PlayerInitialized(ply)
@@ -172,4 +172,3 @@ else
         end
     end
 end
-

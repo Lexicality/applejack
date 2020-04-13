@@ -1,8 +1,7 @@
---[[
-	~ AK47 SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ AK47 SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo = true;
@@ -66,10 +65,6 @@ SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
---[[
-SWEP.IronSightsPos = Vector(6.0837, -6.4072, 2.2469);
-SWEP.IronSightsAng = Vector(3.0801, -0.1343, -0.1968);
-]]
 SWEP.IronSightsPos = Vector (6.1353, -3.04, 2.2783)
 SWEP.IronSightsAng = Vector (2.4374, -0.0488, 0)
 

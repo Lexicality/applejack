@@ -1,8 +1,7 @@
---[[
-Name: "sh_init.lua".
-	~ Applejack ~
---]]
-
+--
+-- "sh_init.lua"
+-- ~ Applejack ~
+--
 ENT.Type = "anim";
 ENT.Base = "cider_contraband";
 ENT.Model = "models/props_c17/consolebox01a.mdl";

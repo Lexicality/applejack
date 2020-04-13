@@ -1,14 +1,13 @@
---[[
-	~ Prop Protectoin ~
-	~ Moonshine ~
---]]
---[[
-	My thanks to Spacetech for the original code.
-	This is a heavily modified version of Simple Prop Protection.
-	http://code.google.com/p/simplepropprotection
---]]
+--
+-- ~ Prop Protectoin ~
+-- ~ Moonshine ~
+--
 
---[[ Settings ]]--
+-- My thanks to Spacetech for the original code.
+-- This is a heavily modified version of Simple Prop Protection.
+-- http://code.google.com/p/simplepropprotection
+
+-- Settings
 if (not sql.TableExists("ms_ppconfig")) then
 	sql.Query("CREATE TABLE ms_ppconfig("..
 				"enabled INTEGER NOT NULL, ".. -- Are we enabled?
@@ -33,14 +32,14 @@ local function SaveData()
 	sql.Query("UPDATE ms_ppconfig SET " .. str:sub(2) .. ";");
 end
 
---[[ Convars to tell clients the settings ]]--
+-- Convars to tell clients the settings
 for name, value in pairs(config) do
 	value = tonumber(value);
 	config[name] = value;
 	CreateConVar("ms_ppconfig_"..name, value, FCVAR_REPLICATED);
 end
 
---[[ Adjustment of existing functions ]]--
+-- Adjustment of existing functions
 if (cleanup) then
 	if (not cleanup.oAdd) then
 		cleanup.oAdd = cleanup.Add;
@@ -54,12 +53,12 @@ if (cleanup) then
 	end
 end
 
---[[ Friends ]]--
+-- Friends
 if (not sql.TableExists("ms_ppfriends")) then
 	sql.Query("CREATE TABLE ms_ppfriends(UID INTEGER PRIMARY KEY, Friends TEXT NOT NULL);");
 end
 
---[[ Local Definitions ]]--
+-- Local Definitions
 local disconnected = {}; -- Disconnected players
 local weirdtraces = { -- Tool modes that can be right-clicked to link them
 	wire_winch		= true;
@@ -97,7 +96,7 @@ local function physhandle(ply, ent)
 	return IsValid(ent) and gamemode.Call("PlayerCanTouch", ply, ent);
 end
 
---[[ Public functions ]]--
+-- Public functions
 
 ---
 -- Deletes a player's props
@@ -110,7 +109,7 @@ function GM:ClearProps(ply, silent)
 	deletePropsByUID(ply:UniqueID(), (not silent) and ply:Name() or false);
 end
 
---[[ Hooks ]]--
+-- Hooks
 ---
 -- Called if a player can 'touch' an entity with the toolgun/physgun
 -- @param ply The player in question
@@ -420,7 +419,7 @@ do
 	end
 end
 
---[[ Commands ]]--
+-- Commands
 GM:RegisterCommand{
 	Command     = "ppfriends";
 	Arguments   = "<Clear|Add|Remove> [Target]";

@@ -1,8 +1,7 @@
---[[
-	~ Builders Plugin ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Builders Plugin ~
+-- ~ Applejack ~
+--
 function PLUGIN:PlayerCanSpawnProp(ply, mdl)
 	if (ply:Team() ~= TEAM_BUILDER) then
 		return;

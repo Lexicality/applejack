@@ -1,8 +1,7 @@
---[[
-	~ Pickles ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Pickles ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Pickles";
 ITEM.Cost        = 20;
 ITEM.Model       = "models/props_lab/cactus.mdl";

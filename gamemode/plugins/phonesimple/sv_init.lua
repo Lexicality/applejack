@@ -1,7 +1,7 @@
---[[
-	~ Phone Plugin / SV ~
-	~ Applejack ~
---]]
+--
+-- ~ Phone Plugin / SV ~
+-- ~ Applejack ~
+--
 
 -- Plugin Disabled
 do return; end

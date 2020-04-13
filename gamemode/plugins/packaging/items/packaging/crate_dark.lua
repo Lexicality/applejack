@@ -1,9 +1,7 @@
---[[
-	~ Dark Crate ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Dark Crate ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Dark Crate";
 ITEM.Cost			= 250;
 ITEM.Model			= "models/props_junk/wood_crate001a.mdl";

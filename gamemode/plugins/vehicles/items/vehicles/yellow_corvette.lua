@@ -1,8 +1,7 @@
---[[
-	~ Yellow Corvette ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Yellow Corvette ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Yellow Corvette";
 ITEM.Plural			= "Yellow Corvettes";
 ITEM.Cost			= 400000;

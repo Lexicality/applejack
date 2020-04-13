@@ -1,8 +1,7 @@
- --[[
-~Jug of Blessed Wine~
-~ Applejack ~
---]]
-
+--
+-- ~Jug of Blessed Wine~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Jug of Blessed Wine";
 ITEM.Cost        = 2000;
 ITEM.Model       = "models/props_c17/pottery04a.mdl";

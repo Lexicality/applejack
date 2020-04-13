@@ -1,8 +1,7 @@
- --[[
-~Barrel 'o' Beer~
-~ Applejack ~
---]]
-
+--
+-- ~Barrel 'o' Beer~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Barrel 'o' Beer";
 ITEM.Cost        = 2500;
 ITEM.Model       = "models/props/de_inferno/wine_barrel.mdl";

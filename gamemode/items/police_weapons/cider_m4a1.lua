@@ -1,9 +1,7 @@
---[[
-	~ M4A1 ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ M4A1 ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "M4A1";
 ITEM.Plural			= "M4A1s";
 ITEM.Size			= 2;

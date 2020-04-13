@@ -1,8 +1,7 @@
---[[
-	~ Shared Item Library ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Shared Item Library ~
+-- ~ Applejack ~
+--
 local GM    = GM or GAMEMODE;
 GM.Items    = {};
 local meta    = {};

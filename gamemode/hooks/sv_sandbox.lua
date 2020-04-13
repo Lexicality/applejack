@@ -1,11 +1,10 @@
---[[
-	~ Sandbox Hooks (SV) ~
-	~ Applejack ~
---]]
---[[
-	This file is for the base gamemodes' hooks.
-	As such, there is no need to document them as they are all standard.
---]]
+--
+-- ~ Sandbox Hooks (SV) ~
+-- ~ Applejack ~
+--
+
+-- This file is for the base gamemodes' hooks.
+-- As such, there is no need to document them as they are all standard.
 
 function GM:PlayerSwitchFlashlight(ply, on)
 	-- Do not let the player use their flashlight while arrested, unconsious or tied.
@@ -166,10 +165,10 @@ function GM:KeyPress(ply, key)
 			ent.tying.savior = ply;
 		SendUserMessage("MS DoUnTie", ply);
 		SendUserMessage("MS BeUnTie", ent);
-		--[[~ Open mah doors ~]]--
+		-- ~ Open mah doors ~
 		elseif ent:IsDoor() and ent:GetClass() ~= "prop_door_rotating" and gamemode.Call("PlayerCanUseDoor", ply, ent) then
 			self:OpenDoor(ent, 0);
-		--[[~ Crank dem Containers Boi ~]]--
+		-- ~ Crank dem Containers Boi ~
 		elseif cider.container.isContainer(ent) and gamemode.Call("PlayerCanUseContainer", ply, ent) then
 			--[[
 				tab = {
@@ -186,7 +185,7 @@ function GM:KeyPress(ply, key)
 						entindex = 64, -- You'll probably want it for something
 					}
 				}
-			--]]
+			--]] --
 			local contents, io, filter = cider.container.getContents(ent, ply, true);
 			local tab = {
 				contents = contents,

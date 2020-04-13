@@ -1,7 +1,8 @@
---[[
-Name: "cl_init.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_init.lua"
+-- ~ Applejack ~
+--
+
 --Take some shit out of _G for speed
 local	ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util =
 		ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt, Color, hook, ScrW, ScrH, tonumber, util
@@ -121,16 +122,7 @@ function GM:CalcView( pl, origin, angles, fov )
 	end
 	-- TODO: See if this does anything
 	return self.BaseClass:CalcView(pl, eyes.Pos, eyes.Ang, 90);
-	--[[
-	local view = {
-		origin = eyes.Pos,
-		angles = eyes.Ang,
-		fov = 90,
-	};
-	return view;
-	--]]
 end
---]]
 
 -- Called when screen space effects should be rendered.
 function GM:RenderScreenspaceEffects()
@@ -245,7 +237,7 @@ end
 -- Stop players bypassing my post proccesses with theirs
 function GM:PostProcessPermitted() return LocalPlayer():IsAdmin() end
 
---[[ Shit but required for now (ick) ]]--
+-- Shit but required for now (ick)
 
 local function iHasInitializedyay()
 	if IsValid(LocalPlayer()) then
@@ -259,17 +251,17 @@ local function iHasInitializedyay()
 end
 -- Hook into when the player has initialized.
 usermessage.Hook("cider.player.initialized", iHasInitializedyay);
---[[		umsg.Start("cider_ModelChoices")
-		umsg.Short(#player._ModelChoices)
-		for name,gender in pairs(player._ModelChoices) do
-			umsg.String(name)
-			umsg.Short(#gender)
-			for team,choice in ipairs(gender) do
-				umsg.Short(team)
-				umsg.Short(choice)
-			end
-		end
-		umsg.End()]]
+	-- umsg.Start("cider_ModelChoices")
+	-- umsg.Short(#player._ModelChoices)
+	-- for name,gender in pairs(player._ModelChoices) do
+	-- 	umsg.String(name)
+	-- 	umsg.Short(#gender)
+	-- 	for team,choice in ipairs(gender) do
+	-- 		umsg.Short(team)
+	-- 		umsg.Short(choice)
+	-- 	end
+	-- end
+	-- umsg.End()
 	local errors = 0
 	local maxerrors = GM.Config["Model Choices Timeout"]
 	local function CheckForInitalised(tab)

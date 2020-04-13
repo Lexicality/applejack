@@ -1,9 +1,7 @@
---[[
-	~ G3SG1 ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ G3SG1 ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "G3SG1";
 ITEM.Size			= 3;
 ITEM.Cost			= 40000;

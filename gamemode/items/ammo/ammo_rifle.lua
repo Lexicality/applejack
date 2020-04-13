@@ -1,8 +1,7 @@
---[[
-	~ Rifle Ammo ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Rifle Ammo ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Rifle Rounds";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

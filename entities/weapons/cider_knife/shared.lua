@@ -1,8 +1,7 @@
---[[
-Name: "shared.lua".
-	~ Applejack ~
---]]
-
+--
+-- "shared.lua"
+-- ~ Applejack ~
+--
 if (SERVER) then AddCSLuaFile("shared.lua"); end
 
 -- Set the icon letter of the SWEP.

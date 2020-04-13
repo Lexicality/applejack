@@ -1,8 +1,7 @@
---[[
-	~ Lobster ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Lobster ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Lobster";
 ITEM.Cost        = 75;
 ITEM.Model       = "models/foodnhouseholditems/lobster.mdl";

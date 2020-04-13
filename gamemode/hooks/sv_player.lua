@@ -1,7 +1,8 @@
---[[
-	~ Serverside Player Hooks ~
-	~ Applejack ~
---]]
+--
+-- ~ Serverside Player Hooks ~
+-- ~ Applejack ~
+--
+
 ---
 -- @name GM
 -- @class table
@@ -250,12 +251,11 @@ function GM:PlayerCanUseItem(ply, id)
 		ply:BlacklistAlert("item", item.UniqueID, item.Plural);
 		return false;
 	end
-	--[ [ TODO: Why is this needed? I don't think it is tbh
+	-- TODO: Why is this needed? I don't think it is tbh
 	if ( ply._SpawnWeapons[item.UniqueID] ) then -- Did we spawn with this weapon?
 		if (not silent) then ply:Notify("You cannot use this weapon!", 1) end
 		return false
 	end
-	--]]
 	return true;
 end
 

@@ -1,8 +1,7 @@
---[[
-	~ Pop ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Pop ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Can of pop";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/props_junk/PopCan01a.mdl";

@@ -1,8 +1,7 @@
---[[
-Name: "sh_init.lua".
-	~ Applejack ~
---]]
-
+--
+-- "sh_init.lua"
+-- ~ Applejack ~
+--
 ENT.Type = "anim";
 ENT.Base = "base_gmodentity";
 ENT.PrintName = "Breach";

@@ -1,8 +1,7 @@
---[[
-	~ Commands ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Commands ~
+-- ~ Applejack ~
+--
 GM:RegisterCommand{
 	Command = "fuck";
 	Help = "Free gratuitous swearing";
@@ -10,11 +9,11 @@ GM:RegisterCommand{
 		ply:Notify("FUCK!", NOTIFY_ERROR);
 	end
 }
---[[ ADMIN ABUSE COMMANDS ]]--
---[[
-	These are only here at the insistance of my admins. They only apply to SuperAdmins, who probably can be trusted.
-	If yours can't be trusted, delete the space between the [s as shown below.
---]]
+-- ADMIN ABUSE COMMANDS
+--
+-- These are only here at the insistance of my admins. They only apply to SuperAdmins, who probably can be trusted.
+-- If yours can't be trusted, delete the space between the [s as shown below.
+--
 --[ [<--Delete the space between these [s if you want to disable the abuse commands
 
 -- Knock out one person for an optional amount of time. Will default to 5.
@@ -243,11 +242,11 @@ GM:RegisterCommand{
 	end
 };
 
---]
---[[
-	The following 'abuse' commands apply to all admins.
-	If you do not want them, do as above.
 --]]
+--
+-- The following 'abuse' commands apply to all admins.
+-- If you do not want them, do as above.
+--
 
 --[ [ <-- Space to remove.
 
@@ -361,7 +360,7 @@ GM:RegisterCommand{
 	end
 };
 --]]
---[[ END OF ADMIN ABUSE COMMANDS ]]--
+-- END OF ADMIN ABUSE COMMANDS
 
 
 
@@ -1483,36 +1482,35 @@ GM:RegisterCommand{
 };
 
 -- A command to give Donator status to a player.
---[[
-cider.com mand.add("donator", "s", 1, function(ply, arguments)
-	local target = player.Get( arguments[1] )
+-- cider.com mand.add("donator", "s", 1, function(ply, arguments)
+-- 	local target = player.Get( arguments[1] )
 
-	-- Calculate the days that the player will be given Donator status for.
-	local days = math.ceil(tonumber( arguments[2] ) or 30);
+-- 	-- Calculate the days that the player will be given Donator status for.
+-- 	local days = math.ceil(tonumber( arguments[2] ) or 30);
 
-	-- Check if we got a valid target.
-	if not (target) then
-		return false, arguments[1].." is not a valid player!"
-	end
-		target.cider._Donator = os.time() + (86400 * days);
+-- 	-- Check if we got a valid target.
+-- 	if not (target) then
+-- 		return false, arguments[1].." is not a valid player!"
+-- 	end
+-- 		target.cider._Donator = os.time() + (86400 * days);
 
-		-- Give them their access and save their data.
-		target:GiveAccess("tpew");
-		target:SaveData();
+-- 		-- Give them their access and save their data.
+-- 		target:GiveAccess("tpew");
+-- 		target:SaveData();
 
-		-- Give them the tool and the physics gun.
-		target:Give("gmod_tool");
-		target:Give("weapon_physgun");
+-- 		-- Give them the tool and the physics gun.
+-- 		target:Give("gmod_tool");
+-- 		target:Give("weapon_physgun");
 
-		-- Set some Donator only player variables.
-		target._SpawnTime = target._SpawnTime / 2;
-		target._ArrestTime = target._ArrestTime / 2;
-		target._KnockOutTime = target._KnockOutTime / 2;
+-- 		-- Set some Donator only player variables.
+-- 		target._SpawnTime = target._SpawnTime / 2;
+-- 		target._ArrestTime = target._ArrestTime / 2;
+-- 		target._KnockOutTime = target._KnockOutTime / 2;
 
-		-- Print a message to all players about this player getting Donator status.
-		player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
-end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
---]]
+-- 		-- Print a message to all players about this player getting Donator status.
+-- 		player.NotifyAll(NOTIFY_CHAT, "%s has given Donator status to %s for %i day(s).", ply:Name(), target:Name(), days);
+-- end, "Super Admin Commands", "<player> <days|none>", "Give Donator status to a player.");
+
 -- A command to change your details
 GM:RegisterCommand{
 	Command     = "details";

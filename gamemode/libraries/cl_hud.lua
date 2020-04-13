@@ -1,7 +1,7 @@
---[[
-	~ HUD Library ~
-	~ Applejack ~
---]]
+--
+-- ~ HUD Library ~
+-- ~ Applejack ~
+--
 
 -- Setup the basics
 local font = "mshine_hudtxt"
@@ -592,7 +592,7 @@ usermessage.Hook("Notification", function(msg)
 end);
 end
 
---[[ Center Bar ]]--
+-- Center Bar
 -- TODO: The centerbar needs to be in a stack
 local drawcenterbar;
 do
@@ -904,7 +904,7 @@ end);
 end
 
 
---[[ SBox Functions ]]--
+-- SBox Functions
 function GM:HUDPaint()
 	ctime = CurTime();
 	self:HUDPaintESP();
@@ -954,7 +954,7 @@ function GM:HUDShouldDraw(name)
 	return self.BaseClass:HUDShouldDraw(name);
 end
 
---[[ ESP ]]--
+-- ESP
 do
 	-- A more modular method of setting up the lines to be drawn
 	local esplines = {}

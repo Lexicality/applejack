@@ -1,8 +1,7 @@
---[[
-	~ Serversie Player Library ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Serversie Player Library ~
+-- ~ Applejack ~
+--
 local player,umsg,pairs,ipairs,string,timer,IsValid,table = player,umsg,pairs,ipairs,string,timer,IsValid,table
 
 ---
@@ -198,9 +197,9 @@ end
 
 
 
---[[
-	Functions for the timer from now on only
---]]
+--
+-- Functions for the timer from now on only
+--
 local autosendvars = {};
 ---
 -- Adds a CS var that should be updated every second.

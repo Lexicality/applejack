@@ -1,9 +1,7 @@
---[[
-	~ Chloroform ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Chloroform ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Chloroform";
 ITEM.Plural			= "Chloroform";
 ITEM.Size			= 1;

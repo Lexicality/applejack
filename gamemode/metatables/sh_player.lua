@@ -1,7 +1,8 @@
---[[
-	~ Shared Player metatable ~
-	~ Applejack ~
---]]
+--
+-- ~ Shared Player metatable ~
+-- ~ Applejack ~
+--
+
 ---
 -- The shared player metatable
 -- @name meta

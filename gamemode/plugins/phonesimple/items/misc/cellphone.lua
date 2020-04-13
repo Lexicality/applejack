@@ -1,8 +1,7 @@
---[[
-	~ Phone ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Phone ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Phone";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

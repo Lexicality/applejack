@@ -1,7 +1,7 @@
---[[
-Name: "cl_store.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_store.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 
 -- Called when the panel is initialized.

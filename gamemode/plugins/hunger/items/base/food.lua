@@ -1,7 +1,8 @@
---[[
-	~ Base food ~
-	~ Applejack ~
---]]
+--
+-- ~ Base food ~
+-- ~ Applejack ~
+--
+
 -- hurk
 ITEM:Derive("item");
 ITEM.Batch			= 5;

@@ -1,8 +1,7 @@
---[[
-	~ Single Cheese Burger ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Single Cheese Burger ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Single Cheese Burger";
 ITEM.Cost        = 35;
 ITEM.Model       = "models/foodnhouseholditems/burger.mdl";

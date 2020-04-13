@@ -1,8 +1,7 @@
---[[
-	~ Steroids ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Steroids ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Steroids";
 ITEM.Size			= 1;
 ITEM.Cost			= 100;

@@ -1,8 +1,7 @@
---[[
-	~ Tranq Ammo ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Tranq Ammo ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Tranq Dart";
 ITEM.Size			= 1;
 ITEM.Cost			= 200;

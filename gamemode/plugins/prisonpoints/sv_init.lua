@@ -1,9 +1,7 @@
---[[
-	~ Prison Points Plugin ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Prison Points Plugin ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Prisonpoints";
 PLUGIN.Prisonpoints = {};
 

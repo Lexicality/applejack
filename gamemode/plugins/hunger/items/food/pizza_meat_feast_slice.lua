@@ -1,8 +1,7 @@
- --[[
-~ Slice of Meat Feast Pizza ~
-~ Applejack ~
---]]
-
+--
+-- ~ Slice of Meat Feast Pizza ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Slice of Meat Feast Pizza";
 ITEM.Cost        = 20;
 ITEM.Model       = "models/FoodNHouseholdItems/pizzaslice.mdl";

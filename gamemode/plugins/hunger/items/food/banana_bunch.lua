@@ -1,8 +1,7 @@
---[[
-	~ Banana Bunch ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Banana Bunch ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Banana Bunch";
 ITEM.Cost        = 20;
 ITEM.Model       = "models/props/cs_italy/bananna_bunch.mdl";

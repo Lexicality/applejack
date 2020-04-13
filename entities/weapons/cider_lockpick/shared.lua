@@ -1,8 +1,7 @@
---[[
-	~ Lockpick SWep ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Lockpick SWep ~
+-- ~ Applejack ~
+--
 if (SERVER) then
 	AddCSLuaFile("shared.lua");
 else
@@ -49,24 +48,23 @@ SWEP.Secondary.Ammo	= "";
 
 
 local fiddlesounds = {
-	--[[ -- Metal thump noises
-	"physics/metal/metal_box_impact_bullet1.wav",
-	"physics/metal/metal_box_impact_bullet2.wav",
-	"physics/metal/metal_box_impact_bullet3.wav",
-	"physics/metal/metal_computer_impact_bullet1.wav",
-	"physics/metal/metal_computer_impact_bullet2.wav",
-	"physics/metal/metal_computer_impact_bullet3.wav",
-	"physics/metal/metal_computer_impact_hard1.wav",
-	"physics/metal/metal_computer_impact_hard2.wav",
-	"physics/metal/metal_computer_impact_hard3.wav",
-	"physics/metal/metal_computer_impact_soft1.wav",
-	"physics/metal/metal_computer_impact_soft2.wav",
-	"physics/metal/metal_computer_impact_soft3.wav",
-	"physics/metal/metal_sheet_impact_bullet2.wav",
-	"physics/metal/metal_solid_impact_bullet1.wav",
-	"physics/metal/metal_solid_impact_bullet2.wav",
-	"physics/metal/metal_solid_impact_bullet3.wav",
-	--]]
+	-- Metal thump noises
+	-- "physics/metal/metal_box_impact_bullet1.wav",
+	-- "physics/metal/metal_box_impact_bullet2.wav",
+	-- "physics/metal/metal_box_impact_bullet3.wav",
+	-- "physics/metal/metal_computer_impact_bullet1.wav",
+	-- "physics/metal/metal_computer_impact_bullet2.wav",
+	-- "physics/metal/metal_computer_impact_bullet3.wav",
+	-- "physics/metal/metal_computer_impact_hard1.wav",
+	-- "physics/metal/metal_computer_impact_hard2.wav",
+	-- "physics/metal/metal_computer_impact_hard3.wav",
+	-- "physics/metal/metal_computer_impact_soft1.wav",
+	-- "physics/metal/metal_computer_impact_soft2.wav",
+	-- "physics/metal/metal_computer_impact_soft3.wav",
+	-- "physics/metal/metal_sheet_impact_bullet2.wav",
+	-- "physics/metal/metal_solid_impact_bullet1.wav",
+	-- "physics/metal/metal_solid_impact_bullet2.wav",
+	-- "physics/metal/metal_solid_impact_bullet3.wav",
 	"physics/metal/weapon_footstep1.wav",
 	"physics/metal/weapon_footstep2.wav",
 	"physics/metal/weapon_impact_soft1.wav",
@@ -75,11 +73,9 @@ local fiddlesounds = {
 }
 
 local unlocksounds = {
-	--[[
-	"physics/metal/sawblade_stick1.wav",
-	"physics/metal/sawblade_stick2.wav",
-	"physics/metal/sawblade_stick3.wav",
-	--]]
+	-- "physics/metal/sawblade_stick1.wav",
+	-- "physics/metal/sawblade_stick2.wav",
+	-- "physics/metal/sawblade_stick3.wav",
 	"physics/metal/weapon_impact_hard1.wav",
 	"physics/metal/weapon_impact_hard2.wav",
 }
@@ -98,23 +94,21 @@ local thumpsounds = {
 -- Called when the SWEP is initialized.
 function SWEP:Initialize()
 	self:SetWeaponHoldType("melee");
-    --[[
-	if (SERVER) then
-		 -- TODO: Find out if sounds are actually precached.
-		for _,sound in pairs(fiddlesounds) do
-			Sound(sound);
-		end
-		for _,sound in pairs(unlocksounds) do
-			Sound(sound);
-		end
-		for _,sound in pairs(breaksounds) do
-			Sound(sound);
-		end
-		for _,sound in pairs(thumpsounds) do
-			Sound(sound);
-		end
-	end
-    --]]
+	-- if (SERVER) then
+	-- 	 -- TODO: Find out if sounds are actually precached.
+	-- 	for _,sound in pairs(fiddlesounds) do
+	-- 		Sound(sound);
+	-- 	end
+	-- 	for _,sound in pairs(unlocksounds) do
+	-- 		Sound(sound);
+	-- 	end
+	-- 	for _,sound in pairs(breaksounds) do
+	-- 		Sound(sound);
+	-- 	end
+	-- 	for _,sound in pairs(thumpsounds) do
+	-- 		Sound(sound);
+	-- 	end
+	-- end
 end
 
 -- Allows me to send the client sounds

@@ -1,7 +1,7 @@
---[[
-	~ Serverside Player metatable ~
-	~ Applejack ~
---]]
+--
+-- ~ Serverside Player metatable ~
+-- ~ Applejack ~
+--
 
 ---
 -- The serverside player metatable
@@ -951,8 +951,8 @@ function meta:CanPickupObject( pObject, massLimit, sizeLimit )
 		objectMass = objectMass + pList:GetMass();
 		if (pList:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) then
 			return false, "The map maker has asked that you not be able to pick this up.";
-		--[[elseif ( pList:IsHinged() ) then -- Not possible now
-			return false;]]
+		-- elseif ( pList:IsHinged() ) then -- Not possible now
+		-- 	return false;
 		elseif (not pList:IsMoveable()) then
 			checkEnable = true;
 		end

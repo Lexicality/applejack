@@ -1,8 +1,7 @@
---[[
-Name: "cl_door.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_door.lua"
+-- ~ Applejack ~
+--
 cider.door = {};
 
 -- Define a new panel.

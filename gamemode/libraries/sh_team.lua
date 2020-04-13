@@ -1,7 +1,7 @@
---[[
-	~ Shared Team Library ~
-	~ Applejack ~
---]]
+--
+-- ~ Shared Team Library ~
+-- ~ Applejack ~
+--
 GM.Teams = {};
 GM.Gangs = {};
 GM.Groups = {};

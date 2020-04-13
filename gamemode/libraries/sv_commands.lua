@@ -1,24 +1,9 @@
---[[
-	~ Serverside Commands Library ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Serverside Commands Library ~
+-- ~ Applejack ~
+--
 GM.Commands = {};
 
---[[
-GM:RegisterCommand{
-	Command   = "whatever";
-	Access    = "a";
-	Arguments = "<thing> <bees|what|dix> [meh]";
-	Types     = "Player Phrase ...";
-	Category  = "Stuff";
-	Help      = "I don't really care tbh";
-	Hidden    = false;
-	Function  = function(ply, thing, otherthing, words)
-		return false, "GO AWAY!";
-	end
-};
---]]
 local Types = {
 	["string"] = true; -- Do nothing
 	["number"] = true; -- tonumber(arg) or error

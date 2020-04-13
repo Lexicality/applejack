@@ -1,8 +1,7 @@
---[[
-	~ Stamina Plugin / CL ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Stamina Plugin / CL ~
+-- ~ Applejack ~
+--
 local num
 GM:AddHUDBar("Stamina", Color(50, 50, 255), function()
 	num = lpl._Stamina or 100;

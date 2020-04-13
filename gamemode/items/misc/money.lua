@@ -1,9 +1,7 @@
---[[
-	~ $$$ Money $$$ *
-	~ Applejack ~
---]]
-
-
+--
+-- ~ $$$ Money $$$ *
+-- ~ Applejack ~
+--
 ITEM.Name			= "Dollar";
 ITEM.Plural			= "Dollars";
 ITEM.Size			= 0;

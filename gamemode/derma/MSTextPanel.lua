@@ -1,8 +1,7 @@
---[[
-	~ MSTextPanel ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ MSTextPanel ~
+-- ~ Moonshine ~
+--
 local PANEL = {};
 
 function PANEL:Init()

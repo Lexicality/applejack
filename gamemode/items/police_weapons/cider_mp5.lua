@@ -1,9 +1,7 @@
---[[
-	~ MP5 ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ MP5 ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "MP5";
 ITEM.Plural			= "MP5s";
 ITEM.Size			= 2;

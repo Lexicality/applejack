@@ -1,9 +1,7 @@
---[[
-	~ Stimulants ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Stimulants ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Stimulants";
 ITEM.Size			= 1;
 ITEM.Cost			= 60;

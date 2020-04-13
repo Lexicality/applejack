@@ -1,7 +1,7 @@
---[[
-	~ Lockpick SWep ~ Clientside ~
-	~ Applejack ~
---]]
+--
+-- ~ Lockpick SWep ~ Clientside ~
+-- ~ Applejack ~
+--
 include("shared.lua");
 SWEP.PrintName = "Lockpick";
 SWEP.Slot = 3;

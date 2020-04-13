@@ -1,11 +1,3 @@
---[[ _
-	( )
-   _| |   __   _ __   ___ ___     _ _
- /'_` | /'__`\( '__)/' _ ` _ `\ /'_` )
-( (_| |(  ___/| |   | ( ) ( ) |( (_| |
-`\__,_)`\____)(_)   (_) (_) (_)`\__,_)
-
---]]
 local PANEL = {}
 
 AccessorFunc( PANEL, "m_bSizeToContents", 		"AutoSize" )
@@ -260,4 +252,3 @@ function PANEL:SortByFunction(func)
 end
 
 derma.DefineControl("MSDPanelList", "A butchered version of DPanelList just for Moonshine", PANEL, "DPanel")
-

@@ -1,8 +1,7 @@
---[[
-	~ Note Entity ~ Serverside ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Note Entity ~ Serverside ~
+-- ~ Applejack ~
+--
 includecs("shared.lua");
 AddCSLuaFile("cl_init.lua");
 

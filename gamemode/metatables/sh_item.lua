@@ -1,7 +1,8 @@
---[[
-	~ Item Metatable (shared) ~
-	~ Applejack ~
---]]
+--
+-- ~ Item Metatable (shared) ~
+-- ~ Applejack ~
+--
+
 ---
 -- The shared item metatable
 -- @name meta
@@ -33,12 +34,12 @@ end
 function meta:Register()
 	if (not self.UniqueID) then
 		ErrorNoHalt("Item with no uniqueID registered!\nDumping table:\n");
-		--[[ WARNING: DIRTY HACK TIME ]]--
+		-- WARNING: DIRTY HACK TIME
 		msg = Msg;
 		Msg = ErrorNoHalt;
 		PrintTable(self);
 		Msg = msg;
-		--[[ END OF DIRTY HACK ]]--
+		-- END OF DIRTY HACK
 		return false;
 	end
 	if (self.Base) then

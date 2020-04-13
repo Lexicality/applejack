@@ -1,8 +1,7 @@
---[[
-	~ Base Weapon ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Base Weapon ~
+-- ~ Applejack ~
+--
 include("item.lua");
 ITEM.Weapon		= true;
 ITEM.NoVehicles	= true;

@@ -1,7 +1,7 @@
---[[
-name: "cl_chatbox.lua".
-Product: "Cider (Roleplay)"
---]]
+--
+-- "cl_chatbox.lua"
+-- Cider (Roleplay)
+--
 
 -- FUCKING EVOLVE.
 function chat.AddText(...)

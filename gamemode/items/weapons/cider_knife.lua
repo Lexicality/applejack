@@ -1,9 +1,7 @@
---[[
-	~ Knife ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Knife ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Knife";
 ITEM.Size			= 1;
 ITEM.Cost			= 5000;

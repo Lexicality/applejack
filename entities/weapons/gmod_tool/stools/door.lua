@@ -1,9 +1,8 @@
---[[
-	Door Stool v2
-	Originally by High6
-	Rewritten by Lexi
---]]
-
+--
+-- Door Stool v2
+-- Originally by High6
+-- Rewritten by Lexi
+--
 local GM = GAMEMODE;
 
 -- Set up our convars

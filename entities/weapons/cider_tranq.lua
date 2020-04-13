@@ -1,8 +1,7 @@
---[[
-	~ Tranquilizer SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Tranquilizer SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo = true;

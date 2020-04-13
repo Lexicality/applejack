@@ -1,9 +1,7 @@
---[[
-	~°'¨¤ MYSTERY ITEM ¤¨'°~
-	~ Applejack ~
---]]
-
-
+--
+-- ~°'¨¤ MYSTERY ITEM ¤¨'°~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Alien Balls";
 ITEM.Size			= 0;
 ITEM.Cost			= 2000000;

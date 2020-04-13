@@ -1,9 +1,7 @@
---[[
-	~ Glock ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Glock ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Glock 18";
 ITEM.Size			= 1;
 ITEM.Cost			= 2000;

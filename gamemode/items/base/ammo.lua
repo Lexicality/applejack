@@ -1,11 +1,8 @@
---[[
-	~ Base ammo ~
-	~ Applejack ~
-	~[
-		This base provides items with the ability
-		 to give the player ammo when used.
-	~]
---]]
+--
+-- ~ Base ammo ~
+-- ~ Applejack ~
+-- This base provides items with the ability to give the player ammo when used.
+--
 include("item.lua");
 ITEM.Equippable		= true
 ITEM.Equipword		= "load"

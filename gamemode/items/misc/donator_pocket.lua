@@ -1,9 +1,7 @@
---[[
-	~ Donator Pocket ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Donator Pocket ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Donator Crate";
 ITEM.Size			= -10;
 ITEM.Model			= "models//props_junk/PlasticCrate01a.mdl";

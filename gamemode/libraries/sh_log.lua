@@ -1,7 +1,7 @@
---[[
-	~ Logging Library ~
-	~ Applejack ~
---]]
+--
+-- ~ Logging Library ~
+-- ~ Applejack ~
+--
 local GM = GM or GAMEMODE; -- eeeh
 
 ---

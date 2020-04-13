@@ -1,8 +1,7 @@
---[[
-Name: "init.lua".
-	~ Applejack ~
---]]
-
+--
+-- "init.lua"
+-- ~ Applejack ~
+--
 include("sh_init.lua");
 
 -- Add the files that need to be sent to the client.

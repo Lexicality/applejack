@@ -1,8 +1,7 @@
---[[
-	~ Officials Plugin / CL ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Officials Plugin / CL ~
+-- ~ Applejack ~
+--
 local arrestwarrant = Color(255, 50, 50, 255)
 local spawnimmunity = Color(150, 255, 75, 255)
 

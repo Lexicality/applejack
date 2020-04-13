@@ -1,8 +1,7 @@
---[[
-	~ Fresh Bass ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Fresh Bass ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Fresh Bass";
 ITEM.Cost        = 55;
 ITEM.Model       = "models/foodnhouseholditems/fishbass.mdl";

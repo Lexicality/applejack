@@ -1,7 +1,8 @@
---[[
-	~ Item Metatable (serverside) ~
-	~ Applejack ~
---]]
+--
+-- ~ Item Metatable (serverside) ~
+-- ~ Applejack ~
+--
+
 ---
 -- The serverside item metatable
 -- @name meta

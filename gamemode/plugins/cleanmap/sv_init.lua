@@ -1,8 +1,7 @@
---[[
-	~ Cleanmap Plugin ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Cleanmap Plugin ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Clean Map";
 
 -- A table of entity classes that will be removed when the map is loaded.

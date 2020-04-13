@@ -1,8 +1,7 @@
- --[[
-~ Baguette ~
-~ Applejack ~
---]]
-
+--
+-- ~ Baguette ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Baguette";
 ITEM.Cost        = 25;
 ITEM.Model       = "models/FoodNHouseholdItems/bagette.mdl";

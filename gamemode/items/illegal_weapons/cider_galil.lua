@@ -1,8 +1,7 @@
---[[
-	~ Galil ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Galil ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Galil";
 ITEM.Size			= 2;
 ITEM.Cost			= 20000;

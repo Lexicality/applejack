@@ -1,6 +1,5 @@
---[[
-	~ Officials Plugin / SH~
-	~ Applejack ~
---]]
-
+--
+-- ~ Officials Plugin / SH~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Officials"

@@ -1,8 +1,7 @@
- --[[
-~ Champaign~
-~ Applejack ~
---]]
-
+--
+-- ~ Champaign~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Champaign";
 ITEM.Cost        = 2500;
 ITEM.Model       = "models/FoodNHouseholdItems/champagne.mdl";

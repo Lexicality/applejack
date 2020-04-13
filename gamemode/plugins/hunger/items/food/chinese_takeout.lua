@@ -1,8 +1,7 @@
---[[
-	~ Chinese Takeout ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Chinese Takeout ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Chinese Takeout";
 ITEM.Cost        = 50;
 ITEM.Model       = "models/props_junk/garbage_takeoutcarton001a.mdl";

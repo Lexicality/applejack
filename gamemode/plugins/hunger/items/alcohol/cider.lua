@@ -1,8 +1,7 @@
- --[[
-~ Bottle of Dry Cider~
-~ Applejack ~
---]]
-
+--
+-- ~ Bottle of Dry Cider~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Bottle of Dry Cider";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/props_junk/garbage_plasticbottle003a.mdl";

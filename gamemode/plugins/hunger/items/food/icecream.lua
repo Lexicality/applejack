@@ -1,8 +1,7 @@
- --[[
-~ Strawberry Ice-Cream ~
-~ Applejack ~
---]]
-
+--
+-- ~ Strawberry Ice-Cream ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Strawberry Ice-Cream";
 ITEM.Cost        = 5;
 ITEM.Model       = "models/FoodNHouseholdItems/icecream.mdl";

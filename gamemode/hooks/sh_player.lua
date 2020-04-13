@@ -1,7 +1,7 @@
---[[
-	~ Shared Player Hooks ~
-	~ Applejack ~
---]]
+--
+-- ~ Shared Player Hooks ~
+-- ~ Applejack ~
+--
 
 ---
 -- Called when a player attempts to join a team (server) or the job list is updated (client)

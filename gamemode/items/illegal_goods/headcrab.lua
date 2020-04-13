@@ -1,9 +1,7 @@
---[[
-	~ Headcrab ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Headcrab ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Headcrab";
 ITEM.Size			= 5;
 ITEM.Cost			= 5000;

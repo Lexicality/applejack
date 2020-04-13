@@ -1,7 +1,7 @@
---[[
-Name: "cl_containr.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_containr.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 local width,height = ScrW()*0.75,ScrH()*0.75
 local accessmenu
@@ -449,7 +449,7 @@ function PANEL:PerformLayout()
 end
 
 -- Register the panel.
-vgui.Register("Accessmenu", PANEL, "DFrame");--]]
+vgui.Register("Accessmenu", PANEL, "DFrame");
 
 local function psort(a, b)
 	return a:Name() < b:Name();

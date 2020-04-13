@@ -1,8 +1,7 @@
- --[[
-~ Chocolatechip Cookies ~
-~ Applejack ~
---]]
-
+--
+-- ~ Chocolatechip Cookies ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Chocolatechip Cookies";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/FoodNHouseholdItems/cookies.mdl";

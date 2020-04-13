@@ -229,10 +229,9 @@ function GM:ScoreboardShow()
 
 end
 
---[[---------------------------------------------------------
-   Name: gamemode:ScoreboardHide( )
-   Desc: Hides the scoreboard
------------------------------------------------------------]]
+---
+-- Name: gamemode:ScoreboardHide( )
+-- Desc: Hides the scoreboard
 function GM:ScoreboardHide()
 
 	if ( IsValid( g_Scoreboard ) ) then

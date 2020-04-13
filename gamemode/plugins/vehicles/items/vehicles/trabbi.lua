@@ -1,8 +1,7 @@
---[[
-	~ Trabbeh ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Trabbeh ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Trabbi";
 ITEM.Plural			= "Trabbis";
 ITEM.Cost			= 25000;

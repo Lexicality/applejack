@@ -1,8 +1,7 @@
---[[
-	~ Clientside Menu Library ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ Clientside Menu Library ~
+-- ~ Moonshine ~
+--
 do return end -- NOT TODAY BRIGHT EYES
 
 ---

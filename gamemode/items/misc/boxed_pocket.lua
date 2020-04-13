@@ -1,9 +1,7 @@
---[[
-	~ Boxed Pocket ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Boxed Pocket ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Boxed Pocket";
 ITEM.Size			= 2;
 ITEM.Cost			= 5000;

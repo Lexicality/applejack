@@ -1,9 +1,7 @@
---[[
-	~ Rope ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Rope ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Spool of Rope";
 ITEM.Size			= 1;
 ITEM.Cost			= 200;

@@ -1,7 +1,8 @@
---[[
-Name: "sh_events.lua".
-	~ Applejack ~
---]]
+--
+-- "sh_events.lua"
+-- ~ Applejack ~
+--
+
 ----EVENTS----
 --- New format: Name, Description, Potential access.
 --- Potential access: Pm = police or moderators.

@@ -1,9 +1,7 @@
---[[
-	~ TreepMine ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ TreepMine ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Tripmine";
 ITEM.Size			= 2;
 ITEM.Cost			= 5000;

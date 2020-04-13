@@ -1,8 +1,7 @@
---[[
-	~ Player List ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ Player List ~
+-- ~ Moonshine ~
+--
 local vguiItemPanel;
 local PANEL = {};
 
@@ -318,9 +317,6 @@ function PANEL:SetName(str)
 end
 
 local function dbuttonpress(btn)
-	--[[ Does this actually need error protection? Nothing will break if it does error.
-	PCallError(btn.m_fCallback, btn.m_tItem);
-	--]]
 	btn.m_fCallback(btn.m_tItem);
 end
 function PANEL:AddButton(str, func)

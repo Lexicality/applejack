@@ -1,7 +1,7 @@
---[[
-	~ Base packaging ~
-	~ Applejack ~
---]]
+--
+-- ~ Base packaging ~
+-- ~ Applejack ~
+--
 ITEM:Derive("item");
 ITEM.Capacity	= 20
 ITEM.AutoClose	= true

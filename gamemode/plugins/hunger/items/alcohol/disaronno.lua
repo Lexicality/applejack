@@ -1,8 +1,7 @@
- --[[
-~ Bottle of Disaronno~
-~ Applejack ~
---]]
-
+--
+-- ~ Bottle of Disaronno~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Bottle of Disaronno";
 ITEM.Cost        = 35;
 ITEM.Model       = "models/props/cs_militia/bottle01.mdl";

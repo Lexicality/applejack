@@ -1,16 +1,14 @@
---[[
-	~ UMP ~
-	~ Applejack ~
-	~[
-		Now really by all rights this should be cider_ump45.lua.
-		However, when making this item I, (for some reason) just called it cider_ump,
-		 so to avoid having to either change every entry in the DB or do a hacky
-		 'replace when used' addon to the inventory loader, I'm leaving it like that.
-		*SIGH*
-	~]
---]]
-
-
+--
+-- ~ UMP ~
+-- ~ Applejack ~
+-- ~[
+--     Now really by all rights this should be cider_ump45.lua.
+--     However, when making this item I, (for some reason) just called it cider_ump,
+--      so to avoid having to either change every entry in the DB or do a hacky
+--      'replace when used' addon to the inventory loader, I'm leaving it like that.
+--     *SIGH*
+-- ~]
+--
 ITEM.Name			= "UMP 45";
 ITEM.Size			= 2;
 ITEM.Cost			= 14000;

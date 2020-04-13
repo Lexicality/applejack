@@ -1,8 +1,7 @@
---[[
-	~ GPS ~
-	~ Applejack ~
---]]
-
+--
+-- ~ GPS ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "GPS";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

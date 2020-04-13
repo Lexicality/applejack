@@ -1,8 +1,7 @@
---[[
-	~ Milk ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Milk ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Carton of milk";
 ITEM.Cost			= 15;
 ITEM.Model			= "models/foodnhouseholditems/milk.mdl";

@@ -1,8 +1,7 @@
- --[[
-~ Bottle of Water~
-~ Applejack ~
---]]
-
+--
+-- ~ Bottle of Water~
+-- ~ Applejack ~
+--
 ITEM.Name= "Bottle of Water";
 ITEM.Cost= 5;
 ITEM.Model= "models/props/cs_office/water_bottle.mdl";

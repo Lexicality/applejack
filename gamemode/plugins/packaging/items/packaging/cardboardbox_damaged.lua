@@ -1,8 +1,7 @@
---[[
-	~ Damaged Cardboard Box ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Damaged Cardboard Box ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Damaged Cardboard Box";
 ITEM.Plural			= "Damaged Cardboard Boxes";
 ITEM.Cost			= 95;

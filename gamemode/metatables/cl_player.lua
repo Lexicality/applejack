@@ -1,8 +1,7 @@
---[[
-	~ Clientside Player metatable ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Clientside Player metatable ~
+-- ~ Applejack ~
+--
 local meta = _R.Player;
 if (not meta) then
 	error("["..os.date().."] Applejack Clientside Player metatable: No metatable found!");

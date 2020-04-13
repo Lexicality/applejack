@@ -1,8 +1,7 @@
---[[
-	~ Vehicles Plugin / SV ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Vehicles Plugin / SV ~
+-- ~ Applejack ~
+--
 if (PLUGIN.Abort) then return end
 
 local function getnewpos(pos, ang, apos)
@@ -348,8 +347,7 @@ umsg.PoolString("setupviews");
 function PLUGIN:PlayerEnteredVehicle(ply, car, role)
 	SendUserMessage("setupviews",ply,car.VehicleName);
 end
---]]
---[[
+
 umsg.PoolString"ClearViewMod";
 umsg.PoolString"ViewModFP";
 umsg.PoolString"ViewModTP";
@@ -389,7 +387,7 @@ function PLUGIN:PlayerEnteredVehicle(ply, car, role)
 		umsg.End();
 	end
 end
---]]
+--]] --
 
 function PLUGIN:KeyPress(ply, key)
 	if (key == IN_USE and ply:InVehicle()) then

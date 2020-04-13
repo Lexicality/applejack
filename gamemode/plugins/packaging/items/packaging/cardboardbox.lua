@@ -1,8 +1,7 @@
---[[
-	~ Cardboard Box ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Cardboard Box ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Cardboard Box";
 ITEM.Plural			= "Cardboard Boxes";
 ITEM.Model			= "models/props_junk/cardboard_box001a.mdl";

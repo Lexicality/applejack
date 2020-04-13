@@ -1,8 +1,7 @@
---[[
-	~ Shotgun Ammo ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Shotgun Ammo ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Buckshot Rounds";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

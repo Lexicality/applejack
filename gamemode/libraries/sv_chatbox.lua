@@ -1,8 +1,7 @@
---[[
-Name: "sv_chat.lua".
-	~ Applejack ~
---]]
-
+--
+-- "sv_chat.lua"
+-- ~ Applejack ~
+--
 cider.chatBox = {};
 
 -- Add a new line.

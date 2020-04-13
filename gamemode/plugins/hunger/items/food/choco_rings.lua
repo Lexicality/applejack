@@ -1,8 +1,7 @@
- --[[
-~ Choco Rings ~
-~ Applejack ~
---]]
-
+--
+-- ~ Choco Rings ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Choco Rings";
 ITEM.Cost        = 15;
 ITEM.Model       = "models/FoodNHouseholdItems/chocorings.mdl";

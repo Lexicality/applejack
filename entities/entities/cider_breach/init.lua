@@ -1,8 +1,7 @@
---[[
-	~ Breach Serverside Entity ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Breach Serverside Entity ~
+-- ~ Applejack ~
+--
 include("sh_init.lua");
 
 -- Add the files that need to be sent to the client.

@@ -1,8 +1,7 @@
---[[
-	~ Mac 10 SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Mac 10 SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo			= true;

@@ -1,8 +1,7 @@
---[[
-	~ Blue Golf ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Blue Golf ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Blue Golf";
 ITEM.Cost			= 100000;
 ITEM.Model			= "models/golf/golf.mdl";

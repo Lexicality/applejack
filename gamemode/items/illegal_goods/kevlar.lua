@@ -1,9 +1,7 @@
---[[
-Name: "sh_kevlar.lua".
-	~ Applejack ~
---]]
-
-
+--
+-- "sh_kevlar.lua"
+-- ~ Applejack ~
+--
 ITEM.Name	= "Kevlar";
 ITEM.Size	= 2;
 ITEM.Cost	= 450;

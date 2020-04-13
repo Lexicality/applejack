@@ -1,13 +1,11 @@
---[[
-	~ rg_base shared ~
-	~ Applejack ~
-	~[
-		This is a modified version of Teta_Bonita's rg_base.
-		I'm not sure how much modification kuromeku has done to
-		 this, but I've been rewriting bits of it as I go along.
-		~Lexi
-	~]
---]]
+--
+-- ~ rg_base shared ~
+-- ~ Applejack ~
+--
+-- This is a modified version of Teta_Bonita's rg_base.
+-- I'm not sure how much modification kuromeku has done to this, but I've been
+-- rewriting bits of it as I go along.
+-- ~Lexi
 
 if SERVER then
 
@@ -162,13 +160,11 @@ SWEP.FireModes.Burst.FireFunction = function(self)
 	if not self:CanFire(clip) then return end
 
 	self:BaseAttack()
-	--[
 	timer.Simple(self.BurstDelay, self.BaseAttack, self)
 
 	if clip > 1 then
 		timer.Simple(2*self.BurstDelay, self.BaseAttack, self)
 	end
-	--]]
 	self.Weapon:SetNextPrimaryFire( CurTime() + 1 )
 
 end
@@ -435,19 +431,17 @@ end
 -- We need to call ResetVars() on these functions so we don't whip out a weapon with scope mode or insane recoil right of the bat or whatnot
 function SWEP:Holster(wep)
 	--MsgN"Holster!"
-	--[[
-	if self.NextHolster and self.NextHolster >= CurTime() then
-		if SERVER then
-			timer.Simple(0,function()
-				if not( IsValid(self.Owner) and IsValid(self.Weapon) and IsValid(self.Owner:GetWeapon( self.Weapon:GetClass() ))) then return end
-				self.Owner:GetViewModel( ):RemoveEffects( EF_NODRAW )
-				self.Owner:GetWeapon( self.Weapon:GetClass() ):RemoveEffects( EF_NODRAW )
-				self.Owner:Notify("You must wait another "..string.ToMinutesSeconds(self.NextHolster-CurTime()).." before doing that!",1)
-			end)
-		end
-		return false
-	end
-	--]]
+	-- if self.NextHolster and self.NextHolster >= CurTime() then
+	-- 	if SERVER then
+	-- 		timer.Simple(0,function()
+	-- 			if not( IsValid(self.Owner) and IsValid(self.Weapon) and IsValid(self.Owner:GetWeapon( self.Weapon:GetClass() ))) then return end
+	-- 			self.Owner:GetViewModel( ):RemoveEffects( EF_NODRAW )
+	-- 			self.Owner:GetWeapon( self.Weapon:GetClass() ):RemoveEffects( EF_NODRAW )
+	-- 			self.Owner:Notify("You must wait another "..string.ToMinutesSeconds(self.NextHolster-CurTime()).." before doing that!",1)
+	-- 		end)
+	-- 	end
+	-- 	return false
+	-- end
 	if SERVER and IsValid(self.Owner) and self.Owner:Alive() and not self.Owner._Deaded then
 		timer.Violate(self.Owner:UniqueID().." holster");
 		if not self.Owner:KnockedOut() then
@@ -580,18 +574,14 @@ local function carshoot(self,tr,dmg)
 	end
 end
 function SWEP:RGShootBulletCheap(dmg, speed, spread, spray, sprayvec, numbul)
---[[
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(true);
-	end
-	-]]
+	-- if (self.Owner.LagCompensation) then
+	-- 	self.Owner:LagCompensation(true);
+	-- end
 	local PlayerAim = self.Owner:GetAimVector()
 	local PlayerPos = self.Owner:GetShootPos()
-	--[[
-	if (self.Owner.LagCompensation) then
-		self.Owner:LagCompensation(false);
-	end
-	--]]
+	-- if (self.Owner.LagCompensation) then
+	-- 	self.Owner:LagCompensation(false);
+	-- end
 	numbul = numbul or 1
 	if self.dt.silenced then
 		dmg = dmg / 2
@@ -745,7 +735,7 @@ end
 
 function SWEP:ApplyRecoil(recoil,spray)
 
-	if self.OwnerIsNPC or (SERVER--[[ and not self.Owner:IsListenServerHost()--]]) then return end
+	if self.OwnerIsNPC or (SERVER--[[ and not self.Owner:IsListenServerHost()]]) then return end
 
 	local EyeAng = Angle(
 	recoil*math.Rand(-1,-0.7 + spray*0.4) + spray*math.Rand(-0.3,0.3), -- Up/Down recoil

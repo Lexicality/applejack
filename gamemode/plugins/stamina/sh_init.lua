@@ -1,6 +1,5 @@
---[[
-	~ Stamina Plugin / SH ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Stamina Plugin / SH ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Stamina";

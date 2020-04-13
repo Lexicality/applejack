@@ -1,8 +1,7 @@
---[[
-	~ Orange ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Orange ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Orange";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/props/cs_italy/orange.mdl";

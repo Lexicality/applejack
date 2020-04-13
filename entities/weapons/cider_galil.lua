@@ -1,8 +1,7 @@
---[[
-	~ Galil SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Galil SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.Slot = 3;

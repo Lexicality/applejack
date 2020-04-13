@@ -1,9 +1,7 @@
---[[
-	~ Fiveseven ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Fiveseven ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Five Seven";
 ITEM.Size			= 1;
 ITEM.Cost			= 4000;

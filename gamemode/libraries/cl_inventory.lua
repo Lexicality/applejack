@@ -1,9 +1,7 @@
---[[
-Name: "cl_inventory.lua".
-	~ Applejack ~
---]]
-
-
+--
+-- "cl_inventory.lua"
+-- ~ Applejack ~
+--
 cider.inventory 			= {};
 cider.inventory.stored 		= {};
 cider.inventory.updatePanel = true;

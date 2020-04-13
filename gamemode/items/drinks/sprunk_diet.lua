@@ -1,8 +1,7 @@
- --[[
-~ Diet Sprunk ~
-~ Applejack ~
---]]
-
+--
+-- ~ Diet Sprunk ~
+-- ~ Applejack ~
+--
 ITEM.Name= "Diet Sprunk";
 ITEM.Cost= 20;
 ITEM.Model= "models/FoodNHouseholdItems/sprunk2.mdl";

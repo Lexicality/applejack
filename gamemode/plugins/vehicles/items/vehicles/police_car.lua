@@ -1,9 +1,7 @@
---[[
-	~ Poliskar ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Poliskar ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Police Car";
 ITEM.Cost			= 100000;
 ITEM.Model			= "models/copcar.mdl";

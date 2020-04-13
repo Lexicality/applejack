@@ -1,8 +1,7 @@
---[[
-	~ Note Entity ~ Shared ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Note Entity ~ Shared ~
+-- ~ Applejack ~
+--
 ENT.Type = "anim";
 ENT.Base = "base_gmodentity";
 ENT.PrintName = "Written Note";

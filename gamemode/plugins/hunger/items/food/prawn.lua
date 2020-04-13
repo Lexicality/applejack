@@ -1,8 +1,7 @@
---[[
-	~ Prawn ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Prawn ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Prawn";
 ITEM.Cost        = 15;
 ITEM.Model       = "models/Gibs/HGIBS_spine.mdl";

@@ -1,8 +1,7 @@
---[[
-Name: "cl_changelog.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_changelog.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 
 PANEL.changelog = [[

@@ -1,8 +1,7 @@
---[[
-	~ Help "Library" ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ Help "Library" ~
+-- ~ Moonshine ~
+--
 GM.HelpItems = {};
 
 function GM:AddHelp(cat, help)
@@ -28,7 +27,7 @@ if (CLIENT) then
 		end
 	end);
 else
-	--[[ Add generic helps TODO: Do bettr ]]--
+	-- Add generic helps TODO: Do bettr
 	GM:AddHelp("General", "Using any exploits will get you banned permanently.");
 	GM:AddHelp("General", "Put // before your message to talk in global OOC.");
 	GM:AddHelp("General", "Put .// before your message to talk in local OOC.");

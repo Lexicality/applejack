@@ -1,8 +1,7 @@
---[[
-	~ Dead Baby ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Dead Baby ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Dead Baby";
 ITEM.Cost        = 200;
 ITEM.Model       = "models/props_c17/doll01.mdl";

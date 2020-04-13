@@ -1,8 +1,7 @@
---[[
-	~ Baked Beans ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Baked Beans ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Can of Baked Beans";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/props_junk/garbage_metalcan001a.mdl";

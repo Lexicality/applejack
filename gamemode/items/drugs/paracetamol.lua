@@ -1,9 +1,7 @@
---[[
-	~ Paracetamol ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Paracetamol ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Paracetamol";
 ITEM.Size			= 1;
 ITEM.Cost			= 100;

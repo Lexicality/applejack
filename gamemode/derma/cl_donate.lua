@@ -1,8 +1,7 @@
---[[
-Name: "cl_donate.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_donate.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 
 PANEL.services = [[

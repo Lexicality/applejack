@@ -1,8 +1,7 @@
---[[
-	~ Clientside Prop Protection ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Clientside Prop Protection ~
+-- ~ Applejack ~
+--
 local cPanel, aPanel;
 
 local function adminPanel(panel)

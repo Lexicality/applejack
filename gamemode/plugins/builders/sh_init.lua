@@ -1,6 +1,5 @@
---[[
-	~ Builders Plugin ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Builders Plugin ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Builders";

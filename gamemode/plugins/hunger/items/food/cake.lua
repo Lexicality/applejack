@@ -1,8 +1,7 @@
---[[
-	~ Delicious Cake ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Delicious Cake ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Delicious Cake";
 ITEM.Cost        = 2500;
 ITEM.Model       = "models/foodnhouseholditems/cake.mdl";

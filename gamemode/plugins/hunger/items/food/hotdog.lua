@@ -1,8 +1,7 @@
- --[[
-~ Hot Dog ~
-~ Applejack ~
---]]
-
+--
+-- ~ Hot Dog ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Hot Dog";
 ITEM.Cost        = 30;
 ITEM.Model       = "models/FoodNHouseholdItems/hotdog.mdl";

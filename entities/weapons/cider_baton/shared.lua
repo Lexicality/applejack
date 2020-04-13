@@ -1,7 +1,7 @@
---[[
-	~ Baton ~ Shared ~
-	~ Applejack ~
---]]
+--
+-- ~ Baton ~ Shared ~
+-- ~ Applejack ~
+--
 
 -- Define some shared variables.
 SWEP.Author	= "Lexi";

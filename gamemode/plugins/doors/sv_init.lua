@@ -1,14 +1,11 @@
---[[
-	~ Doors Plugin / SV ~
-	~ Applejack ~
---]]
+--
+-- ~ Doors Plugin / SV ~
+-- ~ Applejack ~
+--
 
---[[
-Changelog:
-29/1/10: Mostly rewritten to use the new plugin format and be sane.
-04/06/11: Completely rewritten to use v113 game.CleanupMap compatible shizzle + team lib
-]]
-
+-- Changelog:
+-- 29/1/10: Mostly rewritten to use the new plugin format and be sane.
+-- 04/06/11: Completely rewritten to use v113 game.CleanupMap compatible shizzle + team lib
 PLUGIN.Name = "Doors";
 PLUGIN.Doors = {};
 

@@ -1,7 +1,7 @@
---[[
-Name: "cl_menu.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_menu.lua"
+-- ~ Applejack ~
+--
 cider.menu = {};
 cider.menu.tabs = {};
 cider.menu.open = nil;

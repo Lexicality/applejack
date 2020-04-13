@@ -1,8 +1,7 @@
---[[
-	~ Football ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Football ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Football";
 ITEM.Size			= 1;
 ITEM.Cost			= 1000;

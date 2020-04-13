@@ -1,8 +1,7 @@
---[[
-	~ Clientside Init - Item ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Clientside Init - Item ~
+-- ~ Applejack ~
+--
 include("sh_init.lua")
 
 -- This is called when the entity should draw.

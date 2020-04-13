@@ -1,9 +1,7 @@
---[[
-	~ Health Kit ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Health Kit ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Health Kit";
 ITEM.Size			= 1;
 ITEM.Cost			= 300;

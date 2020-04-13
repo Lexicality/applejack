@@ -1,7 +1,7 @@
---[[
-	~ Base contraband ~
-	~ Applejack ~
---]]
+--
+-- ~ Base contraband ~
+-- ~ Applejack ~
+--
 ITEM.NoVehicles = true;
 ITEM.Size		= 3;
 local function checkcount(ply,self)

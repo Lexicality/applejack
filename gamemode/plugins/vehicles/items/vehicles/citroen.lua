@@ -1,8 +1,7 @@
---[[
-	~ Citroen ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Citroen ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Citroen 7CV";
 ITEM.Cost			= 300000;
 ITEM.Model			= "models/citron7cv.mdl";

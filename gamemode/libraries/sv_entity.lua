@@ -1,7 +1,7 @@
---[[
-	~ Serverside Entity Library ~
-	~ Applejack ~
---]]
+--
+-- ~ Serverside Entity Library ~
+-- ~ Applejack ~
+--
 
 ---
 -- A table of all currently ownable entities, with the entity as a key

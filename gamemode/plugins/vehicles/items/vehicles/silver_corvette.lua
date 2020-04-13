@@ -1,8 +1,7 @@
---[[
-	~ Silver Corvette ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Silver Corvette ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Silver Corvette";
 ITEM.Cost			= 600000;
 ITEM.Model			= "models/corvette/corvette.mdl";

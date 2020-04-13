@@ -1,7 +1,7 @@
---[[
-	~ Stamina Plugin / SV ~
-	~ Applejack ~
---]]
+--
+-- ~ Stamina Plugin / SV ~
+-- ~ Applejack ~
+--
 
 -- Called when a player spawns.
 function PLUGIN:PostPlayerSpawn(ply, lightSpawn, changeTeam)

@@ -1,13 +1,13 @@
---[[
-	~ Serverside Entity metatable ~
-	~ Applejack ~
---]]
+--
+-- ~ Serverside Entity metatable ~
+-- ~ Applejack ~
+--
 local meta = _R.Entity;
 if (not meta) then
 	error("["..os.date().."] Applejack Serverside Entity metatable: No metatable found!");
 end
 
---[[ Locals ]]--
+-- Locals
 
 -- This makes sure an entity is actually ownable before running stuff on it.
 local function cm(ent)
@@ -90,7 +90,7 @@ local function accesschange(ent, ply, stat)
 	acc(ent, ply, stat);
 end
 
---[[ 'Is'/'Has' functions ]]--
+-- 'Is'/'Has' functions
 
 ---
 -- Checks to see if the entity is considered a door by the script.
@@ -140,7 +140,7 @@ function meta:HasAccess(ply)
 			(access[tid] or access[gid] or access[ggid]);
 end
 
---[[ 'Set'/'Get' functions ]]--
+-- 'Set'/'Get' functions
 
 ---
 -- Gets all players that have some kind of access to the entity
@@ -313,7 +313,7 @@ function meta:GetSlaves()
 	return tab;
 end
 
---[[ Action functions ]]--
+-- Action functions
 
 ---
 -- Locks an ownable entity
@@ -411,7 +411,7 @@ function meta:ClearOwnershipData()
 	newowner(self, NULL, "Nobody");
 end
 
---[[ Access functions ]]--
+-- Access functions
 
 -- Tells the current owner that they are no longer the owner.
 local function deown(self)

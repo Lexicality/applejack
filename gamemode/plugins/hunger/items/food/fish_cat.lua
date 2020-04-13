@@ -1,8 +1,7 @@
---[[
-	~ Cat Fish ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Cat Fish ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Cat Fish";
 ITEM.Cost        = 65;
 ITEM.Model       = "models/foodnhouseholditems/fishcatfish.mdl";

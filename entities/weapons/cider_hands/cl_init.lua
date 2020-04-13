@@ -1,8 +1,7 @@
---[[
-	~ Hands Swep ~ Clientside ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Hands Swep ~ Clientside ~
+-- ~ Applejack ~
+--
 include("shared.lua");
 
 SWEP.PrintName = "Hands";

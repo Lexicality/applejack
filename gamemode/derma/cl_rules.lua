@@ -1,7 +1,7 @@
---[[
-Name: "cl_rules.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_rules.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 
 function PANEL:Init()

@@ -1,8 +1,7 @@
---[[
-	~ Meat Feast Pizza ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Meat Feast Pizza ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Meat Feast Pizza";
 ITEM.Cost        = 70;
 ITEM.Model       = "models/foodnhouseholditems/pizzabox.mdl";

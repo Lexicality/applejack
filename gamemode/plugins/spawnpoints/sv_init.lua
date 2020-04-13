@@ -1,14 +1,10 @@
---[[
-	~ Spawnpoints Plugin ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Spawnpoints Plugin ~
+-- ~ Applejack ~
+--
 PLUGIN.Name = "Spawnpoints"
 PLUGIN.Spawnpoints = {};
---[[
-	TODO: Make it not spawn people if there's someone
-	 in the way.
---]]
+-- TODO: Make it not spawn people if there's someone in the way.
 
 function PLUGIN:LoadData()
 	local path, data, status, results;

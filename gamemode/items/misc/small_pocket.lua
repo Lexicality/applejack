@@ -1,9 +1,7 @@
---[[
-	~ Small Pocket ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Small Pocket ~
+-- ~ Applejack ~
+--
 ITEM.Name				= "Small Pocket";
 ITEM.Size				= -5;
 ITEM.Model				= "models/props_junk/garbage_bag001a.mdl";

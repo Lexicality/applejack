@@ -1,8 +1,7 @@
---[[
-	~ SaveFrags/Death Plugin ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ SaveFrags/Death Plugin ~
+-- ~ Moonshine ~
+--
 PLUGIN.Name   = "Save Frags/Deaths";
 local frags, deaths = {},{};
 

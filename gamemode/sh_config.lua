@@ -1,7 +1,7 @@
---[[
-	~ Shared Configuration ~
-	~ Applejack ~
---]]
+--
+-- ~ Shared Configuration ~
+-- ~ Applejack ~
+--
 local config = {};
 
 -- Player Defaults
@@ -169,10 +169,9 @@ config["Weapon Timers"] = {
 		["Final"] = "pulls out a %s gun and puts %s backpack back on",
 		["Abort"] = "gives up and pulls %s backpack back on",
 		["Plugh"] = "slides the %s gun back into %s backpack and puts it back on"
-		--[[
-		 -- 1 gun type, 2 gender
-		[TYPE_LARGE] = "Pulls out a %s and puts %s backpack back on",
-		[TYPE_SMALL] = "Pulls out a %s and puts %s backpack back on"]]
+		-- 1 gun type, 2 gender
+		-- [TYPE_LARGE] = "Pulls out a %s and puts %s backpack back on",
+		-- [TYPE_SMALL] = "Pulls out a %s and puts %s backpack back on"
 	},
 	["holstermessage"] = {	 -- 1 gun type, 2 gender
 		[TYPE_LARGE] = "puts the %s back on %s back",

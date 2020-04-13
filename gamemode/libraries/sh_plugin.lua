@@ -1,15 +1,12 @@
---[[
-	~ Plugin Library ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Plugin Library ~
+-- ~ Applejack ~
+--
 local stored = {};
 GM.Plugins = stored;
 
---[[
-	Makes any hook call act like cider.plugin.call acted.
-	(This has the added bonus of making plugin hooks immortal like gamemode ones.)
---]]
+-- Makes any hook call act like cider.plugin.call acted.
+-- (This has the added bonus of making plugin hooks immortal like gamemode ones.)
 if (not hook.oCall) then
 	hook.oCall = hook.Call;
 end
@@ -27,7 +24,7 @@ function hook.Call(name,gm,...)
 	end
 	return hook.oCall(name,gm,...);
 end
---]]
+
 ---
 -- Loads all the plugins
 function GM:LoadPlugins()

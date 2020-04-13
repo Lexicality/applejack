@@ -1,8 +1,7 @@
---[[
-Name: "cl_character.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_character.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 local nextChanges = {};
 local reDraw = false;

@@ -1,8 +1,7 @@
---[[
-	~ Truck ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Truck ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Truck";
 ITEM.Cost			= 150000;
 ITEM.Model			= "models/tideslkw.mdl";

@@ -1,8 +1,7 @@
---[[
-Name: "cl_init.lua".
-	~ Applejack ~
---]]
-
+--
+-- "cl_init.lua"
+-- ~ Applejack ~
+--
 include("sh_init.lua")
 
 -- This is called when the entity should draw.

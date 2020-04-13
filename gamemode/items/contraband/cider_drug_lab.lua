@@ -1,8 +1,7 @@
---[[
-	~ Drug Lab ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Drug Lab ~
+-- ~ Applejack ~
+--
 if (not GM.Config["Contraband"]["cider_drug_lab"]) then return end
 
 ITEM.Name			= "Drug Lab";

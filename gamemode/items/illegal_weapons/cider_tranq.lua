@@ -1,9 +1,7 @@
---[[
-	~ Tranq ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Tranq ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Tranq Gun";
 ITEM.Size			= 3;
 ITEM.Cost			= 50000;

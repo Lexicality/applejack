@@ -1,7 +1,7 @@
---[[
-	~ Hands Swep ~ Serverside ~
-	~ Applejack ~
---]]
+--
+-- ~ Hands Swep ~ Serverside ~
+-- ~ Applejack ~
+--
 includecs("shared.lua");
 AddCSLuaFile("cl_init.lua");
 
@@ -210,4 +210,3 @@ function SWEP:Think()
 		self:SetDTBool(1, false);
 	end
 end
-

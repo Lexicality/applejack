@@ -1,7 +1,7 @@
---[[
-Name: "init.lua".
-	~ Applejack ~
---]]
+--
+-- "init.lua"
+-- ~ Applejack ~
+--
 
 -- Database module
 require"mysqloo"
@@ -38,25 +38,23 @@ end
 CreateConVar("cider_ooc", 1)
 
 -- Conetents
---[[
-local path = GM.Folder.."/content"
-local folders = {""}
-while true do
-	local curdir = table.remove(folders,1)
-	if not curdir then break end
-	local searchdir = path..curdir
-	local files, folders = file.Find(searchdir.."/*", "MOD")
-	for _, filename in ipairs(files) do
-		resource.AddSingleFile(string.sub(curdir.."/"..filename, 2))
-	end
+-- local path = GM.Folder.."/content"
+-- local folders = {""}
+-- while true do
+-- 	local curdir = table.remove(folders,1)
+-- 	if not curdir then break end
+-- 	local searchdir = path..curdir
+-- 	local files, folders = file.Find(searchdir.."/*", "MOD")
+-- 	for _, filename in ipairs(files) do
+-- 		resource.AddSingleFile(string.sub(curdir.."/"..filename, 2))
+-- 	end
 
-	for _, filename in ipairs(folders) do
-		if filename ~= ".svn" then
-			table.insert(folders,curdir.."/"..filename)
-		end
-	end
-end
---]]
+-- 	for _, filename in ipairs(folders) do
+-- 		if filename ~= ".svn" then
+-- 			table.insert(folders,curdir.."/"..filename)
+-- 		end
+-- 	end
+-- end
 
 local hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math =
 	  hook,player,umsg,pairs,ipairs,string,timer,IsValid,table,math
@@ -321,9 +319,9 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	return self.BaseClass:PlayerSpawnVehicle(ply, model)
 end
 
---[[function GM:PlayerSpawnedVehicle(player, entity)
-	if (not IsValid(player._Vehicle)) then player._Vehicle = entity end
-end]]
+-- function GM:PlayerSpawnedVehicle(player, entity)
+-- 	if (not IsValid(player._Vehicle)) then player._Vehicle = entity end
+-- end
 
 ---
 -- A function to check whether we're running on a listen server.
@@ -672,20 +670,18 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 		end
 	end
 	-- Do not do this any more.
-	--[[
-	if #ply._StoredWeapons >= 1 then
-		for _, v in pairs(ply._StoredWeapons) do
-			local class = v
+	-- if #ply._StoredWeapons >= 1 then
+	-- 	for _, v in pairs(ply._StoredWeapons) do
+	-- 		local class = v
 
-			-- Check if this is a valid item.
-			if (self.Items[class]) then
-				if ( hook.Call("PlayerCanDrop",GAMEMODE, ply, class, true, attacker) ) then
-					self.Items[class]:Make(ply:GetPos(), 1);
-				end
-			end
-		end
-	end
-	--]]
+	-- 		-- Check if this is a valid item.
+	-- 		if (self.Items[class]) then
+	-- 			if ( hook.Call("PlayerCanDrop",GAMEMODE, ply, class, true, attacker) ) then
+	-- 				self.Items[class]:Make(ply:GetPos(), 1);
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 	ply._StoredWeapons = {}
 
 	-- Unwarrant them, unarrest them and stop them from bleeding.
@@ -769,12 +765,10 @@ end
 -- Called when an entity takes damage.
 local vector0 = Vector(5,0,0)
 function GM:EntityTakeDamage(entity, damageInfo)
-	--[[
-	if not entity or not inflictor or not attacker or entity == NULL or inflictor == NULL or attacker == NULL then
-		ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
-		return
-	end
-	--]]
+	-- if not entity or not inflictor or not attacker or entity == NULL or inflictor == NULL or attacker == NULL then
+	-- 	ErrorNoHalt("Something went wrong in EntityTakeDamage: "..tostring(entity).." "..tostring(inflictor).." "..tostring(attacker).." "..tostring(amount).."\n")
+	-- 	return
+	-- end
 	local inflictor, attacker, amount = damageInfo:GetInflictor(), damageInfo:GetAttacker(), damageInfo:GetDamage();
 	local logme = false
 	if (attacker:IsPlayer() and IsValid( attacker:GetActiveWeapon() )) then

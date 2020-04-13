@@ -1,8 +1,7 @@
---[[
-	~ Rainbow Trout ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Rainbow Trout ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Rainbow Trout";
 ITEM.Cost        = 60;
 ITEM.Model       = "models/foodnhouseholditems/fishrainbow.mdl";

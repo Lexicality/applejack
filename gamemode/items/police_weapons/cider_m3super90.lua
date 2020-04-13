@@ -1,9 +1,7 @@
---[[
-	~ M3 Super ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ M3 Super ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "M3 Super 90";
 ITEM.Size			= 3;
 ITEM.Cost			= 30000;

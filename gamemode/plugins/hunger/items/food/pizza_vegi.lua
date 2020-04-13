@@ -1,8 +1,7 @@
---[[
-	~ Vegetarian Pizza ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Vegetarian Pizza ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Vegetarian Pizza";
 ITEM.Cost        = 70;
 ITEM.Model       = "models/foodnhouseholditems/pizzabox.mdl";

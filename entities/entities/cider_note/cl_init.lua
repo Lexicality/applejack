@@ -1,8 +1,7 @@
---[[
-	~ Note Entity ~ Clientside ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Note Entity ~ Clientside ~
+-- ~ Applejack ~
+--
 include("shared.lua")
 
 -- Add a language text for when we undo the note.

@@ -1,11 +1,10 @@
---[[
-	~ Packaging Plugin ~
-	~ Applejack ~
---]]
---[[
-	Packaging plugin, to create disposable containers that automatically seal themselves after being spawned initially.
-	(Does not work every time in actual application on the server =/)
---]]
+--
+-- ~ Packaging Plugin ~
+-- ~ Applejack ~
+--
+
+-- Packaging plugin, to create disposable containers that automatically seal themselves after being spawned initially.
+-- (Does not work every time in actual application on the server =/)
 function PLUGIN:PlayerClosedContainerWindow(player)
 	if IsValid(player._UsingCrate) and cider.container.isContainer(player._UsingCrate) then -- If the player is using a crate then we want to seal it!
 		local crate = player._UsingCrate

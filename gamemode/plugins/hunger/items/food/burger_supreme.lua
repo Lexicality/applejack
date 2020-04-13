@@ -1,8 +1,7 @@
---[[
-	~ ||VM|| Supreme ~
-	~ Applejack ~
---]]
-
+--
+-- ~ ||VM|| Supreme ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "||VM|| Supreme";
 ITEM.Cost        = 2500;
 ITEM.Model       = "models/foodnhouseholditems/burgergtasa.mdl";

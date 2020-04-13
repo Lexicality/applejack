@@ -1,9 +1,7 @@
---[[
-	~ Loque Picke ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Loque Picke ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Lockpick";
 ITEM.Plural			= "Lockpicks";
 ITEM.Size			= 1;

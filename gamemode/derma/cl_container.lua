@@ -1,7 +1,7 @@
---[[
-Name: "cl_containr.lua".
-	~ Applejack ~
---]]
+--
+-- "cl_containr.lua"
+-- ~ Applejack ~
+--
 local PANEL = {};
 local width,height = ScrW()*0.75,ScrH()*0.75
 local containermenu,targetEntity,lpl
@@ -170,14 +170,6 @@ function PANEL:Init()
 			table.insert(self.itemFunctions, "Take")
 		end
 	end
-	--[[
-	THE CONTAINER SYSTEM IS COMPLETE (fuck yeah)
-[youtube]http://www.youtube.com/watch?v=D_B0ZUwhBEk&fmt=18[/youtube]
-[b]there are no plugins that use it yet[/b].
-In the interests of getting this fucking massive update out the door within the week, single-use crates will [b]not[/b] be included. The postal system will [b]not[/b] be included. The new contraband system will [b]not[/b] be included.
-The only thing that you can do with containers this update is spawn them from the Q menu. They [b]are[/b] Lock(pick)able, and they [b]are[/b] multiown, so it's not all that bad.
-Container props like filing cabinets spawned by the detail system [b]are[/b] automatically made into containers.
---]]
 
 	-- Create the table to store the item buttons.
 	self.itemButton = {};
@@ -328,10 +320,8 @@ function PANEL:PerformLayout()
 
 	self:SetSize(width,height)
 	self:SetPos((ScrW() - width)/2,(ScrH() - height)/2)
-	--[[
-	self:SetSize(8 + self.InventoryList:GetWide() + 8 + self.containerList:GetWide() + 8, 28 + self.InventoryList:GetTall() + 8 + self.textEntry:GetTall() + 8);
-	self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2);
-	--]]
+	-- self:SetSize(8 + self.InventoryList:GetWide() + 8 + self.containerList:GetWide() + 8, 28 + self.InventoryList:GetTall() + 8 + self.textEntry:GetTall() + 8);
+	-- self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2);
 	self.close:SetSize(48, 16);
 	self.close:SetPos(self:GetWide() - self.close:GetWide() - 4, 3);
 
@@ -343,7 +333,7 @@ function PANEL:PerformLayout()
 end
 
 -- Register the panel.
-vgui.Register("cider_Container", PANEL, "DFrame");--]]
+vgui.Register("cider_Container", PANEL, "DFrame");
 local function UpdateContainer(decoded)
 	if not containermenu then return end
 	containermenu.meta = decoded.meta
@@ -396,10 +386,8 @@ local function NewContainer( handle, id, encoded, decoded )
 		}
 	}
 	--]]
-	--[[
-	decoded.meta.cantake = bit.band(CAN_TAKE, decoded.meta.io) == CAN_TAKE
-	decoded.meta.canput  = bit.band(CAN_PUT,  decoded.meta.io) == CAN_PUT
-	--]]
+	-- decoded.meta.cantake = bit.band(CAN_TAKE, decoded.meta.io) == CAN_TAKE
+	-- decoded.meta.canput  = bit.band(CAN_PUT,  decoded.meta.io) == CAN_PUT
 	if containermenu then containermenu:Remove() end
 	containermenu = vgui.Create"cider_Container"
 	gui.EnableScreenClicker(true);

@@ -1,8 +1,7 @@
---[[
-	~ Hunger Plugin / CL ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Hunger Plugin / CL ~
+-- ~ Applejack ~
+--
 local num
 GM:AddHUDBar("Hunger", Color(50, 255, 50), function()
 	num = lpl._Hunger or 0;

@@ -1,14 +1,9 @@
---[[
-	Content Replacement Service
-	Applejack
---]]
---[[
-local chand		= Material	"models/weapons/v_hand/v_hand_sheet"
-local nhand		= Material	"hand_replacement"
-chand:SetTexture(	"$basetexture",	nhand:GetTexture"$basetexture"	)
-chand:SetTexture(	"$bumpmap",		nhand:GetTexture"$bumpmap"		)
---]]
---[[ Jayhawk's Epic Hands ]]--
+--
+-- Content Replacement Service
+-- Applejack
+--
+
+-- Jayhawk's Epic Hands
 local mat = Material("models/weapons/v_hand/v_hand_sheet");
 local mot = Material("models/weapons/v_models/hands/v_hands");
 local met = Material("hand_replacement_jayhawk_v2");

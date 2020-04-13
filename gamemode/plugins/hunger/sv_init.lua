@@ -1,7 +1,7 @@
---[[
-	~ Hunger Plugin / SV ~
-	~ Applejack ~
---]]
+--
+-- ~ Hunger Plugin / SV ~
+-- ~ Applejack ~
+--
 
 -- Called when a player initially spawns.
 function PLUGIN:PlayerInitialSpawn(player)
@@ -15,10 +15,9 @@ function PLUGIN:PlayerInitialized(player)
 end
 
 -- Called when a player spawns.
---[[
-Changelog:
-29/1/10: Set the player's health to 50 on hunger death.
-]]
+--
+-- Changelog:
+-- 29/1/10: Set the player's health to 50 on hunger death.
 function PLUGIN:PostPlayerSpawn(player, lightSpawn, changeTeam)
 	if (not lightSpawn) then
 		if ((player._Hunger.suicided or player._Hunger.amount == 100)
@@ -43,10 +42,9 @@ function PLUGIN:PlayerDeath(player, inflictor, killer)
 end
 
 -- Called every second that a player is on the server.
---[[
-Changelog:
-29/1/10: Made it not display the hunger bar when you are tied/arrested.
-]]
+--
+-- Changelog:
+-- 29/1/10: Made it not display the hunger bar when you are tied/arrested.
 function PLUGIN:PlayerSecond(player)
 	if (not (player:Alive() and not (player:Arrested() or player:Tied()))) then
 		player:SetCSVar(CLASS_LONG, "_Hunger",0);

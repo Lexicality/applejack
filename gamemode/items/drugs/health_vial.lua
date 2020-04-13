@@ -1,9 +1,7 @@
---[[
-	~ Health Vial ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Health Vial ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Health Vial";
 ITEM.Size			= 1;
 ITEM.Cost			= 100;

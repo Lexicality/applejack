@@ -1,8 +1,7 @@
---[[
-	~ Five Seven SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Five Seven SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo = true;
@@ -66,9 +65,6 @@ SWEP.MaxSpray = 2;
 SWEP.DeltaSpray = 0.25;
 
 -- Set some information about the iron sights.
---[[SWEP.IronSightsPos = Vector(4.5309, -6.4072, 2.8961);
-SWEP.IronSightsAng = Vector(2.0239, -0.0813, -0.1968);]]
-
 --------------------
 SWEP.IronSightsPos = Vector (4.5313, -0.8637, 3.2683)
 SWEP.IronSightsAng = Vector (-0.088, -0.1113, 0)

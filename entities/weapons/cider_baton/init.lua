@@ -1,7 +1,7 @@
---[[
-	~ Baton ~ Serverside ~
-	~ Applejack ~
---]]
+--
+-- ~ Baton ~ Serverside ~
+-- ~ Applejack ~
+--
 includecs("shared.lua");
 AddCSLuaFile("cl_init.lua");
 

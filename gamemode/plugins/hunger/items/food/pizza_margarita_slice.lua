@@ -1,8 +1,7 @@
- --[[
-~ Slice of Margarita Pizza ~
-~ Applejack ~
---]]
-
+--
+-- ~ Slice of Margarita Pizza ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Slice of Margarita Pizza";
 ITEM.Cost        = 20;
 ITEM.Model       = "models/FoodNHouseholdItems/pizzaslice.mdl";

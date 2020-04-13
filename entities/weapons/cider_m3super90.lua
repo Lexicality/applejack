@@ -1,8 +1,7 @@
---[[
-	~ M3 Super 90 SWEP ~
-	~ Applejack ~
---]]
-
+--
+-- ~ M3 Super 90 SWEP ~
+-- ~ Applejack ~
+--
 AddCSLuaFile();
 if (CLIENT) then
 	SWEP.DrawAmmo = true;

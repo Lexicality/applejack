@@ -1,8 +1,7 @@
- --[[
-~ Orange Juice ~
-~ Applejack ~
---]]
-
+--
+-- ~ Orange Juice ~
+-- ~ Applejack ~
+--
 ITEM.Name= "Orange Juice";
 ITEM.Cost= 15;
 ITEM.Model= "models/FoodNHouseholdItems/juice.mdl";

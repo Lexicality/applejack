@@ -1,9 +1,7 @@
---[[
-	~ Crowbar ~
-	~ Applejack ~
---]]
-
-
+--
+-- ~ Crowbar ~
+-- ~ Applejack ~
+--
 ITEM.Name			= "Crowbar";
 ITEM.Plural			= "Crowbars";
 ITEM.Size			= 1;

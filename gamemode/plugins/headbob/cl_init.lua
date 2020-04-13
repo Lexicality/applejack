@@ -1,8 +1,7 @@
---[[
-	~ Head-Bob plugin ~
-	~ Moonshine ~
---]]
-
+--
+-- ~ Head-Bob plugin ~
+-- ~ Moonshine ~
+--
 PLUGIN.Name = "Headbob";
 
 local a,b = 0,0;

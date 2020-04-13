@@ -1,8 +1,7 @@
---[[
-~ Bottle of Red Wine~
-~ Applejack ~
---]]
-
+--
+-- ~ Bottle of Red Wine~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Bottle of Red Wine";
 ITEM.Cost        = 25;
 ITEM.Model       = "models/props_junk/garbage_glassbottle003a.mdl";

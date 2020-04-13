@@ -1,4 +1,4 @@
---[[
-	~ Phone Plugin / CL ~
-	~ Applejack ~
---]]
+--
+-- ~ Phone Plugin / CL ~
+-- ~ Applejack ~
+--

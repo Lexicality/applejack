@@ -1,8 +1,7 @@
---[[
-	~ Preserves ~
-	~ Applejack ~
---]]
-
+--
+-- ~ Preserves ~
+-- ~ Applejack ~
+--
 ITEM.Name        = "Jar of preserves";
 ITEM.Cost        = 10;
 ITEM.Model       = "models/props_lab/jar01b.mdl";

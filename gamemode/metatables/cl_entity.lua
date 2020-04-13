@@ -1,13 +1,13 @@
---[[
-	~ Clientside Entity metatable ~
-	~ Applejack ~
---]]
+--
+-- ~ Clientside Entity metatable ~
+-- ~ Applejack ~
+--
 local meta = _R.Entity;
 if (not meta) then
 	error("["..os.date().."] Applejack Clientside Entity metatable: No metatable found!");
 end
 
---[[ 'Is' functions ]]--
+-- 'Is' functions
 
 ---
 -- Checks to see if the entity is considered a door by the script.
@@ -46,7 +46,7 @@ function meta:Locked()
 	return bit.band(self:GetDTInt(3), OBJ_LOCKED) == OBJ_LOCKED;
 end
 
---[[ 'Get' functions ]]--
+-- 'Get' functions
 
 
 ---
@@ -68,30 +68,28 @@ function meta:GetStatus()
 		end
 	end
 	local dt = self:GetDTInt(3);
-	--[[
-	if bit.band(dt), OBJ_INUSE) == OBJ_INUSE then
-		if p then
-			if status == "" then
-				status = "This is in use"
-			else
-				status = status.. ", but it is in use"
-			end
-		else
-			status = status.."(In Use)"
-		end
-	end
-	if bit.band(dt, OBJ_RAMMABLE) == OBJ_RAMMABLE then
-		if p then
-			if status == "" then
-				status = "You may ram this"
-			else
-				status = status..". You may ram it"
-			end
-		else
-			status = status.."(Rammable)"
-		end
-	end
-	--]]
+	-- if bit.band(dt), OBJ_INUSE) == OBJ_INUSE then
+	-- 	if p then
+	-- 		if status == "" then
+	-- 			status = "This is in use"
+	-- 		else
+	-- 			status = status.. ", but it is in use"
+	-- 		end
+	-- 	else
+	-- 		status = status.."(In Use)"
+	-- 	end
+	-- end
+	-- if bit.band(dt, OBJ_RAMMABLE) == OBJ_RAMMABLE then
+	-- 	if p then
+	-- 		if status == "" then
+	-- 			status = "You may ram this"
+	-- 		else
+	-- 			status = status..". You may ram it"
+	-- 		end
+	-- 	else
+	-- 		status = status.."(Rammable)"
+	-- 	end
+	-- end
 	if bit.band(dt, OBJ_LOCKED) == OBJ_LOCKED then
 		if p then
 			if status == "" then

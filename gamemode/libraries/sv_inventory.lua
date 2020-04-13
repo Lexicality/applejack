@@ -1,8 +1,7 @@
---[[
-Name: "sv_inventory.lua".
-	~ Applejack ~
---]]
-
+--
+-- "sv_inventory.lua"
+-- ~ Applejack ~
+--
 cider.inventory = {};
 umsg.PoolString"cider_Inventory_Item";
 function cider.inventory.update(player, id, amount, force)
@@ -41,12 +40,10 @@ function cider.inventory.update(player, id, amount, force)
 	end
 	-- Send a usermessage to the player to tell him his items have been updated.
 	SendUserMessage("cider_Inventory_Item", player, id, player.cider._Inventory[id] or 0);
-	--[[
-	umsg.Start("cider_Inventory_Item", player);
-		umsg.String(item);
-		umsg.Long(player.cider._Inventory[id] or 0);
-	umsg.End();
-	--]]
+	-- umsg.Start("cider_Inventory_Item", player);
+	-- 	umsg.String(item);
+	-- 	umsg.Long(player.cider._Inventory[id] or 0);
+	-- umsg.End();
 
 	-- Return true because we updated the inventory successfully.
 	return true;
