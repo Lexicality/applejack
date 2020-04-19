@@ -48,24 +48,30 @@ end
 -- Module Functions
 
 ---
--- Desc: Checks if a timer exists
--- Args: name
+--- Checks if a timer exists
+--- @param name string
+--- @return boolean
 function timer.IsTimer(name)
 	return getTimer(name) ~= nil
 end
 
 ---
--- Desc: Create a new timer, destroying any existing ones.
--- Args: name, delay, repititons, function to call at the end, arguments.
-function timer.Create(name, ...)
+--- Create a new timer, destroying any existing ones.
+--- @param name string
+--- @param delay number
+--- @param reps integer
+--- @param func function @Callback to call
+--- @vararg any @Args to pass to func
+function timer.Create(name, delay, reps, func, ...)
 	timer.Destroy(name, true)
-	timer.Adjust(name, ...)
+	timer.Adjust(name, delay, reps, func, ...)
 	timer.Start(name)
 end
 
 ---
--- Desc: Start a timer from the beginning
--- Args: Name
+--- Start a timer from the beginning
+--- @param name string
+--- @return boolean
 function timer.Start(name)
 	local timer = getTimer(name)
 	if not timer then
@@ -78,8 +84,13 @@ function timer.Start(name)
 end
 
 ---
--- Desc: Adjust a timer
--- Args: name, delay, repititons, [function to call at the end], arguments.
+--- Adjust a timer
+--- @param name string
+--- @param delay number
+--- @param reps integer
+--- @param func function @Callback to call
+--- @vararg any @Args to pass to func
+--- @return boolean
 function timer.Adjust(name, delay, reps, func, ...)
 	local arg = {...};
 	local timer = getTimer(name)
@@ -107,8 +118,9 @@ function timer.Adjust(name, delay, reps, func, ...)
 end
 
 ---
--- Desc: Pause a running timer.
--- Args: name
+--- Pause a running timer.
+--- @param name string
+--- @return boolean
 function timer.Pause(name)
 	local timer = getTimer(name)
 	if not timer or timer.status ~= RUNNING then
@@ -120,8 +132,9 @@ function timer.Pause(name)
 end
 
 ---
--- Desc: Resumes a paused timer.
--- Args: name
+--- Resumes a paused timer.
+--- @param name string
+--- @return boolean
 function timer.UnPause(name)
 	local timer = getTimer(name)
 	if not timer or timer.status ~= PAUSED then
@@ -133,8 +146,9 @@ function timer.UnPause(name)
 end
 
 ---
--- Desc: Toggles a timer's pause state.
--- Args: name
+--- Toggles a timer's pause state.
+--- @param name string
+--- @return boolean
 function timer.Toggle(name)
 	local timer = getTimer(name)
 	if timer then
@@ -148,8 +162,9 @@ function timer.Toggle(name)
 end
 
 ---
--- Desc: Stops a running or paused timer.
--- Args: Name
+--- Stops a running or paused timer.
+--- @param name string
+--- @return boolean
 function timer.Stop(name)
 	local timer = getTimer(name)
 	if not timer or timer.status == STOPPED then
@@ -163,8 +178,7 @@ function timer.Stop(name)
 end
 
 ---
--- Desc: Checks all timers and completes any tasks that need doing
--- Args: None
+--- Checks all timers and completes any tasks that need doing
 local nextrep = 0 -- Fer the conditionals
 function timer.Check()
 	local time = CurTime()
@@ -217,7 +231,7 @@ function timer.Check()
 			if not res then
 				ErrorNoHalt(
 
-					
+
 						"Error in conditional timer '" .. tostring(name) .. "' conditional func: " ..
 							tostring(err) .. "\n"
 				)
@@ -249,9 +263,10 @@ end
 hook.Add("Think", "Moonshine Timer Checker", timer.Check);
 
 ---
--- Desc: Destroy a timer, removing all traces of it.
--- Args: name, [delete now]
--- Note: If 'delete now' is not specified, the timer will be deleted on the next think.
+--- Destroy a timer, removing all traces of it.
+--- @param name string
+--- @param now boolean @delete immidately or on next think
+--- @return boolean
 function timer.Destroy(name, now)
 	local timer = getTimer(name)
 	if not timer then
@@ -275,8 +290,10 @@ end
 timer.Remove = timer.Destroy;
 
 ---
--- Desc: Create a simple "create and forget" timer
--- Args: Delay, function, vararg...
+--- Create a simple "create and forget" timer
+--- @param delay number
+--- @param func function
+--- @vararg any
 function timer.Simple(delay, func, ...)
 	table.insert(
 		simpletimers, {fin = UnPredictedCurTime() + delay, func = func, args = {...}}
@@ -284,24 +301,33 @@ function timer.Simple(delay, func, ...)
 	return true
 end
 
--- Desc: Create a conditional timer.
--- Args: Name, Seconds, Condition function, Success function, Failure function, vararg...
--- Note: The Conditional function will be called once every 0.1 seconds for Seconds seconds until it either returns false or the time runs out.
--- 		If it returns false, the Failure function will be called and the timer will be stopped.
--- 		If the time runs out, the Success function will be called.
--- 		If it returns 'skip', 0.1 seconds will be added to the time remaining.
--- 		The arguments passed at the end will be given to all functions.
--- 		(Also note that the arguments are not in the definition. They are all required, however.)
-function timer.Conditional(name, ...)
+--- Create a conditional timer.
+--- Note: The Conditional function will be called once every 0.1 seconds for Seconds seconds until it either returns false or the time runs out.
+--- 		If it returns false, the Failure function will be called and the timer will be stopped.
+--- 		If the time runs out, the Success function will be called.
+--- 		If it returns 'skip', 0.1 seconds will be added to the time remaining.
+--- 		The arguments passed at the end will be given to all functions.
+--- @param name string
+--- @param seconds number
+--- @param conditional function
+--- @param success function
+--- @param failure function
+--- @vararg any
+function timer.Conditional(name, seconds, conditional, success, failure, ...)
 	timer.Destroy(name, true)
-	timer.AdjustConditional(name, ...)
+	timer.AdjustConditional(name, seconds, conditional, success, failure, ...)
 	timer.Start(name)
 	return true
 end
 
 ---
--- Desc: Adjust a conditional timer.
--- Args: Name, Seconds, [Condition function], [Success function], [Failure function], vararg...
+--- Adjust a conditional timer.
+--- @param name string
+--- @param seconds number
+--- @param conditional function
+--- @param success function
+--- @param failure function
+--- @vararg any
 function timer.AdjustConditional(
 	name, seconds, conditional, success, failure, ...
 )
@@ -327,11 +353,15 @@ function timer.AdjustConditional(
 end
 
 ---
--- Desc: Violates a conditional timer.
+--- Violates a conditional timer.
 -- Args: name, [vararg...]
--- Note: This function will cause a conditional timer to act as if the condition function returned false.
--- 		Additional argumenets passed will be passed to the failure function.
--- 		Do not call this from a conditional timer, it will have unpredictable results.
+--- Note:
+---  This function will cause a conditional timer to act as if the condition
+---   function returned false.
+---  Do not call this from a conditional timer, it will have unpredictable
+---   results.
+--- @param name string
+--- @vararg any @Arguments to pass to the failure function
 function timer.Violate(name, ...)
 	local Timer = getTimer(name)
 	if not Timer then
