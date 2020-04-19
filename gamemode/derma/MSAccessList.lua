@@ -29,29 +29,16 @@ local function UpdateMenu(data)
 	menu:SetData(data);
 end
 
-if (net) then
-	net.Receive(
-		"MS Access List", function()
-			CreateMenu(net.ReadTable());
-		end
-	);
-	net.Receive(
-		"MS Access List update", function()
-			UpdateMenu(net.ReadTable());
-		end
-	);
-else
-	datastream.Hook(
-		"MS Access List", function(_, _, _, data)
-			CreateMenu(data);
-		end
-	);
-	datastream.Hook(
-		"MS Access List update", function(_, _, _, data)
-			UpdateMenu(data);
-		end
-	);
-end
+net.Receive(
+	"MS Access List", function()
+		CreateMenu(net.ReadTable());
+	end
+);
+net.Receive(
+	"MS Access List update", function()
+		UpdateMenu(net.ReadTable());
+	end
+);
 
 ----------------------------------------
 ----------------------------------------
