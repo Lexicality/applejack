@@ -392,11 +392,6 @@ do
 		ent:SetPPOwner(ply)
 		ent:SetPPSpawner(ply)
 	end
-	local function AcceptStream(ply, handler, id)
-		if (handler == "ppconfig") then
-			return ply:HasAccess("s");
-		end
-	end
 	hook.Add("PlayerAuthed", "Mshine Prop Protection", PlayerAuthed);
 	hook.Add("PlayerDisconnected", "Mshine Prop Protection", PlayerDisconnected);
 	hook.Add("PlayerInitialSpawn", "MShine Prop Protection", PlayerInitialSpawn);
@@ -405,7 +400,6 @@ do
 	hook.Add("PostPlayerSaveData", "MShine Prop Protection", PostPlayerSaveData);
 	hook.Add("PlayerSpawnedSENT", "Mshine Prop Protection", spawnHandler);
 	hook.Add("PlayerSpawnedVehicle", "Mshine Prop Protection", spawnHandler);
-	hook.Add("AcceptStream", "Mshine Prop Protection", AcceptStream);
 end
 
 local fakeplayer;
@@ -523,18 +517,17 @@ GM:RegisterCommand{
 	end,
 };
 
-local function ppconfig(ply, _, _, _, upload)
-	-- This really shouldn't be an issue but I don't trust datastream.
+local function ppconfig(len, ply)
 	if (not ply:HasAccess("s")) then
 		ply:Notify(
 			"You do not have access to the prop protection config!", NOTIFY_GENERIC
 		);
 		return;
 	end
-	local n;
+	local upload = net.ReadTable();
 	-- Minimal exploit mode. Only looks for keys already extant in the config and only accepts numbers.
 	for key in pairs(config) do
-		n = tonumber(upload[key]);
+		local n = tonumber(upload[key]);
 		if (n) then
 			config[key] = n;
 			-- Notify everyone else
@@ -542,7 +535,8 @@ local function ppconfig(ply, _, _, _, upload)
 		end
 	end
 end
-datastream.Hook("ppconfig", ppconfig);
+util.AddNetworkString("ppconfig")
+net.Receive("ppconfig", ppconfig)
 
 do
 	local function s(p, r)

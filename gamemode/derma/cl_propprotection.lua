@@ -64,8 +64,9 @@ local function adminPanel(panel)
 					if (not lpl:IsSuperAdmin()) then
 						return;
 					end
-					-- Oh hey. A legitimate use for datastream!
-					datastream.StreamToServer("ppconfig", config);
+					net.Start("ppconfig");
+					net.WriteTable(config);
+					net.SendToServer();
 				end
 			);
 		end
