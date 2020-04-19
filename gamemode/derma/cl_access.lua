@@ -618,7 +618,7 @@ local function UpdateContainer(decoded)
 	accessmenu:InvalidateLayout()
 	accessmenu.Buttoned = false
 end
-function NewContainer(handle, id, encoded, decoded)
+function NewContainer(decoded)
 	if accessmenu then
 		accessmenu:Remove()
 	end
@@ -627,9 +627,15 @@ function NewContainer(handle, id, encoded, decoded)
 	accessmenu:MakePopup()
 	UpdateContainer(decoded)
 end
-datastream.Hook("Access Menu", NewContainer);
-datastream.Hook(
-	"Access Menu Update", function(handle, id, encoded, decoded)
+net.Receive(
+	"Access Menu", function(len)
+		local decoded = net.ReadTable()
+		NewContainer(decoded)
+	end
+);
+net.Receive(
+	"Access Menu Update", function(len)
+		local decoded = net.ReadTable()
 		UpdateContainer(decoded)
 	end
 )

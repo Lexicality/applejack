@@ -1173,6 +1173,8 @@ function GM:ShowHelp(ply)
 	umsg.End()
 end
 
+util.AddNetworkString("Access Menu")
+util.AddNetworkString("Access Menu Update")
 -- Called when a player presses F2.
 -- TODO: Rewrite
 function GM:ShowTeam(ply)
@@ -1204,7 +1206,9 @@ function GM:ShowTeam(ply)
 				ent:GetDisplayName() or nil,
 		};
 	end
-	datastream.StreamToClients(ply, "Access Menu", tab);
+	net.Start("Access Menu")
+	net.WriteTable(tab)
+	net.Send(ply);
 end
 
 function GM:ShowSpare1(ply)

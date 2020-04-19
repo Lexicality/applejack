@@ -1415,7 +1415,9 @@ GM:RegisterCommand{
 					ent:GetDisplayName() or nil,
 			},
 		};
-		datastream.StreamToClients(ply, "Access Menu Update", tab);
+		net.Start("Access Menu Update")
+		net.WriteTable(tab)
+		net.Send(ply);
 		return res, err;
 	end,
 };
