@@ -62,7 +62,12 @@ function PANEL:Think()
 					end
 				end
 				if diff then
-					datastream.StreamToServer("cider_Laws", tab)
+					net.Start("cider_Laws")
+					for i = 1, 10 do
+						-- TODO: This needs to have literally any kind of validation
+						net.WriteString(tab[i]);
+					end
+					net.SendToServer();
 				end
 				EditPanel:Close()
 			end

@@ -137,18 +137,6 @@ function GM:CanQueryDB()
 	return false;
 end
 
--- WELL DONE MR DA DECO MAN. - Adding this as GM:AcceptStream DOES NOT WORK
--- Called when a client streams at the server (try not to cross)
-function AcceptStream(pl, handler, id)
-	-- MsgN(string.format("Incoming datastream from %s with handler %s and id %s",pl:Name(),handler,id))
-	if table.HasValue(GM.Config["Acceptable Datastreams"], handler) then
-		return true
-	else
-		return false
-	end
-end
-hook.Add("AcceptStream", "AcceptStream", AcceptStream)
-
 -- Called when all of the map entities have been initialized.
 function GM:InitPostEntity()
 	local count = 0;
@@ -509,7 +497,7 @@ local function modeltimer(ply)
 			end
 		end
 		umsg.End()
-		datastream.StreamToClients(ply, "cider_Laws", cider.laws.stored) -- The laws has been updating bro
+		cider.laws.send(ply);
 	end
 end
 -- Called when a player initially spawns.

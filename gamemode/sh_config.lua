@@ -176,7 +176,6 @@ config["Weapon Timers"] = {
 		[TYPE_SMALL] = "puts the %s back in %s pocket",
 	},
 } --
-config["Acceptable Datastreams"] = {"WhatTheFuckAreYouDoing?!", "cider_Laws"}
 config["sv_tags"] = {
 	"applejack", -- Please always leave this in
 	"rp",

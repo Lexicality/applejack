@@ -16,23 +16,37 @@ cider.laws.stored = {
 	"No Armbands Beyond This Point", -- I love how surreal this is, but no one ever comments on it. *SIGH*
 }
 
-if SERVER then
-	function cider.laws.update(laws)
-		local updated = false
-		-- Laws can only be a table of strings with #=10. Let's make damn sure of this
-		for i = 1, 10 do
-			laws[i] = laws[i] or ""
-			if laws[i] ~= cider.laws.stored[i] then
-				updated = true
-				cider.laws.stored[i] = tostring(laws[i])
-			end
-		end
-		if updated then
-			datastream.StreamToClients(player.GetAll(), "cider_Laws", cider.laws.stored)
+---
+--- Reads the laws from a net message
+--- @return boolean
+function cider.laws.recieve()
+	local updated = false
+	for i = 1, 10 do
+		local law = net.ReadString();
+		if cider.laws.stored[i] ~= law then
+			updated = true
+			cider.laws.stored[i] = law
 		end
 	end
-	-- Updates the city laws
-	local function getLaws(ply, handler, id, encoded, decoded)
+	return updated;
+end
+
+if SERVER then
+	util.AddNetworkString("cider_Laws");
+
+	function cider.laws.send(recipient)
+		net.Start("cider_Laws")
+		for i = 1, 10 do
+			net.WriteString(cider.laws.stored[i]);
+		end
+		if (recipient) then
+			net.Send(recipient);
+		else
+			net.Broadcast();
+		end
+	end
+
+	local function updateLaws(len, ply)
 		ply._NextLawUpdate = ply._NextLawUpdate or CurTime()
 		if ply._NextLawUpdate > CurTime() then
 			ply:Notify(
@@ -42,32 +56,28 @@ if SERVER then
 			)
 			return
 		end
+
 		ply._NextLawUpdate = CurTime() + 120
 		if not hook.Call("PlayerCanChangeLaws", GAMEMODE, ply) then
 			ply:Notify("You may not change the laws.", 1)
 			return
 		end
-		cider.laws.update(decoded)
-		player.NotifyAll(
-			NOTIFY_GENERIC, "%s just updated the city laws", ply:GetName()
-		)
+
+		local updated = cider.laws.recieve()
+		if updated then
+			cider.laws.send()
+			player.NotifyAll(
+				NOTIFY_GENERIC, "%s just updated the city laws", ply:GetName()
+			)
+		end
 	end
-	datastream.Hook("cider_Laws", getLaws);
+	net.Receive("cider_Laws", updateLaws)
 else
 	cider.laws.update = true
-	local function getLaws(handler, id, encoded, decoded)
-		cider.laws.stored = decoded
-		cider.laws.update = true
-	end
-	datastream.Hook("cider_Laws", getLaws);
-	usermessage.Hook(
-		"cider.laws.update", function(msg)
-			cider.laws.stored = {}
-			length = msg:ReadLong()
-			for i = 1, length do
-				table.insert(cider.laws.stored, msg:ReadString())
-			end
-			cider.laws.update = true
+
+	net.Receive(
+		"cider_Laws", function(len)
+			cider.laws.update = cider.laws.recieve();
 		end
 	)
 end
