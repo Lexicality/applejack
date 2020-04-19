@@ -17,7 +17,6 @@ GM.LuaFolder = string.sub(GM.Folder, 11, -1)
 IncludeCS("timer.lua");
 -- Derive the gamemode from sandbox.
 DeriveGamemode("Sandbox");
-require("datastream")
 require("csvars")
 
 -- Create the Cider table and the configuration table.
