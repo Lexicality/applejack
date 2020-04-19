@@ -377,6 +377,7 @@ local function UpdateContainer(decoded)
 		return
 	end
 	containermenu:SetTitle(decoded.meta.name)
+	-- TODO: This doesn't get updated fast enough because the inventory is still using umsgs
 	local pinventory = table.Copy(cider.inventory.stored);
 	local cinventory = decoded.contents
 	local m = LocalPlayer()._Money
@@ -405,7 +406,7 @@ hook.Add(
 		containermenu.pInventory.updatePanel = true
 	end
 )
-local function NewContainer(handle, id, encoded, decoded)
+local function NewContainer(decoded)
 	--[[
 	local tab = {
 		contents = {
@@ -436,9 +437,15 @@ local function NewContainer(handle, id, encoded, decoded)
 	containermenu:MakePopup()
 	UpdateContainer(decoded)
 end
-datastream.Hook("cider_Container", NewContainer);
-datastream.Hook(
-	"cider_Container_Update", function(handle, id, encoded, decoded)
+net.Receive(
+	"cider_Container", function(len)
+		local decoded = net.ReadTable()
+		NewContainer(decoded)
+	end
+)
+net.Receive(
+	"cider_Container_Update", function(len)
+		local decoded = net.ReadTable()
 		UpdateContainer(decoded)
 	end
 )

@@ -1135,7 +1135,9 @@ GM:RegisterCommand{
 					name = cider.container.getName(entity) or "Container",
 				},
 			}
-			datastream.StreamToClients(ply, "cider_Container_Update", tab);
+			net.Start("cider_Container_Update")
+			net.WriteTable(tab)
+			net.Send(ply)
 		else
 			SendUserMessage("cider_CloseContainerMenu", ply);
 		end

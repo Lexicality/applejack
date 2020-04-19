@@ -77,7 +77,7 @@ function GM:PlayerAuthed(ply, steamID, uniqueID)
 	if not string.find(ply:Name(), "[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
 		ply:Kick(
 
-			
+
 				"A minimum of 4 alphanumeric characters is required in your name to play here."
 		)
 	elseif string.find(ply:Name(), ";") then
@@ -220,7 +220,9 @@ function GM:KeyPress(ply, key)
 					name = cider.container.getName(ent) or "Container",
 				},
 			}
-			datastream.StreamToClients(ply, "cider_Container", tab);
+			net.Start("cider_Container")
+			net.WriteTable(tab)
+			net.Send(ply)
 		end
 	end
 end

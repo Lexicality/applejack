@@ -24,6 +24,9 @@ function PLUGIN:PlayerClosedContainerWindow(player)
 	end
 end
 
+
+util.AddNetworkString("cider_Container")
+util.AddNetworkString("cider_Container_Update")
 function PLUGIN:CrateTime(player, item)
 	if player._UsingCrate then
 		return false
@@ -76,8 +79,13 @@ function PLUGIN:CrateTime(player, item)
 			name = cider.container.getName(crate) or "Container",
 		},
 	}
-	timer.Simple(0, datastream.StreamToClients, player, "cider_Container", tab);
-	--	datastream.StreamToClients( player, "cider_Container", tab );
+	timer.Simple(
+		0, function()
+			net.Start("cider_Container")
+			net.WriteTable(tab)
+			net.Send(player)
+		end
+	)
 	crate._InUse = player
 	player._UsingCrate = crate
 end
