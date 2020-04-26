@@ -13,9 +13,7 @@ local function success(ply, _, self)
 		return
 	end
 	ply:Emote(
-		GM.Config["Weapon Timers"]["Equip Message"]["Final"]:format(
-			self.WeaponType, ply._GenderWord
-		)
+		GM.Config["Weapon Timers"]["Equip Message"]["Final"]:format(self.WeaponType)
 	);
 	ply._Equipping = false;
 	ply._FreshWeapons[self.UniqueID] = true;
@@ -31,9 +29,7 @@ local function failure(ply)
 	if (not ply:IsValid()) then
 		return
 	end
-	ply:Emote(
-		GM.Config["Weapon Timers"]["Equip Message"]["Abort"]:format(ply._GenderWord)
-	);
+	ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 	ply._Equipping = false;
 	SendUserMessage("MS Equippr FAIL", ply);
 end
@@ -75,8 +71,6 @@ function ITEM:onUse(ply)
 		ply:UniqueID() .. " equipping", delay, conditional, success, failure, ply,
 		ply:GetPos(), self
 	);
-	ply:Emote(
-		GM.Config["Weapon Timers"]["Equip Message"]["Start"]:format(ply._GenderWord)
-	);
+	ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]);
 	return false -- Removing the weapon from your inventory is handled in the timer
 end

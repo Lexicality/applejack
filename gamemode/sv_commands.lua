@@ -834,10 +834,7 @@ GM:RegisterCommand{
 		ply._Job = words;
 		ply:SetNWString("Job", ply._Job);
 		ply:Notify("You have changed your job title to '" .. words .. "'.");
-		GM:Log(
-			EVENT_EVENT, "%s changed " .. ply._GenderWord .. " job text to %q.",
-			ply:Name(), words
-		);
+		GM:Log(EVENT_EVENT, "%s changed their job text to %q.", ply:Name(), words);
 	end,
 };
 
@@ -876,17 +873,11 @@ GM:RegisterCommand{
 			return false, "You are already " .. gender .. "!";
 		elseif (gender == "male") then
 			ply._NextSpawnGender = "Male";
-			ply._NextSpawnGenderWord = "his";
 		else
 			ply._NextSpawnGender = "Female";
-			ply._NextSpawnGenderWord = "her";
 		end
 		ply:Notify("You will be " .. gender .. " next time you spawn.", 0);
-		GM:Log(
-			EVENT_EVENT,
-			"%s set " .. ply._NextSpawnGenderWord .. " gender to " .. gender .. ".",
-			ply:Name()
-		);
+		GM:Log(EVENT_EVENT, "%s set their gender to " .. gender .. ".", ply:Name());
 	end,
 };
 
@@ -1156,26 +1147,19 @@ do -- isolate vars
 		ply._Equipping = false;
 		local s, f = cider.inventory.update(ply, class, 1);
 		if (not s) then
-			ply:Emote(
-				GM.Config["Weapon Timers"]["Equip Message"]["Abort"]:format(ply._GenderWord)
-			);
+			ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 			if (f and f ~= "") then
 				ply:Notify(f, 1);
 			end
 			return
 		end
 		ply:StripWeapon(class);
-		GM:Log(
-			EVENT_EVENT, "%s holstered " .. ply._GenderWord .. " %s.", ply:Name(),
-			GM.Items[class].Name
-		);
+		GM:Log(EVENT_EVENT, "%s holstered their %s.", ply:Name(), GM.Items[class].Name);
 		ply:SelectWeapon("cider_hands");
 		local weptype = GM.Items[class].WeaponType
 		if weptype then
 			ply:Emote(
-				GM.Config["Weapon Timers"]["Equip Message"]["Plugh"]:format(
-					weptype, ply._GenderWord
-				)
+				GM.Config["Weapon Timers"]["Equip Message"]["Plugh"]:format(weptype)
 			);
 		end
 	end
@@ -1184,9 +1168,7 @@ do -- isolate vars
 		if (not ply:IsValid()) then
 			return
 		end
-		ply:Emote(
-			GM.Config["Weapon Timers"]["Equip Message"]["Abort"]:format(ply._GenderWord)
-		);
+		ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 		ply._Equipping = false;
 		SendUserMessage("MS Equippr FAIL", ply);
 	end
@@ -1231,9 +1213,7 @@ do -- isolate vars
 				ply:UniqueID() .. " holster", delay, conditional, success, failure, ply,
 				ply:GetPos(), class
 			);
-			ply:Emote(
-				GM.Config["Weapon Timers"]["Equip Message"]["Start"]:format(ply._GenderWord)
-			);
+			ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]);
 		end,
 	};
 end
@@ -1289,10 +1269,8 @@ GM:RegisterCommand{
 				ent:SetDisplayName(name)
 				-- Loggin.
 				GM:Log(
-					EVENT_ENTITY,
-					"%s changed " .. ply._GenderWord .. " %s's name from %q to %q.",
-					ply:Name(), ent._isDoor and "door" or ent:GetNWString("Name", "entity"),
-					oldname, name
+					EVENT_ENTITY, "%s changed their %s's name from %q to %q.", ply:Name(),
+					ent._isDoor and "door" or ent:GetNWString("Name", "entity"), oldname, name
 				);
 			elseif (action == "sell") then
 				if (ent._Unsellable) then
@@ -1301,13 +1279,13 @@ GM:RegisterCommand{
 				-- Horray for verbose logging!
 				if (ent:IsDoor()) then
 					GM:Log(
-						EVENT_ENTITY, "%s sold " .. ply._GenderWord .. " %s %s.", ply:Name(),
-						"door", ent:GetDoorName()
+						EVENT_ENTITY, "%s sold their %s %s.", ply:Name(), "door",
+						ent:GetDoorName()
 					);
 					ply:TakeDoor(ent);
 				else
 					GM:Log(
-						EVENT_ENTITY, "%s sold " .. ply._GenderWord .. " %s %s.", ply:Name(),
+						EVENT_ENTITY, "%s sold their %s %s.", ply:Name(),
 						ent:GetNWString("Name", "entity"), ent:GetDisplayName()
 					);
 					-- TODO: Maybe this should call some kind of hook so plugins that utilise this can do shizzle?
@@ -1370,7 +1348,7 @@ local function enthandle(ply, ent, action, kind, id)
 		elseif kind == "group" then
 			ent:GiveAccessToGroup(target);
 		end
-		word = "%s gave %s access to " .. ply._GenderWord .. " %s.";
+		word = "%s gave %s access to their %s.";
 	else
 		if kind == "player" then
 			ent:TakeAccessFromPlayer(target);
@@ -1381,7 +1359,7 @@ local function enthandle(ply, ent, action, kind, id)
 		elseif kind == "group" then
 			ent:TakeAccessFromGroup(target);
 		end
-		word = "%s removed %s's access from " .. ply._GenderWord .. " %s.";
+		word = "%s removed %s's access from their %s.";
 	end
 	GM:Log(
 		EVENT_ENTITY, word, ply:Name(), name,
@@ -1689,17 +1667,11 @@ GM:RegisterCommand{
 		if (string.lower(text) == "none") then
 			ply._Details = "";
 			ply:Notify("You have removed your details.");
-			GM:Log(
-				EVENT_EVENT, "%s changed " .. ply._GenderWord .. " details to %q.",
-				ply:Name(), "nothing"
-			)
+			GM:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), "nothing")
 		else
 			ply._Details = text;
 			ply:Notify("You have changed your details to '" .. text .. "'.");
-			GM:Log(
-				EVENT_EVENT, "%s changed " .. ply._GenderWord .. " details to %q.",
-				ply:Name(), text
-			)
+			GM:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), text)
 		end
 		ply:SetNWString("Details", ply._Details);
 	end,

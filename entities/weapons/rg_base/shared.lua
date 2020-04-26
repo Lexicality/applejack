@@ -302,9 +302,8 @@ function SWEP:Deploy()
 		if not self.Owner._FreshWeapons[self.ClassName] then
 			cider.chatBox.addInRadius(
 				self.Owner, "me",
-				GM.Config["Weapon Timers"]["deploymessage"][self.Size]:format(
-					self.TypeName, self.Owner._GenderWord
-				), self.Owner:GetPos(), GM.Config["Talk Radius"]
+				GM.Config["Weapon Timers"]["deploymessage"][self.Size]:format(self.TypeName),
+				self.Owner:GetPos(), GM.Config["Talk Radius"]
 			);
 		else
 			self.Owner._FreshWeapons[self.ClassName] = nil
@@ -459,9 +458,8 @@ function SWEP:Holster(wep)
 			end
 			cider.chatBox.addInRadius(
 				self.Owner, "me",
-				GM.Config["Weapon Timers"]["holstermessage"][self.Size]:format(
-					self.TypeName, self.Owner._GenderWord
-				), self.Owner:GetPos(), GM.Config["Talk Radius"]
+				GM.Config["Weapon Timers"]["holstermessage"][self.Size]:format(self.TypeName),
+				self.Owner:GetPos(), GM.Config["Talk Radius"]
 			);
 		end
 		self:DoAmmoStuff()

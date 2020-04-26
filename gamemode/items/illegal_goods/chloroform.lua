@@ -24,8 +24,8 @@ function ITEM:onUse(ply)
 		return false;
 	end
 	ply:Emote(
-		"grabs " .. victim:Name() .. " from behind and shoves a dirty rag over " ..
-			victim._GenderWord .. " mouth"
+		"grabs " .. victim:Name() ..
+			" from behind and shoves a dirty rag over their mouth"
 	);
 	victim:Emote("struggles a bit then slumps to the floor");
 	victim._Sleeping = true;

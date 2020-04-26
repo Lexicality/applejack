@@ -407,7 +407,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._ScaleDamage = 1;
 	ply._Details = "";
 	ply._NextSpawnGender = "";
-	ply._NextSpawnGenderWord = "";
 	ply._Ammo = {};
 	ply.ragdoll = {};
 	ply._NextUse = {};
@@ -426,7 +425,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._LightSpawn = false;
 	ply._ChangeTeam = false;
 	ply._HideHealthEffects = false;
-	ply._GenderWord = "his";
 	ply._Gender = "Male";
 	ply._NextOOC = CurTime();
 	ply._NextAdvert = CurTime();
@@ -602,8 +600,6 @@ function GM:PlayerSpawn(ply)
 		if (ply._NextSpawnGender ~= "") then
 			ply._Gender = ply._NextSpawnGender
 			ply._NextSpawnGender = ""
-			ply._GenderWord = ply._NextSpawnGenderWord
-			ply._NextSpawnGenderWord = ""
 		end
 
 		-- Set it so that the ply does not drop weapons.
@@ -678,9 +674,8 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	end
 	if (ply:GetNWBool("Typing") and IsValid(attacker) and attacker:IsPlayer()) then
 		player.NotifyAll(
-			NOTIFY_CHAT,
-			"%s (%s) killed %s while " .. (ply._GenderWord == "his" and "he" or "she") ..
-				" was typing!", attacker:Name(), attacker:SteamID(), ply:Name()
+			NOTIFY_CHAT, "%s (%s) killed %s while they were typing!", attacker:Name(),
+			attacker:SteamID(), ply:Name()
 		);
 	end
 	if IsValid(ply._BackGun) then

@@ -50,9 +50,7 @@ function SWEP:PrimaryAttack()
 	if (math.random() < owner._LockpickChance) then
 		-- Tell the world with text'n'noise
 		self:DoSound(2)
-		owner:Emote(
-			"manages to snap " .. owner._GenderWord .. " lockpick off in the lock."
-		);
+		owner:Emote("manages to snap their lockpick off in the lock.");
 		-- Reset the lock
 		ent._LockpickingCount = 0;
 		-- Reset the break chance
@@ -70,10 +68,7 @@ function SWEP:PrimaryAttack()
 	end
 	-- We have successfully picked the lock! Tell people.
 	owner:Emote(
-
-		
-			"opens the lock with a final thrust, slightly damaging " .. owner._GenderWord ..
-				" lockpick"
+		"opens the lock with a final thrust, slightly damaging their lockpick"
 	)
 	self:DoSound(1)
 	-- Reset the lock
@@ -85,7 +80,6 @@ function SWEP:PrimaryAttack()
 	if (ent:IsPlayer()) then
 		ent:UnArrest();
 		ent:Emote(
-
 			
 				"pulls off the unlocked handcuffs and throws them away hard enough to break them."
 		);

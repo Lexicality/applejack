@@ -157,23 +157,20 @@ config["Weapon Timers"] = {
 	["deploytime"] = {[TYPE_LARGE] = 2, [TYPE_SMALL] = 1},
 	["redeploytime"] = {[TYPE_LARGE] = 30, [TYPE_SMALL] = 20},
 	["reholstertime"] = {[TYPE_LARGE] = 10, [TYPE_SMALL] = 5},
-	["deploymessage"] = { -- 1 gun type, 2 gender
-		[TYPE_LARGE] = "pulls a %s off %s back",
-		[TYPE_SMALL] = "pulls a %s out of %s pocket",
+	["deploymessage"] = {
+		[TYPE_LARGE] = "pulls a %s off their back",
+		[TYPE_SMALL] = "pulls a %s out of their pocket",
 	},
 	["equiptime"] = {[TYPE_LARGE] = 5, [TYPE_SMALL] = 2},
 	["Equip Message"] = {
-		["Start"] = "starts rummaging through %s backpack",
-		["Final"] = "pulls out a %s gun and puts %s backpack back on",
-		["Abort"] = "gives up and pulls %s backpack back on",
-		["Plugh"] = "slides the %s gun back into %s backpack and puts it back on",
-		-- 1 gun type, 2 gender
-		-- [TYPE_LARGE] = "Pulls out a %s and puts %s backpack back on",
-		-- [TYPE_SMALL] = "Pulls out a %s and puts %s backpack back on"
+		["Start"] = "starts rummaging through their backpack",
+		["Final"] = "pulls out a %s gun and puts their backpack back on",
+		["Abort"] = "gives up and pulls their backpack back on",
+		["Plugh"] = "slides the %s gun back into their backpack and puts it back on",
 	},
-	["holstermessage"] = { -- 1 gun type, 2 gender
-		[TYPE_LARGE] = "puts the %s back on %s back",
-		[TYPE_SMALL] = "puts the %s back in %s pocket",
+	["holstermessage"] = {
+		[TYPE_LARGE] = "puts the %s back on their back",
+		[TYPE_SMALL] = "puts the %s back in their pocket",
 	},
 } --
 config["sv_tags"] = {

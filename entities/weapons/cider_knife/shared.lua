@@ -137,8 +137,7 @@ function SWEP:PrimaryAttack()
 								);
 								trace.Entity:UnTie();
 								trace.Entity:Emote(
-									"shakes the remains of the rope from " .. trace.Entity._GenderWord ..
-										" wrists and rubs them"
+									"shakes the remains of the rope from their wrists and rubs them"
 								);
 								return
 							elseif (trace.Entity:GetAimVector():DotProduct(aimVectorOwner) > 0.5) then

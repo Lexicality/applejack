@@ -77,7 +77,7 @@ function GM:PlayerAuthed(ply, steamID, uniqueID)
 	if not string.find(ply:Name(), "[A-Za-z1-9][A-Za-z1-9][A-Za-z1-9][A-Za-z1-9]") then
 		ply:Kick(
 
-
+			
 				"A minimum of 4 alphanumeric characters is required in your name to play here."
 		)
 	elseif string.find(ply:Name(), ";") then
@@ -115,16 +115,13 @@ end
 local function utwin(ply, target)
 	if (IsValid(ply)) then
 		ply:Emote(
-			"somehow manages to cut through the rope and puts " .. ply._GenderWord ..
-				" knife away, job done."
+			
+				"somehow manages to cut through the rope and puts their knife away, job done."
 		);
 		ply.tying.target = NULL;
 	end
 	if (IsValid(target)) then
-		target:Emote(
-			"shakes the remains of the rope from " .. target._GenderWord ..
-				" wrists and rubs them"
-		);
+		target:Emote("shakes the remains of the rope from their wrists and rubs them");
 		target:UnTie();
 		target.tying.savior = NULL;
 	end
