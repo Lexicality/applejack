@@ -449,61 +449,37 @@ function GM:PlayerDataLoaded(ply, success)
 			(citrus and citrus.Player.GetGroup(ply).Name == "Moderators")
 	);
 
-	-- Respawn them now that they have initialized and then freeze them.
+	-- Respawn them now that they have initialized
 	ply:Spawn()
-	ply:Freeze(true)
-	-- Unfreeze them in a few seconds from now.
-	-- TODO: WHY?
-	timer.Simple(
-		2, function()
-			if (IsValid(ply)) then
-				-- Check if the player is arrested.
-				if (ply.cider._Arrested) then
-					ply:Arrest();
-				end
-				ply:Freeze(false)
-				-- We can now start updating the player's data.
-				ply._UpdateData = true
+	-- Check if the player is arrested.
+	if (ply.cider._Arrested) then
+		ply:Arrest();
+	end
+	-- We can now start updating the player's data.
+	ply._UpdateData = true
 
-				-- Send a user message to remove the loading screen.
-				umsg.Start("cider.player.initialized", ply)
-				umsg.End()
-			end
-		end
-	)
+	-- Send a user message to remove the loading screen.
+	umsg.Start("cider.player.initialized", ply)
+	umsg.End()
 end
 
-local function inittimer(ply)
-	ply._Timeout = ply._Timeout or 0
-	ply._Timeout = ply._Timeout + 1
-	if ply._Timeout <= 300 then
-		GM:PlayerInitialSpawn(ply)
-	else
-		error("player timeout in PlayerInitialSpawn()")
-	end
-end
-local function modeltimer(ply)
-	if IsValid(ply) then
-		umsg.Start("cider_ModelChoices", ply)
-		umsg.Short(table.Count(ply._ModelChoices))
-		for name, gender in pairs(ply._ModelChoices) do
-			umsg.String(name)
-			umsg.Short(#gender)
-			for team, choice in ipairs(gender) do
-				umsg.Short(team)
-				umsg.Short(choice)
-			end
-		end
-		umsg.End()
-		cider.laws.send(ply);
-	end
-end
 -- Called when a player initially spawns.
 function GM:PlayerInitialSpawn(ply)
-	if (not IsValid(ply)) then
-		timer.Simple(0.2, inittimer, ply);
-		return;
+	ply._Loading = true
+
+	-- Kill them silently until we've loaded the data.
+	ply:KillSilent()
+end
+
+-- https://github.com/Facepunch/garrysmod-requests/issues/718
+function GM:SetupMove(ply, _, cmd)
+	if (ply._Loading and not cmd:IsForced()) then
+		ply._Loading = false
+		gamemode.Call("PlayerFullyConnected", ply)
 	end
+end
+
+function GM:PlayerFullyConnected(ply)
 	ply:LoadData();
 
 	ply._ModelChoices = {}
@@ -517,10 +493,19 @@ function GM:PlayerInitialSpawn(ply)
 			end
 		end
 	end
-	timer.Simple(0.2, modeltimer, ply)
 
-	-- Kill them silently until we've loaded the data.
-	ply:KillSilent()
+	umsg.Start("cider_ModelChoices", ply)
+	umsg.Short(table.Count(ply._ModelChoices))
+	for name, gender in pairs(ply._ModelChoices) do
+		umsg.String(name)
+		umsg.Short(#gender)
+		for team, choice in ipairs(gender) do
+			umsg.Short(team)
+			umsg.Short(choice)
+		end
+	end
+	umsg.End()
+	cider.laws.send(ply);
 end
 
 -- Called every frame that a player is dead.
