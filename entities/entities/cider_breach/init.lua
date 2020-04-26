@@ -124,25 +124,6 @@ function ENT:Breach()
 	self:Remove();
 end
 
-local function dothrow(ent, backwards)
-	if not IsValid(ent) then
-		return
-	end
-	local pent = ent:GetPhysicsObject()
-	if not IsValid(pent) then
-		return
-	end
-	pent:ApplyForceCenter(backwards * 10000)
-end
-local function doremove(ent, door)
-	if IsValid(ent) then
-		ent:Remove()
-	end
-	if IsValid(door) then
-		door:SetNotSolid(false)
-		door:SetNoDraw(false)
-	end
-end
 function ENT:BlowDoorOffItsHinges()
 	local backwards = self:GetUp() * -1 -- If you fuck with the model, this won't work
 	local pos = self._Door:GetPos()
@@ -162,8 +143,30 @@ function ENT:BlowDoorOffItsHinges()
 	ent:Activate()
 	ent:SetPPOwner(NULL);
 	local door = self._Door
-	timer.Simple(0.1, dothrow, ent, backwards);
-	timer.Simple(GM.Config["Jam Time"], doremove, ent, door)
+	timer.Simple(
+		0.1, function()
+			if not IsValid(ent) then
+				return
+			end
+			local pent = ent:GetPhysicsObject()
+			if not IsValid(pent) then
+				return
+			end
+			pent:ApplyForceCenter(backwards * 10000)
+		end
+	);
+	timer.Simple(
+		GM.Config["Jam Time"], function()
+			if IsValid(ent) then
+				ent:Remove()
+			end
+			if IsValid(door) then
+				door:SetNotSolid(false)
+				door:SetNoDraw(false)
+			end
+		end
+	)
+
 end
 local beep = Sound("hl1/fvox/beep.wav")
 function ENT:Beep()

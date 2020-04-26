@@ -11,21 +11,21 @@ ITEM.Batch = 1000;
 ITEM.Store = false;
 ITEM.Description = "A wad of money.";
 
-local function updatefunc(ply)
-	if (not ply:IsValid()) then
-		return
-	end
-	ply:GiveMoney(ply._TMPMoneyUpdate);
-	ply._TMPMoneyUpdate = nil;
-end
-
 function ITEM:onUpdate(ply, amount)
 	if amount > 0 then
 		if ply._TMPMoneyUpdate then
 			ply._TMPMoneyUpdate = ply._TMPMoneyUpdate + amount;
 		else
 			ply._TMPMoneyUpdate = amount;
-			timer.Simple(0.1, updatefunc, ply);
+			timer.Simple(
+				0.1, function()
+					if (not ply:IsValid()) then
+						return
+					end
+					ply:GiveMoney(ply._TMPMoneyUpdate);
+					ply._TMPMoneyUpdate = nil;
+				end
+			);
 		end
 		return true -- Never put this in a player's inventory
 	end

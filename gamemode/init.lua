@@ -99,7 +99,11 @@ local function onConnected(db)
 end
 local function onConnectionFailed(db, err)
 	GM:Log(EVENT_ERROR, "Error connecting to the MySQL server: %s", err);
-	timer.Simple(60, GM.Database.connect, GM.Database);
+	timer.Simple(
+		60, function()
+			GM.Database:connect()
+		end
+	);
 end
 
 -- Called when the server initializes.
@@ -154,7 +158,11 @@ function GM:InitPostEntity()
 	MsgN("Map finished loading with ", count, " entities active.");
 	MsgN("=========================================================");
 	-- Tell plugins to load their datas a frame after this.
-	timer.Simple(0, hook.Call, "LoadData", self);
+	timer.Simple(
+		0, function()
+			hook.Call("LoadData", self)
+		end
+	);
 	-- Inform anything loaded after this that it's not going to get an InitPostEntity call.
 	self.Inited = true;
 	-- Call the base class function.

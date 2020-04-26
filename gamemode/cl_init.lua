@@ -95,7 +95,11 @@ end
 
 -- Called when all of the map entities have been initialized.
 function GM:InitPostEntity()
-	timer.Simple(0, hook.Call, "LoadData", self); -- Tell plugins to load their datas a frame after this.
+	timer.Simple(
+		0, function()
+			hook.Call("LoadData", self)
+		end
+	); -- Tell plugins to load their datas a frame after this.
 	self.Inited = true;
 	-- Call the base class function.
 	return self.BaseClass:InitPostEntity()
@@ -309,7 +313,11 @@ local function CheckForInitalised(tab)
 	if not IsValid(LocalPlayer()) then
 		errors = errors + 1
 		--	ErrorNoHalt("LocalPlayer is invalid! ("..errors.."/"..maxerrors..")\n")
-		return timer.Simple(1, CheckForInitalised, tab)
+		return timer.Simple(
+			1, function()
+				CheckForInitalised(tab)
+			end
+		)
 	end
 	-- if errors > 0 then ErrorNoHalt"Nevermind it works now...\n" end
 	LocalPlayer()._ModelChoices = tab

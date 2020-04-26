@@ -159,10 +159,18 @@ SWEP.FireModes.Burst.FireFunction = function(self)
 	end
 
 	self:BaseAttack()
-	timer.Simple(self.BurstDelay, self.BaseAttack, self)
+	timer.Simple(
+		self.BurstDelay, function()
+			self:BaseAttack()
+		end
+	)
 
 	if clip > 1 then
-		timer.Simple(2 * self.BurstDelay, self.BaseAttack, self)
+		timer.Simple(
+			2 * self.BurstDelay, function()
+				self:BaseAttack()
+			end
+		)
 	end
 	self.Weapon:SetNextPrimaryFire(CurTime() + 1)
 
@@ -402,15 +410,6 @@ end
 
 -- Saves the weapon's clip and automatically puts it into the player's inventory if it has no ammo when the player switches to a different weapon.
 -- Adjusted and recommented because it was a fucking mess before
-local function ammostuff(owner, classname)
-	-- Make sure there's still a person and the have that weapon
-	if IsValid(owner) and owner:HasWeapon(classname) -- Ensure they can holster it
-	and hook.Call("PlayerCanHolster", GAMEMODE, owner, classname, true) -- Doo eet
-	and cider.inventory.update(owner, classname, 1) then
-		owner:StripWeapon(classname)
-	end
-end
-
 function SWEP:DoAmmoStuff()
 	-- Get rid of pointles runs
 	if CLIENT or not IsValid(self.previousOwner) then
@@ -430,7 +429,18 @@ function SWEP:DoAmmoStuff()
 		return
 	end
 	-- Set up a quick timer to remove the weapon
-	timer.Simple(0, ammostuff, self.previousOwner, self.ClassName);
+	local owner = self.previousOwner
+	local classname = self.ClassName
+	timer.Simple(
+		0, function()
+			-- Make sure there's still a person and they have that weapon
+			if IsValid(owner) and owner:HasWeapon(classname) -- Ensure they can holster it
+			and hook.Call("PlayerCanHolster", GAMEMODE, owner, classname, true) -- Doo eet
+			and cider.inventory.update(owner, classname, 1) then
+				owner:StripWeapon(classname)
+			end
+		end
+	);
 	-- Stop the player managing to get multiple weapons in their inventory with quick button presses
 	self.doneAmmoStuff = true
 end
@@ -749,7 +759,11 @@ function SWEP:PenetrateCallback(pl, trace, damage, force)
 		end
 		tr = _trace
 		carshoot(self, _trace, damage);
-		timer.Simple(0, self.PenetrateCallback, self, pl, _trace, damage, force);
+		timer.Simple(
+			0, function()
+				self:PenetrateCallback(pl, _trace, damage, force)
+			end
+		);
 		-- debugoverlay.Cross(_trace.HitPos,10,5,color_white,true)
 		local matTypes = {
 			[MAT_CONCRETE] = {"Impact.Concrete", "MetalSpark"},
@@ -902,7 +916,11 @@ function SWEP:SetIronsights(b, player)
 	if self.UseScope then -- If we have a scope, use that instead of ironsights
 		if b then
 			-- Activate the scope after we raise the rifle
-			timer.Simple(IRONSIGHT_TIME, self.SetScope, self, true, player)
+			timer.Simple(
+				IRONSIGHT_TIME, function()
+					self:SetScope(true, player)
+				end
+			)
 		else
 			self:SetScope(false, player)
 		end

@@ -36,7 +36,7 @@ function ENT:Initialize()
 		self:SetHealth(contraband.health);
 		self.dt.energy = contraband.energy;
 	else
-		timer.Simple(0, self.Remove, self);
+		self:Remove();
 	end
 end
 
