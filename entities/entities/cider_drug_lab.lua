@@ -1,11 +1,13 @@
 --
--- "sh_init.lua"
+-- Drug Lab entity
 -- ~ Applejack ~
 --
+AddCSLuaFile();
+DEFINE_BASECLASS "cider_contraband";
+
 ENT.Type = "anim";
-ENT.Base = "cider_contraband";
 ENT.Model = "models/props_combine/combine_mine01.mdl";
 ENT.PrintName = "Drug Lab";
 ENT.Author = "kuromeku";
 ENT.Spawnable = false;
-ENT.AdminSpawnable = false;
+ENT.DisableDuplicator = true;

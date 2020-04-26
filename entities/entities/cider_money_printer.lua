@@ -1,11 +1,13 @@
 --
--- "sh_init.lua"
+-- Money Printer entity
 -- ~ Applejack ~
 --
+AddCSLuaFile();
+DEFINE_BASECLASS "cider_contraband";
+
 ENT.Type = "anim";
-ENT.Base = "cider_contraband";
 ENT.Model = "models/props_c17/consolebox01a.mdl";
 ENT.PrintName = "Money Printer";
 ENT.Author = "kuromeku";
 ENT.Spawnable = false;
-ENT.AdminSpawnable = false;
+ENT.DisableDuplicator = true;
