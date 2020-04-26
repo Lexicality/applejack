@@ -518,20 +518,6 @@ function GM:PlayerInitialSpawn(ply)
 		end
 	end
 	timer.Simple(0.2, modeltimer, ply)
-	-- A table to store every contraband entity.
-	local contraband = {}
-
-	-- Loop through each contraband class.
-	for k, v in pairs(self.Config["Contraband"]) do
-		table.Add(contraband, ents.FindByClass(k))
-	end
-
-	-- Loop through all of the contraband.
-	for k, v in pairs(contraband) do
-		if (ply:UniqueID() == v._UniqueID) then
-			v:SetPlayer(ply)
-		end
-	end
 
 	-- Kill them silently until we've loaded the data.
 	ply:KillSilent()

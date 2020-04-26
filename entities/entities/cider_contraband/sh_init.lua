@@ -3,7 +3,7 @@
 -- ~ Applejack ~
 --
 ENT.Type = "anim";
-ENT.Base = "base_gmodentity";
+ENT.Base = "base_mshineentity";
 ENT.Model = "models/props_c17/cashregister01a.mdl";
 ENT.PrintName = "Contraband";
 ENT.Author = "kuromeku";
