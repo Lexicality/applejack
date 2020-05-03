@@ -7,10 +7,10 @@ cider.inventory.stored = {};
 cider.inventory.updatePanel = true;
 
 -- Hook into when the server sends the client an inventory item.
-usermessage.Hook(
-	"cider_Inventory_Item", function(msg)
-		local item = msg:ReadString();
-		local amount = msg:ReadLong();
+net.Receive(
+	"cider_Inventory_Item", function(len)
+		local item = net.ReadString()
+		local amount = net.ReadInt(32)
 
 		-- Check to see if the amount is smaller than 1.
 		if (amount < 1) then

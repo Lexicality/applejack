@@ -3,7 +3,7 @@
 -- ~ Applejack ~
 --
 cider.inventory = {};
-umsg.PoolString "cider_Inventory_Item";
+util.AddNetworkString("cider_Inventory_Item")
 function cider.inventory.update(player, id, amount, force)
 	if (type(amount) ~= "number") then
 		error("wat", 2);
@@ -43,14 +43,11 @@ function cider.inventory.update(player, id, amount, force)
 		end
 		-- return true
 	end
-	-- Send a usermessage to the player to tell him his items have been updated.
-	SendUserMessage(
-		"cider_Inventory_Item", player, id, player.cider._Inventory[id] or 0
-	);
-	-- umsg.Start("cider_Inventory_Item", player);
-	-- 	umsg.String(item);
-	-- 	umsg.Long(player.cider._Inventory[id] or 0);
-	-- umsg.End();
+	-- Notify the player of the change
+	net.Start("cider_Inventory_Item")
+	net.WriteString(id)
+	net.WriteInt(player.cider._Inventory[id] or 0, 32)
+	net.Send(player)
 
 	-- Return true because we updated the inventory successfully.
 	return true;
