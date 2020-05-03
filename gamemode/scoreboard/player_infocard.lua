@@ -1,5 +1,4 @@
 include("admin_buttons.lua")
-include("vote_button.lua")
 
 local PANEL = {}
 

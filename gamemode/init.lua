@@ -18,7 +18,6 @@ AddCSLuaFile("scoreboard/player_frame.lua")
 AddCSLuaFile("scoreboard/player_infocard.lua")
 AddCSLuaFile("scoreboard/player_row.lua")
 AddCSLuaFile("scoreboard/scoreboard.lua")
-AddCSLuaFile("scoreboard/vote_button.lua")
 
 -- Enable realistic fall damage for this gamemode.
 game.ConsoleCommand("mp_falldamage 1\n")
