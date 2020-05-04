@@ -73,11 +73,6 @@ player.loadFunctions = {
 			end
 		)
 	end,
-	_Arrested = function(ply, data)
-		if (tobool(data)) then
-			ply:Arrest();
-		end
-	end,
 };
 
 ---

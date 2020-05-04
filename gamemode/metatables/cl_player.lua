@@ -20,18 +20,8 @@ function meta:ESPPaint(lines, pos, dist, centre, ragdoll)
 	end
 	if (not self:Alive()) then
 		lines:Add("Status", "(Dead)", color_lightgray, 3);
-	elseif (self:Arrested()) then
-		lines:Add("Status", "(Arrested)", color_red, 3);
 	elseif (self:Tied()) then
 		lines:Add("Status", "(Tied)", color_lightblue, 3);
-	end
-	local warrant = self:GetWarrant();
-	if (warrant ~= "") then
-		if (warrant == "arrest") then
-			lines:Add("Warrants", "(Arrest Warrant)", color_red, 4);
-		elseif (warrant == "search") then
-			lines:Add("Warrants", "(Search Warrant", color_lightblue, 4);
-		end
 	end
 	local details = self:GetNWString("Details");
 	if (details ~= "") then

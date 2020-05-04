@@ -46,11 +46,10 @@ end
 -- @param target The intended victim
 -- @return true if they can false if they can't
 function GM:PlayerCanDemote(ply, target)
-	local err = ""
 	if target:Team() == TEAM_DEFAULT then
 		return false, "You cannot demote players from the default team!";
-	elseif (target:Arrested() or target:Tied()) then
-		return false, "You cannot demote " .. target:Name() .. " right now!";
+	elseif (target:Tied()) then
+		return false, target:Name() .. " is a bit tied up right now!";
 	elseif ply:IsModerator() then
 		return true
 	end
@@ -68,7 +67,7 @@ end
 
 -- Called when a player attempts to noclip.
 function GM:PlayerNoClip(ply)
-	if (ply:Arrested() or ply:KnockedOut() or ply:Tied() or not ply:IsAdmin()) then
+	if (ply:KnockedOut() or ply:Tied() or not ply:IsAdmin()) then
 		return false
 	end
 	return true;

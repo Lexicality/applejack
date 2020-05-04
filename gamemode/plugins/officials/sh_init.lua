@@ -3,3 +3,5 @@
 -- ~ Applejack ~
 --
 PLUGIN.Name = "Officials"
+
+include("sh_metatable.lua")

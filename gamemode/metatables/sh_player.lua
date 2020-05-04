@@ -56,27 +56,6 @@ function meta:Tied()
 end
 
 ---
--- Checks if the player has been arrested
--- @return true if they are, false if they're not.
-function meta:Arrested()
-	return self:GetNWBool "Arrested";
-end
-
----
--- Checks if the player has a warrant against him
--- @return true if they are, false if they're not.
-function meta:Warranted()
-	return self:GetNWString("Warrant") ~= "";
-end
-
----
--- Get's the warrant against the player
--- @return The warrant name or ""
-function meta:GetWarrant()
-	return self:GetNWString("Warrant");
-end
-
----
 -- Get the data table for the player's current team
 -- @return team.Get(self:Team())
 function meta:GetTeam()

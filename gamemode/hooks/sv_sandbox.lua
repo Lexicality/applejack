@@ -6,7 +6,7 @@
 -- As such, there is no need to document them as they are all standard.
 function GM:PlayerSwitchFlashlight(ply, on)
 	-- Do not let the player use their flashlight while arrested, unconsious or tied.
-	return not (ply:Arrested() or ply:KnockedOut() or ply:Tied());
+	return not (ply:KnockedOut() or ply:Tied());
 end
 
 -- Called when the player presses their use key (normally e) on a usable entity.
@@ -16,7 +16,7 @@ function GM:PlayerUse(ply, ent)
 	if (ply:KnockedOut()) then
 		-- If you're unconsious, you can't use things.
 		return false
-	elseif (ply:Arrested() or ply:Tied() or ply._Stunned) then
+	elseif (ply:Tied() or ply._Stunned) then
 		-- Prevent spam
 		if (not ply._NextNotify or CurTime() > ply._NextNotify) then
 			ply:Notify("You cannot use that while in this state!", 1);
@@ -45,12 +45,6 @@ function GM:PlayerCanJoinTeam(ply, teamid)
 				string.ToMinutesSeconds(ply._NextChangeTeam[teamid] - CurTime()) ..
 				" before you can become a " .. teamdata.Name .. "!", 1
 		);
-		return false;
-	elseif (ply:Warranted()) then
-		ply:Notify("You cannot change teams while warranted!", 1);
-		return false;
-	elseif (ply:Arrested()) then
-		ply:Notify("You cannot change teams while arrested!", 1);
 		return false;
 	elseif (ply:Tied()) then
 		ply:Notify("You cannot change teams while tied up!", 1);
@@ -115,6 +109,7 @@ end
 local function utwin(ply, target)
 	if (IsValid(ply)) then
 		ply:Emote(
+
 			
 				"somehow manages to cut through the rope and puts their knife away, job done."
 		);

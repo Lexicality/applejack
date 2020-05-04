@@ -65,14 +65,6 @@ function ITEM:onUse(ply)
 	elseif (victim:Tied()) then
 		ply:Notify("They're already tied up!", NOTIFY_ERROR);
 		return false;
-	elseif (victim:Arrested()) then
-		ply:Notify(
-
-			
-				"The person's large metal wrist ornaments prevent you from finding a place to put the rope.",
-				NOTIFY_ERROR
-		);
-		return false;
 	end
 	-- Gamemode tests
 	if (not gamemode.Call("PlayerCanTie", ply, victim)) then

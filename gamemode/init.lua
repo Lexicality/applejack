@@ -169,21 +169,6 @@ function GM:InitPostEntity()
 end
 
 -- TODO: Move this stuff into the sv_player hooks
--- Called when a player attempts to arrest another player.
-function GM:PlayerCanArrest(ply, target)
-	if (target._Warranted == "arrest") then
-		return true
-	else
-		ply:Notify(target:Name() .. " does not have an arrest warrant!", 1)
-		-- Return false because the target does not have a warrant.
-		return false
-	end
-end
-
--- Called when a player attempts to unarrest a player.
-function GM:PlayerCanUnArrest(ply, target)
-	return true
-end
 
 -- Called when a player attempts to spawn an NPC.
 function GM:PlayerSpawnNPC(ply, model)
@@ -288,17 +273,28 @@ function GM:PlayerSpawnEffect(ply, model)
 end
 
 function GM:PlayerCanDoSomething(ply, ignorealive, spawning)
-	if (not ply:Alive() and not ignorealive) or ply:Arrested() or ply:KnockedOut() or
-		ply:Tied() or ply._Stunned or ply._HoldingEnt or ply._Equipping or
-		ply._StuckInWorld or spawning and
-		(ply:InVehicle() --[[or other places they shouldn't spawn shit]] ) then
-		ply:Notify("You cannot do that in this state!", 1)
-		-- Return false because we cannot do it
+	if not ply:Alive() and not ignorealive then
+		ply:Notify("You cannot do that while dead!", 1)
 		return false
-	else
-		return true
+	elseif ply:KnockedOut() then
+		ply:Notify("You cannot do that while unconcious!", 1)
+		return false
+	elseif ply:Tied() or ply._HoldingEnt or ply._Equipping then
+		ply:Notify("You need both hands free to do that!", 1)
+		return false
+	elseif ply._StuckInWorld then
+		ply:Notify("You can't do this while stuck!", 1)
+		return false
+	elseif spawning then
+		if ply:InVehicle() then
+			ply:Notify("You can't do this while sitting down!", 1)
+			return false
+		end
 	end
+
+	return true
 end
+
 -- Called when a player attempts to spawn a vehicle.
 function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	if not hook.Call("PlayerCanDoSomething", GAMEMODE, ply, nil, true) then
@@ -410,7 +406,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._JobTimeLimit = 0;
 	ply._JobTimeExpire = 0;
 	ply._LockpickChance = 0;
-	ply._CannotBeWarranted = 0;
 	ply._ScaleDamage = 1;
 	ply._Details = "";
 	ply._NextSpawnGender = "";
@@ -428,7 +423,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._Sleeping = false;
 	ply._Stunned = false;
 	ply._Tripped = false;
-	ply._Warranted = false;
 	ply._LightSpawn = false;
 	ply._ChangeTeam = false;
 	ply._HideHealthEffects = false;
@@ -438,7 +432,6 @@ function GM:PlayerDataLoaded(ply, success)
 	ply._NextDeploy = CurTime();
 	-- Some player variables based on configuration.
 	ply._SpawnTime = self.Config["Spawn Time"];
-	ply._ArrestTime = self.Config["Arrest Time"];
 	ply._Job = self.Config["Default Job"];
 	ply._KnockOutTime = self.Config["Knock Out Time"];
 	ply._IdleKick = CurTime() + self.Config["Autokick time"];
@@ -459,9 +452,6 @@ function GM:PlayerDataLoaded(ply, success)
 	-- Respawn them now that they have initialized
 	ply:Spawn()
 	-- Check if the player is arrested.
-	if (ply.cider._Arrested) then
-		ply:Arrest();
-	end
 	-- We can now start updating the player's data.
 	ply._UpdateData = true
 
@@ -594,7 +584,6 @@ function GM:PlayerSpawn(ply)
 			ply._Tripped = false
 			ply._ScaleDamage = 1
 			ply._HideHealthEffects = false
-			ply._CannotBeWarranted = CurTime() + 15
 			ply._Deaded = nil
 			SendUserMessage("PlayerSpawned", ply);
 
@@ -684,9 +673,6 @@ function GM:DoPlayerDeath(ply, attacker, damageInfo)
 	-- end
 	ply._StoredWeapons = {}
 
-	-- Unwarrant them, unarrest them and stop them from bleeding.
-	ply:UnWarrant();
-	ply:UnArrest(true);
 	ply:UnTie(true);
 	ply:StopBleeding()
 
@@ -1304,6 +1290,7 @@ timer.Create(
 			end
 		end
 		for _, ply in ipairs(player.GetAll()) do
+			-- TODO: This should be a hook
 			if (ply:Alive() and not ply.cider._Arrested) then
 				ply:GiveMoney(ply._Salary)
 

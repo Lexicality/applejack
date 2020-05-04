@@ -15,19 +15,17 @@ function SWEP:PrimaryAttack()
 
 	local tr = self.Owner:GetEyeTrace();
 	local owner = self.Owner;
-	if (owner:GetShootPos():Distance(tr.HitPos) > 128) then
+	if (owner:GetShootPos():Distance(tr.HitPos) > 128 or not IsValid(tr.Entity)) then
 		self:SendWeaponAnim(ACT_VM_MISSCENTER);
 		self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav");
 		return;
 	end
 	self:SendWeaponAnim(ACT_VM_HITCENTER);
 	local ent = tr.Entity;
-	if (not gamemode.Call("PlayerCanLockpick", owner, ent)) then
-		owner:Notify("You can't lockpick this!", 1);
+	local res, err = gamemode.Call("PlayerCanLockpick", owner, ent)
+	if (not res) then
+		owner:Notify(err or "You can't lockpick this!", 1);
 		self:DoSound(3)
-		return;
-	elseif (not (ent._Locked or (ent:IsPlayer() and ent:Arrested()))) then
-		owner:Notify("That's not locked!", 1);
 		return;
 	end
 	ent._LockpickingCount = ent._LockpickingCount or 0;
@@ -80,6 +78,7 @@ function SWEP:PrimaryAttack()
 	if (ent:IsPlayer()) then
 		ent:UnArrest();
 		ent:Emote(
+
 			
 				"pulls off the unlocked handcuffs and throws them away hard enough to break them."
 		);

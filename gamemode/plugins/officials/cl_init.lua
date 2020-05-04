@@ -41,3 +41,50 @@ function PLUGIN:Think()
 end
 
 -- TODO: Spawn immunity bar using CSVar hooks
+
+-- Warrant
+GM:AddDynamicHUDBox(
+	function(box)
+		local text = lpl:GetNWString("Warrant")
+		if (text == "") then
+			return -1;
+		end
+		return "You have " .. (text == "arrest" and "an" or "a") .. " " .. text ..
+       			" warrant!";
+	end, "icon16/page_white_text.png"
+)
+
+-- Arrested
+GM:AddStaticHUDBox(
+	"You have been arrested.", "icon16/lock.png", function(box)
+		return lpl:Arrested();
+	end
+);
+
+GM:AddHUDBar(
+	"Arrest Time: 0:00", color_red, function(bar)
+		local num = (lpl._UnarrestTime or 0) - CurTime()
+		if (num <= 0) then
+			return -1
+		end
+		bar.text = "Arrest Time: " .. string.ToMinutesSeconds(num)
+		return (num / GM.Config["Arrest Time"]) * 100;
+	end
+);
+
+function PLUGIN:AdjustESPLines(ent, class, lines, pos, dist, centre)
+	if not ent:IsPlayer() then
+		return
+	end
+	if ent:Arrested() then
+		lines:Add("Status", "(Arrested)", color_red, 3);
+	end
+	local warrant = ent:GetWarrant();
+	if (warrant ~= "") then
+		if (warrant == "arrest") then
+			lines:Add("Warrants", "(Arrest Warrant)", color_red, 4);
+		elseif (warrant == "search") then
+			lines:Add("Warrants", "(Search Warrant", color_lightblue, 4);
+		end
+	end
+end

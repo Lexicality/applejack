@@ -246,7 +246,8 @@ function GM:PlayerSay(ply, text, public)
 		local args = self:ParseCommand(text);
 		self:DoCommand(ply, args);
 	elseif (gamemode.Call("PlayerCanSayIC", ply, text)) then
-		if (ply:Arrested()) then
+		-- TODO: This really needs to be customisable by plugins
+		if (ply.Arrested and ply:Arrested()) then
 			cider.chatBox.addInRadius(
 				ply, "arrested", text, ply:GetPos(), self.Config["Talk Radius"]
 			)
@@ -279,8 +280,12 @@ function GM:DoCommand(ply, args)
 		ply:Notify("Unknown command '" .. str .. "'!", NOTIFY_ERROR);
 		return;
 	end
-	-- Hook test
-	if (not gamemode.Call("PlayerCanUseCommand", ply, str, args, cmd)) then
+	if (ply:Blacklisted("cmd", str) > 0) then
+		ply:BlacklistAlert("cmd", str, str);
+		return false;
+	elseif -- TODO: Make this a property on the command
+	not table.HasValue(self.Config["Usable Commands"], str) and
+		not gamemode.Call("PlayerCanUseCommand", ply, str, args, cmd) then
 		return;
 	end
 	-- Access test

@@ -351,18 +351,18 @@ function GM:PlayerCanRamDoor(ply, door)
 		return false;
 	elseif (door:IsOwned()) then
 		for _, pl in pairs(door:GetAllAccessors()) do
-			if (pl:Warranted() or pl == ply) then
+			if (gamemode.Call("PlayerCanRamPlayersDoor", ply, pl, door)) then
 				return true;
 			end
-		end
-		local owner = door:GetOwner()
-		if (type(owner) == "Player" and IsValid(owner) and owner:Arrested()) then
-			return true
 		end
 		ply:Notify("You do not have the authority to ram this door.", 1);
 		return false;
 	end
 	return true;
+end
+
+function GM:PlayerCanRamPlayersDoor(ply, victim, door)
+	return ply == victim
 end
 
 ---
@@ -444,9 +444,14 @@ end
 -- @param ent The entity in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanLockpick(ply, ent)
-	return IsValid(ent) and
-       		((ent:IsOwnable() and not (ent._Jammed or ent._Sealed)) or
-       			(ent:IsPlayer() and ent:Arrested()));
+	if not ent:IsOwnable() or ent._Sealed then
+		return false, "You can't lockpick this!"
+	elseif ent._Jammed then
+		return false, "This lock is jammed!"
+	elseif not ent._Locked then
+		return false, "That's not locked!"
+	end
+	return true
 end
 
 ---
@@ -463,28 +468,6 @@ end
 -- @return True if they can, false if they can't.
 function GM:PlayerCanChangeLaws(ply)
 	return ply:IsModerator(); -- Let mods change the laws
-end
-
----
--- Called when a player attempts to unwarrant a player.
--- @param ply The player in question
--- @param target The player's intended victim
--- @return True if they can, false if they can't.
-function GM:PlayerCanUnwarrant(ply, target)
-	return ply:IsAdmin() -- Let admins circumnavagate the system. (HAAAX!)
-end
-
----
--- Called when a player has been warranted
--- @param ply The player in question
--- @param class The class of warrant
-function GM:PlayerWarranted(ply, class)
-end
-
----
--- Called when a player has been unwarranted either due to direct action or the time expiring
--- @param ply The player in question
-function GM:PlayerUnwarranted(ply)
 end
 
 ---
@@ -508,18 +491,6 @@ function GM:PlayerChangedTeams(ply, oldteam, newteam)
 		umsg.Short(ent:EntIndex());
 	end
 	umsg.End();
-end
-
----
--- Called when a player is arrested
--- @param ply The player in question
-function GM:PlayerArrested(ply)
-end
-
----
--- Called when a player is unarrested
--- @param ply The player in question
-function GM:PlayerUnArrested(ply)
 end
 
 ---
@@ -598,23 +569,31 @@ end
 -- @param cmd What command the player just tried to use
 -- @param args A table of all the arguments the player passed
 function GM:PlayerCanUseCommand(ply, cmd, args)
-	-- Stop the player using the command if they're blacklisted from it
-	if (ply:Blacklisted("cmd", command) > 0) then
-		ply:BlacklistAlert("cmd", command, command);
-		return false;
+	if ply:Alive() then
+		if cmd == "sleep" and ply._Sleeping then
+			return true
+		end
+		-- If you're tripped you're not really knocked out
+		if not ply:KnockedOut() or ply._Tripped then
+			if ply:Tied() then
+				if cmd == "dropmoney" or cmd == "givemoney" then
+					-- For ransoms etc
+					return true
+				end
+			end
+
+			if cmd == "me" or cmd == "y" or cmd == "w" then
+				-- Allow emotes
+				return true
+			end
+		end
 	end
-	-- Some commands need to be usable when they normally wouldn't be.
-	if (cmd == "sleep" and ply:Alive() and not ply:Arrested() and ply._Sleeping) -- So they can wake up
-	or ((cmd == "dropmoney" or cmd == "givemoney") and ply:Alive() and
-		not ply:KnockedOut()) -- So you can bribe your way out of being arrested/tied up
-	or ((cmd == "me" or cmd == "y" or cmd == "w") and ply:Alive() and
-		not (ply:KnockedOut() and not ply._Tripped)) -- So you can emote while arrested/tripped
-	or (cmd == "team" and not (ply:Arrested() or ply:Tied())) -- So you can't change job while arrested or tied, but can while dead or unconsious
-	or table.HasValue(self.Config["Usable Commands"], cmd) then -- Or if it's one of the persistant commands
-		return true;
-	else -- Otherwise, check the defeaults
-		return gamemode.Call("PlayerCanDoSomething", ply);
+	-- You can (almost) always change your team
+	if cmd == "team" and not ply:Tied() then
+		return true
 	end
+
+	return gamemode.Call("PlayerCanDoSomething", ply);
 end
 
 ---
@@ -622,7 +601,7 @@ end
 -- @param ply The player in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanBeRecapacitated(ply)
-	return not (ply:Arrested() or ply:Tied() or ply._HoldingEnt);
+	return not (ply:Tied() or ply._HoldingEnt);
 end
 
 ---
@@ -630,7 +609,7 @@ end
 -- @param ply The player in question
 -- @return True if they can, false if they can't.
 function GM:PlayerCanRecieveWeapons(ply)
-	return not (ply:Arrested() or ply:Tied());
+	return not (ply:Tied());
 end
 
 ---

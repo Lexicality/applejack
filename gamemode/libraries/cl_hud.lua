@@ -140,16 +140,6 @@ do
 			end
 		);
 	end
-	GM:AddHUDBar(
-		"Arrest Time: 0:00", color_red, function(bar)
-			num = (lpl._UnarrestTime or 0) - ctime
-			if (num <= 0) then
-				return -1
-			end
-			bar.text = "Arrest Time: " .. string.ToMinutesSeconds(num)
-			return (num / GM.Config["Arrest Time"]) * 100;
-		end
-	);
 
 end
 
@@ -313,18 +303,6 @@ do
 		end, "icon16/vcard.png"
 	);
 
-	-- Warrant
-	GM:AddDynamicHUDBox(
-		function(box)
-			text = lpl:GetNWString("Warrant")
-			if (text == "") then
-				return -1;
-			end
-			return "You have " .. (text == "arrest" and "an" or "a") .. " " .. text ..
-       				" warrant!";
-		end, "icon16/page_white_text.png"
-	)
-
 	-- Kevlar
 	GM:AddStaticHUDBox(
 		"You are wearing Kevlar", "icon16/shield.png", function(box)
@@ -334,12 +312,6 @@ do
 
 	-- Website
 	GM:AddStaticHUDBox(GM.Config["Website URL"], "icon16/link.png");
-	-- Arrested
-	GM:AddStaticHUDBox(
-		"You have been arrested.", "icon16/lock.png", function(box)
-			return lpl:Arrested();
-		end
-	);
 
 	-- Tied
 	GM:AddStaticHUDBox(

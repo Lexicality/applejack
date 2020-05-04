@@ -11,7 +11,7 @@ end
 
 -- Called when a player presses a key.
 function PLUGIN:KeyPress(ply, key)
-	if (not (ply:InVehicle() or ply:Arrested() or ply:Tied() or
+	if (not (ply:InVehicle() or (ply.Arrested and ply:Arrested()) or ply:Tied() or
 		ply:GetNWBool "cider_Exhausted") and (ply:Alive() and not ply:KnockedOut()) and
 		(ply:IsOnGround() and key == IN_JUMP)) then
 		ply._Stamina = math.Clamp(ply._Stamina - 5, 0, 100);
@@ -21,7 +21,7 @@ end
 -- Called every tenth of a second that a player is on the server.
 function PLUGIN:PlayerTenthSecond(ply)
 	local inVehicle = ply:InVehicle();
-	if (ply:Arrested() or ply:Tied() or ply._HoldingEnt or
+	if ((ply.Arrested and ply:Arrested()) or ply:Tied() or ply._HoldingEnt or
 		(ply:GetMoveType() == MOVETYPE_NOCLIP and
 			not (inVehicle and ply._Stamina < 100))) then
 		return;

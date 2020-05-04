@@ -45,7 +45,8 @@ end
 -- Changelog:
 -- 29/1/10: Made it not display the hunger bar when you are tied/arrested.
 function PLUGIN:PlayerSecond(player)
-	if (not (player:Alive() and not (player:Arrested() or player:Tied()))) then
+	if not player:Alive() or (player.Arrested and player:Arrested()) or
+		player:Tied() then
 		player:SetCSVar(CLASS_LONG, "_Hunger", 0);
 		return
 	end

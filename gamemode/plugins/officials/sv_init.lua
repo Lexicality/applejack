@@ -2,6 +2,11 @@
 -- "sv_init.lua"
 -- ~ Applejack ~
 --
+include("sv_arresting.lua")
+include("sv_metatable.lua")
+include("sv_hooks.lua")
+include("sv_commands.lua")
+
 -- Settup function
 function PLUGIN:LoadData()
 	self.group = GM:GetGroup("Officials");
