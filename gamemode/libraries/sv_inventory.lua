@@ -91,15 +91,10 @@ function cider.inventory.canFit(player, size, inventory)
        		cider.inventory.getMaximumSpace(player, inventory) or size <= 0
 end
 
-local function playerInitInventory(player)
-	if not IsValid(player) then
-		return false
-	elseif player.cider then
-		for k, v in pairs(player.cider._Inventory) do
-			cider.inventory.update(player, k, 0, true);
-		end
-	else
-		return timer.Simple(1, playerInitInventory, player)
+local function playerInitInventory(ply)
+	-- Call any item onUpdate hooks and notify the player about their inventory contents in a super convoluted way
+	for item, amount in pairs(ply.cider._Inventory) do
+		cider.inventory.update(ply, item, 0, true);
 	end
 end
 hook.Add("PlayerInitialized", "Player Init Inventory", playerInitInventory)

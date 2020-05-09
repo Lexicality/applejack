@@ -2,6 +2,10 @@
 -- ~ Arrests, warrants etc ~
 -- ~ Applejack ~
 --
+function PLUGIN:SetPlayerDefaultData(ply, data)
+	data._Arrested = false
+end
+
 function PLUGIN:PlayerDataLoaded(ply, success)
 	ply._Warranted = false;
 	ply._CannotBeWarranted = 0;
@@ -86,7 +90,7 @@ function PLUGIN:PlayerCanTie(ply, victim)
 	if victim:Arrested() then
 		ply:Notify(
 
-
+			
 				"The person's large metal wrist ornaments prevent you from finding a place to put the rope.",
 				NOTIFY_ERROR
 		);

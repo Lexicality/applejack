@@ -90,54 +90,17 @@ end
 -- A table that will hold entities that were there when the map started.
 GM.Entities = {}
 
-local function onConnected(db)
-	GM:Log(EVENT_SQLDEBUG, "Connected to the MySQL server!");
-	for _, ply in pairs(player.GetAll()) do
-		ply:SaveData();
-	end
-end
-local function onConnectionFailed(db, err)
-	GM:Log(EVENT_ERROR, "Error connecting to the MySQL server: %s", err);
-	timer.Simple(
-		60, function()
-			GM.Database:connect()
-		end
-	);
-end
-
 -- Called when the server initializes.
 function GM:Initialize()
 	GM = self; -- ¬_¬ garru
 	ErrorNoHalt "----------------------\n"
 	ErrorNoHalt(os.date() .. " - Server starting up\n")
 	ErrorNoHalt "----------------------\n"
-	local hostname = self.Config["MySQL Host"]
-	local username = self.Config["MySQL Username"]
-	local password = self.Config["MySQL Password"]
-	local database = self.Config["MySQL Database"]
 
-	-- Initialize a connection to the MySQL database.
-	self.Database = mysqloo.connect(hostname, username, password, database);
-	self.Database.onConnected = onConnected;
-	self.Database.onConnectionFailed = onConnectionFailed;
-	self.Database:connect();
+	self:ConnectToDatabase()
 
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
-end
-
----
--- Checks to see if the database is in a queryable state, and re-connects if it's not.
--- TODO: This URGENTLY needs a query queue system.
--- @return True if a query can be executed right now
-function GM:CanQueryDB()
-	local stat = self.Database:status();
-	if (stat == mysqloo.DATABASE_CONNECTED) then
-		return true;
-	elseif (stat ~= mysqloo.DATABASE_CONNECTING) then
-		self.Database:connect();
-	end
-	return false;
 end
 
 -- Called when all of the map entities have been initialized.

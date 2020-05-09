@@ -211,6 +211,7 @@ config["Usable Commands"] = {
 	"m",
 	"s",
 }; -- Commands that players may use at any time
+config["User Editable Data"] = {_Clan = true} -- Data fields that the player can edit
 config["Default Inventory"] = {health_vial = 5, chinese_takeout = 5}; -- The inventory that each player starts with.
 config["Contraband"] = {
 	cider_drug_lab = {

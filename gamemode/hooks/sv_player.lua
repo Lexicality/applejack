@@ -640,3 +640,27 @@ end
 -- Called after every player's data has been saved in a player.SaveAll() call.
 function GM:PostPlayerSaveData()
 end
+
+---
+-- Called when a player joins but before their data is loaded.
+-- Reasonable defaults for new and rejoining players
+-- @param ply The player in question
+-- @param data The player's data table (eg ply.cider)
+function GM:SetPlayerDefaultData(ply, data)
+	data._Misc = {}
+	data._Clan = GM.Config["Default Clan"]
+	data._Money = GM.Config["Default Money"]
+	data._Access = GM.Config["Default Access"]
+	data._Donator = 0
+	data._Inventory = {}
+	data._Blacklist = {}
+end
+
+---
+-- Called to set data on a brand new player
+-- (eg slightly more intensive things we don't want to do for every join)
+-- @param ply The player in question
+-- @param data The player's data table (eg ply.cider)
+function GM:SetNewPlayerData(ply, data)
+	data._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
+end
