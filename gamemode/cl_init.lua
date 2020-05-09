@@ -2,12 +2,6 @@
 -- "cl_init.lua"
 -- ~ Applejack ~
 --
--- Take some shit out of _G for speed
-local ents, player, pairs, ipairs, draw, math, string, CurTime, ErrorNoHalt,
-	Color, hook, ScrW, ScrH, tonumber, util = ents, player, pairs, ipairs, draw,
-                                           math, string, CurTime, ErrorNoHalt,
-                                           Color, hook, ScrW, ScrH, tonumber,
-                                           util
 -- Define a fuckton of colours for efficient GC
 -- Solid Colours
 color_green = Color(050, 255, 050)

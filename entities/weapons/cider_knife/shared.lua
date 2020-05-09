@@ -114,7 +114,7 @@ function SWEP:PrimaryAttack()
 
 	-- Check if we're close to our target.
 	if (self.Owner:GetPos():Distance(trace.HitPos) <= 128) then
-		shoot = true;
+		local shoot = true;
 
 		-- Check if we hit a valid entity.
 		if (IsValid(trace.Entity)) then

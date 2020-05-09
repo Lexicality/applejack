@@ -788,6 +788,8 @@ function meta:HolsterAll()
 	self:SelectWeapon("cider_hands");
 end
 
+NOTIFY_CHAT = nil
+
 ---
 -- Notify a player of something, generally using Garry's notifications system.
 -- @param message The message to display

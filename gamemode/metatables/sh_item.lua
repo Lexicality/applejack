@@ -37,7 +37,7 @@ function meta:Register()
 	if (not self.UniqueID) then
 		ErrorNoHalt("Item with no uniqueID registered!\nDumping table:\n");
 		-- WARNING: DIRTY HACK TIME
-		msg = Msg;
+		local msg = Msg;
 		Msg = ErrorNoHalt;
 		PrintTable(self);
 		Msg = msg;
