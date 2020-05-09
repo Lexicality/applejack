@@ -70,7 +70,7 @@ function PANEL:DoCommand(ply)
 	box:SetPos(10, 28)
 	box:SetSize(EditPanel:GetWide() - 20, 16)
 	box.OnEnter = function()
-		val = box:GetValue()
+		local val = box:GetValue()
 		if string.len(val) > 80 then
 			val = string.sub(val, 1, 80)
 		end
@@ -80,10 +80,10 @@ function PANEL:DoCommand(ply)
 		RunConsoleCommand("mshine", "demote", ply:UserID(), val);
 		EditPanel:Close()
 	end
-	button = vgui.Create("DButton", EditPanel)
+	local button = vgui.Create("DButton", EditPanel)
 	button:SetText("Demote")
 	button.DoClick = function()
-		val = box:GetValue()
+		local val = box:GetValue()
 		if string.len(val) > 80 then
 			val = string.sub(val, 1, 80)
 		end

@@ -617,7 +617,7 @@ local function carshoot(self, tr, dmg)
 				ent:GetVehicle():TakeDamage(dmg, self.Owner)
 			end
 		end
-		hook.Call("VehicleShot", GAMEMODE, atk, tr, dmg, dmgInfo) -- For knocking out wheels n shit
+		-- hook.Call("VehicleShot", GAMEMODE, atk, tr, dmg, dmgInfo) -- For knocking out wheels n shit
 	end
 end
 function SWEP:RGShootBulletCheap(dmg, speed, spread, spray, sprayvec, numbul)

@@ -236,7 +236,7 @@ GM:RegisterCommand{
 	function(ply, victim, target)
 		local tdata = team.Get(target);
 		if (not tdata) then
-			return false, "Invalid team '" .. targetteam .. "'!";
+			return false, "Invalid team '" .. target .. "'!";
 		end
 		victim:JoinTeam(tdata.TeamID);
 		GM:Log(
@@ -1157,7 +1157,7 @@ do -- isolate vars
 			local delay = GM.Config["Weapon Timers"]["equiptime"][GM.Items[class]
               				.WeaponType or -1] or 0
 			if not (delay and delay > 0) then
-				success(ply, _, class);
+				success(ply, nil, class);
 				return true
 			end
 			umsg.Start("MS Equippr", ply)
@@ -1505,7 +1505,7 @@ GM:RegisterCommand{
 			return false, "Your mutiny vote has alrady been counted!";
 		end
 		victim.depositions[ply] = true;
-		i = 0;
+		local i = 0;
 		for ply in pairs(victim.depositions) do
 			if (not (IsValid(ply) and canmutiny(ply, victim))) then
 				victim.depositions[ply] = nil;

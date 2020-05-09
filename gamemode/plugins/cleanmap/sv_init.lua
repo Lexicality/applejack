@@ -206,7 +206,7 @@ function PLUGIN:InitPostEntity()
 	filtr:SetKeyValue("negated", "1");
 	filtr:Spawn();
 	for _, data in pairs(self.EntitiesToSpawn[mapname]) do
-		ent = ents.Create(data[1]);
+		local ent = ents.Create(data[1]);
 		if (not IsValid(ent)) then
 			ErrorNoHalt(
 				"[" .. os.date() .. "] Applejack Cleanmap Plugin: " .. data[1] ..

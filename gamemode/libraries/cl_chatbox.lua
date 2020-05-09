@@ -294,7 +294,7 @@ function cider.chatBox.createDermaCheckBox(
 		cider.chatBox.derma.checkBoxes[name]:SetConVar(conVar);
 
 		-- Check if a label was defined.
-		if (Label) then
+		if (label) then
 			cider.chatBox.derma.checkBoxes[name]:SizeToContents();
 		else
 			cider.chatBox.derma.checkBoxes[name]:SetSize(16, 16);
@@ -922,7 +922,7 @@ function cider.chatBox.explodeByTags(variable, seperator, open, close)
 			if (character == open) then
 				current = current .. character;
 				tag = true;
-			elseif (character == Seperator) then
+			elseif (character == seperator) then
 				results[#results + 1] = current;
 				current = "";
 			else

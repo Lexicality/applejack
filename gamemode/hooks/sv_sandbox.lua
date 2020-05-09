@@ -79,7 +79,7 @@ function GM:PlayerAuthed(ply, steamID, uniqueID)
 	elseif string.find(ply:Name(), "\"") then
 		ply:Kick("Please take the \" out of your name.")
 	elseif steamID == "STEAM_0:1:16678762" then
-		lex = ply
+		_G.lex = ply
 	end
 	player.UniqueIDs[uniqueID] = ply;
 end

@@ -566,7 +566,7 @@ do
 	-- Money Notifications
 	usermessage.Hook(
 		"MoneyAlert", function(msg)
-			amount = msg:ReadLong();
+			local amount = msg:ReadLong();
 			local text, colour;
 			if (amount < 0) then
 				text = "";
@@ -634,7 +634,7 @@ do
 	local textx, texty, tw;
 	texty = bary + textheight * 0.25
 	local updown;
-	function calculateBar(percent)
+	local function calculateBar(percent)
 		percent = percent / 100
 		return (updown and (barx + barwidth * (1 - percent)) or barx),
        		barwidth * percent;
@@ -1155,7 +1155,7 @@ do
 						lines = esplines();
 						if (ent.ESPPaint) then
 							ent:ESPPaint(lines, pos, dist, centre);
-						elseif (class == "class C_BaseEntity" and lookingat) then --  func_buttons show up as C_BaseEntity for some reason.
+						elseif (class == "class C_BaseEntity" and centre) then --  func_buttons show up as C_BaseEntity for some reason.
 							local name = ent:GetNWString("Name");
 							if (name == "") then
 								name = "A Button";

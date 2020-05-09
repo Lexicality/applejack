@@ -52,13 +52,10 @@ function EFFECT:Render()
 	if self.Alpha == 0 then
 		return
 	end
-	local origin = self.Pos
-	local target
-	local normal
 
-	traceres = self.Weapon:GetOwner():GetEyeTrace()
-	target = traceres.HitPos
-	normal = traceres.HitNormal
+	local traceres = self.Weapon:GetOwner():GetEyeTrace()
+	local target = traceres.HitPos
+	local normal = traceres.HitNormal
 
 	while (traceres.MatType == MAT_GLASS) do
 		local trace = {}

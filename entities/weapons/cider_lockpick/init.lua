@@ -83,7 +83,7 @@ function SWEP:PrimaryAttack()
 				"pulls off the unlocked handcuffs and throws them away hard enough to break them."
 		);
 		GM:Log(
-			EVENT_EVENT, "%s picked the lock on %s handcuffs", ply:Name(), ent:Name()
+			EVENT_EVENT, "%s picked the lock on %s handcuffs", owner:Name(), ent:Name()
 		);
 		return;
 	end

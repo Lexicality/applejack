@@ -51,20 +51,21 @@ function SWEP:DoHitEffects(sound)
 			(trace.Entity:IsPlayer() or trace.Entity:IsNPC())) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(
-				sound or "weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) ..
-					".wav"
+				sound or
+					("weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) .. ".wav")
 			);
 		elseif (IsValid(trace.Entity) and
 			IsValid(trace.Entity:GetNetworkedEntity("player"))) then
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(
-				sound or "weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) ..
-					".wav"
+				sound or
+					("weapons/stunstick/stunstick_fleshhit" .. math.random(1, 2) .. ".wav")
 			);
 		else
 			self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER);
 			self.Weapon:EmitSound(
-				sound or "weapons/stunstick/stunstick_impact" .. math.random(1, 2) .. ".wav"
+				sound or
+					("weapons/stunstick/stunstick_impact" .. math.random(1, 2) .. ".wav")
 			);
 		end
 

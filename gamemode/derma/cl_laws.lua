@@ -41,8 +41,8 @@ function PANEL:Think()
 			EditPanel:SetDraggable(true)
 			EditPanel:ShowCloseButton(true)
 			EditPanel:MakePopup()
-			boxes = {}
-			y = 28
+			local boxes = {}
+			local y = 28
 			for i = 1, 10 do
 				boxes[i] = vgui.Create("DTextEntry", EditPanel)
 				boxes[i]:SetPos(10, y)

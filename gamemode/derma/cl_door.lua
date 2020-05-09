@@ -140,7 +140,6 @@ usermessage.Hook(
 			cider.door.panel:Remove();
 		end
 		cider.door.panel = vgui.Create("cider_Door");
-		cider.door.panel.unsellable = unsellable;
 		cider.door.panel:MakePopup();
 	end
 )

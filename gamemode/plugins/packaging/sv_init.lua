@@ -24,7 +24,6 @@ function PLUGIN:PlayerClosedContainerWindow(player)
 	end
 end
 
-
 util.AddNetworkString("cider_Container")
 util.AddNetworkString("cider_Container_Update")
 function PLUGIN:CrateTime(player, item)
@@ -46,8 +45,8 @@ function PLUGIN:CrateTime(player, item)
 		crate:SetPos(trace.HitPos - trace.HitNormal * crate:OBBMins().z)
 		crate:SetAngles(Ang)
 	end
-	crate:SetPPOwner(ply);
-	crate:SetPPSpawner(ply);
+	crate:SetPPOwner(player);
+	crate:SetPPSpawner(player);
 	crate:Spawn()
 	crate:Activate()
 	if item.skin then

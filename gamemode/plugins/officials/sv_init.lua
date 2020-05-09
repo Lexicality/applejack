@@ -321,7 +321,7 @@ function PLUGIN:InitPostEntity()
 		return
 	end
 	for _, tab in ipairs(doors) do
-		ent = ents.Create(tab[1]);
+		local ent = ents.Create(tab[1]);
 		if (not IsValid(ent)) then
 			ErrorNoHalt("couldn't create a  " .. tab[1] .. "!");
 		else

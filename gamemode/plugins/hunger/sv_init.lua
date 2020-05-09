@@ -50,7 +50,7 @@ function PLUGIN:PlayerSecond(player)
 		player:SetCSVar(CLASS_LONG, "_Hunger", 0);
 		return
 	end
-	adition = 1 / (GM.Config["Hunger Minutes"] * 0.6);
+	local adition = 1 / (GM.Config["Hunger Minutes"] * 0.6);
 	player._Hunger.amount = math.Clamp(player._Hunger.amount + adition, 0, 100);
 
 	-- Set it so that we can get the player's hunger client side.

@@ -125,7 +125,7 @@ end
 
 local function acc(ent, fil, sta)
 	for ent in pairs(ent._Owner.slaves) do
-		acc(ent, fil, stat);
+		acc(ent, fil, sta);
 	end
 	umsg.Start("AccessChange", fil);
 	umsg.Short(ent:EntIndex());

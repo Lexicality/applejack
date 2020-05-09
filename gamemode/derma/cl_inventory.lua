@@ -42,9 +42,9 @@ function PANEL:Think()
 
 		-- Loop through the items.
 		for k, v in pairs(cider.inventory.stored) do
-			item = GM.Items[k];
+			local item = GM.Items[k];
 			if (item) then
-				cat = item.Category;
+				local cat = item.Category;
 				if (cat and GM:GetCategory(cat)) then
 					categories[cat] = categories[cat] or {};
 
@@ -214,7 +214,7 @@ function PANEL:Init()
 							box:SetSize(EditPanel:GetWide() - 20, 16)
 							box:RequestFocus()
 							box.OnEnter = function()
-								val = tonumber(box:GetValue())
+								local val = tonumber(box:GetValue())
 								if not val or string.sub(val, 1, 1) == "-" then
 									return
 								end
@@ -225,10 +225,10 @@ function PANEL:Init()
 								-- Close the main menu.
 								cider.menu.toggle();
 							end
-							button = vgui.Create("DButton", EditPanel)
+							local button = vgui.Create("DButton", EditPanel)
 							button:SetText("Drop")
 							button.DoClick = function()
-								val = tonumber(box:GetValue())
+								local val = tonumber(box:GetValue())
 								if not val then
 									return
 								end

@@ -159,7 +159,7 @@ local function clientPanel(panel)
 	panel:Help(" ");
 	panel:Help("Friends");
 	panel:Button("Add Friend").DoClick = addButton;
-	local view = vgui.Create("DListView", self);
+	local view = vgui.Create("DListView", panel);
 	lView = view;
 	view:SetMultiSelect(false);
 	panel:AddPanel(view);

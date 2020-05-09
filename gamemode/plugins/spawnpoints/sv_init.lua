@@ -29,22 +29,21 @@ function PLUGIN:LoadData()
 end
 
 function PLUGIN:SaveData()
-	local data, tocode, status, result, path;
-	tocode = {};
+	local tocode = {};
 	for index, spawns in pairs(self.Spawnpoints) do
-		data = team.Get(index);
+		local data = team.Get(index);
 		if (data) then
 			tocode[data.Name] = spawns; -- Indexes change, names tend not to.
 		end
 	end
-	status, result = pcall(util.TableToJSON, tocode);
+	local status, result = pcall(util.TableToJSON, tocode);
 	if (status == false) then
-		error(
-			"[" .. os.date() ..
-				"] Spawnpoints Plugin: Error JSON encoding spawnpoints : " .. results
+		Error(
+			"[", os.date(), "] Spawnpoints Plugin: Error JSON encoding spawnpoints: ",
+			result
 		);
 	end
-	path = GM.LuaFolder .. "/spawnpoints/" .. game.GetMap() .. ".txt";
+	local path = GM.LuaFolder .. "/spawnpoints/" .. game.GetMap() .. ".txt";
 	if (not result or result == "") then
 		if (file.Exists(path, "DATA")) then
 			file.Delete(path, "DATA");
@@ -57,10 +56,9 @@ function PLUGIN:SaveData()
 end
 
 function PLUGIN:PostPlayerSpawn(ply, light)
-	local data, spawn;
-	data = self.Spawnpoints[ply:Team()];
+	local data = self.Spawnpoints[ply:Team()];
 	if (data and table.Count(data) > 0) then
-		spawn = table.Random(data);
+		local spawn = table.Random(data);
 		ply:SetPos(spawn.pos);
 		ply:SetEyeAngles(spawn.ang);
 	end

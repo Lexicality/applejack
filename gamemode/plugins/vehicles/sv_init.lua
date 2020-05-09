@@ -25,7 +25,7 @@ GM:RegisterCommand{
 	end,
 };
 
-vu_enablehorn = CreateConVar("vu_enablehorn", "1")
+local vu_enablehorn = CreateConVar("vu_enablehorn", "1")
 function PLUGIN:MakeVehicle(player, pos, ang, model, class, vname, vtable)
 	local ent = ents.Create(class)
 	if (not IsValid(ent)) then
@@ -246,7 +246,7 @@ end
 
 local ignores = {"predicted_viewmodel", "physgun_beam", "keyframe_rope"};
 local function checkpos(ply, car, pos)
-	enttab = ents.FindInSphere(pos, 16);
+	local enttab = ents.FindInSphere(pos, 16);
 	for k, ent in ipairs(enttab) do
 		if (ent:IsWeapon()) then
 			enttab[k] = nil;

@@ -23,15 +23,14 @@ function PLUGIN:LoadData()
 end
 
 function PLUGIN:SaveData()
-	local data, status, result, path;
-	status, result = pcall(util.TableToJSON, self.Prisonpoints);
+	local status, result = pcall(util.TableToJSON, self.Prisonpoints);
 	if (status == false) then
 		error(
 			"[" .. os.date() ..
-				"] Prisonpoints Plugin: Error JSON encoding prisonpoints : " .. results
+				"] Prisonpoints Plugin: Error JSON encoding prisonpoints : " .. result
 		);
 	end
-	path = GM.LuaFolder .. "/prisonpoints/" .. game.GetMap() .. ".txt";
+	local path = GM.LuaFolder .. "/prisonpoints/" .. game.GetMap() .. ".txt";
 	if (not result or result == "") then
 		if (file.Exists(path, "DATA")) then
 			file.Delete(path, "DATA");

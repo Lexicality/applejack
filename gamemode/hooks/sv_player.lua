@@ -230,7 +230,7 @@ end
 -- @param id The UniqueID of the item
 -- @return True if they can, false if they can't.
 function GM:PlayerCanUseItem(ply, id)
-	item = self.Items[id];
+	local item = self.Items[id];
 	if (not item) then
 		return false;
 	end
@@ -262,9 +262,7 @@ function GM:PlayerCanUseItem(ply, id)
 	end
 	-- TODO: Why is this needed? I don't think it is tbh
 	if (ply._SpawnWeapons[item.UniqueID]) then -- Did we spawn with this weapon?
-		if (not silent) then
-			ply:Notify("You cannot use this weapon!", 1)
-		end
+		ply:Notify("You cannot use this weapon!", 1)
 		return false
 	end
 	return true;
@@ -539,7 +537,7 @@ function GM:PlayerCanSayOOC(ply, text)
 	if (ply:IsModerator()) then -- Mods can always use ooc
 		return true;
 	elseif ((ply._NextOOC or 0) > CurTime()) then -- Prevent OOC spam
-		timeleft = ply._NextOOC - CurTime();
+		local timeleft = ply._NextOOC - CurTime();
 		if (timeleft > 60) then
 			timeleft = string.ToMinutesSeconds(math.ceil(timeleft)) .. " minute(s)";
 		else

@@ -59,7 +59,7 @@ function cider.inventory.getMaximumSpace(player, inventory)
 
 	-- Loop through the player's inventory.
 	for k, v in pairs(inventory or player.cider._Inventory) do
-		item = GM.Items[k];
+		local item = GM.Items[k];
 		if (item and item.Size < 0) then
 			size = size + (item.Size * -v);
 		end
@@ -75,7 +75,7 @@ function cider.inventory.getSize(player, inventory)
 
 	-- Loop through the player's inventory.
 	for k, v in pairs(inventory or player.cider._Inventory) do
-		item = GM.Items[k];
+		local item = GM.Items[k];
 		if (item and item.Size > 0) then
 			size = size + (item.Size * v);
 		end

@@ -49,7 +49,7 @@ end
 function PLUGIN:FrameTwo(mapname)
 	if (self.Effects[mapname]) then
 		for _, tab in pairs(self.Effects[mapname]) do
-			ent = ents.Create("prop_effect");
+			local ent = ents.Create("prop_effect");
 			if (IsValid(ent)) then
 				ent:SetModel(tab[1]);
 				ent:SetAngles(tab[2]);
@@ -71,13 +71,12 @@ end
 function PLUGIN:FrameThree(mapname)
 	if (self.Vehicles[mapname]) then
 		local VehicleList = list.Get("Vehicles");
-		local vehicle;
 		for _, tab in pairs(self.Vehicles[mapname]) do
-			vehicle = VehicleList[tab[1]];
+			local vehicle = VehicleList[tab[1]];
 			if (not vehicle) then
 				ErrorNoHalt("Applejack (Details): No Such vehicle " .. tab[1] .. "!");
 			else
-				ent = ents.Create(vehicle.Class);
+				local ent = ents.Create(vehicle.Class);
 				if (not IsValid(ent)) then
 					ErrorNoHalt(
 						"Applejack (Details): Could not create vehicle " .. tab[1] .. "!"
@@ -122,7 +121,7 @@ end
 function PLUGIN:FrameFour(mapname)
 	if (self.Doors[mapname]) then
 		for _, tab in pairs(self.Doors[mapname]) do
-			ent = ents.Create(tab[1]);
+			local ent = ents.Create(tab[1]);
 			if (not IsValid(ent)) then
 				ErrorNoHalt(
 					"Applejack (Details): Could not create a door with class " .. tab[1] .. "!"

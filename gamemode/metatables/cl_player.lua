@@ -27,7 +27,7 @@ function meta:ESPPaint(lines, pos, dist, centre, ragdoll)
 	if (details ~= "") then
 		lines:Add("Details", "Details: " .. details, color_white, 5);
 	end
-	if (not center) then
+	if (not centre) then
 		return;
 	end
 

@@ -53,7 +53,7 @@ end
 ---
 -- Wipes a player's prop protection buddy list
 function meta:ClearPPFriends()
-	self._ppFriends[uid] = {};
+	self._ppFriends = {};
 	umsg.Start("MS PPUpdate", self);
 	umsg.Char(3);
 	umsg.End();
@@ -313,7 +313,7 @@ end
 -- @param time How many seconds they should bleed for. 0 or nil for infinite bleeding.
 function meta:Bleed(time)
 	timer.Start(
-		"Bleeding: " .. self:UniqueID(), 0.25, (seconds or 0) * 4, dobleed, self
+		"Bleeding: " .. self:UniqueID(), 0.25, (time or 0) * 4, dobleed, self
 	);
 end
 
@@ -485,7 +485,7 @@ function meta:WakeUp(reset)
 
 	-- Set some infos for everyone else
 	self:SetNWBool("KnockedOut", false);
-	self:SetNWEntity("Ragdoll", ragdoll);
+	self:SetNWEntity("Ragdoll", NULL);
 	gamemode.Call("PlayerWokenUp", self);
 end
 

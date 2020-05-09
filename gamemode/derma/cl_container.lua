@@ -229,7 +229,7 @@ function PANEL:Init()
 				box:SetSize(EditPanel:GetWide() - 20, 16)
 				box:RequestFocus()
 				local func = function()
-					val = tonumber(box:GetValue())
+					local val = tonumber(box:GetValue())
 					if (not val) or string.sub(val, 1, 1) == "-" then
 						return
 					end
@@ -242,7 +242,7 @@ function PANEL:Init()
 					containermenu.Buttoned = true
 				end
 				box.OnEnter = func
-				button = vgui.Create("DButton", EditPanel)
+				local button = vgui.Create("DButton", EditPanel)
 				button:SetText(self:GetValue())
 				button.DoClick = func
 				button:SetPos(EditPanel:GetWide() - button:GetWide() - 10, 46)
@@ -336,7 +336,7 @@ function PANEL:Init()
 	self.close.DoClick = closeMenu
 
 	-- Capture the position of the local player.
-	localPlayerPosition = LocalPlayer():GetPos();
+	local localPlayerPosition = LocalPlayer():GetPos();
 	self.pInventory = vgui.Create("cider_Container_Inventory", self)
 	self.cInventory = vgui.Create("cider_Container_Inventory", self)
 	self.pInventory.action = CAN_PUT

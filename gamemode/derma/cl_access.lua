@@ -390,7 +390,7 @@ function PANEL:Init()
 	self.setbut = vgui.Create("DButton", self)
 	self.setbut:SetText("Set Name")
 	local function setName()
-		val = self.texbox:GetValue()
+		local val = self.texbox:GetValue()
 		if not val or val == "" then
 			return
 		end

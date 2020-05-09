@@ -108,7 +108,7 @@ do
 		for _, CategoryData in pairs(CategoryList) do
 			local SubPanelList = PanelList._Categories[CategoryData.Name];
 			if (not SubPanelList) then
-				local SubHeader = vuil.Create("DCollapsableCategory", PanelList);
+				local SubHeader = vgui.Create("DCollapsableCategory", PanelList);
 				SubPanelList = vgui.Create("MSDPanelList", SubHeader);
 				SubPanelList:SetPadding(2);
 				SubPanelList:SetSpacing(3);
@@ -209,7 +209,7 @@ do
 			return;
 		end
 		for CategoryName, SubItemList in pairs(ItemList) do
-			local SubPanelList = PanelList._Categories[CategoryData.Name];
+			local SubPanelList = PanelList._Categories[CategoryName];
 			if (SubPanelList) then
 				self:RecursiveDelete(SubPanelList, SubItemList);
 			end

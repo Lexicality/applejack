@@ -20,7 +20,7 @@ DeriveGamemode("Sandbox");
 require("csvars")
 
 -- Create the Cider table and the configuration table.
-cider = {};
+_G.cider = {};
 
 -- Include the configuration and enumeration files.
 IncludeCS("sh_enumerations.lua");
