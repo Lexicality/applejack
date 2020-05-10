@@ -68,7 +68,7 @@ GM:AddHUDBar(
 			return -1
 		end
 		bar.text = "Arrest Time: " .. string.ToMinutesSeconds(num)
-		return (num / GM.Config["Arrest Time"]) * 100;
+		return (num / MS.Config["Arrest Time"]) * 100;
 	end
 );
 

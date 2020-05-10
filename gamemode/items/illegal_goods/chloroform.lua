@@ -30,7 +30,7 @@ function ITEM:onUse(ply)
 	victim:Emote("struggles a bit then slumps to the floor");
 	victim._Sleeping = true;
 	victim:KnockOut(victim._KnockOutTime);
-	GM:Log(EVENT_EVENT, "%s just chloroformed %s.", ply:Name(), victim:Name());
+	MS:Log(EVENT_EVENT, "%s just chloroformed %s.", ply:Name(), victim:Name());
 	gamemode.Call("PlayerKnockedOut", victim, ply);
 	return true
 end

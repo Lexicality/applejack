@@ -51,7 +51,7 @@ function ENT:Think()
 	local r, g, b, a = self:GetColor();
 	a = a - 1
 	if (a > 0) then
-		self.NextFade = time + GM.Config["Note Fade Speed"];
+		self.NextFade = time + MS.Config["Note Fade Speed"];
 		self:SetColor(r, g, b, a);
 	else
 		self:Remove();

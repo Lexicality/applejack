@@ -3,12 +3,6 @@
 -- ~ Applejack ~
 --
 ---
--- @name GM
--- @class table
--- @description The gamemode table. In this case, the serverside player hooks section of it. This is a reference of every hook that could be called on the player only on the server that the gamemode deals with.
-local GM = GM;
-
----
 -- Called when a player's warrant timer ends.
 -- @param ply The player whose warrant just expired
 -- @param class The class of warrant. 'arrest' or 'search'.
@@ -335,7 +329,7 @@ function GM:PlayerDestroyedContraband(ply, ent)
 	else
 		name = "someone";
 	end
-	GM:Log(EVENT_ADMINEVENT, "%s destroyed %s's %s.", ply:Name(), name, contra.name);
+	MS:Log(EVENT_ADMINEVENT, "%s destroyed %s's %s.", ply:Name(), name, contra.name);
 end
 
 ---
@@ -430,7 +424,7 @@ function GM:PlayerUpdatedContainerContents(ply, ent, itemid, amount, force)
 		word = "%s put %i %s into %s %s";
 		ply:Emote("puts " .. iname .. " into the " .. ename .. ".");
 	end
-	GM:Log(
+	MS:Log(
 		EVENT_ENTITY, word, ply:Name(), amount,
 		(amount > 1 and item.Plural or item.Name), oname, ename
 	);
@@ -646,9 +640,9 @@ end
 -- @param data The player's data table (eg ply.cider)
 function GM:SetPlayerDefaultData(ply, data)
 	data._Misc = {}
-	data._Clan = GM.Config["Default Clan"]
-	data._Money = GM.Config["Default Money"]
-	data._Access = GM.Config["Default Access"]
+	data._Clan = MS.Config["Default Clan"]
+	data._Money = MS.Config["Default Money"]
+	data._Access = MS.Config["Default Access"]
 	data._Donator = 0
 	data._Inventory = {}
 	data._Blacklist = {}
@@ -660,5 +654,5 @@ end
 -- @param ply The player in question
 -- @param data The player's data table (eg ply.cider)
 function GM:SetNewPlayerData(ply, data)
-	data._Inventory = table.Copy(GM.Config["Default Inventory"]); -- Give the player some items!
+	data._Inventory = table.Copy(MS.Config["Default Inventory"]); -- Give the player some items!
 end

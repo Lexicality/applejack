@@ -2,8 +2,6 @@
 -- ~ Logging Library ~
 -- ~ Applejack ~
 --
-local GM = GM or GAMEMODE; -- eeeh
-
 ---
 -- The various log categories and information about them, indexed by name
 GM.LogCategoryData = {}
@@ -95,7 +93,7 @@ local function doprint(name, msg, ...)
 		-- Neatly work with Source's logging system.
 		ServerLog(text .. "\n");
 		-- Listen servers don't need the serverside messages because they get the clientside ones.
-		if (GM:IsListenServer()) then
+		if (MS:IsListenServer()) then
 			return;
 		end
 	end
@@ -106,7 +104,7 @@ if (SERVER) then
 	---
 	-- Log an event that has happened. (serverside)
 	-- These events will be stored in the server's /log/ directory if the 'log on' command has been issued at startup and will be sent to any client that has the relevent access.
-	-- @usage GM:Log(EVENT_BUILD, "%s spawned a %q", player:Name(), model);
+	-- @usage MS:Log(EVENT_BUILD, "%s spawned a %q", player:Name(), model);
 	-- @param category The categoryID for the kind of event we are logging.
 	-- @param event A string that contains the base of the event. This will be pooled and have string.format run on it with the other arguments. Try to keep it as generic as possible. See the usage tag.
 	-- @param ... A series of strings to be applied to the event string via string.format().

@@ -79,7 +79,7 @@ function ENT:Use(activator, caller)
 		end
 		cider.inventory.update(activator, self.item.UniqueID, 1, true);
 		if (self.item:Use(activator)) then
-			GM:Log(
+			MS:Log(
 				EVENT_PICKUP, "%s picked up and used a %s.", activator:Name(),
 				self.item.Name
 			);
@@ -113,9 +113,9 @@ function ENT:Use(activator, caller)
 	end
 	if (picked > 0) then
 		if (picked == 1) then
-			GM:Log(EVENT_PICKUP, "%s picked up a %s.", activator:Name(), self.item.Name);
+			MS:Log(EVENT_PICKUP, "%s picked up a %s.", activator:Name(), self.item.Name);
 		else
-			GM:Log(
+			MS:Log(
 				EVENT_PICKUP, "%s picked up %i %s.", activator:Name(), picked,
 				self.item.Plural
 			);

@@ -22,7 +22,7 @@ if (CLIENT) then
 				end
 				data[net.ReadString()] = lines;
 			end
-			GM.HelpItems = data;
+			MS.HelpItems = data;
 			if (cider.menu and cider.menu.tabs["Help"]) then
 				cider.menu.tabs["Help"]:Reload();
 			end
@@ -42,7 +42,7 @@ else
 	util.AddNetworkString("Moonshine Help");
 	hook.Add(
 		"PlayerInitialized", "Applejack Help Spammer", function(ply)
-			local help = GM.HelpItems;
+			local help = MS.HelpItems;
 			net.Start("Moonshine Help");
 			net.WriteUInt(table.Count(help), 8)
 			for key, lines in pairs(help) do

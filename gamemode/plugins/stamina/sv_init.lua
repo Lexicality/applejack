@@ -31,20 +31,20 @@ function PLUGIN:PlayerTenthSecond(ply)
 		ply:GetVelocity():Length() > 0) then
 		if (ply:Health() < 50) then
 			ply._Stamina = math.max(
-				ply._Stamina - (GM.Config["Stamina Drain"] + ((50 - ply:Health()) * 0.05)),
+				ply._Stamina - (MS.Config["Stamina Drain"] + ((50 - ply:Health()) * 0.05)),
 				0
 			);
 		else
-			ply._Stamina = math.max(ply._Stamina - GM.Config["Stamina Drain"], 0);
+			ply._Stamina = math.max(ply._Stamina - MS.Config["Stamina Drain"], 0);
 		end
 	else
 		if (ply:Health() < 50) then
 			ply._Stamina = math.min(
 				ply._Stamina +
-					(GM.Config["Stamina Restore"] - ((50 - ply:Health()) * 0.0025)), 100
+					(MS.Config["Stamina Restore"] - ((50 - ply:Health()) * 0.0025)), 100
 			);
 		else
-			ply._Stamina = math.min(ply._Stamina + GM.Config["Stamina Restore"], 100);
+			ply._Stamina = math.min(ply._Stamina + MS.Config["Stamina Restore"], 100);
 		end
 	end
 
@@ -61,12 +61,12 @@ function PLUGIN:PlayerTenthSecond(ply)
 	else
 		local r = ply._Stamina / 100
 		ply:SetRunSpeed(
-			(GM.Config["Run Speed"] - GM.Config["Walk Speed"]) * r +
-				GM.Config["Walk Speed"]
+			(MS.Config["Run Speed"] - MS.Config["Walk Speed"]) * r +
+				MS.Config["Walk Speed"]
 		);
 		ply:SetWalkSpeed(
-			(GM.Config["Walk Speed"] - GM.Config["Incapacitated Speed"]) * r +
-				GM.Config["Incapacitated Speed"]
+			(MS.Config["Walk Speed"] - MS.Config["Incapacitated Speed"]) * r +
+				MS.Config["Incapacitated Speed"]
 		);
 	end
 

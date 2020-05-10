@@ -42,10 +42,10 @@ function PANEL:Think()
 
 		-- Loop through the items.
 		for k, v in pairs(cider.inventory.stored) do
-			local item = GM.Items[k];
+			local item = MS.Items[k];
 			if (item) then
 				local cat = item.Category;
-				if (cat and GM:GetCategory(cat)) then
+				if (cat and MS:GetCategory(cat)) then
 					categories[cat] = categories[cat] or {};
 
 					-- Insert the item into the category table.
@@ -65,7 +65,7 @@ function PANEL:Think()
 					self.itemsList:AddItem(vgui.Create("cider_Inventory_Item", self));
 				end
 			else
-				local c = GM:GetCategory(k)
+				local c = MS:GetCategory(k)
 				if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 					local header = vgui.Create("DCollapsibleCategory", self)
 					header:SetSize(cider.menu.width, 50); -- Keep the second number at 50
@@ -108,7 +108,7 @@ function PANEL:Init()
 
 	-- Set the item that we are.
 	self.item = self:GetParent().currentItem;
-	local item = GM.Items[self.item]
+	local item = MS.Items[self.item]
 	local amount = cider.inventory.stored[self.item];
 	-- Create a label for the name.
 	self.name = vgui.Create("DLabel", self);

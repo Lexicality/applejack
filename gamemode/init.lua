@@ -92,7 +92,8 @@ GM.Entities = {}
 
 -- Called when the server initializes.
 function GM:Initialize()
-	GM = self; -- ¬_¬ garru
+	GM = self
+	MS = self
 	ErrorNoHalt "----------------------\n"
 	ErrorNoHalt(os.date() .. " - Server starting up\n")
 	ErrorNoHalt "----------------------\n"
@@ -136,7 +137,7 @@ end
 function GM:PlayerSpawnNPC(ply, model)
 	if hook.Call("PlayerCanDoSomething", GAMEMODE, ply, nil, true) and
 		(ply:IsSuperAdmin() or ply:HasAccess("N")) then
-		GM:Log(EVENT_SUPEREVENT, "%s spawned a %q", ply:Name(), model)
+		MS:Log(EVENT_SUPEREVENT, "%s spawned a %q", ply:Name(), model)
 		return true
 	else
 		return false
@@ -154,7 +155,7 @@ end
 
 function GM:PlayerSpawnedProp(ply, mdl, ent)
 	ply._NextSpawnProp = CurTime() + 1;
-	GM:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), mdl)
+	MS:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), mdl)
 	if hook.Call("PropSpawned", GAMEMODE, mdl, ent) then
 		ent:MakeOwnable();
 		ent:GiveToPlayer(ply);
@@ -216,7 +217,7 @@ end
 function GM:PlayerSpawnRagdoll(ply, model)
 	if hook.Call("PlayerCanDoSomething", GAMEMODE, ply, nil, true) and
 		ply:IsAdmin() then
-		GM:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), model)
+		MS:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), model)
 		return true
 	else
 		return false
@@ -227,7 +228,7 @@ end
 function GM:PlayerSpawnEffect(ply, model)
 	if hook.Call("PlayerCanDoSomething", GAMEMODE, ply, nil, true) and
 		ply:IsAdmin() then
-		GM:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), model)
+		MS:Log(EVENT_BUILD, "%s spawned a %q", ply:Name(), model)
 		return true
 	else
 		return false
@@ -262,7 +263,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	if not hook.Call("PlayerCanDoSomething", GAMEMODE, ply, nil, true) then
 		return false
 	elseif ply:IsSuperAdmin() then
-		GM:Log(
+		MS:Log(
 			EVENT_SUPEREVENT, "%s spawned a %s with model %q", ply:Name(), name, model
 		)
 		return true
@@ -275,7 +276,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	if (not ply:HasAccess("e")) then
 		return false
 	end
-	GM:Log(EVENT_BUILD, "%s spawned a %s with model %q", ply:Name(), name, model)
+	MS:Log(EVENT_BUILD, "%s spawned a %s with model %q", ply:Name(), name, model)
 	-- Check if the player is an administrator.
 	if (ply:IsAdmin()) then
 		return true
@@ -359,7 +360,7 @@ function GM:PlayerInitialized(ply)
 	self:RestoreAccess(ply);
 	-- Make the player a Citizen to begin with.
 	ply:JoinTeam(TEAM_DEFAULT)
-	GM:Log(EVENT_PUBLICEVENT, "%s finished connecting.", ply:Name())
+	MS:Log(EVENT_PUBLICEVENT, "%s finished connecting.", ply:Name())
 end
 
 -- Called when a player's data is loaded.
@@ -708,7 +709,7 @@ function GM:PlayerDeath(ply, inflictor, attacker, ragdoll, fall)
 	else
 		formattext, text1, text2 = "%s killed %s.", attacker:GetClass(), ply:Name()
 	end
-	GM:Log(EVENT_DEATH, formattext, text1, text2, text3)
+	MS:Log(EVENT_DEATH, formattext, text1, text2, text3)
 end
 
 local function donttazemebro(class)
@@ -792,9 +793,9 @@ function GM:EntityTakeDamage(entity, damageInfo)
 				end
 				local text = "%s knocked over %s%s"
 				if isplayer then
-					GM:Log(EVENT_PLAYERDAMAGE, text, smiter, smitee, weapon)
+					MS:Log(EVENT_PLAYERDAMAGE, text, smiter, smitee, weapon)
 				else
-					GM:Log(EVENT_DAMAGE, text, smiter, smitee, weapon)
+					MS:Log(EVENT_DAMAGE, text, smiter, smitee, weapon)
 				end
 				return
 			end
@@ -873,7 +874,7 @@ function GM:EntityTakeDamage(entity, damageInfo)
 				weapon = " with a " .. attacker:GetActiveWeapon():GetClass()
 			end
 		end
-		GM:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
+		MS:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
 	elseif cider.container.isContainer(entity) and entity:Health() > 0 then
 		-- Fookin Boogs.		v
 		damageInfo:SetDamageForce(vector0)
@@ -894,7 +895,7 @@ function GM:EntityTakeDamage(entity, damageInfo)
 			entity:SetHealth(0)
 			entity:TakeDamage(1)
 		end
-		GM:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
+		MS:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
 		-- Check if the entity is a knocked out player.
 	elseif (IsValid(entity._Player) and not entity._Corpse) then
 		local ply = entity._Player
@@ -1024,9 +1025,9 @@ function GM:EntityTakeDamage(entity, damageInfo)
 		local text = "%s damaged %s for %G damage%s"
 
 		if isplayer then
-			GM:Log(EVENT_PLAYERDAMAGE, text, smiter, smitee, damage, weapon)
+			MS:Log(EVENT_PLAYERDAMAGE, text, smiter, smitee, damage, weapon)
 		else
-			GM:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
+			MS:Log(EVENT_DAMAGE, text, smiter, smitee, damage, weapon)
 		end
 	end
 end
@@ -1042,7 +1043,7 @@ local function dogive(ply, data)
 	end
 	local item, give
 	for _, class in pairs(data.Weapons) do
-		item = GM.Items[class];
+		item = MS.Items[class];
 		give = true;
 		if (not item or ply:Blacklisted("cat", item.Category) == 0) then
 			ply._SpawnWeapons[class] = true;
@@ -1142,7 +1143,7 @@ GM.ShowSpare2 = GM.ShowHelp;
 -- Called when a ply attempts to spawn a SWEP.
 function GM:PlayerSpawnSWEP(ply, class, weapon)
 	if ply:IsSuperAdmin() then
-		GM:Log(EVENT_SUPEREVENT, "%s spawned a %s", ply:Name(), class)
+		MS:Log(EVENT_SUPEREVENT, "%s spawned a %s", ply:Name(), class)
 		return true
 	else
 		return false
@@ -1152,7 +1153,7 @@ end
 -- Called when a player is given a SWEP.
 function GM:PlayerGiveSWEP(ply, class, weapon)
 	if ply:IsSuperAdmin() then
-		GM:Log(EVENT_SUPEREVENT, "%s gave themselves a %s", ply:Name(), class)
+		MS:Log(EVENT_SUPEREVENT, "%s gave themselves a %s", ply:Name(), class)
 		return true
 	else
 		return false
@@ -1162,7 +1163,7 @@ end
 -- Called when attempts to spawn a SENT.
 function GM:PlayerSpawnSENT(ply, class)
 	if ply:IsSuperAdmin() then
-		GM:Log(EVENT_SUPEREVENT, "%s spawned a %s", ply:Name(), class)
+		MS:Log(EVENT_SUPEREVENT, "%s spawned a %s", ply:Name(), class)
 		return true
 	else
 		return false
@@ -1178,7 +1179,7 @@ timer.Create(
 hook.Add(
 	"Think", "Timer Checker.h", function()
 		if timenow < CurTime() - 3 then
-			GM:Log(EVENT_ERROR, "Timers have stopped running!")
+			MS:Log(EVENT_ERROR, "Timers have stopped running!")
 			player.NotifyAll(NOTIFY_ERROR, "Timers have stopped running! Oh shi-")
 			hook.Remove("Think", "Timer Checker.h")
 		end
@@ -1188,7 +1189,7 @@ hook.Add(
 -- Create a timer to automatically clean up decals.
 timer.Create(
 	"Cleanup Decals", 60, 0, function()
-		if (GM.Config["Cleanup Decals"]) then
+		if (MS.Config["Cleanup Decals"]) then
 			for k, v in pairs(player.GetAll()) do
 				v:ConCommand("r_cleardecals\n")
 			end
@@ -1201,7 +1202,7 @@ timer.Create(
 	"Earning", GM.Config["Earning Interval"], 0, function()
 		-- FIXME: Christ on a bike this is a shithole redo the entire thing jesus
 		local contratypes = {}
-		for key in pairs(GM.Config["Contraband"]) do
+		for key in pairs(MS.Config["Contraband"]) do
 			contratypes[key] = true
 		end
 		local cplayers = {}
@@ -1222,7 +1223,7 @@ timer.Create(
 						cplayers[ply].refill = cplayers[ply].refill + 1
 					else
 						cplayers[ply].money = cplayers[ply].money +
-                      							GM.Config["Contraband"][ent:GetClass()].money
+                      							MS.Config["Contraband"][ent:GetClass()].money
 					end
 				end
 			elseif ent:IsDoor() and ent:IsOwned() then
@@ -1230,7 +1231,7 @@ timer.Create(
 				if type(o) == "Player" and IsValid(o) then
 					dplayers[o] = dplayers[o] or {0, {}}
 					-- Increase the amount of tax this player must pay.
-					dplayers[o][1] = dplayers[o][1] + GM.Config["Door Tax Amount"]
+					dplayers[o][1] = dplayers[o][1] + MS.Config["Door Tax Amount"]
 					-- Insert the door into the player's door table.
 					table.insert(dplayers[o][2], ent)
 				end
@@ -1260,7 +1261,7 @@ timer.Create(
 				ply:Notify("You received $" .. ply._Salary .. " salary.", 0)
 			end
 		end
-		if (GM.Config["Door Tax"]) then
+		if (MS.Config["Door Tax"]) then
 			-- Loop through our players list.
 			for k, v in pairs(dplayers) do
 				if (k:CanAfford(v[1])) then
@@ -1270,7 +1271,7 @@ timer.Create(
 
 					-- Loop through the doors.
 					for k2, v2 in pairs(v[2]) do
-						if GM.Entities[v2] then
+						if MS.Entities[v2] then
 							k:TakeDoor(v2, true)
 						else
 							v2:RemoveCallOnRemove("refund");

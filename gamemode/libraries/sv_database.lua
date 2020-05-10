@@ -36,51 +36,51 @@ player.freeTextKeys = {
 GM.PendingQueries = {}
 
 local function onConnected(db)
-	GM:Log(EVENT_SQLDEBUG, "Connected to the MySQL server!")
+	MS:Log(EVENT_SQLDEBUG, "Connected to the MySQL server!")
 	local tablequery = db:query(CHECK_FOR_PLAYERS)
 	-- We need to know if the table exists before doing *anything* else
 	tablequery:start()
 	tablequery:wait(true)
 	local err = tablequery:error()
 	if err ~= "" then
-		GM:Log(EVENT_ERROR, "Error checking the players table: %s", err)
+		MS:Log(EVENT_ERROR, "Error checking the players table: %s", err)
 		-- I dunno what to do here, so let's just break everything
 		error(err)
 	end
 	if tablequery:affectedRows() == 0 then
-		GM:Log(EVENT_SQLDEBUG, "Creating missing players table")
+		MS:Log(EVENT_SQLDEBUG, "Creating missing players table")
 		local plyquery = db:query(CREATE_TABLE_PLAYERS)
 		-- Literally can't start the server without a players table
 		plyquery:start()
 		plyquery:wait(true)
 		if err ~= "" then
-			GM:Log(EVENT_ERROR, "Error creating the players table: %s", err)
+			MS:Log(EVENT_ERROR, "Error creating the players table: %s", err)
 			error(err)
 		end
 	end
 	-- Run all queries that came in while we were connecting to the database.
 	-- TODO: If the database disconnects while we run these queries, everything will break
-	for ply, func in pairs(GM.PendingQueries) do
+	for ply, func in pairs(MS.PendingQueries) do
 		if IsValid(ply) then
 			func(ply)
 		end
 	end
-	GM.PendingQueries = {}
+	MS.PendingQueries = {}
 end
 local function onConnectionFailed(db, err)
-	GM:Log(EVENT_ERROR, "Error connecting to the MySQL server: %s", err)
+	MS:Log(EVENT_ERROR, "Error connecting to the MySQL server: %s", err)
 	timer.Simple(
 		10, function()
-			GM:Log(EVENT_DEBUG, "Reconnecting to the MySQL server")
-			GM:ConnectToDatabase()
+			MS:Log(EVENT_DEBUG, "Reconnecting to the MySQL server")
+			MS:ConnectToDatabase()
 		end
 	)
 end
 
 function GM:ConnectToDatabase()
-	GM:Log(EVENT_DEBUG, "Connecting to the MySQL server")
+	MS:Log(EVENT_DEBUG, "Connecting to the MySQL server")
 	if self.Database and self.Database:status() == mysqloo.DATABASE_CONNECTED then
-		GM:Log(EVENT_SQLDEBUG, "Killing existing connection")
+		MS:Log(EVENT_SQLDEBUG, "Killing existing connection")
 		self.Database:disconnect()
 	end
 
@@ -105,7 +105,7 @@ local function returningPlayer(ply, row)
 	for key, data in pairs(data) do
 		-- For user editable data we pad the field to prevent them turning it
 		-- into a vector or something via Garry's magic roundabout JSON magic
-		if GM.Config["User Editable Data"][key] then
+		if MS.Config["User Editable Data"][key] then
 			if not isstring(data) then
 				-- Oops, we've clearly failed.
 				data = tostring(data)
@@ -115,12 +115,12 @@ local function returningPlayer(ply, row)
 		end
 		ply.cider[key] = data
 	end
-	GM:Log(EVENT_DEBUG, "Loading of %s's data complete.", ply:Name())
+	MS:Log(EVENT_DEBUG, "Loading of %s's data complete.", ply:Name())
 	gamemode.Call("PlayerDataLoaded", ply, true)
 end
 
 local function newPlayer(ply)
-	GM:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
+	MS:Log(EVENT_DEBUG, "%s is new to the server. Data not loaded.", ply:Name())
 	gamemode.Call("SetNewPlayerData", ply, ply.cider)
 	gamemode.Call("PlayerDataLoaded", ply, false)
 	ply:SaveData(true)
@@ -132,8 +132,8 @@ end
 function plymeta:LoadData()
 	if self._Initialized then
 		return
-	elseif not GM:CanQueryDB() then
-		GM.PendingQueries[self] = function(ply)
+	elseif not MS:CanQueryDB() then
+		MS.PendingQueries[self] = function(ply)
 			ply:LoadData()
 		end
 		return
@@ -141,12 +141,12 @@ function plymeta:LoadData()
 	-- Set up the default cider table.
 	self.cider = {}
 	gamemode.Call("SetPlayerDefaultData", self, self.cider)
-	local query = GM.Database:prepare(LOAD_PLAYER)
+	local query = MS.Database:prepare(LOAD_PLAYER)
 	query:setString(1, self:SteamID64())
 	query.self = self
 	query.name = self:Name()
 	query.onError = function(q, err, sql)
-		GM:Log(EVENT_ERROR, "SQL Error loading %q's data: %s", q.name, err)
+		MS:Log(EVENT_ERROR, "SQL Error loading %q's data: %s", q.name, err)
 		-- TODO: 30s seems like a long time
 		timer.Simple(
 			30, function()
@@ -173,7 +173,7 @@ end
 local function prepareData(ply, data)
 	local toSave = {}
 	for key, value in pairs(data) do
-		if GM.Config["User Editable Data"][key] then
+		if MS.Config["User Editable Data"][key] then
 			value = "~" .. value .. "~"
 		end
 		-- TODO: Probably a hook for reading & writing these
@@ -187,13 +187,13 @@ function plymeta:GetSaveQuery(create)
 	local data = prepareData(self, self.cider)
 	local query
 	if create then
-		query = GM.Database:prepare(NEW_PLAYER)
+		query = MS.Database:prepare(NEW_PLAYER)
 		query:setString(1, self:SteamID64())
 		query:setString(2, data)
 		query:setString(3, self:SteamID())
 		query:setString(4, self:Name())
 	else
-		query = GM.Database:prepare(UPDATE_PLAYER)
+		query = MS.Database:prepare(UPDATE_PLAYER)
 		query:setString(1, data)
 		query:setString(2, self:Name())
 		query:setString(3, self:SteamID64())
@@ -209,19 +209,19 @@ function plymeta:SaveData(create)
 	if not self._Initialized then
 		return
 	end
-	if not GM:CanQueryDB() then
-		GM.PendingQueries[self] = function(ply)
+	if not MS:CanQueryDB() then
+		MS.PendingQueries[self] = function(ply)
 			ply:SaveData(create)
 		end
 		return
 	end
 	local query = self:GetSaveQuery(create)
-	-- GM:Log(EVENT_SQLDEBUG, "SQL Statement for %q: %s", query.name, q)
+	-- MS:Log(EVENT_SQLDEBUG, "SQL Statement for %q: %s", query.name, q)
 	function query:onError(err)
-		GM:Log(EVENT_ERROR, "SQL Error in %q's save: %s", self.name, err)
+		MS:Log(EVENT_ERROR, "SQL Error in %q's save: %s", self.name, err)
 	end
 	function query:onSuccess()
-		GM:Log(EVENT_SQLDEBUG, "SQL Statement successful for %q", self.name)
+		MS:Log(EVENT_SQLDEBUG, "SQL Statement successful for %q", self.name)
 	end
 	query:start()
 	self._SaveQuery = query

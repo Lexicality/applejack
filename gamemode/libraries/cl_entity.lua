@@ -6,7 +6,7 @@ GM.AccessableEntities = {};
 local queue = {};
 local function entgranted(ent, access)
 	ent._HasAccess = access;
-	GM.AccessableEntities[ent] = access;
+	MS.AccessableEntities[ent] = access;
 	if GetConVarNumber "developer" > 0 then
 		local moneyAlert = {}
 
@@ -50,7 +50,7 @@ usermessage.Hook(
 
 usermessage.Hook(
 	"AccessReset", function(msg)
-		for ent in pairs(GM.AccessableEntities) do
+		for ent in pairs(MS.AccessableEntities) do
 			if (IsValid(ent)) then
 				entgranted(ent, nil);
 			end
@@ -68,9 +68,9 @@ usermessage.Hook(
 timer.Create(
 	"Applejack - Entity Library - Table Cleaner", GM.Config["Earning Interval"], 0,
 	function()
-		for ent in pairs(GM.AccessableEntities) do
+		for ent in pairs(MS.AccessableEntities) do
 			if not IsValid(ent) then
-				GM.AccessableEntities[ent] = nil
+				MS.AccessableEntities[ent] = nil
 			end
 		end
 	end

@@ -5,7 +5,7 @@
 ITEM.NoVehicles = true;
 ITEM.Size = 3;
 local function checkcount(ply, self)
-	if (ply:GetCount(self.UniqueID) == GM.Config.Contraband[self.UniqueID].maximum) then
+	if (ply:GetCount(self.UniqueID) == MS.Config.Contraband[self.UniqueID].maximum) then
 		ply:Notify("You have reached the maximum " .. self.Plural .. "!", 1);
 		return false;
 	end

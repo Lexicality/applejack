@@ -103,7 +103,7 @@ function PANEL:PerformLayout()
 	);
 
 	self.label:SetTextColor(Color(50, 255, 50, 255));
-	self.label:SetText("Purchase this door for $" .. GM.Config["Door Cost"] .. ".");
+	self.label:SetText("Purchase this door for $" .. MS.Config["Door Cost"] .. ".");
 	self.label:SizeToContents();
 
 	-- Set the label and text entry panels to be visible.

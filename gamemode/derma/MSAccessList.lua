@@ -151,7 +151,7 @@ end
 local function formatPlayerList(list)
 	local res = {};
 	local trans = {};
-	for _, group in pairs(GM.Groups) do
+	for _, group in pairs(MS.Groups) do
 		local data = {SortWeight = group.SortWeight};
 		for _, team in pairs(group.Teams) do
 			local arf = {SortWeight = team.SortWeight};
@@ -202,7 +202,7 @@ local function preparePlayerData(PlayerList)
 	end
 	-- Generate the category headings for all the players.
 	for TeamID in pairs(TeamIDs) do
-		local Team = GM.Teams[TeamID];
+		local Team = MS.Teams[TeamID];
 		-- Make sure it's not one of the metateams like Connecting or something
 		if (not Team or Team.Invisible) then
 			TeamIDs[TeamID] = nil;
@@ -259,7 +259,7 @@ local function formatTeamList(list)
 	local res = {};
 	local trans = {};
 
-	for _, group in pairs(GM.Groups) do
+	for _, group in pairs(MS.Groups) do
 		local gangs = {SortWeight = group.SortWeight};
 		for _, gang in (data.Gangs) do
 			local teams = {SortWeight = gang.SortWeight};
@@ -279,7 +279,7 @@ local function formatTeamList(list)
 	end
 
 	for _, id in pairs(list) do
-		local team = GM.Teams[id];
+		local team = MS.Teams[id];
 		if (not team) then
 			continue;
 		end
@@ -321,7 +321,7 @@ function prepareTeamData(TeamList)
 	end
 	-- Generate the category headings for all the players.
 	for TeamID in pairs(TeamIDs) do
-		local Team = GM.Teams[TeamID];
+		local Team = MS.Teams[TeamID];
 		-- Make sure it's not one of the metateams like Connecting or something
 		if (not Team or Team.Invisible) then
 			TeamIDs[TeamID] = nil;
@@ -371,7 +371,7 @@ local function formatGangList(list)
 		end
 	end
 	local res = {};
-	for _, group in pairs(GM.Groups) do
+	for _, group in pairs(MS.Groups) do
 		local data = {SortWeight = group.SortWeight};
 		for _, gang in pairs(group.Gangs) do
 			if (gangs[gang.GangID]) then
@@ -401,7 +401,7 @@ function pepareGangData(GangList)
 		end
 	end
 	-- Have a category for every group, even if nothing's in it
-	for _, GroupData in pairs(GM.Groups) do
+	for _, GroupData in pairs(MS.Groups) do
 		local Group = {SortWeight = GroupData.SortWeight}
 		if (GroupIDs[GroupData.ID]) then
 			table.insert(Group, GroupData);

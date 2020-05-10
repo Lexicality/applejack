@@ -26,7 +26,7 @@ function PANEL:Think()
 		table.insert(laws, law);
 	end
 	laws = table.concat(laws, "\n");
-	self:SetText(GM.Config["Laws"] .. laws);
+	self:SetText(MS.Config["Laws"] .. laws);
 
 	if LocalPlayer():IsAdmin() or LocalPlayer():Team() == TEAM_MAYOR then
 		local button = vgui.Create("DButton", self);

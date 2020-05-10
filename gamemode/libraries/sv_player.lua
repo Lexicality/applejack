@@ -82,8 +82,8 @@ end
 
 ---
 -- Notifies every player on the server and logs a public event
--- @see GM:Log
--- @param message The message to display. (Use same form as GM:Log)
+-- @see MS:Log
+-- @param message The message to display. (Use same form as MS:Log)
 -- @param level The notification level. Nil or unspecified = chat message. 0 = Water drip. 1 = Failure buzzer. 2 = 'Bip' Notification. 3 = 'Tic' Notification. (Used by the cleanup)
 -- @param ... A series of strings to be applied to the message string via string.format().
 function player.NotifyAll(level, message, ...)
@@ -96,7 +96,7 @@ function player.NotifyAll(level, message, ...)
 	for _, ply in pairs(player.GetAll()) do
 		ply:Notify(msg, level);
 	end
-	GM:Log(EVENT_PUBLICEVENT, message, ...);
+	MS:Log(EVENT_PUBLICEVENT, message, ...);
 end
 
 --
@@ -136,7 +136,7 @@ timer.Create(
 					-- Kick idles
 					if (not ply:IsBot() and ply._IdleKick < CurTime()) then
 						ply:Kick(
-							"AFK for " .. string.ToMinutesSeconds(GM.Config["Autokick time"]) ..
+							"AFK for " .. string.ToMinutesSeconds(MS.Config["Autokick time"]) ..
 								" minutes."
 						);
 					end

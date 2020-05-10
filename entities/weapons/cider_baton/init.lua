@@ -65,7 +65,7 @@ function SWEP:PrimaryAttack()
 	if (not ply:IsPlayer()) then
 		local ent = ply;
 		-- Primary fire on contraband = instaboom. (woo)
-		if (GM.Config["Contraband"][ent:GetClass()]) then
+		if (MS.Config["Contraband"][ent:GetClass()]) then
 			ent:TakeDamage(ent:Health(), self.Owner, self.Owner);
 		end
 		-- If the player has their use modifier on, then generate assault lawsuits.
@@ -88,7 +88,7 @@ function SWEP:PrimaryAttack()
 		end
 		-- Wake 'em Upp
 		ply:WakeUp();
-		GM:Log(EVENT_POLICEEVENT, "%s woke up %s.", self.Owner:Name(), ply:Name());
+		MS:Log(EVENT_POLICEEVENT, "%s woke up %s.", self.Owner:Name(), ply:Name());
 		gamemode.Call("PlayerWokenUp", ply, self.Owner);
 		-- And stun the unslumbering.
 	elseif (gamemode.Call("PlayerCanKnockOut", self.Owner, ply)) then
@@ -101,7 +101,7 @@ function SWEP:PrimaryAttack()
 			ply.ragdoll.time = CurTime() + 2;
 		end
 		ply._Stunned = true;
-		GM:Log(EVENT_POLICEEVENT, "%s knocked out %s.", self.Owner:Name(), ply:Name());
+		MS:Log(EVENT_POLICEEVENT, "%s knocked out %s.", self.Owner:Name(), ply:Name());
 		gamemode.Call("PlayerKnockedOut", ply, self.Owner);
 	end
 end
@@ -121,7 +121,7 @@ function SWEP:SecondaryAttack()
 		local ent = ply;
 		-- Secondary fire + door = instaboom. (Woo some more)
 		if (ent:IsDoor() and gamemode.Call("PlayerCanRamDoor", self.Owner, ent)) then
-			GM:OpenDoor(
+			MS:OpenDoor(
 				ent, 0.25, true, gamemode.Call("PlayerCanJamDoor", self.Owner, ent)
 			);
 		end
@@ -134,7 +134,7 @@ function SWEP:SecondaryAttack()
 		elseif (ply:InVehicle()) then
 			ply:ExitVehicle();
 		end
-		GM:Log(EVENT_POLICEEVENT, "%s unarrested %s.", self.Owner:Name(), ply:Name());
+		MS:Log(EVENT_POLICEEVENT, "%s unarrested %s.", self.Owner:Name(), ply:Name());
 		gamemode.Call("PlayerUnarrest", self.Owner, ply);
 		ply:UnArrest();
 	elseif (gamemode.Call("PlayerCanArrest", self.Owner, ply)) then
@@ -144,7 +144,7 @@ function SWEP:SecondaryAttack()
 			ply:ExitVehicle();
 		end
 		ply:Arrest();
-		GM:Log(EVENT_POLICEEVENT, "%s arrested %s.", self.Owner:Name(), ply:Name());
+		MS:Log(EVENT_POLICEEVENT, "%s arrested %s.", self.Owner:Name(), ply:Name());
 		gamemode.Call("PlayerArrest", self.Owner, ply);
 	end
 end

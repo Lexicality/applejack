@@ -85,7 +85,7 @@ function GM:PlayerAuthed(ply, steamID, uniqueID)
 end
 
 function GM:PlayerDisconnected(ply)
-	GM:Log(EVENT_PUBLICEVENT, "%s (%s) disconnected.", ply:Name(), ply:SteamID());
+	MS:Log(EVENT_PUBLICEVENT, "%s (%s) disconnected.", ply:Name(), ply:SteamID());
 	if (ply._Initialized) then
 		ply:HolsterAll()
 		-- Get rid of any inconvenient ragdolls

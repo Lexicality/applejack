@@ -10,7 +10,7 @@ function PLUGIN:PlayerDataLoaded(ply, success)
 	ply._Warranted = false;
 	ply._CannotBeWarranted = 0;
 	-- TODO: Can this be plugin config?
-	ply._ArrestTime = GM.Config["Arrest Time"];
+	ply._ArrestTime = MS.Config["Arrest Time"];
 
 	-- If they disconnected while arrested, re-arrest them
 	if ply.cider._Arrested then

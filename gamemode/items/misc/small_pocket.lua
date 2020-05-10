@@ -14,11 +14,11 @@ ITEM.RecursiveDestroy = true
 function ITEM:onDrop(player, position, amount)
 	if (cider.inventory.canFit(player, 5 * amount)) then
 		-- Remove the item from the player's inventory.
-		local boxed = GM.Items[self.Becomes];
+		local boxed = MS.Items[self.Becomes];
 		if (amount == 1) then
-			GM:Log(EVENT_ITEM, "%s dropped a %s.", player:Name(), boxed.Name);
+			MS:Log(EVENT_ITEM, "%s dropped a %s.", player:Name(), boxed.Name);
 		else
-			GM:Log(EVENT_ITEM, "%s dropped %i %s", player:Name(), amount, boxed.Plural);
+			MS:Log(EVENT_ITEM, "%s dropped %i %s", player:Name(), amount, boxed.Plural);
 		end
 		cider.inventory.update(player, self.UniqueID, -amount);
 		boxed:Make(position, amount);

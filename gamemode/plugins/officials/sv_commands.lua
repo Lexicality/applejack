@@ -52,7 +52,7 @@ GM:RegisterCommand{
 	Help = "Arrest someone. Optionally define how long they're arrested for.",
 	function(ply, victim, time)
 		victim:Arrest(time);
-		GM:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s arrested %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -66,7 +66,7 @@ GM:RegisterCommand{
 	Help = "Unarrest someone.",
 	function(ply, victim)
 		victim:UnArrest();
-		GM:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s unarrested %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -79,7 +79,7 @@ GM:RegisterCommand{
 	Category = "Superadmin Abuse Commands",
 	Help = "Instantly give a player a warrant, ignoring game mechanics. Optionally give it a length.",
 	function(ply, victim, kind, time)
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s gave %s a %s warrant for %s seconds", ply:Name(),
 			victim:Name(), kind, time or "default"
 		);

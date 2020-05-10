@@ -9,7 +9,7 @@ function PANEL:Init()
 	header.label:SetText("Ventmob Roleplay Rules");
 	header:SetHeight(header:GetTall() * 3)
 	header:Dock(TOP);
-	self:SetText(GM.Config["Rules"]);
+	self:SetText(MS.Config["Rules"]);
 end
 
 vgui.Register("cider_Rules", PANEL, "MSTextPanel");

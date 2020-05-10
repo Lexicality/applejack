@@ -46,7 +46,7 @@ function GM:ToggleMenu()
 	menu.panel:SetVisible(menu.open);
 end
 local function menumsg()
-	GM:ToggleMenu();
+	MS:ToggleMenu();
 end
 usermessage.Hook("GM:ToggleMenu", menumsg);
 

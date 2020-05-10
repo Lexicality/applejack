@@ -112,8 +112,8 @@ function ENT:Breach()
 	else
 		event = "an unowned"
 	end
-	GM:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
-	GM:OpenDoor(
+	MS:Log(EVENT_EVENT, "%s breached %s door%s.", self._PlanterName, event, addon)
+	MS:OpenDoor(
 		self._Door, 0, true, self._Planter ~= NULL and
 			gamemode.Call("PlayerCanJamDoor", self._Planter, self._Door)
 	);
@@ -156,7 +156,7 @@ function ENT:BlowDoorOffItsHinges()
 		end
 	);
 	timer.Simple(
-		GM.Config["Jam Time"], function()
+		MS.Config["Jam Time"], function()
 			if IsValid(ent) then
 				ent:Remove()
 			end

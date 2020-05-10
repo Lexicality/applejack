@@ -73,7 +73,7 @@ local weirdtraces = { -- Tool modes that can be right-clicked to link them
 };
 local function checkConstrainedEntities(ply, ent)
 	for _, ent in pairs(constraint.GetAllConstrainedEntities(ent)) do
-		if (not GM:PlayerCanTouch(ply, ent)) then
+		if (not MS:PlayerCanTouch(ply, ent)) then
 			return false;
 		end
 	end
@@ -83,7 +83,7 @@ local function deletePropsByUID(uid, name)
 	for _, ent in pairs(ents.GetAll()) do
 		local owner, name, UID = ent:GetPPOwner();
 		if (UID == uid) then
-			if (GM.Entities[ent]) then
+			if (MS.Entities[ent]) then
 				ent:SetPPOwner(NULL);
 			else
 				ent:Remove();
@@ -493,7 +493,7 @@ GM:RegisterCommand{
 			_, _, uid = ent:GetPPOwner();
 			if (not (uid and disconnected[uid])) then
 				continue;
-			elseif (GM.Entities[ent]) then
+			elseif (MS.Entities[ent]) then
 				ent:SetPPOwner(NULL);
 			else
 				ent:Remove();

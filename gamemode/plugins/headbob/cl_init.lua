@@ -20,7 +20,7 @@ function PLUGIN:CalcView(ply, origin, angles, fov)
 		(ply:KeyDown(IN_FORWARD) or ply:KeyDown(IN_BACK) or ply:KeyDown(IN_MOVERIGHT) or
 			ply:KeyDown(IN_MOVELEFT)) then
 		-- Is the player running?
-		if (ply:GetVelocity():Length() > GM.Config["Run Speed"] - 10) then
+		if (ply:GetVelocity():Length() > MS.Config["Run Speed"] - 10) then
 			a = a + 10 * FrameTime();
 			b = b + 11 * FrameTime();
 			view.angles.yaw = view.angles.yaw + math.cos(a) * 0.4;

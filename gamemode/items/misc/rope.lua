@@ -80,7 +80,7 @@ function ITEM:onUse(ply)
 	SendUserMessage("MS BeTie", victim);
 	-- Set up a timer to validate it
 	timer.Conditional(
-		ply:UniqueID() .. " Tying Timer", GM.Config["Tying Timeout"], conditional,
+		ply:UniqueID() .. " Tying Timer", MS.Config["Tying Timeout"], conditional,
 		success, failure, ply, victim, ply:GetPos(), victim:GetPos()
 	);
 	-- Use up the item

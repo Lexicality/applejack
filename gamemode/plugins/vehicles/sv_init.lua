@@ -130,7 +130,7 @@ function PLUGIN:SpawnCar(ply, item)
 	-- ent:SetPPOwner(ply);
 	ent:SetPPOwner(NULL);
 	ent.CanTool = toolfunc;
-	ent._LockpickHits = GM.Config["Maximum Lockpick Hits"] * 2 + 5; -- Thus making cars a hell of a lot harder to pick. ;D
+	ent._LockpickHits = MS.Config["Maximum Lockpick Hits"] * 2 + 5; -- Thus making cars a hell of a lot harder to pick. ;D
 	ent:Lock();
 	ply._Vehicle = ent;
 	table.insert(carz, ent);
@@ -237,7 +237,7 @@ function PLUGIN:PickupCar(ply, item)
 	ply:ExitVehicle();
 	ply._Vehicle:Remove();
 	ply._NextVehicleSpawn = CurTime() + 300;
-	GM:Log(
+	MS:Log(
 		EVENT_ITEM, "%s put their %s back into their inventory.", ply:Name(),
 		item.Name
 	);
@@ -344,7 +344,7 @@ function PLUGIN:PlayerUse(ply, ent)
 	if (not tab) then
 		return
 	end
-	if (GM.Config["Car Doors"] and tab.Doors) then
+	if (MS.Config["Car Doors"] and tab.Doors) then
 		local pos = ent:WorldToLocal(ply:GetEyeTrace().HitPos);
 		local success;
 		for _, door in ipairs(tab.Doors) do

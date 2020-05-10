@@ -10,7 +10,7 @@ function ENT:Draw()
 end
 
 function ENT:ESPPaint(lines, pos, distance, lookingat)
-	local contra = GM.Config["Contraband"][self:GetClass()];
+	local contra = MS.Config["Contraband"][self:GetClass()];
 	if (not contra) then
 		return
 	end

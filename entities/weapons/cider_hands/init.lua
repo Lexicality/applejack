@@ -9,7 +9,7 @@ local stamina;
 function SWEP:Initialize()
 	self.Primary.NextSwitch = CurTime()
 	self:SetWeaponHoldType("normal");
-	stamina = GM:GetPlugin("stamina");
+	stamina = MS:GetPlugin("stamina");
 end
 
 function SWEP:PrimaryAttack()
@@ -91,8 +91,8 @@ function SWEP:PrimaryAttack()
 		end
 		pl._Stunned = true;
 		if (not pl:KnockedOut()) then
-			pl:KnockOut(GM.Config["Knock Out Time"] / 2);
-			GM:Log(EVENT_EVENT, "%s knocked out %s with a punch.", ply:Name(), pl:Name());
+			pl:KnockOut(MS.Config["Knock Out Time"] / 2);
+			MS:Log(EVENT_EVENT, "%s knocked out %s with a punch.", ply:Name(), pl:Name());
 		end
 		return;
 	end
@@ -148,7 +148,7 @@ function SWEP:SecondaryAttack()
 		self:EmitSound("physics/wood/wood_crate_impact_hard2.wav")
 		-- Cheats!
 		if (self:GetDTBool(0) and ply:IsSuperAdmin()) then
-			GM:OpenDoor(ent, 0);
+			MS:OpenDoor(ent, 0);
 		end
 	else
 		self:PickUp(ent, tr);

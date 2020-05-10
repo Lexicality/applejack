@@ -50,15 +50,15 @@ function PLUGIN:PlayerSecond(player)
 		player:SetCSVar(CLASS_LONG, "_Hunger", 0);
 		return
 	end
-	local adition = 1 / (GM.Config["Hunger Minutes"] * 0.6);
+	local adition = 1 / (MS.Config["Hunger Minutes"] * 0.6);
 	player._Hunger.amount = math.Clamp(player._Hunger.amount + adition, 0, 100);
 
 	-- Set it so that we can get the player's hunger client side.
 	player:SetCSVar(CLASS_LONG, "_Hunger", math.Round(player._Hunger.amount));
-	local damage = GM.Config["Hunger Damage"];
+	local damage = MS.Config["Hunger Damage"];
 	-- Check the player's hunger to see if it's at it's maximum.
 	if (not (player._Hunger.amount == 100 and
-		(player:Health() > damage or GM.Config["Hunger Death"] or player:KnockedOut()))) then
+		(player:Health() > damage or MS.Config["Hunger Death"] or player:KnockedOut()))) then
 		return
 	end
 	local world = game.GetWorld();

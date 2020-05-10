@@ -62,7 +62,7 @@ local function handlePlys(self)
 		return;
 	end
 	for GroupID, teams in SortedPairs(self.inventory) do
-		res = GM:GetGroup(GroupID);
+		res = MS:GetGroup(GroupID);
 		-- if (res.Invisible) then continue; end
 		header = vgui.Create("DCollapsibleCategory", self)
 		header:SetSize(width / 2, 50); -- Keep the second number at 50
@@ -124,7 +124,7 @@ local function handleTeams(self)
 		return;
 	end
 	for GroupID, teams in SortedPairs(self.inventory) do
-		res = GM:GetGroup(GroupID);
+		res = MS:GetGroup(GroupID);
 		if (res.Invisible) then
 			continue;
 		end
@@ -166,7 +166,7 @@ local function handleGangs(self)
 		return;
 	end
 	for GroupID, gangs in SortedPairs(self.inventory) do
-		res = GM:GetGroup(GroupID);
+		res = MS:GetGroup(GroupID);
 		if (res.Invisible) then
 			continue;
 		end
@@ -492,7 +492,7 @@ local function UpdateContainer(decoded)
 	local pnoaccess = {}
 	local tnoaccess = {}
 	local gnoaccess = {}
-	for id, group in pairs(GM.Groups) do
+	for id, group in pairs(MS.Groups) do
 		taccess[id] = {};
 		gaccess[id] = {};
 		paccess[id] = {};
@@ -526,11 +526,11 @@ local function UpdateContainer(decoded)
 				res = team.Get(id);
 				table.insert(taccess[res.Group.GroupID], res);
 			elseif (kind == "Group") then
-				res = GM:GetGroup(id);
+				res = MS:GetGroup(id);
 				-- gaccess[res.GroupID][0] = res;
 				gyes[res.GroupID] = res;
 			elseif (kind == "Gang") then
-				res = GM:GetGang(id);
+				res = MS:GetGang(id);
 				table.insert(gaccess[res.Group.GroupID], res);
 			end
 			done[res] = true;
@@ -545,18 +545,18 @@ local function UpdateContainer(decoded)
 			end
 		end
 	end
-	for _, res in pairs(GM.Teams) do
+	for _, res in pairs(MS.Teams) do
 		if (not done[res]) then
 			table.insert(tnoaccess[res.Group.GroupID], res);
 		end
 	end
-	for _, res in pairs(GM.Groups) do
+	for _, res in pairs(MS.Groups) do
 		if (not done[res]) then
 			-- gnoaccess[res.GroupID][0] = res;
 			gno[res.GroupID] = res;
 		end
 	end
-	for _, res in pairs(GM.Gangs) do
+	for _, res in pairs(MS.Gangs) do
 		if (not done[res]) then
 			table.insert(gnoaccess[res.Group.GroupID], res);
 		end

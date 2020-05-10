@@ -13,7 +13,7 @@ local function success(ply, _, self)
 		return
 	end
 	ply:Emote(
-		GM.Config["Weapon Timers"]["Equip Message"]["Final"]:format(self.WeaponType)
+		MS.Config["Weapon Timers"]["Equip Message"]["Final"]:format(self.WeaponType)
 	);
 	ply._Equipping = false;
 	ply._FreshWeapons[self.UniqueID] = true;
@@ -29,7 +29,7 @@ local function failure(ply)
 	if (not ply:IsValid()) then
 		return
 	end
-	ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
+	ply:Emote(MS.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 	ply._Equipping = false;
 	SendUserMessage("MS Equippr FAIL", ply);
 end
@@ -43,7 +43,7 @@ function ITEM:onUse(ply)
 		ply:Notify("You don't have enough ammunition for this weapon!", 1);
 		return false;
 	end
-	if (not (self.WeaponType and GM.Config[self.WeaponType])) then
+	if (not (self.WeaponType and MS.Config[self.WeaponType])) then
 		ply:Give(self.UniqueID);
 		ply:SelectWeapon(self.UniqueID);
 		return true;
@@ -57,12 +57,12 @@ function ITEM:onUse(ply)
 		return false;
 	end
 	ply._GunCounts[self.WeaponType] = ply._GunCounts[self.WeaponType] or 0;
-	if (ply._GunCounts[self.WeaponType] >= GM.Config[self.WeaponType]) then
+	if (ply._GunCounts[self.WeaponType] >= MS.Config[self.WeaponType]) then
 		ply:Notify("You have too many " .. self.WeaponType .. " weapons equipped!", 1);
 		return false
 	end
 	ply._Equipping = true;
-	local delay = GM.Config["Weapon Timers"]["equiptime"][self.WeaponType];
+	local delay = MS.Config["Weapon Timers"]["equiptime"][self.WeaponType];
 	umsg.Start("MS Equippr", ply)
 	umsg.Short(delay);
 	umsg.Bool(true);
@@ -71,6 +71,6 @@ function ITEM:onUse(ply)
 		ply:UniqueID() .. " equipping", delay, conditional, success, failure, ply,
 		ply:GetPos(), self
 	);
-	ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]);
+	ply:Emote(MS.Config["Weapon Timers"]["Equip Message"]["Start"]);
 	return false -- Removing the weapon from your inventory is handled in the timer
 end

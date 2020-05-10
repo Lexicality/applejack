@@ -126,7 +126,7 @@ function SWEP:PrimaryAttack()
 	if (SERVER and IsValid(ent) and ent:IsPlayer()) then
 		ent:KnockOut(60);
 		ent._Stunned = true;
-		GM:Log(EVENT_EVENT, "%s tranq'd %s.", self.Owner:Name(), ent:Name())
+		MS:Log(EVENT_EVENT, "%s tranq'd %s.", self.Owner:Name(), ent:Name())
 		gamemode.Call("PlayerKnockedOut", ent, self.Owner);
 	end
 end

@@ -27,7 +27,7 @@ function meta:Use(ply)
 		return false;
 	end
 	cider.inventory.update(ply, self.UniqueID, -1);
-	GM:Log(EVENT_ITEM, "%s used a %s.", ply:Name(), self.Name);
+	MS:Log(EVENT_ITEM, "%s used a %s.", ply:Name(), self.Name);
 	return true;
 end
 
@@ -46,9 +46,9 @@ function meta:Drop(ply, pos, amt)
 	cider.inventory.update(ply, self.UniqueID, -amt);
 	self:Make(pos, amt);
 	if (amt == 1) then
-		GM:Log(EVENT_ITEM, "%s dropped a %s.", ply:Name(), self.Name);
+		MS:Log(EVENT_ITEM, "%s dropped a %s.", ply:Name(), self.Name);
 	else
-		GM:Log(EVENT_ITEM, "%s dropped %i %s", ply:Name(), amt, self.Plural);
+		MS:Log(EVENT_ITEM, "%s dropped %i %s", ply:Name(), amt, self.Plural);
 	end
 end
 
@@ -80,7 +80,7 @@ function meta:Destroy(ply)
 	end
 	local t = (j == amt and "%s destroyed all their %s.") or
           		"%s destroyed some of their %s";
-	GM:Log(EVENT_ITEM, t, ply:Name(), self.Plural);
+	MS:Log(EVENT_ITEM, t, ply:Name(), self.Plural);
 	-- Return true because we did it successfully.
 	return true;
 end
@@ -114,7 +114,7 @@ function meta:Sell(ply)
 		return false;
 	end
 	a, b = cider.inventory.update(ply, self.UniqueID, -1);
-	GM:Log(EVENT_ITEM, "%s sold a %s.", ply:Name(), self.Name);
+	MS:Log(EVENT_ITEM, "%s sold a %s.", ply:Name(), self.Name);
 	refund = self.Refund or self.Cost / 2;
 	ply:Notify(
 		"You got $" .. refund .. " for selling your " .. self.Name .. " secondhand", 0

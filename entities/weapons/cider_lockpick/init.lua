@@ -35,7 +35,7 @@ function SWEP:PrimaryAttack()
 	end
 	owner._LockpickChance = owner._LockpickChance or 0;
 	-- An entity can specify the max hits it takes to unlock them
-	local maxhits = ent._LockpickHits or GM.Config["Maximum Lockpick Hits"];
+	local maxhits = ent._LockpickHits or MS.Config["Maximum Lockpick Hits"];
 	-- Padlocks double the number of hits
 	if (ent:GetNWBool("Padlocked")) then
 		maxhits = maxhits * 2;
@@ -73,7 +73,7 @@ function SWEP:PrimaryAttack()
 	ent._LockpickingCount = 0;
 	-- Add to the lockpicker's pick break chance and tell them.
 	owner._LockpickChance = owner._LockpickChance +
-                        		GM.Config["Lockpick Break Chance"];
+                        		MS.Config["Lockpick Break Chance"];
 	-- Since we can now pick the cuffs on players to unarrest them, we need to treat them differently.
 	if (ent:IsPlayer()) then
 		ent:UnArrest();
@@ -82,7 +82,7 @@ function SWEP:PrimaryAttack()
 			
 				"pulls off the unlocked handcuffs and throws them away hard enough to break them."
 		);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s picked the lock on %s handcuffs", owner:Name(), ent:Name()
 		);
 		return;
@@ -107,7 +107,7 @@ function SWEP:PrimaryAttack()
 			addon = ": " .. name;
 		end
 	end
-	GM:Log(
+	MS:Log(
 		EVENT_EVENT, "%s picked the lock on %s %s%s.", owner:GetName(), event,
 		entname, addon
 	);

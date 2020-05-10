@@ -66,7 +66,8 @@ end
 
 function GM:Initialize()
 	ErrorNoHalt(os.date() .. " - Finished connecting\n")
-	GM = self;
+	GM = self
+	MS = self
 	-- Call the base class function.
 	return self.BaseClass:Initialize()
 end
@@ -172,7 +173,7 @@ function GM:RenderScreenspaceEffects()
 	if (slp and slp > 0) then
 		local t = slp - CurTime();
 		if (t > 0) then
-			modify["$pp_colour_contrast"] = t / GM.Config["Sleep Waiting Time"];
+			modify["$pp_colour_contrast"] = t / MS.Config["Sleep Waiting Time"];
 		else
 			modify["$pp_colour_contrast"] = 0;
 		end

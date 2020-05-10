@@ -241,7 +241,7 @@ GM:RegisterCommand{
 		door:SetDisplayName(name)
 		name = door:GetDoorName()
 		ply:Notify("'" .. name .. "' is now unownable.");
-		GM:Log(EVENT_EVENT, "%s unownable'd %q", ply:Name(), name)
+		MS:Log(EVENT_EVENT, "%s unownable'd %q", ply:Name(), name)
 		plugin:SaveData();
 	end,
 };
@@ -268,6 +268,6 @@ GM:RegisterCommand{
 		end
 		local name = door:GetDoorName()
 		ply:Notify("'" .. name .. "' is no longer unownable.");
-		GM:Log(EVENT_EVENT, "%s de unownable'd %q", ply:Name(), name)
+		MS:Log(EVENT_EVENT, "%s de unownable'd %q", ply:Name(), name)
 	end,
 };

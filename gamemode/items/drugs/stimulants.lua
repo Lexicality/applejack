@@ -14,7 +14,7 @@ ITEM.Base = "item"
 
 local function yell(ply, text)
 	cider.chatBox.addInRadius(
-		ply, "yell", text, ply:GetPos(), GM.Config["Talk Radius"] * 2
+		ply, "yell", text, ply:GetPos(), MS.Config["Talk Radius"] * 2
 	);
 end
 

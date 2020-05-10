@@ -131,7 +131,7 @@ function GM:RegisterCommand(tab)
 	if (args ~= "") then
 		args = args .. " ";
 	end
-	GM:AddHelp(
+	self:AddHelp(
 		tab.Category, self.Config["Command Prefix"] .. tab.Command .. " " .. args ..
 			"- " .. tab.Help
 	);
@@ -260,7 +260,7 @@ function GM:PlayerSay(ply, text, public)
 				ply, "ic", text, ply:GetPos(), self.Config["Talk Radius"]
 			)
 		end
-		GM:Log(EVENT_TALKING, "%s: %s", ply:Name(), text)
+		MS:Log(EVENT_TALKING, "%s: %s", ply:Name(), text)
 	end
 	return "";
 end
@@ -389,12 +389,12 @@ function GM:DoCommand(ply, args)
 	if (words ~= "") then
 		words = " \"" .. words .. "\"";
 	end
-	GM:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
+	MS:Log(EVENT_COMMAND, "%s ran the command %s%s", ply:Name(), cmd.Command, words);
 end
 
 concommand.Add(
 	"mshine", function(ply, _, _, command)
-		local args = GM:ParseCommand(command);
-		GM:DoCommand(ply, args);
+		local args = MS:ParseCommand(command);
+		MS:DoCommand(ply, args);
 	end
 );

@@ -46,7 +46,7 @@ function ITEM:onUse(ply)
 				addon = ": " .. name;
 			end
 		end
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s put a padlock on %s %s%s.", ply:GetName(), event, entname,
 			addon
 		);

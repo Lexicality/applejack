@@ -23,9 +23,9 @@ end
 local function getplys(data)
 	local kind, id = string.match(data, "(%a+): (.+)");
 	if (kind == "Group") then
-		return GM:GetGroupMembers(id);
+		return MS:GetGroupMembers(id);
 	elseif (kind == "Gang") then
-		return GM:GetGangMembers(id);
+		return MS:GetGangMembers(id);
 	elseif (kind == "Team") then
 		return team.GetPlayers(id);
 	end
@@ -36,9 +36,9 @@ end
 local function getobj(data)
 	local kind, id = string.match(data, "(%a+): (.+)");
 	if (kind == "Group") then
-		return GM:GetGroup(id);
+		return MS:GetGroup(id);
 	elseif (kind == "Gang") then
-		return GM:GetGang(id);
+		return MS:GetGang(id);
 	elseif (kind == "Team") then
 		return team.Get(id);
 	end
@@ -418,7 +418,7 @@ function meta:MakeOwnable()
 		self._eName = "vehicle";
 	end
 	self:UnLock();
-	GM.OwnableEntities[self] = true;
+	MS.OwnableEntities[self] = true;
 	self:SetNWString("DisplayName", "Nobody");
 	self:SetDTInt(3, bit.bor(self:GetDTInt(3), OBJ_OWNABLE));
 end
@@ -595,7 +595,7 @@ meta.TakeFromTeam = meta.TakeAccessFromTeam;
 -- @param id The id of the gang in question
 function meta:GiveAccessToGang(id)
 	cm(self);
-	local data = GM:GetGang(id);
+	local data = MS:GetGang(id);
 	if (not data) then
 		error(
 
@@ -608,7 +608,7 @@ function meta:GiveAccessToGang(id)
 		return;
 	end
 	self._Owner.access["Gang: " .. data.GangID] = true;
-	multiaccesschange(self, GM:GetGangMembers(data.GangID), true);
+	multiaccesschange(self, MS:GetGangMembers(data.GangID), true);
 end
 
 ---
@@ -616,7 +616,7 @@ end
 -- @param id The id of the gang in question
 function meta:TakeAccessFromGang(id)
 	cm(self);
-	local data = GM:GetGang(id);
+	local data = MS:GetGang(id);
 	if (not data) then
 		error(
 
@@ -635,7 +635,7 @@ function meta:TakeAccessFromGang(id)
 	end
 	self._Owner.access[id] = nil;
 	local bereft = {};
-	for _, ply in pairs(GM:GetGangMembers(data.GangID)) do
+	for _, ply in pairs(MS:GetGangMembers(data.GangID)) do
 		if (not self:HasAccess(ply)) then
 			bereft[#bereft + 1] = ply;
 		end
@@ -650,7 +650,7 @@ end
 -- @param id The id of the gang in question
 function meta:GiveToGang(id)
 	cm(self);
-	local data = GM:GetGang(id);
+	local data = MS:GetGang(id);
 	if (not data) then
 		error(
 			"bad argument #1 to 'GiveToGang' (GangID expected, got something else)", 2
@@ -659,7 +659,7 @@ function meta:GiveToGang(id)
 	self = self:GetMaster() or self;
 	deown(self);
 	newowner(self, "Gang: " .. data.GangID, data.Name);
-	multiaccesschange(self, GM:GetGangMembers(data.GangID), true);
+	multiaccesschange(self, MS:GetGangMembers(data.GangID), true);
 end
 
 meta.TakeFromGang = meta.TakeAccessFromGang;
@@ -673,7 +673,7 @@ meta.TakeFromGang = meta.TakeAccessFromGang;
 -- @param id The id of the group in question
 function meta:GiveAccessToGroup(id)
 	cm(self);
-	local data = GM:GetGroup(id);
+	local data = MS:GetGroup(id);
 	if (not data) then
 		error(
 
@@ -686,7 +686,7 @@ function meta:GiveAccessToGroup(id)
 		return;
 	end
 	self._Owner.access["Group: " .. data.GroupID] = true;
-	multiaccesschange(self, GM:GetGroupMembers(data.GroupID), true);
+	multiaccesschange(self, MS:GetGroupMembers(data.GroupID), true);
 end
 
 ---
@@ -694,7 +694,7 @@ end
 -- @param id The id of the group in question
 function meta:TakeAccessFromGroup(id)
 	cm(self);
-	local data = GM:GetGroup(id);
+	local data = MS:GetGroup(id);
 	if (not data) then
 		error(
 
@@ -713,7 +713,7 @@ function meta:TakeAccessFromGroup(id)
 	end
 	self._Owner.access[id] = nil;
 	local bereft = {};
-	for _, ply in pairs(GM:GetGroupMembers(data.GroupID)) do
+	for _, ply in pairs(MS:GetGroupMembers(data.GroupID)) do
 		if (not self:HasAccess(ply)) then
 			bereft[#bereft + 1] = ply;
 		end
@@ -728,7 +728,7 @@ end
 -- @param id The id of the group in question
 function meta:GiveToGroup(id)
 	cm(self);
-	local data = GM:GetGroup(id);
+	local data = MS:GetGroup(id);
 	if (not data) then
 		error(
 			"bad argument #1 to 'GiveToGroup' (GroupID expected, got something else)", 2
@@ -737,7 +737,7 @@ function meta:GiveToGroup(id)
 	self = self:GetMaster() or self;
 	deown(self);
 	newowner(self, "Group: " .. data.GroupID, data.Name);
-	multiaccesschange(self, GM:GetGroupMembers(data.GroupID), true);
+	multiaccesschange(self, MS:GetGroupMembers(data.GroupID), true);
 end
 
 meta.TakeFromGroup = meta.TakeAccessFromGroup;

@@ -20,8 +20,8 @@ function plymeta:Warrant(class, time)
 	self._Warranted = class;
 	self:SetNWString("Warrant", class);
 	local expires = time or
-                		(class == "arrest" and GM.Config["Arrest Warrant Expire Time"] or
-                			GM.Config["Search Warrant Expire Time"]);
+                		(class == "arrest" and MS.Config["Arrest Warrant Expire Time"] or
+                			MS.Config["Search Warrant Expire Time"]);
 	-- Prevents any unplesant bugs due to user error.
 	if expires <= 0 then
 		expires = 0.1

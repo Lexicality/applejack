@@ -29,7 +29,7 @@ function ENT:Initialize()
 	end
 
 	-- Get the contraband table.
-	local contraband = GM.Config["Contraband"][self:GetClass()];
+	local contraband = MS.Config["Contraband"][self:GetClass()];
 
 	-- Check if the contraband table is valid.
 	if (contraband) then

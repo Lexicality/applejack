@@ -204,7 +204,7 @@ function meta:TakeDoor(door, norefund)
 	self:TakeCount("doors", door)
 	-- Give the player a refund for the door if we're not forcing it to be taken.
 	if (not norefund) then
-		self:GiveMoney(GM.Config["Door Cost"] / 2);
+		self:GiveMoney(MS.Config["Door Cost"] / 2);
 	end
 end
 
@@ -245,14 +245,14 @@ function meta:JoinTeam(tojoin)
 		-- Prevent hopping back and forth
 		self._NextChangeTeam[oldteam.TeamID] = CurTime() + oldteam.Cooldown;
 		-- Spam about it
-		GM:Log(
+		MS:Log(
 			EVENT_TEAM, "%s changed team from %q to %q.", self:Name(), oldteam.Name,
 			tojoin.Name
 		);
 		-- Tell the client they can't join this team again.
 		timer.Simple(0, TeamChange, self, oldteam.TeamID);
 	else
-		GM:Log(EVENT_TEAM, "%s changed team to %q", self:Name(), tojoin.Name);
+		MS:Log(EVENT_TEAM, "%s changed team to %q", self:Name(), tojoin.Name);
 	end
 	self:SetTeam(tojoin.TeamID);
 	self._Job = tojoin.Name;
@@ -496,7 +496,7 @@ function meta:TakeWeapons(noitems)
 	local class;
 	for _, weapon in pairs(self:GetWeapons()) do
 		class = weapon:GetClass();
-		if (not (noitems and GM.Items[class])) then
+		if (not (noitems and MS.Items[class])) then
 			self._StoredWeapons[class] = true;
 		end
 	end
@@ -529,8 +529,8 @@ end
 ---
 -- incapacitates a player - drops their movement speed, prevents them from jumping or doing most things.
 function meta:Incapacitate()
-	self:SetRunSpeed(GM.Config["Incapacitated Speed"]);
-	self:SetWalkSpeed(GM.Config["Incapacitated Speed"]);
+	self:SetRunSpeed(MS.Config["Incapacitated Speed"]);
+	self:SetWalkSpeed(MS.Config["Incapacitated Speed"]);
 	self:SetJumpPower(0);
 	self:SetNWBool("Incapacitated", true);
 end
@@ -541,9 +541,9 @@ function meta:Recapacitate()
 	if (not gamemode.Call("PlayerCanBeRecapacitated", self)) then
 		return false;
 	end
-	self:SetRunSpeed(GM.Config["Run Speed"]);
-	self:SetWalkSpeed(GM.Config["Walk Speed"]);
-	self:SetJumpPower(GM.Config["Jump Power"]);
+	self:SetRunSpeed(MS.Config["Run Speed"]);
+	self:SetWalkSpeed(MS.Config["Walk Speed"]);
+	self:SetJumpPower(MS.Config["Jump Power"]);
 	self:SetNWBool("Incapacitated", false);
 	return true;
 end
@@ -589,11 +589,11 @@ function meta:HasAccess(flaglist, any)
 	end
 	local access, daccess, flag;
 	access = self.cider._Access;
-	daccess = GM.Config["Default Access"];
+	daccess = MS.Config["Default Access"];
 	for i = 1, flaglist:len() do
 		flag = flaglist:sub(i, i);
-		if (flag == GM.Config["Base Access"] or GM.FlagFunctions[flag] and
-			GM.FlagFunctions[flag](self) or daccess:find(flag) or access:find(flag)) then
+		if (flag == MS.Config["Base Access"] or MS.FlagFunctions[flag] and
+			MS.FlagFunctions[flag](self) or daccess:find(flag) or access:find(flag)) then
 			if (any) then
 				return true;
 			end -- If 'any' is selected, then return true whenever we get a match
@@ -724,7 +724,7 @@ function meta:SayRadio(words)
 	local recipients;
 	local data = self:GetTeam();
 	if (data.Gang) then
-		recipients = GM:GetGangMembers(data.Gang);
+		recipients = MS:GetGangMembers(data.Gang);
 	else
 		recipients = team.GetPlayers(data.TeamID);
 	end
@@ -743,7 +743,7 @@ function meta:SayRadio(words)
 	-- Tell everyone nearby that we just said a waydio
 	local pos = self:GetPos();
 	for _, ply in pairs(player.GetAll()) do
-		if (not nohear[ply] and ply:GetPos():Distance(pos) <= GM.Config["Talk Radius"]) then
+		if (not nohear[ply] and ply:GetPos():Distance(pos) <= MS.Config["Talk Radius"]) then
 			cider.chatBox.add(ply, self, "loudradio", words);
 		end
 	end
@@ -754,7 +754,7 @@ end
 -- @param words What the emote should say
 function meta:Emote(words)
 	cider.chatBox.addInRadius(
-		self, "me", words, self:GetPos(), GM.Config["Talk Radius"]
+		self, "me", words, self:GetPos(), MS.Config["Talk Radius"]
 	);
 end
 
@@ -776,12 +776,12 @@ function meta:HolsterAll()
 	local class;
 	for _, weapon in pairs(self:GetWeapons()) do
 		class = weapon:GetClass();
-		if (GM.Items[class]) then
+		if (MS.Items[class]) then
 			if (gamemode.Call("PlayerCanHolster", self, class, true) and
 				cider.inventory.update(self, class, 1)) then
 				self:StripWeapon(class);
 			elseif (gamemode.Call("PlayerCanDrop", self, class, true)) then
-				GM.Items[class]:Make(self:GetPos(), 1);
+				MS.Items[class]:Make(self:GetPos(), 1);
 			end
 		end
 	end

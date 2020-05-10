@@ -2,7 +2,6 @@
 -- ~ Shared Item Library ~
 -- ~ Applejack ~
 --
-local GM = GM or GAMEMODE;
 GM.Items = {};
 local meta = {};
 local cats = {}; -- meow
@@ -195,13 +194,13 @@ if SERVER then
 			if (IsValid(ply) and not ply:IsSuperAdmin()) then
 				return
 			end
-			GM:LoadItems();
+			MS:LoadItems();
 		end
 	)
 elseif GetConVarNumber("developer") > 0 then -- Don't want the peons to get this command.
 	concommand.Add(
 		"cider_reload_items_cl", function()
-			GM:LoadItems();
+			MS:LoadItems();
 		end
 	)
 end

@@ -310,22 +310,22 @@ function SWEP:Deploy()
 		if not self.Owner._FreshWeapons[self.ClassName] then
 			cider.chatBox.addInRadius(
 				self.Owner, "me",
-				GM.Config["Weapon Timers"]["deploymessage"][self.Size]:format(self.TypeName),
-				self.Owner:GetPos(), GM.Config["Talk Radius"]
+				MS.Config["Weapon Timers"]["deploymessage"][self.Size]:format(self.TypeName),
+				self.Owner:GetPos(), MS.Config["Talk Radius"]
 			);
 		else
 			self.Owner._FreshWeapons[self.ClassName] = nil
 		end
 		self.Weapon:SetNextPrimaryFire(
-			CurTime() + GM.Config["Weapon Timers"]["deploytime"][self.Size]
+			CurTime() + MS.Config["Weapon Timers"]["deploytime"][self.Size]
 		)
 		self:OhGodGetItOff()
 	end
 
 	self.Owner._NextDeploy = CurTime() +
-                         		GM.Config["Weapon Timers"]["redeploytime"][self.Size]
+                         		MS.Config["Weapon Timers"]["redeploytime"][self.Size]
 	self.NextHolster = CurTime() +
-                   		GM.Config["Weapon Timers"]["reholstertime"][self.Size]
+                   		MS.Config["Weapon Timers"]["reholstertime"][self.Size]
 	if (self.dt.silenced) then
 		self.Weapon:SendWeaponAnim(ACT_VM_DRAW_SILENCED);
 	else
@@ -463,21 +463,21 @@ function SWEP:Holster(wep)
 		not self.Owner._Deaded then
 		timer.Violate(self.Owner:UniqueID() .. " holster");
 		if not self.Owner:KnockedOut() then
-			if GM.Config["Back Weapons"][self.Size] then
+			if MS.Config["Back Weapons"][self.Size] then
 				self:StickAGunToMyBack()
 			end
 			cider.chatBox.addInRadius(
 				self.Owner, "me",
-				GM.Config["Weapon Timers"]["holstermessage"][self.Size]:format(self.TypeName),
-				self.Owner:GetPos(), GM.Config["Talk Radius"]
+				MS.Config["Weapon Timers"]["holstermessage"][self.Size]:format(self.TypeName),
+				self.Owner:GetPos(), MS.Config["Talk Radius"]
 			);
 		end
 		self:DoAmmoStuff()
 	end
 	self.Owner._NextDeploy = CurTime() +
-                         		GM.Config["Weapon Timers"]["redeploytime"][self.Size]
+                         		MS.Config["Weapon Timers"]["redeploytime"][self.Size]
 	self.NextHolster = CurTime() +
-                   		GM.Config["Weapon Timers"]["reholstertime"][self.Size]
+                   		MS.Config["Weapon Timers"]["reholstertime"][self.Size]
 	self:ResetVars()
 	return true
 end

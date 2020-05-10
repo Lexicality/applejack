@@ -26,7 +26,7 @@ GM:RegisterCommand{
 	Help = "Knock someone out. (Defaults to 5 seconds)",
 	function(ply, victim, time)
 		victim:KnockOut(time or 5);
-		GM:Log(EVENT_EVENT, "%s knocked out %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s knocked out %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -40,7 +40,7 @@ GM:RegisterCommand{
 	Help = "Wake someone up",
 	function(ply, victim)
 		victim:WakeUp();
-		GM:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s woke up %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -100,7 +100,7 @@ GM:RegisterCommand{
 	Help = "Tie someone up",
 	function(ply, victim)
 		victim:TieUp();
-		GM:Log(EVENT_EVENT, "%s tied up %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s tied up %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -113,7 +113,7 @@ GM:RegisterCommand{
 	Help = "Untie someone",
 	function(ply, victim)
 		victim:UnTie();
-		GM:Log(EVENT_EVENT, "%s untied %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s untied %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -129,7 +129,7 @@ GM:RegisterCommand{
 	Help = "Instantly repsawn someone.",
 	function(ply, victim)
 		victim:Spawn();
-		GM:Log(EVENT_EVENT, "%s respawned %s", ply:Name(), victim:Name());
+		MS:Log(EVENT_EVENT, "%s respawned %s", ply:Name(), victim:Name());
 	end,
 };
 
@@ -145,7 +145,7 @@ GM:RegisterCommand{
 		if (not IsValid(victim:Give(kind))) then
 			return false, "Invalid weapon '" .. kind .. "'!";
 		end
-		GM:Log(EVENT_EVENT, "%s gave %s a %s", ply:Name(), victim:Name(), kind);
+		MS:Log(EVENT_EVENT, "%s gave %s a %s", ply:Name(), victim:Name(), kind);
 	end,
 };
 
@@ -160,7 +160,7 @@ GM:RegisterCommand{
 	function(ply, victim, kind, amount)
 		amount = amount or 20
 		victim:GiveAmmo(amount, kind);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s gave %s %s %s ammo", ply:Name(), victim:Name(), amount, kind
 		);
 	end,
@@ -177,7 +177,7 @@ GM:RegisterCommand{
 	function(ply, victim, name, amount, force)
 		amount = amount or 1;
 		force = force or false;
-		local item = GM:GetItem(name);
+		local item = MS:GetItem(name);
 		if (not item) then
 			return false, "Invalid item '" .. name .. "'!";
 		end
@@ -211,7 +211,7 @@ GM:RegisterCommand{
 			"s", ply:Name() .. " gave " .. person .. " " .. amount .. " " .. name .. ".",
 			0
 		);
-		GM:Log(
+		MS:Log(
 			EVENT_PUBLICEVENT, "%s gave %s %s %s.", ply:Name(), person, amount, name
 		);
 	end,
@@ -239,7 +239,7 @@ GM:RegisterCommand{
 			return false, "Invalid team '" .. target .. "'!";
 		end
 		victim:JoinTeam(tdata.TeamID);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s set %s's team to %q", ply:Name(), victim:Name(), tdata.Name
 		);
 	end,
@@ -284,7 +284,7 @@ GM:RegisterCommand{
 			return false, "Invalid model!";
 		end
 		victim:SetModel(model);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s set %s's model to %q", ply:Name(), victim:Name(), model
 		);
 	end,
@@ -310,7 +310,7 @@ GM:RegisterCommand{
 			level = tonumber(level);
 		end
 		victim:Notify(words, level);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s sent %s a level %s notification saying %q", ply:Name(),
 			victim:Name(), level or "chat", words
 		);
@@ -337,7 +337,7 @@ GM:RegisterCommand{
 			level = tonumber(level);
 		end
 		player.NotifyAll(level, "%s", words); -- Feeelthy hack to prevent unwanted stacking in the pooled string table.
-		GM:Log(
+		MS:Log(
 			EVENT_PUBLICEVENT, "%s sent %s a level %s notification saying %q",
 			ply:Name(), "everyone", level or "chat", words
 		);
@@ -414,21 +414,21 @@ local function getnamething(kind, thing)
 		return team.Name, team.TeamID
 	elseif kind == "item" then
 		-- Item blacklist
-		local item = GM:GetItem(thing)
+		local item = MS:GetItem(thing)
 		if not item then
 			return false, thing .. " is not a valid item!"
 		end
 		return item.Name, item.UniqueID
 	elseif kind == "cat" then
 		-- Category blacklist
-		local cat = GM:GetCategory(thing)
+		local cat = MS:GetCategory(thing)
 		if not cat then
 			return false, thing .. " is not a valid category!"
 		end
 		return cat.Name, cat.UniqueID;
 	elseif kind == "cmd" then
 		-- Command blacklist
-		local cmd = GM.Commands[thing]
+		local cmd = MS.Commands[thing]
 		if not cmd then
 			return false, thing .. " is not a valid command!"
 		end
@@ -639,7 +639,7 @@ GM:RegisterCommand{
 	Help = "Force an instant save of everyone's profiles.",
 	function(ply)
 		player.SaveAll(true);
-		GM:Log(EVENT_PUBLICEVENT, "%s saved everyone's profiles.", ply:Name())
+		MS:Log(EVENT_PUBLICEVENT, "%s saved everyone's profiles.", ply:Name())
 	end,
 };
 
@@ -658,7 +658,7 @@ GM:RegisterCommand{
 		if (words == "") then
 			return false, "You must specify a message!";
 		end
-		GM:Log(EVENT_SUPEREVENT, "%s pmed %s: %s", ply:Name(), victim:Name(), words)
+		MS:Log(EVENT_SUPEREVENT, "%s pmed %s: %s", ply:Name(), victim:Name(), words)
 		-- Print a message to both players participating in the private message.
 		cider.chatBox.add(victim, ply, "pm", words);
 		words = "@" .. victim:Name() .. " " .. words;
@@ -690,7 +690,7 @@ GM:RegisterCommand{
 		ply:Emote("hands " .. victim:Name() .. " a wad of money.");
 		ply:Notify("You gave " .. victim:Name() .. " $" .. amt .. ".", 0);
 		victim:Notify(ply:Name() .. " gave you $" .. amt .. ".", 0);
-		GM:Log(EVENT_EVENT, "%s gave %s $%i.", ply:Name(), victim:Name(), amt);
+		MS:Log(EVENT_EVENT, "%s gave %s $%i.", ply:Name(), victim:Name(), amt);
 	end,
 };
 
@@ -723,11 +723,11 @@ GM:RegisterCommand{
 		ply._NextMoneyDrop = CurTime() + 30;
 		ply:GiveMoney(-amt);
 
-		local ent = GM.Items["money"]:Make(pos, amt);
+		local ent = MS.Items["money"]:Make(pos, amt);
 		ent:SetPPOwner(ply);
 		ent:SetPPSpawner(ply);
 
-		GM:Log(EVENT_EVENT, "%s dropped $%i.", ply:Name(), amt);
+		MS:Log(EVENT_EVENT, "%s dropped $%i.", ply:Name(), amt);
 	end,
 };
 
@@ -737,7 +737,7 @@ GM:RegisterCommand{
 	Types = "...",
 	Help = "Write a note (on melty paper)",
 	function(ply, words)
-		if (ply:GetCount("notes") == GM.Config["Maximum Notes"]) then
+		if (ply:GetCount("notes") == MS.Config["Maximum Notes"]) then
 			return false, "You've hit the notes limit!";
 		end
 		local pos = ply:GetEyeTraceNoCursor().HitPos;
@@ -769,7 +769,7 @@ GM:RegisterCommand{
 		undo.SetPlayer(ply);
 		undo.AddEntity(entity);
 		undo.Finish();
-		GM:Log(EVENT_EVENT, "%s wrote a note: %s", ply:Name(), words);
+		MS:Log(EVENT_EVENT, "%s wrote a note: %s", ply:Name(), words);
 	end,
 };
 
@@ -789,7 +789,7 @@ GM:RegisterCommand{
 		ply._Job = words;
 		ply:SetNWString("Job", ply._Job);
 		ply:Notify("You have changed your job title to '" .. words .. "'.");
-		GM:Log(EVENT_EVENT, "%s changed their job text to %q.", ply:Name(), words);
+		MS:Log(EVENT_EVENT, "%s changed their job text to %q.", ply:Name(), words);
 	end,
 };
 
@@ -808,7 +808,7 @@ GM:RegisterCommand{
 		end
 		ply.cider._Clan = words;
 		ply:SetNWString("Clan", words);
-		GM:Log(EVENT_EVENT, "%s set their clan to %q.", ply:Name(), words);
+		MS:Log(EVENT_EVENT, "%s set their clan to %q.", ply:Name(), words);
 		if (words == "") then
 			ply:Notify("You have unset your clan", 0);
 		else
@@ -832,7 +832,7 @@ GM:RegisterCommand{
 			ply._NextSpawnGender = "Female";
 		end
 		ply:Notify("You will be " .. gender .. " next time you spawn.", 0);
-		GM:Log(EVENT_EVENT, "%s set their gender to " .. gender .. ".", ply:Name());
+		MS:Log(EVENT_EVENT, "%s set their gender to " .. gender .. ".", ply:Name());
 	end,
 };
 
@@ -845,7 +845,7 @@ GM:RegisterCommand{
 	function(ply, words)
 		-- Print a message to other players within a radius of the player's position.
 		cider.chatBox.addInRadius(
-			ply, "yell", words, ply:GetPos(), GM.Config["Talk Radius"] * 2
+			ply, "yell", words, ply:GetPos(), MS.Config["Talk Radius"] * 2
 		);
 	end,
 };
@@ -859,7 +859,7 @@ GM:RegisterCommand{
 	function(ply, words)
 		-- Print a message to other players within a radius of the player's position.
 		cider.chatBox.addInRadius(
-			ply, "whisper", words, ply:GetPos(), GM.Config["Talk Radius"] / 2
+			ply, "whisper", words, ply:GetPos(), MS.Config["Talk Radius"] / 2
 		);
 	end,
 };
@@ -891,15 +891,15 @@ GM:RegisterCommand{
 				timeleft = timeleft .. " second(s)"
 			end
 			return false, "You must wait " .. timeleft .. " before using advert again!";
-		elseif (not ply:CanAfford(GM.Config["Advert Cost"])) then
+		elseif (not ply:CanAfford(MS.Config["Advert Cost"])) then
 			return false, "You need another $" ..
-       				(GM.Config["Advert Cost"] - ply.cider._Money) .. "!";
+       				(MS.Config["Advert Cost"] - ply.cider._Money) .. "!";
 		end
-		ply._NextAdvert = CurTime() + GM.Config["Advert Timeout"]
+		ply._NextAdvert = CurTime() + MS.Config["Advert Timeout"]
 		-- Print a message to all players.
 		cider.chatBox.add(nil, ply, "advert", words);
-		ply:GiveMoney(-GM.Config["Advert Cost"]);
-		GM:Log(EVENT_EVENT, "%s advertised %q", ply:Name(), words)
+		ply:GiveMoney(-MS.Config["Advert Cost"]);
+		MS:Log(EVENT_EVENT, "%s advertised %q", ply:Name(), words)
 	end,
 };
 
@@ -937,7 +937,7 @@ GM:RegisterCommand{
 	function(ply, id, action, amount)
 		id = string.lower(id);
 		action = string.lower(action);
-		local item = GM.Items[id];
+		local item = MS.Items[id];
 		if (not item) then
 			return false, "Invalid item specified.";
 		end
@@ -994,8 +994,8 @@ GM:RegisterCommand{
 			if (item.Weapon) then
 				ply._NextHolsterWeapon = CurTime() + 5;
 			end
-			ply._NextUseItem = time + GM.Config["Item Timer"];
-			ply._NextUse[id] = time + GM.Config["Item Timer (S)"];
+			ply._NextUseItem = time + MS.Config["Item Timer"];
+			ply._NextUse[id] = time + MS.Config["Item Timer (S)"];
 			return item:Use(ply);
 			-- TODO: Make the vehicles plugin use PlayerCalledItemAction!
 		elseif (not gamemode.Call("PlayerCalledItemAction", ply, item, action, amount)) then
@@ -1015,7 +1015,7 @@ local function containerHandler(ply, item, action, number)
 	item = string.lower(item)
 	if (number < 0) then
 		return false, "Invalid amount!";
-	elseif not GM.Items[item] then
+	elseif not MS.Items[item] then
 		return false, "Invalid item!"
 	end
 	local cInventory, io, filter = cider.container
@@ -1102,19 +1102,19 @@ do -- isolate vars
 		ply._Equipping = false;
 		local s, f = cider.inventory.update(ply, class, 1);
 		if (not s) then
-			ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
+			ply:Emote(MS.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 			if (f and f ~= "") then
 				ply:Notify(f, 1);
 			end
 			return
 		end
 		ply:StripWeapon(class);
-		GM:Log(EVENT_EVENT, "%s holstered their %s.", ply:Name(), GM.Items[class].Name);
+		MS:Log(EVENT_EVENT, "%s holstered their %s.", ply:Name(), MS.Items[class].Name);
 		ply:SelectWeapon("cider_hands");
-		local weptype = GM.Items[class].WeaponType
+		local weptype = MS.Items[class].WeaponType
 		if weptype then
 			ply:Emote(
-				GM.Config["Weapon Timers"]["Equip Message"]["Plugh"]:format(weptype)
+				MS.Config["Weapon Timers"]["Equip Message"]["Plugh"]:format(weptype)
 			);
 		end
 	end
@@ -1123,7 +1123,7 @@ do -- isolate vars
 		if (not ply:IsValid()) then
 			return
 		end
-		ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Abort"]);
+		ply:Emote(MS.Config["Weapon Timers"]["Equip Message"]["Abort"]);
 		ply._Equipping = false;
 		SendUserMessage("MS Equippr FAIL", ply);
 	end
@@ -1145,7 +1145,7 @@ do -- isolate vars
 			end
 
 			-- Check if the weapon is a valid entity.
-			if not (IsValid(weapon) and GM.Items[weapon:GetClass()]) then
+			if not (IsValid(weapon) and MS.Items[weapon:GetClass()]) then
 				return false, "This is not a valid weapon!";
 			end
 			local class = weapon:GetClass();
@@ -1154,7 +1154,7 @@ do -- isolate vars
 			end
 
 			ply._Equipping = ply:GetPos()
-			local delay = GM.Config["Weapon Timers"]["equiptime"][GM.Items[class]
+			local delay = MS.Config["Weapon Timers"]["equiptime"][MS.Items[class]
               				.WeaponType or -1] or 0
 			if not (delay and delay > 0) then
 				success(ply, nil, class);
@@ -1168,7 +1168,7 @@ do -- isolate vars
 				ply:UniqueID() .. " holster", delay, conditional, success, failure, ply,
 				ply:GetPos(), class
 			);
-			ply:Emote(GM.Config["Weapon Timers"]["Equip Message"]["Start"]);
+			ply:Emote(MS.Config["Weapon Timers"]["Equip Message"]["Start"]);
 		end,
 	};
 end
@@ -1223,7 +1223,7 @@ GM:RegisterCommand{
 				-- Doo eet
 				ent:SetDisplayName(name)
 				-- Loggin.
-				GM:Log(
+				MS:Log(
 					EVENT_ENTITY, "%s changed their %s's name from %q to %q.", ply:Name(),
 					ent._isDoor and "door" or ent:GetNWString("Name", "entity"), oldname, name
 				);
@@ -1233,13 +1233,13 @@ GM:RegisterCommand{
 				end
 				-- Horray for verbose logging!
 				if (ent:IsDoor()) then
-					GM:Log(
+					MS:Log(
 						EVENT_ENTITY, "%s sold their %s %s.", ply:Name(), "door",
 						ent:GetDoorName()
 					);
 					ply:TakeDoor(ent);
 				else
-					GM:Log(
+					MS:Log(
 						EVENT_ENTITY, "%s sold their %s %s.", ply:Name(),
 						ent:GetNWString("Name", "entity"), ent:GetDisplayName()
 					);
@@ -1258,7 +1258,7 @@ GM:RegisterCommand{
 			return false;
 		end
 		-- Capitalism, Ho!
-		local cost = GM.Config["Door Cost"];
+		local cost = MS.Config["Door Cost"];
 		local can, result = ply:CanAfford(cost);
 		if (not can) then
 			return false, "You need another $" .. result .. " to buy that door!";
@@ -1267,7 +1267,7 @@ GM:RegisterCommand{
 		-- Do the work
 		ply:GiveDoor(ent, name);
 		ent:SetPPSpawner(NULL);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s bought a door called %q.", ply:Name(), ent:GetDoorName()
 		);
 	end,
@@ -1283,10 +1283,10 @@ local function enthandle(ply, ent, action, kind, id)
 		target = team.Get(id)
 		name = target.Name
 	elseif (kind == "gang") then
-		target = GM:GetGang(id);
+		target = MS:GetGang(id);
 		name = target.Name;
 	elseif (kind == "group") then
-		target = GM:GetGroup(id);
+		target = MS:GetGroup(id);
 		name = target.Name;
 	end
 	if (not target) then
@@ -1316,7 +1316,7 @@ local function enthandle(ply, ent, action, kind, id)
 		end
 		word = "%s removed %s's access from their %s.";
 	end
-	GM:Log(
+	MS:Log(
 		EVENT_ENTITY, word, ply:Name(), name,
 		ent._isDoor and "door" or ent:GetNWString("Name", "entity")
 	);
@@ -1364,12 +1364,12 @@ GM:RegisterCommand{
 	Types = "String",
 	Hidden = true,
 	function(ply, itemid)
-		local item = GM:GetItem(itemid);
+		local item = MS:GetItem(itemid);
 		if (not item) then
 			return false, "No such item '" .. itemid .. "'!";
 		elseif (not gamemode.Call("PlayerCanManufactureCategory", ply, item.Category)) then
 			return false, ply:GetTeam().Name .. "s cannot manufacture " ..
-       				GM:GetCategory(item.Category).Name .. "!";
+       				MS:GetCategory(item.Category).Name .. "!";
 		elseif (not gamemode.Call("PlayerCanManufactureItem", ply, item)) then
 			return false;
 		elseif (not ply:IsAdmin() and (ply.NextManufactureItem or 0) > CurTime()) then
@@ -1400,7 +1400,7 @@ GM:RegisterCommand{
 			words = "a " .. item.Name;
 		end
 		ply:Notify("You manufactured " .. words .. ".");
-		GM:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), words);
+		MS:Log(EVENT_EVENT, "%s manufactured %s.", ply:Name(), words);
 	end,
 };
 
@@ -1411,7 +1411,7 @@ do -- Reduce the upvalues poluting the area.
 
 	local function success(ply)
 		ply:KnockOut();
-		GM:Log(EVENT_EVENT, "%s went to sleep.", ply:Name());
+		MS:Log(EVENT_EVENT, "%s went to sleep.", ply:Name());
 		ply._Sleeping = true;
 		ply:SetCSVar(CLASS_BOOL, "_Sleeping", true); -- Make sure it happens NOW not in 0.01s time.
 		ply:Emote("slumps to the floor, asleep.");
@@ -1431,10 +1431,10 @@ do -- Reduce the upvalues poluting the area.
 				return ply:WakeUp();
 			end
 			ply:SetCSVar(
-				CLASS_LONG, "_GoToSleepTime", CurTime() + GM.Config["Sleep Waiting Time"]
+				CLASS_LONG, "_GoToSleepTime", CurTime() + MS.Config["Sleep Waiting Time"]
 			);
 			timer.Conditional(
-				ply:UniqueID() .. " sleeping timer", GM.Config["Sleep Waiting Time"],
+				ply:UniqueID() .. " sleeping timer", MS.Config["Sleep Waiting Time"],
 				conditional, success, failure, ply, ply:GetPos()
 			);
 		end,
@@ -1464,9 +1464,9 @@ GM:RegisterCommand{
 		end
 		ply:KnockOut(5)
 		ply._Tripped = true
-		-- cider.chatBox.addInRadius(ply, "me", "trips and falls heavily to the ground.", ply:GetPos(), GM.Config["Talk Radius"]);
+		-- cider.chatBox.addInRadius(ply, "me", "trips and falls heavily to the ground.", ply:GetPos(), MS.Config["Talk Radius"]);
 		ply:Emote("trips and falls heavily to the ground.");
-		GM:Log(EVENT_EVENT, "%s fell over.", ply:GetName())
+		MS:Log(EVENT_EVENT, "%s fell over.", ply:GetName())
 	end,
 };
 
@@ -1478,9 +1478,9 @@ GM:RegisterCommand{
 			ply:KnockOut(5)
 			ply._Tripped = true
 			cider.chatBox.addInRadius(
-				ply, "me", "slumps to the ground.", ply:GetPos(), GM.Config["Talk Radius"]
+				ply, "me", "slumps to the ground.", ply:GetPos(), MS.Config["Talk Radius"]
 			);
-			GM:Log(EVENT_EVENT, "%s fell over.", ply:GetName())
+			MS:Log(EVENT_EVENT, "%s fell over.", ply:GetName())
 		end
 	end,
 };
@@ -1515,10 +1515,10 @@ GM:RegisterCommand{
 		end
 		local gang = ply:GetTeam().Gang
 		local minimum = math.min(
-			math.floor((#GM:GetGangMembers(gang)) * GM.Config["Mutiny Percentage"]),
-			GM.Config["Minimum to mutiny"]
+			math.floor((#MS:GetGangMembers(gang)) * MS.Config["Mutiny Percentage"]),
+			MS.Config["Minimum to mutiny"]
 		);
-		GM:Log(
+		MS:Log(
 			EVENT_EVENT, "%s voted to mutiny against %s. Votes: %i / %i", ply:Name(),
 			victim:Name(), i, minimum
 		);
@@ -1578,11 +1578,11 @@ GM:RegisterCommand{
 		if (string.lower(text) == "none") then
 			ply._Details = "";
 			ply:Notify("You have removed your details.");
-			GM:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), "nothing")
+			MS:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), "nothing")
 		else
 			ply._Details = text;
 			ply:Notify("You have changed your details to '" .. text .. "'.");
-			GM:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), text)
+			MS:Log(EVENT_EVENT, "%s changed their details to %q.", ply:Name(), text)
 		end
 		ply:SetNWString("Details", ply._Details);
 	end,
@@ -1595,7 +1595,7 @@ GM:RegisterCommand{
 	Help = "Emit a localised environmental emote",
 	function(ply, text)
 		cider.chatBox.addInRadius(
-			ply, "action", text, ply:GetPos(), GM.Config["Talk Radius"]
+			ply, "action", text, ply:GetPos(), MS.Config["Talk Radius"]
 		);
 	end,
 };
@@ -1631,7 +1631,7 @@ GM:RegisterCommand{
 			return false;
 		end
 		cider.chatBox.add(nil, ply, "ooc", text);
-		-- GM:Log(EVENT_TALKING,"(OOC) %s: %s",player:Name(),text)
+		-- MS:Log(EVENT_TALKING,"(OOC) %s: %s",player:Name(),text)
 	end,
 };
 
@@ -1645,9 +1645,9 @@ GM:RegisterCommand{
 			return false;
 		end
 		cider.chatBox.addInRadius(
-			ply, "looc", text, ply:GetPos(), GM.Config["Talk Radius"]
+			ply, "looc", text, ply:GetPos(), MS.Config["Talk Radius"]
 		);
-		-- GM:Log(EVENT_TALKING,"(Local OOC) %s: %s",player:Name(),text)
+		-- MS:Log(EVENT_TALKING,"(Local OOC) %s: %s",player:Name(),text)
 	end,
 };
 
@@ -1668,12 +1668,12 @@ GM:RegisterCommand{
 		end
 		if masterID == 0 then
 			master = NULL
-			GM:Log(
+			MS:Log(
 				EVENT_ENTITY, "%s unset a %s's master", ply:Name(),
 				entity._isDoor and "door" or entity:GetNWString("Name", "entity")
 			)
 		else
-			GM:Log(
+			MS:Log(
 				EVENT_ENTITY, "%s set a %s's master", ply:Name(),
 				entity._isDoor and "door" or entity:GetNWString("Name", "entity")
 			)
@@ -1698,14 +1698,14 @@ GM:RegisterCommand{
 		if unseal then
 			entity:UnSeal();
 			hook.Call("EntitySealed", GAMEMODE, entity, true)
-			GM:Log(
+			MS:Log(
 				EVENT_ENTITY, "%s unsealed a %s,", ply:Name(),
 				entity._isDoor and "door" or entity:GetNWString("Name", "entity")
 			)
 		else
 			entity:Seal();
 			hook.Call("EntitySealed", GAMEMODE, entity)
-			GM:Log(
+			MS:Log(
 				EVENT_ENTITY, "%s sealed a %s,", ply:Name(),
 				entity._isDoor and "door" or entity:GetNWString("Name", "entity")
 			)
@@ -1728,7 +1728,7 @@ GM:RegisterCommand{
 			words = "";
 		end
 		entity:SetNWString("Name", words)
-		GM:Log(EVENT_ENTITY, "%s changed a door's name to %q.", ply:Name(), words)
+		MS:Log(EVENT_ENTITY, "%s changed a door's name to %q.", ply:Name(), words)
 		hook.Call("EntityNameSet", GAMEMODE, entity, words)
 	end,
 };
@@ -1745,7 +1745,7 @@ GM:RegisterCommand{
 		-- Slavery
 		ent = ent:GetMaster() or ent;
 		ent:ClearOwnershipData();
-		GM:Log(
+		MS:Log(
 			EVENT_ENTITY, "%s wiped the ownership data on %s", ply:Name(),
 			ent:GetNWString("Name", "an entity")
 		);
@@ -1779,7 +1779,7 @@ GM:RegisterCommand{
 		ent["GiveTo" .. kind_](ent, target);
 		local name = target.IsPlayer and target:Name() or target.Name;
 		gamemode.Call("EntityOwnerSet", ent, target)
-		GM:Log(
+		MS:Log(
 			EVENT_ENTITY, "%s gave ownership of %s to %s.", ply:Name(),
 			ent:GetNWString("Name", "an entity"), name
 		);

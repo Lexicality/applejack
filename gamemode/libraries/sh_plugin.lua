@@ -82,13 +82,13 @@ if SERVER then
 			if (IsValid(ply) and not ply:IsSuperAdmin()) then
 				return
 			end
-			GM:LoadPlugins();
+			MS:LoadPlugins();
 		end
 	)
 elseif GetConVarNumber("developer") > 0 then -- Don't want the peons to get this command.
 	concommand.Add(
 		"cider_reload_plugins_cl", function()
-			GM:LoadPlugins();
+			MS:LoadPlugins();
 		end
 	)
 end

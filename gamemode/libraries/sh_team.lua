@@ -411,7 +411,7 @@ end
 -- @param id The ID
 -- @return The team in question
 function team.Get(id)
-	return GM:GetTeam(id);
+	return MS:GetTeam(id);
 end
 
 ---

@@ -72,7 +72,7 @@ function cider.container.getContentsSize(entity, player)
 	local contents = cider.container.getContents(entity, player)
 	local size = 0
 	for id, amount in pairs(contents) do
-		item = GM.Items[id];
+		item = MS.Items[id];
 		if (item and item.Size > 0) then
 			size = size + item.Size * math.abs(amount);
 		end
@@ -100,7 +100,7 @@ function cider.container.canFit(entity, item, amount, player)
 			return ret
 		end
 	end
-	return cider.container.getSpaceLeft(entity, player) - GM.Items[item].Size *
+	return cider.container.getSpaceLeft(entity, player) - MS.Items[item].Size *
        		amount >= 0
 end
 
@@ -109,7 +109,7 @@ function cider.container.update(entity, id, amount, force, player)
 	if not cider.container.isContainer(entity) then
 		return false, "Not a container!"
 	end
-	item = GM.Items[id];
+	item = MS.Items[id];
 	if (not item) then
 		return false, "Invalid item " .. id .. "!"
 	end
@@ -184,7 +184,7 @@ function cider.container.dumpContents(entity, pos)
 	local contents = cider.container.getContents(entity)
 	local items = {}
 	for name, amount in pairs(contents) do
-		table.insert(items, GM.Items[name]:Make(pos, amount));
+		table.insert(items, MS.Items[name]:Make(pos, amount));
 		cider.container.update(entity, name, -amount, true)
 	end
 	-- Ensure our items don't go flying

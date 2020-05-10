@@ -56,7 +56,7 @@ function PANEL:Reload()
 	self:Empty();
 	local sections = {};
 
-	for title, text in pairs(GM.HelpItems) do
+	for title, text in pairs(MS.HelpItems) do
 		local text2 = {};
 		for _, line in ipairs(text) do
 			table.insert(text2, line);

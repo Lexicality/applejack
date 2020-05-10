@@ -91,7 +91,7 @@ function ENT:OnTakeDamage(damageInfo)
 					end
 				end
 
-				GM:Log(
+				MS:Log(
 					EVENT_EVENT, "%s destroyed the padlock on %s %s%s.",
 					damageInfo:GetAttacker():GetName(), event, entname, addon
 				)

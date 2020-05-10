@@ -38,7 +38,7 @@ function PLUGIN:FrameOne()
 				ent:Fire("setdamagefilter", "aj_details", 0);
 				hook.Call("PropSpawned", GM, tab[1], ent);
 				ent:SetPPOwner(NULL);
-				GM.Entities[ent] = ent;
+				MS.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model " .. tab[1] .. "!");
 			end
@@ -60,7 +60,7 @@ function PLUGIN:FrameTwo(mapname)
 				ent:Activate();
 				ent:SetDTBool(3, true);
 				ent:SetPPOwner(NULL);
-				GM.Entities[ent] = ent;
+				MS.Entities[ent] = ent;
 			else
 				ErrorNoHalt("Applejack (Details): Couldn't create model " .. tab[1] .. "!");
 			end
@@ -111,7 +111,7 @@ function PLUGIN:FrameThree(mapname)
 					end
 					ent:Fire("setdamagefilter", "aj_details", 0);
 					ent:SetPPOwner(NULL);
-					GM.Entities[ent] = ent;
+					MS.Entities[ent] = ent;
 				end
 			end
 		end

@@ -27,11 +27,11 @@ net.Receive(
 -- Get the maximum amount of space a player has.
 local item;
 function cider.inventory.getMaximumSpace(inv, intial)
-	local size = intial or GM.Config["Inventory Size"];
+	local size = intial or MS.Config["Inventory Size"];
 	inv = inv or cider.inventory.stored
 	-- Loop through the player's inventory.
 	for k, v in pairs(inv) do
-		item = GM.Items[k];
+		item = MS.Items[k];
 		if (item and item.Size < 0) then
 			size = size + (item.Size * -v);
 		end
@@ -47,7 +47,7 @@ function cider.inventory.getSize(inv)
 	inv = inv or cider.inventory.stored
 	-- Loop through the player's inventory.
 	for k, v in pairs(inv) do
-		item = GM.Items[k];
+		item = MS.Items[k];
 		if (item and item.Size > 0) then
 			size = size + (item.Size * v);
 		end

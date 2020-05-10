@@ -12,14 +12,14 @@ local function unbreach(ent)
 	end
 	ent._Jammed = nil;
 	ent:UnLock(0, true);
-	local close = ent._Autoclose or GM.Config["Door Autoclose Time"];
+	local close = ent._Autoclose or MS.Config["Door Autoclose Time"];
 	local class = ent:GetClass();
 	if (class:find "func_door") then
 		ent:SetKeyValue("wait", close);
 	elseif (class:find "prop_door") then
 		ent:SetKeyValue("returndelay", close);
 	end
-	GM:CloseDoor(ent, 0);
+	MS:CloseDoor(ent, 0);
 end
 
 ---
@@ -47,7 +47,7 @@ function GM:OpenDoor(ent, delay, unlock, jam)
 	if (ent:GetClass() == "prop_dynamic") then
 		ent:Fire("setanimation", "open", delay);
 		ent._DoorState = "open";
-		ent._Autoclose = ent._Autoclose or GM.Config["Door Autoclose Time"];
+		ent._Autoclose = ent._Autoclose or MS.Config["Door Autoclose Time"];
 	else
 		ent:Fire("open", "", delay);
 	end
@@ -56,11 +56,11 @@ function GM:OpenDoor(ent, delay, unlock, jam)
 		ent:Lock(delay + 0.025, true);
 		local class = ent:GetClass();
 		if (class:find "func_door") then
-			ent:SetKeyValue("wait", GM.Config["Jam Time"]);
+			ent:SetKeyValue("wait", MS.Config["Jam Time"]);
 		elseif (class:find "prop_door") then
-			ent:SetKeyValue("returndelay", GM.Config["Jam Time"]);
+			ent:SetKeyValue("returndelay", MS.Config["Jam Time"]);
 		end
-		timer.Simple(GM.Config["Jam Time"], unbreach, ent);
+		timer.Simple(MS.Config["Jam Time"], unbreach, ent);
 	elseif (ent._Autoclose or 0 > 0) then
 		self:CloseDoor(ent, ent._Autoclose);
 	end
@@ -172,9 +172,9 @@ end
 
 timer.Create(
 	"Applejack Entity Housecleaning", GM.Config["Earning Interval"], 0, function()
-		for ent in pairs(GM.OwnableEntities) do
+		for ent in pairs(MS.OwnableEntities) do
 			if (not IsValid(ent)) then
-				GM.OwnableEntities[ent] = nil;
+				MS.OwnableEntities[ent] = nil;
 			end
 		end
 	end

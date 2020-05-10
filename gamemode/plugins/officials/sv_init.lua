@@ -9,8 +9,8 @@ include("sv_commands.lua")
 
 -- Settup function
 function PLUGIN:LoadData()
-	self.group = GM:GetGroup("Officials");
-	self.gang = GM:GetGang("Police");
+	self.group = MS:GetGroup("Officials");
+	self.gang = MS:GetGang("Police");
 end
 
 -- Check if they're the right group/gang
@@ -50,7 +50,7 @@ function PLUGIN:PlayerAdjustRadioRecipients(ply, text, recipients)
 end
 
 function PLUGIN:PlayerDestroyedContraband(ply, ent)
-	local data = GM.Config["Contraband"][ent:GetClass()];
+	local data = MS.Config["Contraband"][ent:GetClass()];
 	if (not data or not self:IsAuthorised(ply)) then
 		return;
 	end
@@ -68,7 +68,7 @@ function PLUGIN:PlayerDeath(ply, inflictor, killer)
 		end
 		self.Lockdown = false; -- Disable the lockdown
 		SetGlobalBool("lockdown", false);
-		GM:ClearProps(ply);
+		MS:ClearProps(ply);
 		ply:Demote(); -- Drop dem to da bttom
 	end
 end

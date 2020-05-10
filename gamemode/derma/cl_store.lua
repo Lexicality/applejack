@@ -21,10 +21,10 @@ function PANEL:Init()
 	-- Create a table to store the categories.
 	local categories = {};
 	-- Loop through the items
-	for k, v in pairs(GM.Items) do
+	for k, v in pairs(MS.Items) do
 		if (v.Store and v.Cost and v.Batch) then
 			local cat = v.Category;
-			if cat and GM:GetCategory(cat) then
+			if cat and MS:GetCategory(cat) then
 				categories[cat] = categories[cat] or {};
 				-- Insert the item into the category table.
 				table.insert(categories[cat], k);
@@ -39,7 +39,7 @@ function PANEL:Init()
 		if (k == "none") then
 			table.sort(
 				v, function(a, b)
-					return GM.Items[a].Cost > GM.Items[b].Cost
+					return MS.Items[a].Cost > MS.Items[b].Cost
 				end
 			)
 			-- Loop through the items.
@@ -50,7 +50,7 @@ function PANEL:Init()
 				self.itemsList:AddItem(vgui.Create("cider_Store_Item", self));
 			end
 		else
-			local c = GM:GetCategory(k)
+			local c = MS:GetCategory(k)
 			if (not c.NoShow) then -- If the category doesn't want to show up (like it's plugin is missing) then don't show it.
 				self.headers[k] = vgui.Create("DCollapsibleCategory", self)
 				self.headers[k]:SetSize(cider.menu.width, 50); -- Keep the second number at 50
@@ -68,7 +68,7 @@ function PANEL:Init()
 				-- Sort the items by cost.
 				table.sort(
 					v, function(a, b)
-						return GM.Items[a].Cost > GM.Items[b].Cost
+						return MS.Items[a].Cost > MS.Items[b].Cost
 					end
 				)
 
@@ -109,7 +109,7 @@ local PANEL = {};
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self.item = self:GetParent().currentItem;
-	local item = GM.Items[self.item]
+	local item = MS.Items[self.item]
 	-- Get the cost of the item in total.
 	local cost = item.Cost * item.Batch;
 

@@ -142,7 +142,7 @@ function PLUGIN:HUDPaint()
 	local yaw, top, height, car = EyeAngles().y, 8, 28, false
 	-- Compass and environment
 	local car = {}
-	for ent in pairs(GM.AccessableEntities) do
+	for ent in pairs(MS.AccessableEntities) do
 		if IsValid(ent) and ent:GetClass() == "prop_vehicle_jeep" then
 			table.insert(car, ent)
 			height = height + 12
