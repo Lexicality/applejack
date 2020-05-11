@@ -2,6 +2,8 @@
 -- ~ Sandbox Hooks (SV) ~
 -- ~ Applejack ~
 --
+DEFINE_BASECLASS "gamemode_sandbox"
+
 -- This file is for the base gamemodes' hooks.
 -- As such, there is no need to document them as they are all standard.
 function GM:PlayerSwitchFlashlight(ply, on)
@@ -29,7 +31,7 @@ function GM:PlayerUse(ply, ent)
 		return false;
 	end
 	-- Let sandbox/base deal with everything else~
-	return self.BaseClass:PlayerUse(ply, ent);
+	return BaseClass.PlayerUse(self, ply, ent);
 end
 
 function GM:PlayerCanJoinTeam(ply, teamid)
@@ -95,7 +97,7 @@ function GM:PlayerDisconnected(ply)
 	end
 	player.UniqueIDs[ply:UniqueID()] = nil;
 	-- Call the base class function.
-	self.BaseClass:PlayerDisconnected(ply)
+	BaseClass.PlayerDisconnected(self, ply)
 end
 
 -- Called when a player says something.

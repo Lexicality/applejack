@@ -2,6 +2,8 @@
 -- "init.lua"
 -- ~ Applejack ~
 --
+DEFINE_BASECLASS "gamemode_sandbox"
+
 -- Database module
 require "mysqloo"
 
@@ -92,6 +94,8 @@ GM.Entities = {}
 
 -- Called when the server initializes.
 function GM:Initialize()
+	BaseClass.Initialize(self)
+
 	GM = self
 	MS = self
 	ErrorNoHalt "----------------------\n"
@@ -100,8 +104,6 @@ function GM:Initialize()
 
 	self:ConnectToDatabase()
 
-	-- Call the base class function.
-	return self.BaseClass:Initialize()
 end
 
 -- Called when all of the map entities have been initialized.
@@ -128,7 +130,7 @@ function GM:InitPostEntity()
 	-- Inform anything loaded after this that it's not going to get an InitPostEntity call.
 	self.Inited = true;
 	-- Call the base class function.
-	return self.BaseClass:InitPostEntity()
+	return BaseClass.InitPostEntity(self)
 end
 
 -- TODO: Move this stuff into the sv_player hooks
@@ -160,7 +162,7 @@ function GM:PlayerSpawnedProp(ply, mdl, ent)
 		ent:MakeOwnable();
 		ent:GiveToPlayer(ply);
 	end
-	self.BaseClass:PlayerSpawnedProp(ply, mdl, ent);
+	BaseClass.PlayerSpawnedProp(self, ply, mdl, ent);
 end
 
 -- To avoid redundancy.
@@ -283,7 +285,7 @@ function GM:PlayerSpawnVehicle(ply, model, name, vtable)
 	end
 
 	-- Call the base class function.
-	return self.BaseClass:PlayerSpawnVehicle(ply, model)
+	return BaseClass.PlayerSpawnVehicle(self, ply, model)
 end
 
 -- function GM:PlayerSpawnedVehicle(player, entity)
@@ -312,6 +314,7 @@ end
 -- Called when a player connectsf
 function GM:PlayerConnect(name, ip, steamID)
 	print(string.format("Player connected %q, (%s): %s,", name, ip, steamID))
+	BaseClass.PlayerConnect(self, name, ip, steamID)
 end
 
 -- Called when the player has initialized.
@@ -424,11 +427,13 @@ function GM:PlayerDataLoaded(ply, success)
 end
 
 -- Called when a player initially spawns.
-function GM:PlayerInitialSpawn(ply)
+function GM:PlayerInitialSpawn(ply, transition)
 	ply._Loading = true
 
 	-- Kill them silently until we've loaded the data.
 	ply:KillSilent()
+	-- TODO: oh god this will do so many things
+	-- return BaseClass.PlayerInitialSpawn(self, ply, transition)
 end
 
 -- https://github.com/Facepunch/garrysmod-requests/issues/718
@@ -437,6 +442,7 @@ function GM:SetupMove(ply, _, cmd)
 		ply._Loading = false
 		gamemode.Call("PlayerFullyConnected", ply)
 	end
+	return BaseClass.SetupMove(self, ply, _, cmd)
 end
 
 function GM:PlayerFullyConnected(ply)
@@ -482,7 +488,7 @@ function GM:PlayerDeathThink(ply)
 	end
 
 	-- Return the base class function.
-	return self.BaseClass:PlayerDeathThink(ply)
+	return BaseClass.PlayerDeathThink(self, ply)
 end
 
 -- Called when a player's salary should be adjusted.
@@ -572,15 +578,7 @@ end
 
 -- Choose the model for hands according to their player model.
 function GM:PlayerSetHandsModel(ply, ent)
-
-	local simplemodel = player_manager.TranslateToPlayerModelName(ply:GetModel())
-	local info = player_manager.TranslatePlayerHands(simplemodel)
-	if (info) then
-		ent:SetModel(info.model)
-		ent:SetSkin(info.skin)
-		ent:SetBodyGroups(info.body)
-	end
-
+	BaseClass.PlayerSetHandsModel(self, ply, ent)
 end
 
 -- Called when a ply should take damage.
@@ -1087,6 +1085,8 @@ function GM:ShutDown()
 		ply:HolsterAll()
 		ply:SaveData()
 	end
+
+	BaseClass.ShutDown(self)
 end
 
 -- Called when a player presses F1.

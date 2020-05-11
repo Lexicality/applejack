@@ -2,6 +2,8 @@
 -- ~ Player List ~
 -- ~ Moonshine ~
 --
+DEFINE_BASECLASS "DPanel"
+
 local vguiItemPanel;
 local PANEL = {};
 
@@ -16,7 +18,7 @@ PANEL.m_fCompareFunc = function(a, b)
 end; -- Basic equality.
 
 function PANEL:Init()
-	self.BaseClass.Init(self);
+	BaseClass.Init(self);
 	self:Clear();
 	self:SetPadding(2);
 	self:SetSpacing(3);
@@ -51,7 +53,7 @@ PANEL._CategoryData = {Name = "/", Path = "", SortWeight = -math.huge}
 function PANEL:Clear(...)
 	self._Categories = {};
 	self._Items = {};
-	self.BaseClass.Clear(self, ...);
+	BaseClass.Clear(self, ...);
 end
 
 do

@@ -2,6 +2,8 @@
 -- ~ HUD Library ~
 -- ~ Applejack ~
 --
+DEFINE_BASECLASS "gamemode_sandbox"
+
 -- Setup the basics
 local font = "mshine_hudtxt"
 surface.CreateFont(
@@ -986,7 +988,7 @@ function GM:HUDPaint()
 	if (gamemode.Call("HUDShouldDraw", "MSCenterBar")) then
 		drawcenterbar();
 	end
-	-- self.BaseClass:HUDPaint()
+	-- BaseClass.HUDPaint(self)
 
 	-- Legacy centerprints
 	if (not self:IsUsingCamera()) then
@@ -994,7 +996,7 @@ function GM:HUDPaint()
 		cider.chatBox.position = {x = 30, y = scrh - 160};
 
 		-- Call the base class function.
-		self.BaseClass:HUDPaint();
+		BaseClass.HUDPaint(self);
 	end
 end
 
@@ -1009,7 +1011,7 @@ function GM:HUDShouldDraw(name)
 	end
 
 	-- Call the base class function.
-	return self.BaseClass:HUDShouldDraw(name);
+	return BaseClass.HUDShouldDraw(self, name);
 end
 
 -- ESP

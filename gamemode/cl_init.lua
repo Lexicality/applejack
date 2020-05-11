@@ -2,6 +2,8 @@
 -- "cl_init.lua"
 -- ~ Applejack ~
 --
+DEFINE_BASECLASS "gamemode_sandbox"
+
 -- Define a fuckton of colours for efficient GC
 -- Solid Colours
 color_green = Color(050, 255, 050)
@@ -69,7 +71,7 @@ function GM:Initialize()
 	GM = self
 	MS = self
 	-- Call the base class function.
-	return self.BaseClass:Initialize()
+	return BaseClass.Initialize(self)
 end
 
 function GM:ForceDermaSkin()
@@ -97,7 +99,7 @@ function GM:InitPostEntity()
 	); -- Tell plugins to load their datas a frame after this.
 	self.Inited = true;
 	-- Call the base class function.
-	return self.BaseClass:InitPostEntity()
+	return BaseClass.InitPostEntity(self)
 end
 
 -- Called when a player presses a bind.
@@ -106,7 +108,7 @@ function GM:PlayerBindPress(player, bind, press)
 		RunConsoleCommand("retry");
 	end
 	-- Call the base class function.
-	return self.BaseClass:PlayerBindPress(player, bind, press);
+	return BaseClass.PlayerBindPress(self, player, bind, press);
 end
 
 -- Check if the local player is using the camera.
@@ -126,16 +128,16 @@ function GM:CalcView(pl, origin, angles, fov)
 	local ragdoll = pl:GetRagdollEntity();
 	-- Check if it's valid
 	if (not IsValid(ragdoll)) then
-		return self.BaseClass:CalcView(pl, origin, angles, fov);
+		return BaseClass.CalcView(self, pl, origin, angles, fov);
 	end
 	-- find the eyes
 	local eyes = ragdoll:GetAttachment(ragdoll:LookupAttachment("eyes"));
 	-- setup our view
 	if (not eyes) then
-		return self.BaseClass:CalcView(pl, origin, angles, fov);
+		return BaseClass.CalcView(self, pl, origin, angles, fov);
 	end
 	-- TODO: See if this does anything
-	return self.BaseClass:CalcView(pl, eyes.Pos, eyes.Ang, 90);
+	return BaseClass.CalcView(self, pl, eyes.Pos, eyes.Ang, 90);
 end
 
 -- Called when screen space effects should be rendered.
@@ -188,10 +190,10 @@ end
 
 -- Called when the scoreboard should be drawn.
 function GM:HUDDrawScoreBoard() -- TODO: Find a better hook for this?
-	self.BaseClass:HUDDrawScoreBoard(player);
+	BaseClass.HUDDrawScoreBoard(self, player);
 	if (self.playerInitialized) then
 		-- Remove this hook
-		self.HUDDrawScoreBoard = self.BaseClass.HUDDrawScoreBoard;
+		self.HUDDrawScoreBoard = BaseClass.HUDDrawScoreBoard;
 		return;
 	end
 

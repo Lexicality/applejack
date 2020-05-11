@@ -2,6 +2,9 @@
 -- ~ Shared Init ~
 -- ~ Applejack ~
 --
+DEFINE_BASECLASS "gamemode_sandbox"
+DeriveGamemode("sandbox");
+
 _R = debug.getregistry();
 --
 -- Custom ENUM highlights (paste into style configurator)
@@ -15,8 +18,6 @@ GM.Author = "Lexi, original gamemode by kuromeku";
 GM.Website = "http://www.ventmob.com";
 GM.LuaFolder = string.sub(GM.Folder, 11, -1)
 IncludeCS("timer.lua");
--- Derive the gamemode from sandbox.
-DeriveGamemode("Sandbox");
 require("csvars")
 
 -- Create the Cider table and the configuration table.

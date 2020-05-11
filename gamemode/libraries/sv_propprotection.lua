@@ -142,7 +142,7 @@ function GM:CanTool(ply, tr, mode, chained)
 	-- Before we do anything, let's make it so people can point cameras at whatever they want.
 	if (mode == "camera" or mode == "rtcamera") then
 		return true;
-	elseif (not self.BaseClass:CanTool(ply, tr, mode)) then -- Firstly, let's let sandbox decide if they can't do it
+	elseif (not self.BaseClass.CanTool(self, ply, tr, mode)) then -- Firstly, let's let sandbox decide if they can't do it
 		return false;
 	elseif (tr.HitWorld or not IsValid(tr.Entity)) then -- If sandbox says it's ok, we don't care about anything that's not an entity.
 		return true;
