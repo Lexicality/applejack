@@ -461,10 +461,41 @@ end
 function GM:PlayerTenthSecond(ply)
 end
 
+local trup, trdown = Vector(0, 0, 10), Vector(0, 0, -2147483648);
 ---
 -- Called every second a player is on the server
 -- @param ply The player in question
 function GM:PlayerSecond(ply)
+	-- Check if the player is stuck in the world or over open sky (stuck behind world) and disable them.
+	if (ply:Alive() and not ply:KnockedOut() and ply:GetMoveType() == MOVETYPE_WALK and
+		(not ply:IsInWorld() or
+			util.QuickTrace(ply:GetPos() + trup, trdown, ply).HitSky)) then
+		ply._StuckInWorld = true;
+	else
+		ply._StuckInWorld = false;
+	end
+	-- Kick idles
+	if (not ply:IsBot() and ply._IdleKick < CurTime()) then
+		ply:Kick(
+			"AFK for " .. string.ToMinutesSeconds(MS.Config["Autokick time"]) ..
+				" minutes."
+		);
+	end
+	-- Disable paracetamol if yer over 50HP
+	if (ply:Health() > 50) then
+		ply._HideHealthEffects = false;
+	end
+	-- Give sleeping people a health regen.
+	if (ply._Sleeping and ply:Health() < 100 and ply:Alive()) then
+		-- It seems the game doesn't like fractions. Let's make this only happen once every 2 seconds then.
+		if (not ply._Healthtick) then
+			ply._Healthtick = true;
+		else
+			ply._Healthtick = false;
+			ply:SetHealth(ply:Health() + 1);
+			ply.ragdoll.health = ply:Health();
+		end
+	end
 end
 
 ---

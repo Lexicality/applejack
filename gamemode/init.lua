@@ -429,6 +429,8 @@ end
 -- Called when a player initially spawns.
 function GM:PlayerInitialSpawn(ply, transition)
 	ply._Loading = true
+	ply._nextTenthSecond = 0
+	ply._nextSecond = 0
 
 	-- Kill them silently until we've loaded the data.
 	ply:KillSilent()
@@ -472,6 +474,26 @@ function GM:PlayerFullyConnected(ply)
 	end
 	umsg.End()
 	cider.laws.send(ply);
+end
+
+--- (afaik) called every frame per player
+--- TODO: Determine if it actually is
+function GM:PlayerPostThink(ply)
+	if not (ply._Initialized and ply._UpdateData) then
+		return
+	end
+	local now = CurTime()
+	-- These are separate because slow frames may result in less than 10 TenthSeconds per second.
+	-- If you actually really care about timing, use your own think hook.
+	if ply._nextTenthSecond <= now then
+		gamemode.Call("PlayerTenthSecond", ply);
+		ply._nextTenthSecond = now + 0.1
+	end
+	if ply._nextSecond <= now then
+		gamemode.Call("PlayerSecond", ply);
+		ply._nextSecond = now + 1
+	end
+	return BaseClass.PlayerPostThink(self, ply)
 end
 
 -- Called every frame that a player is dead.
@@ -1170,23 +1192,8 @@ function GM:PlayerSpawnSENT(ply, class)
 	end
 end
 
-local timenow = CurTime()
-timer.Create(
-	"Timer Checker.t", 1, 0, function()
-		timenow = CurTime()
-	end
-)
-hook.Add(
-	"Think", "Timer Checker.h", function()
-		if timenow < CurTime() - 3 then
-			MS:Log(EVENT_ERROR, "Timers have stopped running!")
-			player.NotifyAll(NOTIFY_ERROR, "Timers have stopped running! Oh shi-")
-			hook.Remove("Think", "Timer Checker.h")
-		end
-	end
-)
-
 -- Create a timer to automatically clean up decals.
+-- TODO: This should presumably be clientside?
 timer.Create(
 	"Cleanup Decals", 60, 0, function()
 		if (MS.Config["Cleanup Decals"]) then
@@ -1197,9 +1204,20 @@ timer.Create(
 	end
 )
 
--- Create a timer to give players money for their contraband.
-timer.Create(
-	"Earning", GM.Config["Earning Interval"], 0, function()
+-- Trash fire all or nothing payday madness
+function GM:Think()
+	BaseClass.Think(self)
+
+	local now = CurTime()
+	-- We don't want a payday immediately on startup and we don't want the lua
+	-- reload to reset the payday timer, so this sillyness is needed
+	if not self._nextPayday then
+		self._nextPayday = now + MS.Config["Earning Interval"]
+	end
+
+	if self._nextPayday <= now then
+		self._nextPayday = now + MS.Config["Earning Interval"]
+
 		-- FIXME: Christ on a bike this is a shithole redo the entire thing jesus
 		local contratypes = {}
 		for key in pairs(MS.Config["Contraband"]) do
@@ -1286,7 +1304,8 @@ timer.Create(
 		end
 		player.SaveAll()
 	end
-)
+end
+
 concommand.Add(
 	"wire_keyboard_press", function()
 	end

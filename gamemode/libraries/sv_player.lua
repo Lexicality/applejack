@@ -111,61 +111,16 @@ function player.AddAutoCSVar(type, name)
 	autosendvars[name] = type;
 end
 
-local trup, trdown = Vector(0, 0, 10), Vector(0, 0, -2147483648);
-local nextsec = CurTime();
-timer.Create(
-	"Player Update Timer", 0.1, 0, function()
-		local second = nextsec <= CurTime();
-		if (second) then
-			nextsec = CurTime() + 1;
+hook.Add(
+	"PlayerSecond", "CSVar Sync", function(ply)
+		for k, v in pairs(autosendvars) do
+			ply:SetCSVar(v, k, ply[k]);
 		end
-		for _, ply in pairs(player.GetAll()) do
-			if (ply._Initialized and ply._UpdateData) then
-				gamemode.Call("PlayerTenthSecond", ply);
-				if (second) then
-					gamemode.Call("PlayerSecond", ply);
-					-- Check if the player is stuck in the world or over open sky (stuck behind world) and disable them.
-					if (ply:Alive() and not ply:KnockedOut() and ply:GetMoveType() ==
-						MOVETYPE_WALK and
-						(not ply:IsInWorld() or
-							util.QuickTrace(ply:GetPos() + trup, trdown, ply).HitSky)) then
-						ply._StuckInWorld = true;
-					else
-						ply._StuckInWorld = false;
-					end
-					-- Kick idles
-					if (not ply:IsBot() and ply._IdleKick < CurTime()) then
-						ply:Kick(
-							"AFK for " .. string.ToMinutesSeconds(MS.Config["Autokick time"]) ..
-								" minutes."
-						);
-					end
-					-- Disable paracetamol if yer over 50HP
-					if (ply:Health() > 50) then
-						ply._HideHealthEffects = false;
-					end
-					-- Give sleeping people a health regen.
-					if (ply._Sleeping and ply:Health() < 100 and ply:Alive()) then
-						-- It seems the game doesn't like fractions. Let's make this only happen once every 2 seconds then.
-						if (not ply._Healthtick) then
-							ply._Healthtick = true;
-						else
-							ply._Healthtick = false;
-							ply:SetHealth(ply:Health() + 1);
-							ply.ragdoll.health = ply:Health();
-						end
-					end
+		-- And the one CSVar that needs manual doin
+		ply:SetCSVar(CLASS_LONG, "_Money", ply.cider._Money);
 
-					for k, v in pairs(autosendvars) do
-						ply:SetCSVar(v, k, ply[k]);
-					end
-					-- And the one CSVar that needs manual doin
-					ply:SetCSVar(CLASS_LONG, "_Money", ply.cider._Money);
-				end
-			end
-		end
 	end
-);
+)
 
 hook.Add(
 	"LibrariesLoaded", "Player Library's LibrariesLoaded", function()
