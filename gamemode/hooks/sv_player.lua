@@ -3,13 +3,6 @@
 -- ~ Applejack ~
 --
 ---
--- Called when a player's warrant timer ends.
--- @param ply The player whose warrant just expired
--- @param class The class of warrant. 'arrest' or 'search'.
-function GM:PlayerWarrantExpired(player, class)
-	-- We don't care
-end
-
 ---
 -- Called when a player demotes another player from a team.
 -- @param ply The player that did the demoting
@@ -87,34 +80,6 @@ end
 -- @param ply The player that did the waking up
 -- @param victim The player that got woke up
 function GM:PlayerWakeUp(ply, victim)
-end
-
----
--- Called when a player arrests another player.
--- @param ply The player that did it
--- @param victim The player that it was done to
-function GM:PlayerArrest(ply, victim)
-end
-
----
--- Called when a player unarrests another player.
--- @param ply The player that did it
--- @param victim The player that it was done to
-function GM:PlayerUnarrest(ply, victim)
-end
-
----
--- Called when a player warrants another player.
--- @param ply The player that did it
--- @param victim The player that it was done to
-function GM:PlayerWarrant(ply, victim, class)
-end
-
----
--- Called when a player unwarrants another player.
--- @param ply The player that did it
--- @param victim The player that it was done to
-function GM:PlayerUnwarrant(ply, victim)
 end
 
 ---
@@ -277,15 +242,6 @@ end
 -- @param target The player's intended victim
 -- @return True if they can, false if they can't.
 function GM:PlayerCanKnockOut(ply, target)
-	return true
-end
-
----
--- Called when a player attempts to warrant a player.
--- @param ply The player in question
--- @param target The player's intended victim
--- @return True if they can, false if they can't.
-function GM:PlayerCanWarrant(ply, target)
 	return true
 end
 
